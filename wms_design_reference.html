@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS Web - 確認用3画面（リデザイン版）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ========== 全体共通 ========== */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :root {
+    /* === 3色のみで構成 === */
+    --c-base:   #ffffff;
+    --c-bg:     #f4f5f7;
+    --c-line:   #d8dde3;
+    --c-line-dk:#9aa3ad;
+    --c-text:   #1a1f29;
+    --c-text-sub: #6c7280;
+    --c-text-mute: #9ca3af;
+
+    /* アクセント（紺） */
+    --c-accent:    #1a3a5c;
+    --c-accent-dk: #0f2540;
+    --c-accent-lt: #e8eef5;
+
+    /* 警告（赤） */
+    --c-alert:    #b8002e;
+    --c-alert-lt: #fbe9ed;
+
+    /* フォント */
+    --f-base: 'Noto Sans JP', sans-serif;
+    --f-mono: 'Roboto Mono', monospace;
+  }
+
+  html, body {
+    font-family: var(--f-base);
+    font-weight: 400;
+    color: var(--c-text);
+    background: #2a2d35;
+    padding: 32px 24px 80px;
+    line-height: 1.6;
+  }
+
+  /* タイトル */
+  h1.page-title {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  p.subtitle {
+    text-align: center;
+    color: #a0a4ad;
+    font-size: 13px;
+    font-weight: 400;
+    margin-bottom: 24px;
+  }
+
+  /* 画面ジャンプ */
+  .quick-nav {
+    max-width: 1500px;
+    margin: 0 auto 32px;
+    background: #353944;
+    border: 1px solid #4a4f5c;
+    padding: 12px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .quick-nav .label { color: #c8ccd4; font-weight: 500; }
+  .quick-nav a {
+    color: #c8ccd4;
+    text-decoration: none;
+    background: #1a1c22;
+    padding: 6px 14px;
+    font-family: var(--f-base);
+    border: 1px solid #4a4f5c;
+  }
+  .quick-nav a:hover {
+    background: #fff;
+    color: var(--c-text);
+    border-color: #fff;
+  }
+  .quick-nav a b {
+    color: #c8ccd4;
+    font-family: var(--f-mono);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .quick-nav a:hover b { color: var(--c-accent); }
+
+  /* セクションヘッダ */
+  .section-divider {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 18px 0 8px;
+    border-bottom: 1px solid #4a4f5c;
+    max-width: 1500px;
+    margin: 32px auto 12px;
+  }
+  .section-divider .num {
+    color: #c8ccd4;
+    font-family: var(--f-mono);
+    font-weight: 600;
+    margin-right: 12px;
+  }
+
+  /* 画面の説明 */
+  .desc {
+    max-width: 1500px;
+    margin: 0 auto 14px;
+    color: #c8ccd4;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 12px 16px;
+    background: #353944;
+    border-left: 3px solid #c8ccd4;
+  }
+  .desc b { color: #fff; font-weight: 500; }
+
+  /* PCフレーム */
+  .pc-frame {
+    max-width: 1500px;
+    margin: 0 auto 36px;
+    background: #1a1c22;
+    padding: 12px 12px 22px;
+  }
+  .pc-frame .browser-bar {
+    background: #353944;
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .pc-frame .browser-bar .dots { display: flex; gap: 5px; }
+  .pc-frame .browser-bar .dots span {
+    width: 10px;
+    height: 10px;
+    background: #555;
+  }
+  .pc-frame .browser-bar .url {
+    background: #1a1c22;
+    padding: 4px 10px;
+    flex: 1;
+    color: #a0a4ad;
+    font-family: var(--f-mono);
+    font-size: 11px;
+  }
+
+  /* 画面本体 */
+  .screen {
+    background: var(--c-bg);
+    height: 820px;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ========== サイドバー ========== */
+  .sidebar {
+    width: 220px;
+    background: var(--c-accent);
+    color: #fff;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar .logo {
+    padding: 18px 18px;
+    border-bottom: 1px solid var(--c-accent-dk);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .sidebar .logo small {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: #b5c1d1;
+    margin-top: 4px;
+    letter-spacing: 0;
+  }
+  .sidebar nav {
+    flex: 1;
+    padding: 8px 0;
+    overflow-y: auto;
+  }
+  .sidebar nav .group {
+    padding: 14px 18px 6px;
+    font-size: 10px;
+    color: #8da2bf;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+  .sidebar nav a {
+    display: flex;
+    align-items: center;
+    padding: 9px 18px;
+    color: #d6dee9;
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    font-weight: 400;
+  }
+  .sidebar nav a:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+  }
+  .sidebar nav a.active {
+    background: var(--c-accent-dk);
+    color: #fff;
+    border-left-color: #fff;
+    font-weight: 500;
+  }
+  .sidebar nav a .pill-mini {
+    margin-left: auto;
+    background: var(--c-alert);
+    color: #fff;
+    padding: 1px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: var(--f-mono);
+  }
+  .sidebar .sb-footer {
+    padding: 12px 18px;
+    border-top: 1px solid var(--c-accent-dk);
+    font-size: 11px;
+    color: #8da2bf;
+    line-height: 1.6;
+  }
+
+  /* ========== トップバー ========== */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar {
+    background: var(--c-base);
+    height: 48px;
+    border-bottom: 1px solid var(--c-line);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    flex-shrink: 0;
+  }
+  .topbar .crumb {
+    font-size: 13px;
+    color: var(--c-text-sub);
+    flex: 1;
+  }
+  .topbar .crumb b { color: var(--c-text); font-weight: 600; }
+  .topbar .actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .topbar .notify {
+    position: relative;
+    color: var(--c-text-sub);
+    cursor: pointer;
+  }
+  .topbar .notify .bdg {
+    position: absolute;
+    top: -6px; right: -8px;
+    background: var(--c-alert);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 5px;
+    font-family: var(--f-mono);
+  }
+  .topbar .user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--c-text);
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .topbar .user .avatar {
+    width: 28px;
+    height: 28px;
+    background: var(--c-accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: var(--c-bg);
+  }
+
+  /* ========== カード ========== */
+  .card {
+    background: var(--c-base);
+    border: 1px solid var(--c-line);
+  }
+  .card-header {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--c-line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text);
+  }
+  .card-header .meta {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--c-text-sub);
+  }
+  .card-body { padding: 14px 16px; }
+
+  /* ========== ボタン ========== */
+  .btn {
+    border: 1px solid var(--c-line-dk);
+    background: var(--c-base);
+    color: var(--c-text);
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: var(--f-base);
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .btn:hover { background: var(--c-bg); }
+  .btn.primary {
+    background: var(--c-accent);
+    color: #fff;
+    border-color: var(--c-accent);
+  }
+  .btn.primary:hover { background: var(--c-accent-dk); }
+  .btn.danger {
+    background: var(--c-alert);
+    color: #fff;
+    border-color: var(--c-alert);
+  }
+  .btn.danger:hover { background: #8a0023; }
+  .btn.sm {
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+
+  /* ========== ピル（タグ） ========== */
+  .pill {
+    display: inline-block;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--c-line-dk);
+    background: var(--c-bg);
+    color: var(--c-text-sub);
+    line-height: 1.6;
+  }
+  .pill.alert {
+    background: var(--c-alert-lt);
+    border-color: var(--c-alert);
+    color: var(--c-alert);
+  }
+  .pill.accent {
+    background: var(--c-accent-lt);
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+  }
+
+  /* ========== テーブル ========== */
+  table.list {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  table.list th, table.list td {
+    border-bottom: 1px solid var(--c-line);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: middle;
+  }
+  table.list thead th {
+    background: var(--c-bg);
+    font-weight: 600;
+    color: var(--c-text-sub);
+    font-size: 11px;
+    border-bottom: 1px solid var(--c-line-dk);
+    border-top: 1px solid var(--c-line);
+  }
+  table.list tbody tr:hover { background: var(--c-bg); }
+  table.list tbody tr.selected {
+    background: var(--c-accent-lt);
+  }
+  table.list tbody tr.selected:hover { background: var(--c-accent-lt); }
+  table.list .right { text-align: right; }
+  table.list .center { text-align: center; }
+  table.list .num { font-family: var(--f-mono); font-weight: 500; }
+
+  /* ========== フォーム ========== */
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-size: 11px;
+    color: var(--c-text-sub);
+    font-weight: 500;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    border: 1px solid var(--c-line-dk);
+    padding: 7px 10px;
+    font-size: 13px;
+    background: var(--c-base);
+    font-family: var(--f-base);
+    color: var(--c-text);
+  }
+  .field input:focus,
+  .field select:focus {
+    outline: 2px solid var(--c-accent);
+    outline-offset: -1px;
+    border-color: var(--c-accent);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  /* ========== KPIタイル ========== */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .kpi {
+    background: var(--c-base);
+    border: 1px solid var(--c-line);
+    padding: 14px 16px;
+    position: relative;
+  }
+  .kpi .label {
+    font-size: 11px;
+    color: var(--c-text-sub);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .kpi .value {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--c-text);
+    font-family: var(--f-mono);
+    line-height: 1.1;
+  }
+  .kpi .value .small {
+    font-size: 13px;
+    color: var(--c-text-mute);
+    font-weight: 400;
+  }
+  .kpi .value .unit {
+    font-size: 13px;
+    color: var(--c-text-sub);
+    font-weight: 500;
+    margin-left: 2px;
+  }
+  .kpi .sub {
+    font-size: 11px;
+    color: var(--c-text-sub);
+    margin-top: 8px;
+  }
+  .kpi .delta {
+    font-size: 12px;
+    font-weight: 600;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-family: var(--f-mono);
+    color: var(--c-text-sub);
+  }
+  .kpi .delta.alert { color: var(--c-alert); }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--c-line);
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: var(--c-accent);
+  }
+
+  /* ========== 2カラム ========== */
+  .two-col {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .two-col-eq {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  /* ========== 棒グラフ（モノクロ） ========== */
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    height: 170px;
+    gap: 14px;
+    padding: 18px 0;
+  }
+  .bar-chart .bar {
+    flex: 1;
+    background: var(--c-accent);
+    position: relative;
+    min-width: 24px;
+  }
+  .bar-chart .bar .v {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--c-text);
+    font-weight: 600;
+    font-family: var(--f-mono);
+  }
+  .bar-chart .bar .l {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--c-text-sub);
+  }
+  .bar-chart .bar.now {
+    background: var(--c-text-sub);
+  }
+  .bar-chart .bar.empty {
+    background: transparent;
+    border: 1px dashed var(--c-line-dk);
+  }
+
+  /* ========== アラートリスト ========== */
+  .alert-list .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--c-line);
+    font-size: 13px;
+  }
+  .alert-list .row:last-child { border-bottom: none; }
+  .alert-list .row .marker {
+    width: 4px;
+    align-self: stretch;
+    flex-shrink: 0;
+  }
+  .alert-list .row .marker.alert { background: var(--c-alert); }
+  .alert-list .row .marker.normal { background: var(--c-line-dk); }
+  .alert-list .row .marker.accent { background: var(--c-accent); }
+  .alert-list .row .body { flex: 1; }
+  .alert-list .row .body .ttl {
+    font-weight: 500;
+    color: var(--c-text);
+  }
+  .alert-list .row .body .sub {
+    font-size: 11px;
+    color: var(--c-text-sub);
+    margin-top: 2px;
+  }
+
+  /* ========== 検索バー ========== */
+  .search-bar {
+    background: var(--c-base);
+    border: 1px solid var(--c-line);
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .search-bar .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    align-items: center;
+  }
+  .search-bar .actions .stats {
+    font-size: 12px;
+    color: var(--c-text-sub);
+  }
+  .search-bar .actions .stats b {
+    color: var(--c-alert);
+    font-weight: 600;
+    font-family: var(--f-mono);
+  }
+
+  /* ========== タブ ========== */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--c-line-dk);
+    margin-bottom: 14px;
+  }
+  .tabs .tab {
+    padding: 9px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--c-text-sub);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-weight: 400;
+  }
+  .tabs .tab:hover { color: var(--c-text); }
+  .tabs .tab.active {
+    color: var(--c-accent);
+    border-bottom-color: var(--c-accent);
+    font-weight: 600;
+  }
+
+  /* ========== セクションタイトル（カード内） ========== */
+  h3.sec-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-text-sub);
+    margin: 16px 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  h3.sec-title:first-child { margin-top: 0; }
+
+  /* ========== 差異承認カード ========== */
+  .diff-panel {
+    background: var(--c-base);
+    border: 1px solid var(--c-line);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .diff-panel.urgent {
+    border: 1px solid var(--c-alert);
+    border-left: 4px solid var(--c-alert);
+  }
+  .diff-panel.normal {
+    border-left: 4px solid var(--c-line-dk);
+  }
+  .diff-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .diff-panel-header .left .tags {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .diff-panel-header .left .meta {
+    font-size: 12px;
+    color: var(--c-text-sub);
+  }
+  .diff-panel-header .left .meta b {
+    color: var(--c-text);
+    font-family: var(--f-mono);
+    font-weight: 600;
+  }
+  .diff-panel-header .left .item-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--c-text);
+    margin-top: 4px;
+  }
+  .diff-panel-header .right {
+    text-align: right;
+    font-size: 11px;
+    color: var(--c-text-sub);
+    line-height: 1.6;
+  }
+
+  .diff-summary {
+    background: var(--c-alert-lt);
+    border: 1px solid var(--c-alert);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .diff-summary.warn {
+    background: var(--c-bg);
+    border: 1px solid var(--c-line-dk);
+  }
+  .diff-summary.info {
+    background: var(--c-accent-lt);
+    border: 1px solid var(--c-accent);
+  }
+  .diff-summary .qty {
+    font-size: 22px;
+    font-weight: 600;
+    font-family: var(--f-mono);
+    color: var(--c-alert);
+  }
+  .diff-summary.warn .qty { color: var(--c-text); }
+  .diff-summary.info .qty { color: var(--c-accent); }
+
+  .diff-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+    font-size: 12px;
+  }
+  .diff-info-grid .field-label {
+    color: var(--c-text-sub);
+    font-size: 11px;
+    margin-bottom: 3px;
+  }
+  .diff-info-grid .field-value {
+    font-weight: 600;
+    color: var(--c-text);
+  }
+  .diff-info-grid .field-value.alert { color: var(--c-alert); }
+
+  .panel-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--c-line);
+  }
+
+  /* ========== ウェーブサマリ ========== */
+  .wave-summary {
+    background: var(--c-accent-lt);
+    border-left: 3px solid var(--c-accent);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .wave-summary .label {
+    font-size: 11px;
+    color: var(--c-text-sub);
+    font-weight: 500;
+  }
+  .wave-summary .stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 6px;
+  }
+  .wave-summary .stats .stat .num {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--c-accent);
+    font-family: var(--f-mono);
+  }
+  .wave-summary .stats .stat .lbl {
+    font-size: 11px;
+    color: var(--c-text-sub);
+    margin-top: 2px;
+  }
+
+  .wave-form .field { margin-bottom: 10px; }
+
+  /* ========== その他ユーティリティ ========== */
+  .text-mono { font-family: var(--f-mono); }
+  .text-sub { color: var(--c-text-sub); }
+  .text-alert { color: var(--c-alert); }
+  .text-bold { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">WMS Web - 確認用 3 画面</h1>
+<p class="subtitle">リデザイン版　/　フォント統一　/　3色構成（紺・赤・グレー）</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#W-001"><b>W-001</b>ダッシュボード</a>
+  <a href="#W-302"><b>W-302</b>引当・ウェーブ</a>
+  <a href="#W-104"><b>W-104</b>差異承認</a>
+</div>
+
+<!-- ====================================== -->
+<!-- W-001 ダッシュボード -->
+<!-- ====================================== -->
+<div class="section-divider" id="W-001"><span class="num">W-001</span>ダッシュボード（トップページ）</div>
+<div class="desc">
+  <b>役割</b>：ログイン直後に表示。本日の業務状況をひと目で把握できる司令塔。<br>
+  <b>主な要素</b>：上段KPI（入荷/出荷/リードタイム/誤出荷率）、時間帯別出荷チャート、対応必要なアラート、作業者進捗、外部連携ステータス
+</div>
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/dashboard</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（1F）</small></div>
+      <nav>
+        <div class="group">概要</div>
+        <a href="#" class="active">ダッシュボード</a>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定</a>
+        <a href="#">入荷実績</a>
+        <a href="#">差異承認 <span class="pill-mini">5</span></a>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+        <a href="#">在庫調整</a>
+        <a href="#">棚卸</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷一覧</a>
+        <a href="#">引当・ウェーブ</a>
+        <a href="#">出荷指示</a>
+        <a href="#">梱包・送り状</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">取引先</a>
+        <a href="#">ユーザー</a>
+        <div class="group">印刷管理</div>
+        <a href="#">プリンタ</a>
+        <a href="#">印刷履歴</a>
+      </nav>
+      <div class="sb-footer">v1.1.0 / 接続：良好<br>HT稼働：28 / 32</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb"><b>ダッシュボード</b></div>
+        <div class="actions">
+          <span class="notify">通知<span class="bdg">3</span></span>
+          <span style="color:var(--c-text-sub); font-size:13px;">ヘルプ</span>
+          <div class="user"><div class="avatar">山</div>山田リーダー</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="label">本日の入荷</div>
+            <div class="value">8 <span class="small">/ 12</span></div>
+            <div class="progress-bar"><div class="fill" style="width:67%;"></div></div>
+            <div class="sub">進捗 67% ／ 残り 4 便</div>
+          </div>
+          <div class="kpi">
+            <div class="label">本日の出荷</div>
+            <div class="value">198 <span class="small">/ 245</span></div>
+            <div class="progress-bar"><div class="fill" style="width:80%;"></div></div>
+            <div class="sub">進捗 80% ／ 目標 95%</div>
+          </div>
+          <div class="kpi">
+            <div class="label">出荷リードタイム</div>
+            <div class="value">2.3<span class="unit">h</span></div>
+            <div class="delta">−0.2h</div>
+            <div class="sub">先週平均比 改善</div>
+          </div>
+          <div class="kpi">
+            <div class="label">誤出荷率（今月）</div>
+            <div class="value">0.02<span class="unit">%</span></div>
+            <div class="delta">−0.01%</div>
+            <div class="sub">目標 0.05% 以下</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <span>時間帯別 出荷件数（本日）</span>
+              <span class="meta">最終更新 14:08</span>
+            </div>
+            <div class="card-body">
+              <div class="bar-chart">
+                <div class="bar" style="height:30%;"><div class="v">12</div><div class="l">9時</div></div>
+                <div class="bar" style="height:55%;"><div class="v">28</div><div class="l">10時</div></div>
+                <div class="bar" style="height:80%;"><div class="v">45</div><div class="l">11時</div></div>
+                <div class="bar" style="height:65%;"><div class="v">38</div><div class="l">12時</div></div>
+                <div class="bar" style="height:90%;"><div class="v">52</div><div class="l">13時</div></div>
+                <div class="bar now" style="height:40%;"><div class="v">23</div><div class="l">14時 (現在)</div></div>
+                <div class="bar empty" style="height:8%;"><div class="l">15時</div></div>
+                <div class="bar empty" style="height:8%;"><div class="l">16時</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span>対応必要</span>
+              <span class="pill alert">5 件</span>
+            </div>
+            <div class="card-body alert-list" style="padding-top:0;">
+              <div class="row"><div class="marker alert"></div><div class="body"><div class="ttl">欠品により出荷保留 3 件</div><div class="sub">SO-2604-00121, 00125, 00132</div></div><a class="btn sm" href="#">対応</a></div>
+              <div class="row"><div class="marker alert"></div><div class="body"><div class="ttl">差異承認待ち 5 件</div><div class="sub">入荷検品の数量差異</div></div><a class="btn sm" href="#W-104">承認</a></div>
+              <div class="row"><div class="marker normal"></div><div class="body"><div class="ttl">期限 60 日以内 12 SKU</div><div class="sub">優先出荷検討</div></div><a class="btn sm" href="#">確認</a></div>
+              <div class="row"><div class="marker accent"></div><div class="body"><div class="ttl">補充推奨 8 ロケ</div><div class="sub">ピックエリアの在庫低下</div></div><a class="btn sm" href="#">指示</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col-eq">
+          <div class="card">
+            <div class="card-header">作業者進捗（リアルタイム）</div>
+            <div class="card-body" style="padding:0;">
+              <table class="list">
+                <thead><tr><th>作業者</th><th>業務</th><th>進捗</th><th class="right">完了率</th></tr></thead>
+                <tbody>
+                  <tr><td>田中</td><td>ピッキング</td><td class="num">120 / 150</td><td class="right num">80%</td></tr>
+                  <tr><td>佐藤</td><td>検品</td><td class="num">45 / 60</td><td class="right num">75%</td></tr>
+                  <tr><td>鈴木</td><td>棚入れ</td><td class="num">32 / 35</td><td class="right num">91%</td></tr>
+                  <tr><td>高橋</td><td>ピッキング</td><td class="num">88 / 130</td><td class="right num">68%</td></tr>
+                  <tr><td>伊藤</td><td>梱包</td><td class="num">52 / 70</td><td class="right num">74%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">外部連携ステータス</div>
+            <div class="card-body alert-list" style="padding-top:0;">
+              <div class="row"><div class="marker accent"></div><div class="body"><div class="ttl">基幹ERP　接続正常</div><div class="sub">最終同期 14:05（3 分前）</div></div></div>
+              <div class="row"><div class="marker accent"></div><div class="body"><div class="ttl">EC OMS　接続正常</div><div class="sub">本日受信 245 件</div></div></div>
+              <div class="row"><div class="marker accent"></div><div class="body"><div class="ttl">送り状API（ヤマト）</div><div class="sub">本日発行 198 件</div></div></div>
+              <div class="row"><div class="marker normal"></div><div class="body"><div class="ttl">送り状API（佐川）　遅延</div><div class="sub">応答時間 平均 5.2 秒</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- W-302 引当・ウェーブ -->
+<!-- ====================================== -->
+<div class="section-divider" id="W-302"><span class="num">W-302</span>引当・ウェーブ生成</div>
+<div class="desc">
+  <b>役割</b>：出荷を選んで引当→ウェーブ編成→現場HTへ配信する出荷業務の起点。<br>
+  <b>主な要素</b>：出荷一覧（左）、ウェーブ編成パネル（右）、編成プレビュー（下）
+</div>
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/outbound/wave</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（1F）</small></div>
+      <nav>
+        <div class="group">概要</div>
+        <a href="#">ダッシュボード</a>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定</a>
+        <a href="#">入荷実績</a>
+        <a href="#">差異承認 <span class="pill-mini">5</span></a>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+        <a href="#">棚卸</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷一覧</a>
+        <a href="#" class="active">引当・ウェーブ</a>
+        <a href="#">出荷指示</a>
+        <a href="#">梱包・送り状</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">取引先</a>
+      </nav>
+      <div class="sb-footer">v1.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">出荷　/　<b>引当・ウェーブ</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="tabs">
+          <div class="tab">未引当（38）</div>
+          <div class="tab active">引当済・未編成（24）</div>
+          <div class="tab">ウェーブ進行中（5）</div>
+          <div class="tab">完了（128）</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1.6fr 1fr; gap:14px;">
+          <!-- 左：出荷リスト -->
+          <div class="card">
+            <div class="card-header">
+              <span>引当済出荷 <span class="meta" style="margin-left:8px;">24 件 ／ 選択 3 件</span></span>
+              <button class="btn sm">フィルタ</button>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <table class="list">
+                <thead>
+                  <tr>
+                    <th style="width:30px;"><input type="checkbox"></th>
+                    <th>出荷No</th>
+                    <th>顧客</th>
+                    <th>締切</th>
+                    <th class="right">行数</th>
+                    <th>優先</th>
+                    <th>温度</th>
+                    <th>キャリア</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="selected">
+                    <td><input type="checkbox" checked></td>
+                    <td class="num">SO-00121</td><td>○○商店</td>
+                    <td class="num">15:00</td><td class="right">3</td>
+                    <td><span class="pill alert">急</span></td>
+                    <td>常温</td><td>ヤマト</td>
+                  </tr>
+                  <tr class="selected">
+                    <td><input type="checkbox" checked></td>
+                    <td class="num">SO-00122</td><td>△△店</td>
+                    <td class="num">15:00</td><td class="right">5</td>
+                    <td>−</td><td>常温</td><td>ヤマト</td>
+                  </tr>
+                  <tr class="selected">
+                    <td><input type="checkbox" checked></td>
+                    <td class="num">SO-00123</td><td>□□倉庫</td>
+                    <td class="num">15:00</td><td class="right">2</td>
+                    <td>−</td>
+                    <td><span class="pill accent">冷蔵</span></td>
+                    <td>ヤマト</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td class="num">SO-00124</td><td>◇◇商事</td>
+                    <td class="num">17:00</td><td class="right">8</td>
+                    <td>−</td><td>常温</td><td>佐川</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td class="num">SO-00125</td><td>※※スーパー</td>
+                    <td class="num">17:00</td><td class="right">12</td>
+                    <td>−</td><td>常温</td><td>佐川</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td class="num">SO-00126</td><td>○○薬局</td>
+                    <td class="num">17:00</td><td class="right">4</td>
+                    <td>−</td><td>常温</td><td>ヤマト</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td class="num">SO-00127</td><td>△△ストア</td>
+                    <td class="num">翌9:00</td><td class="right">6</td>
+                    <td>−</td><td>常温</td><td>ヤマト</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td class="num">SO-00128</td><td>□□物流</td>
+                    <td class="num">翌9:00</td><td class="right">15</td>
+                    <td>−</td>
+                    <td><span class="pill accent">冷蔵</span></td>
+                    <td>福山</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td class="num">SO-00129</td><td>○○製造</td>
+                    <td class="num">翌9:00</td><td class="right">22</td>
+                    <td>−</td><td>常温</td><td>福山</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td class="num">SO-00130</td><td>※※工業</td>
+                    <td class="num">翌12:00</td><td class="right">18</td>
+                    <td>−</td><td>常温</td><td>西濃</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 右：ウェーブ編成 -->
+          <div class="card">
+            <div class="card-header">ウェーブ編成</div>
+            <div class="card-body wave-form">
+              <div class="wave-summary">
+                <div class="label">対象</div>
+                <div class="stats">
+                  <div class="stat"><div class="num">3</div><div class="lbl">出荷</div></div>
+                  <div class="stat"><div class="num">10</div><div class="lbl">行数</div></div>
+                  <div class="stat"><div class="num">22</div><div class="lbl">PCS</div></div>
+                </div>
+              </div>
+
+              <h3 class="sec-title">編成方式</h3>
+              <div class="field">
+                <label>ピッキング方式</label>
+                <select>
+                  <option>シングル（オーダー単位）</option>
+                  <option selected>マルチオーダー（複数同時）</option>
+                  <option>トータル → 仕分け</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>引当ロジック</label>
+                <select>
+                  <option selected>FEFO（期限先入先出）</option>
+                  <option>FIFO（入荷順）</option>
+                  <option>ロット指定</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>動線最適化</label>
+                <select>
+                  <option selected>ロケ順（推奨）</option>
+                  <option>出荷順</option>
+                  <option>ABC順</option>
+                </select>
+              </div>
+
+              <h3 class="sec-title">作業者割当</h3>
+              <div class="field">
+                <label>担当作業者</label>
+                <select>
+                  <option>自動割当（負荷分散）</option>
+                  <option selected>田中太郎（現在：ピック 2 件）</option>
+                  <option>佐藤次郎（現在：待機）</option>
+                  <option>鈴木三郎（現在：ピック 1 件）</option>
+                </select>
+              </div>
+
+              <div style="display:flex; gap:8px; margin-top:18px;">
+                <button class="btn" style="flex:1;">プレビュー</button>
+                <button class="btn primary" style="flex:1;">ウェーブ確定</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header">プレビュー：ピック動線（ロケ順）</div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:40px;">順</th>
+                  <th>ロケ</th>
+                  <th>SKU</th>
+                  <th>商品</th>
+                  <th>ロット</th>
+                  <th class="right">数量</th>
+                  <th>出荷</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">1</td><td class="num">A-05-02-1</td><td class="num">S-00210</td><td>洗剤500ml</td><td class="num">LOT-26B</td><td class="right num">3</td><td class="num">SO-00121</td></tr>
+                <tr><td class="num">2</td><td class="num">A-05-03-2</td><td class="num">S-00211</td><td>洗剤詰替用</td><td class="num">LOT-26B</td><td class="right num">5</td><td class="num">SO-00122</td></tr>
+                <tr><td class="num">3</td><td class="num">A-08-02-1</td><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26B</td><td class="right num">3</td><td class="num">SO-00121</td></tr>
+                <tr><td class="num">4</td><td class="num">A-08-03-1</td><td class="num">S-00322</td><td>リンス300ml</td><td class="num">LOT-26B</td><td class="right num">1</td><td class="num">SO-00121</td></tr>
+                <tr><td class="num">5</td><td class="num">A-12-04-3</td><td class="num">S-00401</td><td>歯ブラシ</td><td class="num">−</td><td class="right num">8</td><td class="num">SO-00122</td></tr>
+                <tr><td class="num">6</td><td class="num">F-01-01-1 <span class="pill accent" style="margin-left:4px;">冷蔵</span></td><td class="num">S-00701</td><td>冷蔵食品セット</td><td class="num">LOT-26C</td><td class="right num">2</td><td class="num">SO-00123</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- W-104 差異承認 -->
+<!-- ====================================== -->
+<div class="section-divider" id="W-104"><span class="num">W-104</span>差異承認</div>
+<div class="desc">
+  <b>役割</b>：入荷検品で発生した数量・状態の差異を承認 or 却下。承認後に在庫へ反映される。<br>
+  <b>主な要素</b>：差異一覧（カード式）、対処理由の選択、コメント・写真添付、承認/却下操作
+</div>
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/inbound/variance</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（1F）</small></div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定</a>
+        <a href="#">入荷実績</a>
+        <a href="#" class="active">差異承認 <span class="pill-mini">5</span></a>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+        <a href="#">棚卸</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷一覧</a>
+        <a href="#">引当・ウェーブ</a>
+      </nav>
+      <div class="sb-footer">v1.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">入荷　/　<b>差異承認</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>受領No</label><input value=""></div>
+            <div class="field"><label>仕入先</label><select><option>すべて</option></select></div>
+            <div class="field"><label>差異種別</label>
+              <select>
+                <option>すべて</option>
+                <option>数量差異</option>
+                <option>状態差異（不良）</option>
+                <option>未着</option>
+              </select>
+            </div>
+            <div class="field"><label>金額影響</label>
+              <select>
+                <option>すべて</option>
+                <option>1 万円以上</option>
+                <option>5 万円以上</option>
+              </select>
+            </div>
+            <div class="field"><label>期間</label><input type="date" value="2026-05-01"></div>
+          </div>
+          <div class="actions">
+            <span class="stats">承認待ち <b>5 件</b>　／　本日承認済 12 件　／　却下 1 件</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn sm">一括承認</button>
+              <button class="btn primary sm">検索</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 重大差異カード -->
+        <div class="diff-panel urgent">
+          <div class="diff-panel-header">
+            <div class="left">
+              <div class="tags">
+                <span class="pill alert">重大</span>
+                <span class="pill">未着</span>
+                <span class="meta">受領No：<b>RC-04287-003</b>　／　仕入先：<b>□□貿易</b></span>
+              </div>
+              <div class="item-name">クッキー詰合せ（S-00701）　/　LOT-26A</div>
+            </div>
+            <div class="right">
+              検品：田中（4/30 16:42）<br>
+              ASN：ASN-20260430-012
+            </div>
+          </div>
+
+          <div class="diff-summary">
+            <div>
+              <div class="text-sub" style="font-size:11px; margin-bottom:2px;">数量差異</div>
+              <div>予定 <b class="text-mono text-bold">48 PCS</b> → 実数 <b class="text-mono text-bold">0 PCS</b>　（仕入先未出荷の可能性）</div>
+            </div>
+            <div class="qty">−48</div>
+          </div>
+
+          <div class="diff-info-grid">
+            <div>
+              <div class="field-label">在庫影響額</div>
+              <div class="field-value text-mono">¥38,400</div>
+            </div>
+            <div>
+              <div class="field-label">関連出荷</div>
+              <div class="field-value alert">SO-00125（影響あり）</div>
+            </div>
+            <div>
+              <div class="field-label">過去類似</div>
+              <div class="field-value">3 件（同仕入先）</div>
+            </div>
+            <div>
+              <div class="field-label">次回入荷予定</div>
+              <div class="field-value">5/3 (土)</div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 2fr 130px; gap:12px;">
+            <div class="field">
+              <label>差異理由</label>
+              <select>
+                <option>選択してください</option>
+                <option>仕入先未出荷</option>
+                <option>輸送遅延</option>
+                <option>誤出荷（別商品到着）</option>
+                <option>その他</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>コメント（仕入先連絡内容など）</label>
+              <input value="">
+            </div>
+            <div class="field">
+              <label>添付</label>
+              <button class="btn sm" style="width:100%;">写真追加</button>
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button class="btn">保留</button>
+            <button class="btn danger">却下（仕入先返品）</button>
+            <button class="btn primary">承認（差異反映）</button>
+          </div>
+        </div>
+
+        <!-- 軽微差異カード（数量マイナス） -->
+        <div class="diff-panel normal">
+          <div class="diff-panel-header">
+            <div class="left">
+              <div class="tags">
+                <span class="pill">数量差異</span>
+                <span class="meta">受領No：<b>RC-04287-001</b>　／　仕入先：<b>○○商事</b></span>
+              </div>
+              <div class="item-name">シャンプー300ml（S-00321）　/　LOT-26B</div>
+            </div>
+            <div class="right">
+              検品：佐藤（5/1 09:42）
+            </div>
+          </div>
+
+          <div class="diff-summary warn">
+            <div>予定 <b class="text-mono text-bold">120 PCS</b> → 実数 <b class="text-mono text-bold">118 PCS</b>　（輸送中破損の可能性）</div>
+            <div class="qty">−2</div>
+          </div>
+
+          <div class="diff-info-grid">
+            <div>
+              <div class="field-label">在庫影響額</div>
+              <div class="field-value text-mono">¥1,160</div>
+            </div>
+            <div>
+              <div class="field-label">関連出荷</div>
+              <div class="field-value">影響なし</div>
+            </div>
+            <div>
+              <div class="field-label">過去類似</div>
+              <div class="field-value">12 件（軽微）</div>
+            </div>
+            <div>
+              <div class="field-label">破損確認</div>
+              <div class="field-value">写真あり</div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 2fr; gap:12px;">
+            <div class="field">
+              <label>差異理由</label>
+              <select>
+                <option selected>輸送中破損</option>
+                <option>仕入先過剰出荷</option>
+                <option>計数誤り</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>コメント</label>
+              <input value="梱包箱の角に潰れあり、2 本破損確認">
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button class="btn">保留</button>
+            <button class="btn danger">却下</button>
+            <button class="btn primary">承認</button>
+          </div>
+        </div>
+
+        <!-- 過剰差異カード -->
+        <div class="diff-panel normal">
+          <div class="diff-panel-header">
+            <div class="left">
+              <div class="tags">
+                <span class="pill">過剰</span>
+                <span class="meta">受領No：<b>RC-04287-001</b>　／　仕入先：<b>○○商事</b></span>
+              </div>
+              <div class="item-name">リンス300ml（S-00322）　/　LOT-26B</div>
+            </div>
+            <div class="right">
+              検品：佐藤（5/1 09:45）
+            </div>
+          </div>
+
+          <div class="diff-summary info">
+            <div>予定 <b class="text-mono text-bold">60 PCS</b> → 実数 <b class="text-mono text-bold">62 PCS</b>　（仕入先過剰出荷）</div>
+            <div class="qty">+2</div>
+          </div>
+
+          <div class="panel-actions">
+            <button class="btn">保留</button>
+            <button class="btn danger">却下（仕入先返却）</button>
+            <button class="btn primary">承認（在庫加算）</button>
+          </div>
+        </div>
+
+        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:12px 16px; margin-top:14px; font-size:12px; color:var(--c-text-sub); display:flex; justify-content:space-between;">
+          <span>残り <b class="text-alert text-mono text-bold">2 件</b> の承認待ちがあります</span>
+          <span><a href="#" style="color:var(--c-accent); text-decoration:none;">すべての承認待ちを表示 →</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
