@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 第3弾 出荷工程関連 8画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list tbody tr.selected { background:var(--c-accent-lt); }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-alert-lt); border-left-color:var(--c-alert); }
+  .note-box.warn .label { color:var(--c-alert); }
+
+  .text-mono { font-family:var(--f-mono); }
+  .text-bold { font-weight:600; }
+
+  /* HT端末（前回のスタイル流用） */
+  .ht-wrap { display:flex; justify-content:center; padding:20px 0; }
+  .ht-device { width:280px; background:#1a1c22; border:3px solid #2a2d35; border-radius:18px 18px 22px 22px; padding:14px 10px 16px; box-shadow:0 16px 40px rgba(0,0,0,0.5); position:relative; }
+  .ht-device .brand { position:absolute; top:4px; left:12px; font-size:7px; color:#555; font-weight:600; }
+  .ht-device .model { position:absolute; top:4px; right:12px; font-size:7px; color:#555; font-family:var(--f-mono); }
+  .ht-screen { width:100%; aspect-ratio:480/800; background:var(--c-bg); border:1px solid #444; margin-bottom:10px; display:flex; flex-direction:column; overflow:hidden; }
+  .ht-statusbar { background:#1a1c22; color:#c8ccd4; height:14px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; font-size:8px; font-family:var(--f-mono); flex-shrink:0; }
+  .ht-header { background:var(--c-accent); color:#fff; height:24px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; flex-shrink:0; justify-content:space-between; }
+  .ht-header .scr-id { font-family:var(--f-mono); font-size:9px; opacity:0.7; }
+  .ht-body { flex:1; padding:8px; overflow:hidden; background:var(--c-base); display:flex; flex-direction:column; gap:6px; }
+  .ht-key-labels { background:#1a1c22; color:#fff; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; flex-shrink:0; border-top:1px solid #444; }
+  .ht-key-labels .key-lbl { padding:5px 3px; text-align:center; border-right:1px solid #444; font-size:8px; line-height:1.2; }
+  .ht-key-labels .key-lbl:last-child { border-right:none; }
+  .ht-key-labels .key-lbl.primary { background:var(--c-accent-dk); }
+  .ht-key-labels .key-lbl .fn { display:block; font-family:var(--f-mono); font-weight:700; font-size:9px; color:#ffd966; }
+  .ht-key-labels .key-lbl.disabled { opacity:0.3; }
+
+  .ht-keypad { background:#2a2d35; border:1px solid #444; padding:8px 6px; display:flex; flex-direction:column; gap:5px; }
+  .ht-keypad .row { display:flex; gap:4px; justify-content:center; }
+  .pkey { background:#1a1c22; color:#fff; border:1px solid #555; padding:3px 0; font-size:9px; font-family:var(--f-mono); font-weight:600; text-align:center; flex:1; border-radius:2px; }
+  .pkey.f1 { color:#ffd966; }
+  .pkey.scan { background:var(--c-alert); flex:2; padding:5px 0; }
+  .ht-dpad-row { display:flex; align-items:center; gap:6px; }
+  .ht-dpad { width:54px; height:54px; flex-shrink:0; background:#1a1c22; border:1px solid #444; border-radius:50%; position:relative; }
+  .ht-dpad::before { content:""; position:absolute; inset:6px; background: linear-gradient(0deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%), linear-gradient(90deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%); border-radius:50%; }
+  .ht-dpad .ok { position:absolute; inset:0; margin:auto; width:14px; height:14px; background:#555; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:6px; color:#fff; font-weight:600; }
+  .ht-num-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:3px; flex:1; }
+
+  .device-label { color:#fff; font-size:13px; font-weight:600; text-align:center; margin-top:8px; }
+  .device-label .id { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+  .device-label .desc-text { font-size:11px; color:#a0a4ad; font-weight:400; margin-top:4px; max-width:280px; line-height:1.5; }
+
+  /* ステップ進捗バー */
+  .step-progress { display:flex; gap:0; border:1px solid var(--c-line-dk); }
+  .step-progress .step { flex:1; padding:6px 4px; text-align:center; font-size:11px; color:var(--c-text-sub); border-right:1px solid var(--c-line-dk); background:var(--c-bg); }
+  .step-progress .step:last-child { border-right:none; }
+  .step-progress .step.done { background:var(--c-text-sub); color:#fff; }
+  .step-progress .step.current { background:var(--c-accent); color:#fff; font-weight:600; }
+  .step-progress .step .num { font-family:var(--f-mono); font-weight:700; margin-right:4px; }
+
+  /* 進捗バー */
+  .pbar { height:6px; background:var(--c-line); position:relative; }
+  .pbar .fill { height:100%; background:var(--c-accent); }
+  .pbar .fill.alert { background:var(--c-alert); }
+
+  /* ステータス表示 */
+  .status-row { display:flex; align-items:center; gap:10px; padding:6px 0; font-size:12px; }
+  .status-row .marker { width:4px; align-self:stretch; }
+  .status-row .marker.alert { background:var(--c-alert); }
+  .status-row .marker.normal { background:var(--c-line-dk); }
+  .status-row .marker.accent { background:var(--c-accent); }
+  .status-row .body { flex:1; }
+</style>
+</head>
+<body>
+<h1 class="page-title">Set3 出荷工程関連 HT画面</h1>
+<p class="subtitle">サブウェーブ進捗／積込確認／引渡確認</p>
+<div class="quick-nav"><span class="label">画面ジャンプ：</span>
+<a href="#HT-208"><b>HT-208</b>サブウェーブ進捗（HT）</a>
+<a href="#HT-307"><b>HT-307</b>引渡確認（HT）</a>
+<a href="#HT-306"><b>HT-306</b>積込確認（HT）</a>
+</div>
+<div class="section-divider" id="HT-208">
+  <span class="num">HT-208</span>サブウェーブ進捗（HT）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：エリア分割時の作業進捗確認。自分のエリアの進捗 + 他エリアの進捗を把握。<br>
+  <b>運用</b>：ピック中にメニューキーで表示。リレー方式時は「次エリアへ引継待ち」も表示。
+</div>
+<div class="ht-wrap">
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>10:42 78%</span></div>
+        <div class="ht-header">
+          <span>ウェーブ進捗 WV-2605-001</span>
+          <span class="scr-id">HT-208</span>
+        </div>
+        <div class="ht-body">
+          <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
+            <div style="font-size:9px; color:var(--c-accent); font-weight:600;">あなたの進捗</div>
+            <div style="font-size:11px; font-weight:600; margin-top:2px;">1F常温 田中</div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+              <div style="flex:1; height:6px; background:var(--c-line);">
+                <div style="height:100%; background:var(--c-accent); width:80%;"></div>
+              </div>
+              <div style="font-size:11px; font-family:var(--f-mono); font-weight:600;">4/5</div>
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:4px;">他エリアの進捗</div>
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
+            <div style="display:flex; justify-content:space-between; font-size:10px;">
+              <span>2F常温 佐藤</span>
+              <span class="text-mono">2/3</span>
+            </div>
+            <div style="height:4px; background:var(--c-line); margin-top:3px;">
+              <div style="height:100%; background:var(--c-text-sub); width:67%;"></div>
+            </div>
+          </div>
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
+            <div style="display:flex; justify-content:space-between; font-size:10px;">
+              <span>冷蔵 鈴木</span>
+              <span class="text-mono">2/2 ✓</span>
+            </div>
+            <div style="height:4px; background:var(--c-line); margin-top:3px;">
+              <div style="height:100%; background:var(--c-accent); width:100%;"></div>
+            </div>
+          </div>
+
+          <div style="background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:5px 7px; margin-top:4px;">
+            <div style="font-size:9px; color:var(--c-alert); font-weight:600;">締切 15:00</div>
+            <div style="font-size:11px; font-weight:600; margin-top:2px;">残時間 1h 18m</div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:auto;">
+            ※ピック作業は継続中
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>ピックへ戻る</div>
+          <div class="key-lbl"><span class="fn">F2</span>更新</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-208</span>サブウェーブ進捗
+      <div class="desc-text">エリア並行作業時の自他エリアの進捗を確認。リーダーへの応援要請判断にも使用。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- HT-307 引渡確認 -->
+<!-- ============================== -->
+
+<div class="section-divider" id="HT-307">
+  <span class="num">HT-307</span>引渡確認（HT）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：仮置きエリアでカゴをスキャンして到着登録。集合状況をリアルタイム反映。<br>
+  <b>運用</b>：引渡担当者が使用。レーン → カゴ の順にスキャン。
+</div>
+<div class="ht-wrap">
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>13:40 65%</span></div>
+        <div class="ht-header">
+          <span>引渡確認</span>
+          <span class="scr-id">HT-307</span>
+        </div>
+        <div class="ht-body">
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
+            <div style="font-size:9px; color:var(--c-text-sub);">レーン</div>
+            <div style="font-size:11px; font-weight:600;">STAGE-YMT-A14</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">ヤマト関東-A14便 14:30集荷</div>
+          </div>
+
+          <div style="font-size:10px; color:var(--c-text-sub); margin-top:4px; padding:4px 6px; background:var(--c-accent-lt); border-left:3px solid var(--c-accent);">
+            ★ カゴをスキャンしてください
+          </div>
+
+          <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
+            <div style="font-size:10px; color:var(--c-text-sub);">最後にスキャンしたカゴ</div>
+            <div style="font-size:11px; font-weight:600; font-family:var(--f-mono); margin-top:2px;">CON-260501-0008</div>
+            <div style="font-size:9px; margin-top:4px;">出荷 SO-00124 (◇◇商事)</div>
+            <div style="font-size:9px; color:var(--c-accent);">2/3 個口 → 集合まで残1</div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:4px;">本便の集合状況</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px; font-size:9px;">
+            <div style="padding:3px 5px; background:var(--c-accent-lt); border:1px solid var(--c-accent); color:var(--c-accent);">SO-00121 ✓</div>
+            <div style="padding:3px 5px; background:var(--c-accent-lt); border:1px solid var(--c-accent); color:var(--c-accent);">SO-00122 ✓</div>
+            <div style="padding:3px 5px; background:var(--c-alert-lt); border:1px solid var(--c-alert); color:var(--c-alert);">SO-00123 残1</div>
+            <div style="padding:3px 5px; background:var(--c-alert-lt); border:1px solid var(--c-alert); color:var(--c-alert);">SO-00124 残1</div>
+            <div style="padding:3px 5px; background:var(--c-alert-lt); border:1px solid var(--c-alert); color:var(--c-alert); grid-column:span 2;">SO-00125 残2</div>
+          </div>
+
+          <div style="font-size:10px; color:var(--c-text-sub); text-align:center; margin-top:auto;">本便：8/12 個口到着</div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>確定</div>
+          <div class="key-lbl"><span class="fn">F2</span>レーン変更</div>
+          <div class="key-lbl"><span class="fn">F3</span>集合状況</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-307</span>引渡確認
+      <div class="desc-text">レーンスキャン → カゴをSCANで連続到着登録。残数が見える。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- HT-306 積込確認 -->
+<!-- ============================== -->
+
+<div class="section-divider" id="HT-306">
+  <span class="num">HT-306</span>積込確認（HT）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：トラックへの積込時にカゴをスキャンして予定との照合。予定外品を検知してアラート。<br>
+  <b>運用</b>：積込担当者が使用。スキャンで進捗カウント、全件積込完了で確定。
+</div>
+<div class="ht-wrap">
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>14:25 60%</span></div>
+        <div class="ht-header">
+          <span>積込確認</span>
+          <span class="scr-id">HT-306</span>
+        </div>
+        <div class="ht-body">
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
+            <div style="font-size:9px; color:var(--c-text-sub);">対象便</div>
+            <div style="font-size:11px; font-weight:600;">ヤマト関東-A14</div>
+            <div style="font-size:9px; color:var(--c-text-sub);">14:30集荷 / 品川500あ12-34</div>
+          </div>
+
+          <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
+            <div style="font-size:9px; color:var(--c-text-sub);">積込進捗</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+              <div style="font-family:var(--f-mono); font-weight:700; font-size:24px; color:var(--c-accent);">10</div>
+              <div style="font-size:11px; color:var(--c-text-sub);">/</div>
+              <div style="font-family:var(--f-mono); font-weight:600; font-size:18px;">12</div>
+              <div style="font-size:11px;">個口</div>
+            </div>
+            <div style="height:8px; background:var(--c-line); margin-top:6px;">
+              <div style="height:100%; background:var(--c-accent); width:83%;"></div>
+            </div>
+          </div>
+
+          <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
+            <div style="font-size:9px; color:var(--c-accent); font-weight:600;">最後にスキャン</div>
+            <div style="font-size:10px; font-family:var(--f-mono); margin-top:2px;">CON-260501-0010</div>
+            <div style="font-size:9px; margin-top:2px;">SO-00125 / 1/2 個口</div>
+          </div>
+
+          <div style="font-size:10px; color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-line-dk);">
+            ★ 残2個口 → 続けてスキャン
+          </div>
+
+          <div style="font-size:9px; margin-top:auto; padding:5px 6px; background:var(--c-alert-lt); border-left:3px solid var(--c-alert); color:var(--c-alert);">
+            ⚠ 予定外品の検知時：即停止・リーダー確認
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>積込完了</div>
+          <div class="key-lbl"><span class="fn">F2</span>取消</div>
+          <div class="key-lbl"><span class="fn">F3</span>残一覧</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-306</span>積込確認
+      <div class="desc-text">トラック横でカゴをSCANしながら積込。予定外品はエラー停止。全件完了でF1積込完了。</div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
