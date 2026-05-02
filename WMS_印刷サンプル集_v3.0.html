@@ -1,0 +1,2750 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 印刷サンプル集（モノクロ・実機想定）</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    background: #2a2d35;
+    color: #e8e8e8;
+    padding: 32px 24px 80px;
+  }
+  h1.page-title {
+    color: #fff;
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  p.subtitle {
+    text-align: center;
+    color: #a0a4ad;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .toolbar {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+    background: #353944;
+    border: 1px solid #4a4f5c;
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: #c8ccd4;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .toolbar strong { color: #ffd966; }
+  .toolbar code {
+    background: #1a1c22;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    color: #ffd966;
+  }
+  .toolbar .badge {
+    display: inline-block;
+    background: #1a1c22;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+
+  .section-divider {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 24px 0 12px;
+    border-bottom: 1px solid #4a4f5c;
+    max-width: 1200px;
+    margin: 32px auto 16px;
+  }
+  .section-divider .num {
+    color: #ffd966;
+    font-family: 'Consolas', monospace;
+    margin-right: 12px;
+  }
+
+  .sample-info {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    color: #a0a4ad;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 12px 16px;
+    background: #353944;
+    border-left: 4px solid #888;
+    border-radius: 0 6px 6px 0;
+  }
+  .sample-info b { color: #fff; }
+  .sample-info .specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 8px;
+    font-size: 11px;
+  }
+  .sample-info .specs span {
+    background: #1a1c22;
+    color: #c8ccd4;
+    padding: 2px 10px;
+    border-radius: 10px;
+    border: 1px solid #555;
+  }
+
+  .design-tips {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+    background: #2a3a2a;
+    border-left: 4px solid #6a9b6a;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #c8d8c8;
+    border-radius: 0 6px 6px 0;
+    line-height: 1.7;
+  }
+  .design-tips b { color: #c8e8c8; }
+
+  .print-area {
+    max-width: 1200px;
+    margin: 0 auto 32px;
+    background: #fff;
+    padding: 32px;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  /* ======== 全部モノクロベース ======== */
+  .label, .form-a4 {
+    background: #fff;
+    color: #000;
+    font-family: "Yu Gothic", sans-serif;
+  }
+  .label {
+    border: 1px dashed #aaa;
+    overflow: hidden;
+  }
+
+  /* ============ ロケラベル 50x30mm ============ */
+  .label-loc-s {
+    width: 189px; height: 113px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .label-loc-s .code {
+    font-size: 22px;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 0.05em;
+    font-family: 'Consolas', monospace;
+    line-height: 1;
+    padding: 2px 0;
+  }
+  .label-loc-s .barcode { height: 30px; margin: 1px 0; }
+  .label-loc-s .sub {
+    font-size: 8px;
+    text-align: center;
+    line-height: 1.2;
+  }
+  /* 冷蔵ロケは黒ベタ反転で識別 */
+  .label-loc-s .cold-mark {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    padding: 1px 6px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    font-size: 9px;
+  }
+
+  /* ============ ロケラベル 100x60mm ============ */
+  .label-loc-m {
+    width: 378px; height: 227px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+  .label-loc-m .code {
+    font-size: 56px;
+    font-weight: 900;
+    font-family: 'Consolas', monospace;
+    line-height: 1;
+    letter-spacing: 0.05em;
+  }
+  .label-loc-m .barcode { height: 44px; width: 80%; }
+  .label-loc-m .sub { font-size: 12px; }
+
+  /* ============ SKUラベル ============ */
+  .label-sku-s {
+    width: 189px; height: 113px;
+    padding: 5px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .label-sku-s .code {
+    font-size: 11px;
+    font-weight: 900;
+    font-family: 'Consolas', monospace;
+  }
+  .label-sku-s .name {
+    font-size: 10px;
+    margin-top: 1px;
+    line-height: 1.2;
+    overflow: hidden;
+    max-height: 24px;
+  }
+  .label-sku-s .barcode { height: 24px; margin: 2px 0; }
+  .label-sku-s .barcode-text {
+    text-align: center;
+    font-size: 8px;
+    font-family: 'Consolas', monospace;
+    margin-top: -2px;
+  }
+  .label-sku-s .meta {
+    font-size: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ============ 入荷品ラベル ============ */
+  .label-inbound-s {
+    width: 189px; height: 113px;
+    padding: 5px 7px;
+  }
+  /* 状態バーは黒ベタ反転 */
+  .label-inbound-s .status-bar {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 0;
+    margin: -5px -7px 3px;
+    letter-spacing: 0.05em;
+  }
+  .label-inbound-s .lbl { font-size: 8px; margin-bottom: 1px; }
+  .label-inbound-s .asn {
+    font-size: 10px;
+    font-family: 'Consolas', monospace;
+    font-weight: 700;
+  }
+  .label-inbound-s .item { font-size: 10px; margin-top: 2px; line-height: 1.2; }
+  .label-inbound-s .barcode { height: 22px; margin: 3px 0; }
+  .label-inbound-s .meta {
+    font-size: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ============ 出荷ラベル（個装） 100x60mm モノクロ版 ============ */
+  .label-ship-m {
+    width: 378px; height: 227px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .label-ship-m .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #000;
+    padding-bottom: 3px;
+  }
+  .label-ship-m .top .logo { font-size: 10px; font-weight: 700; }
+  /* 個口番号は黒枠で目立たせる */
+  .label-ship-m .top .pkg {
+    font-size: 14px;
+    font-weight: 900;
+    background: #000;
+    color: #fff;
+    padding: 2px 10px;
+    font-family: 'Consolas', monospace;
+  }
+
+  /* === キャリアバンド：黒ベタ反転＋大きな方面コード === */
+  .label-ship-m .carrier-band {
+    margin: 3px -10px;
+    background: #000;
+    color: #fff;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .label-ship-m .carrier-band .name {
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+  }
+  .label-ship-m .carrier-band .route {
+    background: #fff;
+    color: #000;
+    padding: 2px 10px;
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+  }
+
+  .label-ship-m .ship-no {
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 3px;
+    font-family: 'Consolas', monospace;
+  }
+  .label-ship-m .order-no {
+    font-size: 8px;
+    font-family: 'Consolas', monospace;
+  }
+  .label-ship-m .to {
+    margin-top: 4px;
+    flex: 1;
+  }
+  .label-ship-m .to .name {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .label-ship-m .to .addr {
+    font-size: 9px;
+    line-height: 1.4;
+    margin-top: 1px;
+  }
+
+  /* 温度帯：太黒枠＋雪マーク強調 */
+  .label-ship-m .temp-badge {
+    display: inline-block;
+    border: 2px solid #000;
+    color: #000;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 1px 6px;
+    margin-bottom: 2px;
+  }
+  /* 冷蔵時の追加処理：縦じま地紋 */
+  .label-ship-m.cold-stripe {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent 0,
+      transparent 8px,
+      rgba(0,0,0,0.06) 8px,
+      rgba(0,0,0,0.06) 9px
+    );
+  }
+  .label-ship-m .barcode-row { text-align: center; margin: 2px 0 0; }
+  .label-ship-m .barcode-row .barcode { height: 28px; width: 90%; margin: 0 auto; }
+  .label-ship-m .barcode-row .text {
+    font-size: 9px;
+    font-family: 'Consolas', monospace;
+    margin-top: -1px;
+  }
+  .label-ship-m .footer {
+    font-size: 8px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #999;
+    padding-top: 2px;
+    margin-top: 2px;
+  }
+
+  /* ============ 送り状（汎用） 100x150mm ============ */
+  .label-carrier {
+    width: 378px;
+    height: 567px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #000;
+  }
+  .label-carrier .header {
+    background: #000;
+    color: #fff;
+    padding: 6px 10px;
+    font-weight: 900;
+    font-size: 14px;
+    margin: -10px -12px 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .label-carrier .section-title {
+    font-size: 9px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1px;
+    margin-bottom: 4px;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+  .label-carrier .to-block .zip {
+    font-size: 18px;
+    font-family: 'Consolas', monospace;
+    font-weight: 900;
+    margin-bottom: 2px;
+  }
+  .label-carrier .to-block .addr {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .label-carrier .to-block .name {
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.3;
+  }
+  .label-carrier .to-block .tel {
+    font-size: 11px;
+    margin-top: 2px;
+    font-family: 'Consolas', monospace;
+  }
+  .label-carrier .from-block { font-size: 10px; line-height: 1.4; }
+  .label-carrier .tracking {
+    border: 3px solid #000;
+    padding: 6px 8px;
+    margin-top: auto;
+    text-align: center;
+  }
+  .label-carrier .tracking .label-text {
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .label-carrier .tracking .barcode { height: 50px; margin: 4px 0; }
+  .label-carrier .tracking .num {
+    font-size: 18px;
+    font-weight: 900;
+    font-family: 'Consolas', monospace;
+    letter-spacing: 0.1em;
+  }
+  .label-carrier .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 10px;
+  }
+  .label-carrier .info-grid .item {
+    border: 1px solid #000;
+    padding: 3px 4px;
+    text-align: center;
+  }
+  .label-carrier .info-grid .item .lbl { font-size: 8px; }
+  .label-carrier .info-grid .item .val { font-weight: 900; margin-top: 1px; }
+  .label-carrier .delivery-area {
+    font-size: 11px;
+    border: 2px solid #000;
+    padding: 4px 8px;
+    margin-top: 6px;
+    text-align: center;
+    font-weight: 900;
+  }
+
+  /* ============ パレットラベル ============ */
+  .label-pallet {
+    width: 378px;
+    height: 567px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  .label-pallet .header {
+    background: #000;
+    color: #fff;
+    padding: 6px 10px;
+    margin: -10px -12px 10px;
+    text-align: center;
+  }
+  .label-pallet .header .title {
+    font-size: 16px;
+    font-weight: 900;
+  }
+  .label-pallet .header .pallet-no {
+    font-size: 13px;
+    font-family: 'Consolas', monospace;
+    margin-top: 2px;
+  }
+  .label-pallet .sscc-block {
+    border: 2px solid #000;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .label-pallet .sscc-block .lbl {
+    font-size: 10px;
+    margin-bottom: 4px;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .label-pallet .sscc-block .barcode { height: 60px; }
+  .label-pallet .sscc-block .ai {
+    font-size: 13px;
+    font-family: 'Consolas', monospace;
+    font-weight: 900;
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+  }
+  .label-pallet .info-table {
+    margin-top: 12px;
+    border: 2px solid #000;
+  }
+  .label-pallet .info-table .row {
+    display: flex;
+    border-bottom: 1px solid #000;
+    font-size: 11px;
+  }
+  .label-pallet .info-table .row:last-child { border-bottom: none; }
+  .label-pallet .info-table .row .lbl {
+    background: #e8e8e8;
+    padding: 5px 8px;
+    width: 100px;
+    font-weight: 700;
+    border-right: 1px solid #000;
+  }
+  .label-pallet .info-table .row .val {
+    padding: 5px 8px;
+    flex: 1;
+  }
+
+  /* パレット用キャリアバンド：黒ベタ反転＋特大方面コード */
+  .label-pallet .carrier-band-l {
+    margin: 8px 0;
+    background: #000;
+    color: #fff;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 3px solid #000;
+  }
+  .label-pallet .carrier-band-l .name {
+    font-size: 16px;
+    font-weight: 900;
+  }
+  .label-pallet .carrier-band-l .route {
+    background: #fff;
+    color: #000;
+    padding: 4px 10px;
+    font-family: 'Consolas', monospace;
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  .label-pallet .pallet-footer {
+    margin-top: auto;
+    font-size: 10px;
+    border-top: 1px dashed #000;
+    padding-top: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ============ 内訳ラベル ============ */
+  .label-pack-list {
+    width: 378px;
+    min-height: 567px;
+    padding: 12px 16px;
+    font-size: 10px;
+  }
+  .label-pack-list .title {
+    font-size: 14px;
+    font-weight: 900;
+    border-bottom: 2px solid #000;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .label-pack-list .pl-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .label-pack-list .pl-table th {
+    font-size: 9px;
+    background: #e8e8e8;
+    padding: 3px 4px;
+    border: 1px solid #000;
+    text-align: left;
+  }
+  .label-pack-list .pl-table td {
+    font-size: 9px;
+    padding: 3px 4px;
+    border: 1px solid #999;
+  }
+  .label-pack-list .pl-meta { font-size: 9px; margin: 6px 0; line-height: 1.5; }
+
+  /* ============ 仕分けカンバン（モノクロ・特大文字） ============ */
+  .label-sort-board {
+    width: 560px;
+    height: 400px;
+    background: #fff;
+    color: #000;
+    border: 4px solid #000;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .label-sort-board .sort-head {
+    background: #000;
+    color: #fff;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .label-sort-board .sort-head .ttl {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+  }
+  .label-sort-board .sort-head .pickup {
+    background: #fff;
+    color: #000;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: 900;
+    font-family: 'Consolas', monospace;
+    border: 2px solid #fff;
+  }
+  /* 方面コードは超特大・黒太線囲み */
+  .label-sort-board .sort-route {
+    border-bottom: 4px solid #000;
+    padding: 16px 24px;
+    text-align: center;
+    font-size: 72px;
+    font-weight: 900;
+    font-family: 'Consolas', monospace;
+    letter-spacing: 0.1em;
+    line-height: 1;
+  }
+  .label-sort-board .sort-info {
+    flex: 1;
+    padding: 12px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 20px;
+    align-content: start;
+  }
+  .label-sort-board .sort-info .item {
+    border-bottom: 1px solid #000;
+    padding-bottom: 6px;
+  }
+  .label-sort-board .sort-info .item .lbl {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+  .label-sort-board .sort-info .item .val {
+    font-size: 18px;
+    font-weight: 900;
+  }
+  .label-sort-board .sort-foot {
+    background: #e8e8e8;
+    padding: 8px 24px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    border-top: 2px solid #000;
+  }
+
+  /* ============ A4帳票 モノクロ ============ */
+  .form-a4 {
+    width: 794px;
+    padding: 40px 50px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .form-a4 .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 4px solid #000;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .form-a4 .form-header .title {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+  }
+  .form-a4 .form-header .meta {
+    text-align: right;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+  .form-a4 .form-header .meta .form-no {
+    font-family: 'Consolas', monospace;
+    font-weight: 900;
+    font-size: 13px;
+  }
+  .form-a4 .info-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .form-a4 .info-block .lbl {
+    font-size: 10px;
+    background: #e8e8e8;
+    padding: 3px 8px;
+    border-left: 4px solid #000;
+    font-weight: 700;
+  }
+  .form-a4 .info-block .val {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-bottom: 1px solid #000;
+    line-height: 1.5;
+  }
+  .form-a4 .info-block .val b { font-size: 14px; }
+
+  .form-a4 table.detail {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+  .form-a4 table.detail th {
+    background: #000;
+    color: #fff;
+    padding: 6px 8px;
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    border: 1px solid #000;
+  }
+  .form-a4 table.detail td {
+    padding: 5px 8px;
+    border: 1px solid #999;
+  }
+  /* ゼブラ縞は淡いグレーで（モノクロ印刷でも維持） */
+  .form-a4 table.detail tr:nth-child(even) td { background: #f0f0f0; }
+  .form-a4 table.detail .right { text-align: right; }
+  .form-a4 table.detail .center { text-align: center; }
+  .form-a4 table.detail .num { font-family: 'Consolas', monospace; }
+  .form-a4 table.detail .check {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #000;
+    display: inline-block;
+  }
+  /* 差異行は太線囲み＋網掛けで目立たせる */
+  .form-a4 table.detail tr.diff td {
+    background: repeating-linear-gradient(
+      45deg,
+      #fff 0,
+      #fff 4px,
+      #ddd 4px,
+      #ddd 5px
+    ) !important;
+    font-weight: 700;
+  }
+  .form-a4 table.detail tr.diff td:first-child {
+    border-left: 3px solid #000;
+  }
+  .form-a4 table.detail tr.diff td:last-child {
+    border-right: 3px solid #000;
+  }
+  /* 冷蔵行は細かい縞地紋＋雪マーク */
+  .form-a4 table.detail tr.cold td {
+    background: repeating-linear-gradient(
+      90deg,
+      #fff 0,
+      #fff 3px,
+      #e0e0e0 3px,
+      #e0e0e0 4px
+    ) !important;
+  }
+
+  .form-a4 .totals {
+    margin-left: auto;
+    width: 280px;
+    border: 2px solid #000;
+    margin-top: 12px;
+  }
+  .form-a4 .totals .row {
+    display: flex;
+    border-bottom: 1px solid #000;
+    font-size: 12px;
+  }
+  .form-a4 .totals .row:last-child {
+    border-bottom: none;
+    background: #000;
+    color: #fff;
+    font-weight: 900;
+    font-size: 14px;
+  }
+  .form-a4 .totals .row .lbl {
+    flex: 1;
+    padding: 6px 10px;
+    background: #e8e8e8;
+    border-right: 1px solid #000;
+  }
+  .form-a4 .totals .row:last-child .lbl {
+    background: #000;
+  }
+  .form-a4 .totals .row .val {
+    width: 130px;
+    padding: 6px 10px;
+    text-align: right;
+    font-family: 'Consolas', monospace;
+  }
+
+  .form-a4 .signature-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #000;
+  }
+  .form-a4 .signature-box {
+    border: 1.5px solid #000;
+    height: 80px;
+    position: relative;
+  }
+  .form-a4 .signature-box .lbl {
+    position: absolute;
+    top: -8px; left: 8px;
+    background: #fff;
+    padding: 0 6px;
+    font-size: 10px;
+  }
+  .form-a4 .signature-box .stamp-circle {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    width: 50px; height: 50px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    color: #000;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    opacity: 0.4;
+  }
+  .form-a4 .footer-info {
+    margin-top: 20px;
+    padding-top: 8px;
+    border-top: 1px dashed #000;
+    font-size: 9px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .form-a4 .form-barcode { text-align: center; margin-top: 12px; }
+  .form-a4 .form-barcode .barcode { height: 40px; width: 60%; }
+
+  svg.barcode-svg { display: block; width: 100%; height: 100%; }
+
+  @media print {
+    body { background: #fff; padding: 0; margin: 0; }
+    .toolbar, .section-divider, .sample-info, .design-tips, h1.page-title, p.subtitle { display: none; }
+    .print-area {
+      max-width: none;
+      padding: 0;
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+    }
+    .label, .form-a4 {
+      box-shadow: none;
+      border: none;
+      page-break-inside: avoid;
+    }
+  }
+
+  /* === 補助：白抜き丸数字（黒丸に白文字） === */
+  .num-circle {
+    display: inline-block;
+    width: 16px; height: 16px;
+    background: #000;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<h1 class="page-title">WMS 印刷サンプル集 v3.0（モノクロ・実機想定版）</h1>
+<p class="subtitle">サーマルプリンタ・モノクロレーザー前提 ／ 3PL対応・全20種網羅</p>
+
+<div class="toolbar">
+  <strong>本ファイルについて</strong><br>
+  実機印刷物は<b>モノクロ</b>です。本サンプルは<b>カラー版で表現していた識別性を、モノクロ手法で再設計</b>したものです。
+  <div style="margin-top:10px; font-size:12px; line-height:1.8;">
+    <span class="badge">手法1</span><b>黒ベタ反転（白抜き）</b>：運送会社名・状態・警告など最重要情報<br>
+    <span class="badge">手法2</span><b>太枠・二重線・三重線</b>：枠の重要度を区別（送り状＝太枠、差異行＝太枠囲み）<br>
+    <span class="badge">手法3</span><b>大文字・特大文字</b>：方面コードは56〜72pxで遠目から識別<br>
+    <span class="badge">手法4</span><b>網掛けパターン</b>：ハッチング（斜線）・縦縞・点描で色の代替<br>
+    <span class="badge">手法5</span><b>記号・アイコン</b>：❄ 冷蔵、⚠ 警告、▲ 注意、■ 状態など<br>
+    <span class="badge">手法6</span><b>太字＋ウェイト変化</b>：通常 / 太字 / 超太字（900）の3段階で階層表現
+  </div>
+  <div style="margin-top:10px; padding-top:10px; border-top:1px dashed #4a4f5c; font-size:12px;">
+    色付きの「画面確認用」のサンプルは <code>WMS_印刷サンプル集.html</code> をご参照ください。<br>
+    本ファイルは <b>「現場で実際に手にする印刷物の見え方」</b> を確認する用途です。
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- 01 ロケーションラベル（小） -->
+<!-- ====================================== -->
+<div class="section-divider"><span class="num">SAMPLE 01</span>ロケーションラベル（小）</div>
+<div class="sample-info">
+  <b>用途</b>：通常の保管棚・ピックロケに貼付。
+  <div class="specs">
+    <span>📐 50 × 30 mm</span>
+    <span>🖨️ BT-PR2（感熱）</span>
+    <span>📊 Code128</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：冷蔵ロケは「❄ 冷蔵」を黒ベタ反転で明示。コード文字を900ウェイトの極太に。
+</div>
+<div class="print-area">
+  <div class="label label-loc-s">
+    <div class="code">A-08-02-1</div>
+    <svg class="barcode-svg" viewBox="0 0 200 30" preserveAspectRatio="none" style="height:30px;">
+      <g fill="#000">
+        <rect x="0" y="0" width="2" height="30"/><rect x="3" y="0" width="1" height="30"/>
+        <rect x="5" y="0" width="3" height="30"/><rect x="9" y="0" width="2" height="30"/>
+        <rect x="13" y="0" width="1" height="30"/><rect x="16" y="0" width="2" height="30"/>
+        <rect x="19" y="0" width="3" height="30"/><rect x="24" y="0" width="1" height="30"/>
+        <rect x="26" y="0" width="2" height="30"/><rect x="29" y="0" width="2" height="30"/>
+        <rect x="33" y="0" width="3" height="30"/><rect x="38" y="0" width="1" height="30"/>
+        <rect x="41" y="0" width="2" height="30"/><rect x="44" y="0" width="3" height="30"/>
+        <rect x="49" y="0" width="1" height="30"/><rect x="51" y="0" width="2" height="30"/>
+        <rect x="55" y="0" width="2" height="30"/><rect x="58" y="0" width="1" height="30"/>
+        <rect x="61" y="0" width="3" height="30"/><rect x="66" y="0" width="2" height="30"/>
+        <rect x="70" y="0" width="1" height="30"/><rect x="73" y="0" width="2" height="30"/>
+        <rect x="76" y="0" width="3" height="30"/><rect x="81" y="0" width="1" height="30"/>
+        <rect x="84" y="0" width="2" height="30"/><rect x="88" y="0" width="2" height="30"/>
+        <rect x="92" y="0" width="3" height="30"/><rect x="97" y="0" width="1" height="30"/>
+        <rect x="100" y="0" width="2" height="30"/><rect x="104" y="0" width="3" height="30"/>
+        <rect x="109" y="0" width="2" height="30"/><rect x="113" y="0" width="1" height="30"/>
+        <rect x="116" y="0" width="2" height="30"/><rect x="120" y="0" width="3" height="30"/>
+        <rect x="125" y="0" width="1" height="30"/><rect x="127" y="0" width="2" height="30"/>
+        <rect x="131" y="0" width="2" height="30"/><rect x="135" y="0" width="3" height="30"/>
+        <rect x="140" y="0" width="1" height="30"/><rect x="143" y="0" width="2" height="30"/>
+        <rect x="147" y="0" width="3" height="30"/><rect x="152" y="0" width="1" height="30"/>
+        <rect x="155" y="0" width="2" height="30"/><rect x="159" y="0" width="2" height="30"/>
+        <rect x="162" y="0" width="1" height="30"/><rect x="165" y="0" width="3" height="30"/>
+        <rect x="170" y="0" width="2" height="30"/><rect x="174" y="0" width="1" height="30"/>
+        <rect x="177" y="0" width="3" height="30"/><rect x="182" y="0" width="2" height="30"/>
+        <rect x="186" y="0" width="3" height="30"/><rect x="191" y="0" width="1" height="30"/>
+        <rect x="194" y="0" width="2" height="30"/><rect x="198" y="0" width="2" height="30"/>
+      </g>
+    </svg>
+    <div class="sub">エリアA / 通路08 / 棚2 / 1段目</div>
+  </div>
+
+  <div class="label label-loc-s">
+    <div style="text-align:center; margin-bottom:2px;">
+      <span class="cold-mark">❄ 冷蔵</span>
+    </div>
+    <div class="code" style="font-size:20px;">F-01-01-1</div>
+    <svg class="barcode-svg" viewBox="0 0 200 26" preserveAspectRatio="none" style="height:26px;">
+      <g fill="#000">
+        <rect x="0" y="0" width="2" height="26"/><rect x="4" y="0" width="3" height="26"/>
+        <rect x="9" y="0" width="1" height="26"/><rect x="12" y="0" width="2" height="26"/>
+        <rect x="16" y="0" width="3" height="26"/><rect x="21" y="0" width="2" height="26"/>
+        <rect x="25" y="0" width="1" height="26"/><rect x="28" y="0" width="3" height="26"/>
+        <rect x="33" y="0" width="2" height="26"/><rect x="37" y="0" width="1" height="26"/>
+        <rect x="40" y="0" width="2" height="26"/><rect x="44" y="0" width="3" height="26"/>
+        <rect x="49" y="0" width="2" height="26"/><rect x="53" y="0" width="1" height="26"/>
+        <rect x="56" y="0" width="3" height="26"/><rect x="61" y="0" width="2" height="26"/>
+        <rect x="65" y="0" width="1" height="26"/><rect x="68" y="0" width="2" height="26"/>
+        <rect x="72" y="0" width="3" height="26"/><rect x="77" y="0" width="1" height="26"/>
+        <rect x="80" y="0" width="2" height="26"/><rect x="84" y="0" width="3" height="26"/>
+        <rect x="89" y="0" width="1" height="26"/><rect x="92" y="0" width="2" height="26"/>
+        <rect x="96" y="0" width="3" height="26"/><rect x="101" y="0" width="2" height="26"/>
+        <rect x="105" y="0" width="1" height="26"/><rect x="108" y="0" width="3" height="26"/>
+        <rect x="113" y="0" width="2" height="26"/><rect x="117" y="0" width="1" height="26"/>
+        <rect x="120" y="0" width="2" height="26"/><rect x="124" y="0" width="3" height="26"/>
+        <rect x="129" y="0" width="1" height="26"/><rect x="132" y="0" width="3" height="26"/>
+        <rect x="137" y="0" width="2" height="26"/><rect x="141" y="0" width="1" height="26"/>
+        <rect x="144" y="0" width="3" height="26"/><rect x="149" y="0" width="2" height="26"/>
+        <rect x="153" y="0" width="1" height="26"/><rect x="156" y="0" width="2" height="26"/>
+        <rect x="160" y="0" width="3" height="26"/><rect x="165" y="0" width="2" height="26"/>
+        <rect x="169" y="0" width="1" height="26"/><rect x="172" y="0" width="3" height="26"/>
+        <rect x="177" y="0" width="2" height="26"/><rect x="181" y="0" width="1" height="26"/>
+        <rect x="184" y="0" width="2" height="26"/><rect x="188" y="0" width="3" height="26"/>
+        <rect x="193" y="0" width="1" height="26"/><rect x="196" y="0" width="2" height="26"/>
+      </g>
+    </svg>
+    <div class="sub">通路01 / 棚01 / 1段目</div>
+  </div>
+</div>
+
+<!-- 02 ロケーションラベル中 -->
+<div class="section-divider"><span class="num">SAMPLE 02</span>ロケーションラベル（中・パレット床用）</div>
+<div class="sample-info">
+  <b>用途</b>：パレット床ロケ・遠目で識別が必要な場所。フォークリフト操縦中でも視認可能な特大文字。
+  <div class="specs">
+    <span>📐 100 × 60 mm</span>
+    <span>🖨️ BT-PR2 / 据置サーマル</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：56pxの極太コード文字。可読性最優先で他要素は最小限。
+</div>
+<div class="print-area">
+  <div class="label label-loc-m">
+    <div class="code">D-03-01</div>
+    <svg viewBox="0 0 300 40" preserveAspectRatio="none" style="height:44px; width:80%;">
+      <g fill="#000">
+        <rect x="0" y="0" width="3" height="40"/><rect x="5" y="0" width="2" height="40"/>
+        <rect x="10" y="0" width="4" height="40"/><rect x="17" y="0" width="2" height="40"/>
+        <rect x="22" y="0" width="3" height="40"/><rect x="28" y="0" width="2" height="40"/>
+        <rect x="33" y="0" width="4" height="40"/><rect x="40" y="0" width="2" height="40"/>
+        <rect x="45" y="0" width="3" height="40"/><rect x="51" y="0" width="2" height="40"/>
+        <rect x="56" y="0" width="4" height="40"/><rect x="63" y="0" width="2" height="40"/>
+        <rect x="68" y="0" width="3" height="40"/><rect x="74" y="0" width="2" height="40"/>
+        <rect x="79" y="0" width="4" height="40"/><rect x="86" y="0" width="2" height="40"/>
+        <rect x="91" y="0" width="3" height="40"/><rect x="97" y="0" width="2" height="40"/>
+        <rect x="102" y="0" width="4" height="40"/><rect x="109" y="0" width="2" height="40"/>
+        <rect x="114" y="0" width="3" height="40"/><rect x="120" y="0" width="2" height="40"/>
+        <rect x="125" y="0" width="4" height="40"/><rect x="132" y="0" width="2" height="40"/>
+        <rect x="137" y="0" width="3" height="40"/><rect x="143" y="0" width="2" height="40"/>
+        <rect x="148" y="0" width="4" height="40"/><rect x="155" y="0" width="2" height="40"/>
+        <rect x="160" y="0" width="3" height="40"/><rect x="166" y="0" width="2" height="40"/>
+        <rect x="171" y="0" width="4" height="40"/><rect x="178" y="0" width="2" height="40"/>
+        <rect x="183" y="0" width="3" height="40"/><rect x="189" y="0" width="2" height="40"/>
+        <rect x="194" y="0" width="4" height="40"/><rect x="201" y="0" width="2" height="40"/>
+        <rect x="206" y="0" width="3" height="40"/><rect x="212" y="0" width="2" height="40"/>
+        <rect x="217" y="0" width="4" height="40"/><rect x="224" y="0" width="2" height="40"/>
+        <rect x="229" y="0" width="3" height="40"/><rect x="235" y="0" width="2" height="40"/>
+        <rect x="240" y="0" width="4" height="40"/><rect x="247" y="0" width="2" height="40"/>
+        <rect x="252" y="0" width="3" height="40"/><rect x="258" y="0" width="2" height="40"/>
+        <rect x="263" y="0" width="4" height="40"/><rect x="270" y="0" width="2" height="40"/>
+        <rect x="275" y="0" width="3" height="40"/><rect x="281" y="0" width="2" height="40"/>
+        <rect x="286" y="0" width="4" height="40"/><rect x="293" y="0" width="2" height="40"/>
+        <rect x="297" y="0" width="3" height="40"/>
+      </g>
+    </svg>
+    <div class="sub">パレットエリアD / 通路03 / 1段目</div>
+  </div>
+</div>
+
+<!-- 03 SKUラベル -->
+<div class="section-divider"><span class="num">SAMPLE 03</span>SKUラベル（JANなし商品用）</div>
+<div class="sample-info">
+  <b>用途</b>：JANコードがない商品にWMSが発行するラベル。
+  <div class="specs">
+    <span>📐 50 × 30 mm</span>
+    <span>🖨️ BT-PR2</span>
+  </div>
+</div>
+<div class="print-area">
+  <div class="label label-sku-s">
+    <div class="code">S-00321</div>
+    <div class="name">シャンプー300ml<br>容器ボトルタイプ</div>
+    <svg class="barcode-svg" viewBox="0 0 200 24" preserveAspectRatio="none" style="height:24px;">
+      <g fill="#000">
+        <rect x="0" y="0" width="2" height="24"/><rect x="3" y="0" width="3" height="24"/>
+        <rect x="8" y="0" width="1" height="24"/><rect x="11" y="0" width="2" height="24"/>
+        <rect x="15" y="0" width="3" height="24"/><rect x="20" y="0" width="2" height="24"/>
+        <rect x="24" y="0" width="1" height="24"/><rect x="27" y="0" width="3" height="24"/>
+        <rect x="32" y="0" width="2" height="24"/><rect x="36" y="0" width="1" height="24"/>
+        <rect x="39" y="0" width="2" height="24"/><rect x="43" y="0" width="3" height="24"/>
+        <rect x="48" y="0" width="2" height="24"/><rect x="52" y="0" width="1" height="24"/>
+        <rect x="55" y="0" width="3" height="24"/><rect x="60" y="0" width="2" height="24"/>
+        <rect x="64" y="0" width="1" height="24"/><rect x="67" y="0" width="2" height="24"/>
+        <rect x="71" y="0" width="3" height="24"/><rect x="76" y="0" width="2" height="24"/>
+        <rect x="80" y="0" width="1" height="24"/><rect x="83" y="0" width="2" height="24"/>
+        <rect x="87" y="0" width="3" height="24"/><rect x="92" y="0" width="1" height="24"/>
+        <rect x="95" y="0" width="2" height="24"/><rect x="99" y="0" width="3" height="24"/>
+        <rect x="104" y="0" width="2" height="24"/><rect x="108" y="0" width="1" height="24"/>
+        <rect x="111" y="0" width="3" height="24"/><rect x="116" y="0" width="2" height="24"/>
+        <rect x="120" y="0" width="1" height="24"/><rect x="123" y="0" width="2" height="24"/>
+        <rect x="127" y="0" width="3" height="24"/><rect x="132" y="0" width="1" height="24"/>
+        <rect x="135" y="0" width="3" height="24"/><rect x="140" y="0" width="2" height="24"/>
+        <rect x="144" y="0" width="1" height="24"/><rect x="147" y="0" width="3" height="24"/>
+        <rect x="152" y="0" width="2" height="24"/><rect x="156" y="0" width="1" height="24"/>
+        <rect x="159" y="0" width="2" height="24"/><rect x="163" y="0" width="3" height="24"/>
+        <rect x="168" y="0" width="2" height="24"/><rect x="172" y="0" width="1" height="24"/>
+        <rect x="175" y="0" width="3" height="24"/><rect x="180" y="0" width="2" height="24"/>
+        <rect x="184" y="0" width="1" height="24"/><rect x="187" y="0" width="2" height="24"/>
+        <rect x="191" y="0" width="3" height="24"/><rect x="196" y="0" width="1" height="24"/>
+      </g>
+    </svg>
+    <div class="barcode-text">S-00321</div>
+    <div class="meta">
+      <span>Lot: LOT-26B</span>
+      <span>Exp: 27/05/30</span>
+    </div>
+  </div>
+</div>
+
+<!-- 04 入荷品ラベル -->
+<div class="section-divider"><span class="num">SAMPLE 04</span>入荷品ラベル（仮）</div>
+<div class="sample-info">
+  <b>用途</b>：入荷後・棚入れ前の仮置き商品に貼付。
+  <div class="specs">
+    <span>📐 50 × 30 mm</span>
+    <span>🖨️ BT-PR2</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：状態バーは黒ベタ反転（白抜き）で目立たせる。色に頼らず文字サイズと反転で階層化。
+</div>
+<div class="print-area">
+  <div class="label label-inbound-s">
+    <div class="status-bar">⚠ 検品中・棚入れ待</div>
+    <div class="lbl">ASN</div>
+    <div class="asn">ASN-20260501-007</div>
+    <div class="item">シャンプー300ml ×24</div>
+    <svg class="barcode-svg" viewBox="0 0 200 22" preserveAspectRatio="none" style="height:22px;">
+      <g fill="#000">
+        <rect x="0" y="0" width="2" height="22"/><rect x="4" y="0" width="3" height="22"/>
+        <rect x="9" y="0" width="1" height="22"/><rect x="12" y="0" width="2" height="22"/>
+        <rect x="16" y="0" width="3" height="22"/><rect x="21" y="0" width="2" height="22"/>
+        <rect x="25" y="0" width="1" height="22"/><rect x="28" y="0" width="3" height="22"/>
+        <rect x="33" y="0" width="2" height="22"/><rect x="37" y="0" width="1" height="22"/>
+        <rect x="40" y="0" width="2" height="22"/><rect x="44" y="0" width="3" height="22"/>
+        <rect x="49" y="0" width="2" height="22"/><rect x="53" y="0" width="1" height="22"/>
+        <rect x="56" y="0" width="3" height="22"/><rect x="61" y="0" width="2" height="22"/>
+        <rect x="65" y="0" width="1" height="22"/><rect x="68" y="0" width="2" height="22"/>
+        <rect x="72" y="0" width="3" height="22"/><rect x="77" y="0" width="2" height="22"/>
+        <rect x="81" y="0" width="1" height="22"/><rect x="84" y="0" width="2" height="22"/>
+        <rect x="88" y="0" width="3" height="22"/><rect x="93" y="0" width="1" height="22"/>
+        <rect x="96" y="0" width="2" height="22"/><rect x="100" y="0" width="3" height="22"/>
+        <rect x="105" y="0" width="2" height="22"/><rect x="109" y="0" width="1" height="22"/>
+        <rect x="112" y="0" width="3" height="22"/><rect x="117" y="0" width="2" height="22"/>
+        <rect x="121" y="0" width="1" height="22"/><rect x="124" y="0" width="2" height="22"/>
+        <rect x="128" y="0" width="3" height="22"/><rect x="133" y="0" width="1" height="22"/>
+        <rect x="136" y="0" width="3" height="22"/><rect x="141" y="0" width="2" height="22"/>
+        <rect x="145" y="0" width="1" height="22"/><rect x="148" y="0" width="3" height="22"/>
+        <rect x="153" y="0" width="2" height="22"/><rect x="157" y="0" width="1" height="22"/>
+        <rect x="160" y="0" width="2" height="22"/><rect x="164" y="0" width="3" height="22"/>
+        <rect x="169" y="0" width="2" height="22"/><rect x="173" y="0" width="1" height="22"/>
+        <rect x="176" y="0" width="3" height="22"/><rect x="181" y="0" width="2" height="22"/>
+        <rect x="185" y="0" width="1" height="22"/><rect x="188" y="0" width="3" height="22"/>
+        <rect x="193" y="0" width="2" height="22"/><rect x="197" y="0" width="3" height="22"/>
+      </g>
+    </svg>
+    <div class="meta">
+      <span>仕入: ◯◯商事</span>
+      <span>4/30 受領</span>
+    </div>
+  </div>
+</div>
+
+<!-- 05 出荷ラベル（個装・モノクロ・キャリア別） -->
+<div class="section-divider"><span class="num">SAMPLE 05</span>出荷ラベル（個装）— モノクロでの運送会社識別</div>
+<div class="sample-info">
+  <b>用途</b>：梱包箱外側に貼付。仕分け作業者がひと目で運送会社・方面を識別する必要がある。<br>
+  <b>モノクロ前提</b>のため、運送会社は<b>会社名そのものの大文字＋黒ベタ反転バンド</b>で、方面コードは<b>白抜き枠の特大文字</b>で識別。
+  <div class="specs">
+    <span>📐 100 × 60 mm</span>
+    <span>🖨️ BT-PR2 / 据置サーマル</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：<br>
+  ① 運送会社名は黒ベタ反転バンドで視認性最大化<br>
+  ② 方面コードは「関東-A14」のように<b>地域名＋英数字</b>で文字そのものに識別性を持たせる<br>
+  ③ 冷蔵品は <b>太黒枠の温度バッジ＋細かい斜線地紋</b>を背景に追加（カラー塗りの代替）<br>
+  ④ 個口番号は黒ベタで強調、サイズも大きく
+</div>
+<div class="print-area">
+
+  <!-- ヤマト運輸（通常品） -->
+  <div class="label label-ship-m">
+    <div class="top">
+      <div class="logo">◯◯倉庫 東京DC</div>
+      <div class="pkg">1 / 3</div>
+    </div>
+    <div class="carrier-band">
+      <span class="name">▼ ヤマト運輸 ▼</span>
+      <span class="route">関東-A14</span>
+    </div>
+    <div class="ship-no">出荷No: SH-260501-00123</div>
+    <div class="order-no">受注No: SO-260501-00123 / 集荷 14:30</div>
+    <div class="to">
+      <div class="name">◯◯株式会社 東京支店</div>
+      <div class="addr">〒100-0001 東京都千代田区千代田1-1-1<br>◯◯ビル 5階</div>
+    </div>
+    <div class="barcode-row">
+      <svg class="barcode-svg" viewBox="0 0 300 28" preserveAspectRatio="none" style="height:28px;">
+        <g fill="#000">
+          <rect x="0" y="0" width="2" height="28"/><rect x="3" y="0" width="3" height="28"/>
+          <rect x="8" y="0" width="1" height="28"/><rect x="11" y="0" width="3" height="28"/>
+          <rect x="16" y="0" width="2" height="28"/><rect x="20" y="0" width="1" height="28"/>
+          <rect x="23" y="0" width="3" height="28"/><rect x="28" y="0" width="2" height="28"/>
+          <rect x="32" y="0" width="1" height="28"/><rect x="35" y="0" width="3" height="28"/>
+          <rect x="40" y="0" width="2" height="28"/><rect x="44" y="0" width="1" height="28"/>
+          <rect x="47" y="0" width="3" height="28"/><rect x="52" y="0" width="2" height="28"/>
+          <rect x="56" y="0" width="1" height="28"/><rect x="59" y="0" width="3" height="28"/>
+          <rect x="64" y="0" width="2" height="28"/><rect x="68" y="0" width="1" height="28"/>
+          <rect x="71" y="0" width="3" height="28"/><rect x="76" y="0" width="2" height="28"/>
+          <rect x="80" y="0" width="1" height="28"/><rect x="83" y="0" width="2" height="28"/>
+          <rect x="87" y="0" width="3" height="28"/><rect x="92" y="0" width="1" height="28"/>
+          <rect x="95" y="0" width="3" height="28"/><rect x="100" y="0" width="2" height="28"/>
+          <rect x="104" y="0" width="1" height="28"/><rect x="107" y="0" width="3" height="28"/>
+          <rect x="112" y="0" width="2" height="28"/><rect x="116" y="0" width="1" height="28"/>
+          <rect x="119" y="0" width="3" height="28"/><rect x="124" y="0" width="2" height="28"/>
+          <rect x="128" y="0" width="1" height="28"/><rect x="131" y="0" width="2" height="28"/>
+          <rect x="135" y="0" width="3" height="28"/><rect x="140" y="0" width="1" height="28"/>
+          <rect x="143" y="0" width="3" height="28"/><rect x="148" y="0" width="2" height="28"/>
+          <rect x="152" y="0" width="1" height="28"/><rect x="155" y="0" width="3" height="28"/>
+          <rect x="160" y="0" width="2" height="28"/><rect x="164" y="0" width="1" height="28"/>
+          <rect x="167" y="0" width="2" height="28"/><rect x="171" y="0" width="3" height="28"/>
+          <rect x="176" y="0" width="2" height="28"/><rect x="180" y="0" width="1" height="28"/>
+          <rect x="183" y="0" width="3" height="28"/><rect x="188" y="0" width="2" height="28"/>
+          <rect x="192" y="0" width="1" height="28"/><rect x="195" y="0" width="3" height="28"/>
+          <rect x="200" y="0" width="2" height="28"/><rect x="204" y="0" width="1" height="28"/>
+          <rect x="207" y="0" width="3" height="28"/><rect x="212" y="0" width="2" height="28"/>
+          <rect x="216" y="0" width="1" height="28"/><rect x="219" y="0" width="3" height="28"/>
+          <rect x="224" y="0" width="2" height="28"/><rect x="228" y="0" width="1" height="28"/>
+          <rect x="231" y="0" width="2" height="28"/><rect x="235" y="0" width="3" height="28"/>
+          <rect x="240" y="0" width="1" height="28"/><rect x="243" y="0" width="3" height="28"/>
+          <rect x="248" y="0" width="2" height="28"/><rect x="252" y="0" width="1" height="28"/>
+          <rect x="255" y="0" width="3" height="28"/><rect x="260" y="0" width="2" height="28"/>
+          <rect x="264" y="0" width="1" height="28"/><rect x="267" y="0" width="2" height="28"/>
+          <rect x="271" y="0" width="3" height="28"/><rect x="276" y="0" width="2" height="28"/>
+          <rect x="280" y="0" width="3" height="28"/><rect x="285" y="0" width="1" height="28"/>
+          <rect x="288" y="0" width="2" height="28"/><rect x="292" y="0" width="3" height="28"/>
+          <rect x="297" y="0" width="1" height="28"/>
+        </g>
+      </svg>
+      <div class="text">SH-260501-00123-01</div>
+    </div>
+    <div class="footer">
+      <span>作業: 田中</span>
+      <span>2026/05/01 14:08</span>
+    </div>
+  </div>
+
+  <!-- ヤマト・冷蔵品（縦縞地紋＋温度バッジ） -->
+  <div class="label label-ship-m cold-stripe">
+    <div class="top">
+      <div class="logo">◯◯倉庫 東京DC</div>
+      <div class="pkg">2 / 3</div>
+    </div>
+    <div class="carrier-band">
+      <span class="name">▼ ヤマト運輸（クール）▼</span>
+      <span class="route">関東-A14</span>
+    </div>
+    <div class="ship-no">出荷No: SH-260501-00123</div>
+    <div style="margin-top:2px;"><span class="temp-badge">❄ 冷蔵 0〜10℃</span></div>
+    <div class="to">
+      <div class="name">◯◯株式会社 東京支店</div>
+      <div class="addr">〒100-0001 東京都千代田区千代田1-1-1</div>
+    </div>
+    <div class="barcode-row">
+      <svg class="barcode-svg" viewBox="0 0 300 28" preserveAspectRatio="none" style="height:28px;">
+        <g fill="#000">
+          <rect x="0" y="0" width="3" height="28"/><rect x="5" y="0" width="2" height="28"/>
+          <rect x="9" y="0" width="3" height="28"/><rect x="14" y="0" width="1" height="28"/>
+          <rect x="17" y="0" width="3" height="28"/><rect x="22" y="0" width="2" height="28"/>
+          <rect x="26" y="0" width="1" height="28"/><rect x="29" y="0" width="3" height="28"/>
+          <rect x="34" y="0" width="2" height="28"/><rect x="38" y="0" width="1" height="28"/>
+          <rect x="41" y="0" width="3" height="28"/><rect x="46" y="0" width="2" height="28"/>
+          <rect x="50" y="0" width="1" height="28"/><rect x="53" y="0" width="3" height="28"/>
+          <rect x="58" y="0" width="2" height="28"/><rect x="62" y="0" width="1" height="28"/>
+          <rect x="65" y="0" width="3" height="28"/><rect x="70" y="0" width="2" height="28"/>
+          <rect x="74" y="0" width="1" height="28"/><rect x="77" y="0" width="3" height="28"/>
+          <rect x="82" y="0" width="2" height="28"/><rect x="86" y="0" width="1" height="28"/>
+          <rect x="89" y="0" width="3" height="28"/><rect x="94" y="0" width="2" height="28"/>
+          <rect x="98" y="0" width="1" height="28"/><rect x="101" y="0" width="3" height="28"/>
+          <rect x="106" y="0" width="2" height="28"/><rect x="110" y="0" width="1" height="28"/>
+          <rect x="113" y="0" width="3" height="28"/><rect x="118" y="0" width="2" height="28"/>
+          <rect x="122" y="0" width="1" height="28"/><rect x="125" y="0" width="3" height="28"/>
+          <rect x="130" y="0" width="2" height="28"/><rect x="134" y="0" width="1" height="28"/>
+          <rect x="137" y="0" width="3" height="28"/><rect x="142" y="0" width="2" height="28"/>
+          <rect x="146" y="0" width="1" height="28"/><rect x="149" y="0" width="3" height="28"/>
+          <rect x="154" y="0" width="2" height="28"/><rect x="158" y="0" width="1" height="28"/>
+          <rect x="161" y="0" width="3" height="28"/><rect x="166" y="0" width="2" height="28"/>
+          <rect x="170" y="0" width="1" height="28"/><rect x="173" y="0" width="3" height="28"/>
+          <rect x="178" y="0" width="2" height="28"/><rect x="182" y="0" width="1" height="28"/>
+          <rect x="185" y="0" width="3" height="28"/><rect x="190" y="0" width="2" height="28"/>
+          <rect x="194" y="0" width="1" height="28"/><rect x="197" y="0" width="3" height="28"/>
+          <rect x="202" y="0" width="2" height="28"/><rect x="206" y="0" width="1" height="28"/>
+          <rect x="209" y="0" width="3" height="28"/><rect x="214" y="0" width="2" height="28"/>
+          <rect x="218" y="0" width="1" height="28"/><rect x="221" y="0" width="3" height="28"/>
+          <rect x="226" y="0" width="2" height="28"/><rect x="230" y="0" width="1" height="28"/>
+          <rect x="233" y="0" width="3" height="28"/><rect x="238" y="0" width="2" height="28"/>
+          <rect x="242" y="0" width="1" height="28"/><rect x="245" y="0" width="3" height="28"/>
+          <rect x="250" y="0" width="2" height="28"/><rect x="254" y="0" width="1" height="28"/>
+          <rect x="257" y="0" width="3" height="28"/><rect x="262" y="0" width="2" height="28"/>
+          <rect x="266" y="0" width="1" height="28"/><rect x="269" y="0" width="3" height="28"/>
+          <rect x="274" y="0" width="2" height="28"/><rect x="278" y="0" width="3" height="28"/>
+          <rect x="283" y="0" width="1" height="28"/><rect x="286" y="0" width="2" height="28"/>
+          <rect x="290" y="0" width="3" height="28"/><rect x="295" y="0" width="2" height="28"/>
+        </g>
+      </svg>
+      <div class="text">SH-260501-00123-02</div>
+    </div>
+    <div class="footer">
+      <span>作業: 田中</span>
+      <span>2026/05/01 14:09</span>
+    </div>
+  </div>
+
+  <!-- 佐川急便 -->
+  <div class="label label-ship-m">
+    <div class="top">
+      <div class="logo">◯◯倉庫 東京DC</div>
+      <div class="pkg">1 / 1</div>
+    </div>
+    <div class="carrier-band">
+      <span class="name">■ 佐川急便 ■</span>
+      <span class="route">関西-S07</span>
+    </div>
+    <div class="ship-no">出荷No: SH-260501-00125</div>
+    <div class="order-no">受注No: SO-260501-00125 / 集荷 15:00</div>
+    <div class="to">
+      <div class="name">△△商事 大阪支店</div>
+      <div class="addr">〒530-0001 大阪府大阪市北区梅田1-1-1<br>△△ビル 8階</div>
+    </div>
+    <div class="barcode-row">
+      <svg class="barcode-svg" viewBox="0 0 300 28" preserveAspectRatio="none" style="height:28px;">
+        <g fill="#000">
+          <rect x="0" y="0" width="2" height="28"/><rect x="4" y="0" width="3" height="28"/>
+          <rect x="9" y="0" width="2" height="28"/><rect x="13" y="0" width="1" height="28"/>
+          <rect x="16" y="0" width="3" height="28"/><rect x="21" y="0" width="2" height="28"/>
+          <rect x="25" y="0" width="1" height="28"/><rect x="28" y="0" width="3" height="28"/>
+          <rect x="33" y="0" width="2" height="28"/><rect x="37" y="0" width="3" height="28"/>
+          <rect x="42" y="0" width="1" height="28"/><rect x="45" y="0" width="2" height="28"/>
+          <rect x="49" y="0" width="3" height="28"/><rect x="54" y="0" width="2" height="28"/>
+          <rect x="58" y="0" width="1" height="28"/><rect x="61" y="0" width="3" height="28"/>
+          <rect x="66" y="0" width="2" height="28"/><rect x="70" y="0" width="3" height="28"/>
+          <rect x="75" y="0" width="1" height="28"/><rect x="78" y="0" width="2" height="28"/>
+          <rect x="82" y="0" width="3" height="28"/><rect x="87" y="0" width="2" height="28"/>
+          <rect x="91" y="0" width="1" height="28"/><rect x="94" y="0" width="3" height="28"/>
+          <rect x="99" y="0" width="2" height="28"/><rect x="103" y="0" width="3" height="28"/>
+          <rect x="108" y="0" width="1" height="28"/><rect x="111" y="0" width="2" height="28"/>
+          <rect x="115" y="0" width="3" height="28"/><rect x="120" y="0" width="2" height="28"/>
+          <rect x="124" y="0" width="1" height="28"/><rect x="127" y="0" width="3" height="28"/>
+          <rect x="132" y="0" width="2" height="28"/><rect x="136" y="0" width="3" height="28"/>
+          <rect x="141" y="0" width="1" height="28"/><rect x="144" y="0" width="2" height="28"/>
+          <rect x="148" y="0" width="3" height="28"/><rect x="153" y="0" width="2" height="28"/>
+          <rect x="157" y="0" width="1" height="28"/><rect x="160" y="0" width="3" height="28"/>
+          <rect x="165" y="0" width="2" height="28"/><rect x="169" y="0" width="3" height="28"/>
+          <rect x="174" y="0" width="1" height="28"/><rect x="177" y="0" width="2" height="28"/>
+          <rect x="181" y="0" width="3" height="28"/><rect x="186" y="0" width="2" height="28"/>
+          <rect x="190" y="0" width="1" height="28"/><rect x="193" y="0" width="3" height="28"/>
+          <rect x="198" y="0" width="2" height="28"/><rect x="202" y="0" width="3" height="28"/>
+          <rect x="207" y="0" width="1" height="28"/><rect x="210" y="0" width="2" height="28"/>
+          <rect x="214" y="0" width="3" height="28"/><rect x="219" y="0" width="2" height="28"/>
+          <rect x="223" y="0" width="1" height="28"/><rect x="226" y="0" width="3" height="28"/>
+          <rect x="231" y="0" width="2" height="28"/><rect x="235" y="0" width="3" height="28"/>
+          <rect x="240" y="0" width="1" height="28"/><rect x="243" y="0" width="2" height="28"/>
+          <rect x="247" y="0" width="3" height="28"/><rect x="252" y="0" width="2" height="28"/>
+          <rect x="256" y="0" width="1" height="28"/><rect x="259" y="0" width="3" height="28"/>
+          <rect x="264" y="0" width="2" height="28"/><rect x="268" y="0" width="3" height="28"/>
+          <rect x="273" y="0" width="1" height="28"/><rect x="276" y="0" width="2" height="28"/>
+          <rect x="280" y="0" width="3" height="28"/><rect x="285" y="0" width="2" height="28"/>
+          <rect x="289" y="0" width="1" height="28"/><rect x="292" y="0" width="3" height="28"/>
+          <rect x="297" y="0" width="2" height="28"/>
+        </g>
+      </svg>
+      <div class="text">SH-260501-00125-01</div>
+    </div>
+    <div class="footer">
+      <span>作業: 佐藤</span>
+      <span>2026/05/01 14:30</span>
+    </div>
+  </div>
+
+  <!-- 福山通運 BtoB -->
+  <div class="label label-ship-m">
+    <div class="top">
+      <div class="logo">◯◯倉庫 東京DC</div>
+      <div class="pkg">3 / 5</div>
+    </div>
+    <div class="carrier-band">
+      <span class="name">★ 福山通運（BtoB）★</span>
+      <span class="route">中部-F03</span>
+    </div>
+    <div class="ship-no">出荷No: SH-260501-00131</div>
+    <div class="order-no">受注No: SO-260501-00131 / 集荷 16:00</div>
+    <div class="to">
+      <div class="name">□□製造 株式会社 名古屋工場</div>
+      <div class="addr">〒460-0001 愛知県名古屋市中区三の丸1-1-1</div>
+    </div>
+    <div class="barcode-row">
+      <svg class="barcode-svg" viewBox="0 0 300 28" preserveAspectRatio="none" style="height:28px;">
+        <g fill="#000">
+          <rect x="0" y="0" width="3" height="28"/><rect x="5" y="0" width="2" height="28"/>
+          <rect x="9" y="0" width="3" height="28"/><rect x="14" y="0" width="1" height="28"/>
+          <rect x="17" y="0" width="2" height="28"/><rect x="21" y="0" width="3" height="28"/>
+          <rect x="26" y="0" width="2" height="28"/><rect x="30" y="0" width="3" height="28"/>
+          <rect x="35" y="0" width="1" height="28"/><rect x="38" y="0" width="2" height="28"/>
+          <rect x="42" y="0" width="3" height="28"/><rect x="47" y="0" width="2" height="28"/>
+          <rect x="51" y="0" width="3" height="28"/><rect x="56" y="0" width="1" height="28"/>
+          <rect x="59" y="0" width="2" height="28"/><rect x="63" y="0" width="3" height="28"/>
+          <rect x="68" y="0" width="2" height="28"/><rect x="72" y="0" width="3" height="28"/>
+          <rect x="77" y="0" width="1" height="28"/><rect x="80" y="0" width="2" height="28"/>
+          <rect x="84" y="0" width="3" height="28"/><rect x="89" y="0" width="2" height="28"/>
+          <rect x="93" y="0" width="3" height="28"/><rect x="98" y="0" width="1" height="28"/>
+          <rect x="101" y="0" width="2" height="28"/><rect x="105" y="0" width="3" height="28"/>
+          <rect x="110" y="0" width="2" height="28"/><rect x="114" y="0" width="3" height="28"/>
+          <rect x="119" y="0" width="1" height="28"/><rect x="122" y="0" width="2" height="28"/>
+          <rect x="126" y="0" width="3" height="28"/><rect x="131" y="0" width="2" height="28"/>
+          <rect x="135" y="0" width="3" height="28"/><rect x="140" y="0" width="1" height="28"/>
+          <rect x="143" y="0" width="2" height="28"/><rect x="147" y="0" width="3" height="28"/>
+          <rect x="152" y="0" width="2" height="28"/><rect x="156" y="0" width="3" height="28"/>
+          <rect x="161" y="0" width="1" height="28"/><rect x="164" y="0" width="2" height="28"/>
+          <rect x="168" y="0" width="3" height="28"/><rect x="173" y="0" width="2" height="28"/>
+          <rect x="177" y="0" width="3" height="28"/><rect x="182" y="0" width="1" height="28"/>
+          <rect x="185" y="0" width="2" height="28"/><rect x="189" y="0" width="3" height="28"/>
+          <rect x="194" y="0" width="2" height="28"/><rect x="198" y="0" width="3" height="28"/>
+          <rect x="203" y="0" width="1" height="28"/><rect x="206" y="0" width="2" height="28"/>
+          <rect x="210" y="0" width="3" height="28"/><rect x="215" y="0" width="2" height="28"/>
+          <rect x="219" y="0" width="3" height="28"/><rect x="224" y="0" width="1" height="28"/>
+          <rect x="227" y="0" width="2" height="28"/><rect x="231" y="0" width="3" height="28"/>
+          <rect x="236" y="0" width="2" height="28"/><rect x="240" y="0" width="3" height="28"/>
+          <rect x="245" y="0" width="1" height="28"/><rect x="248" y="0" width="2" height="28"/>
+          <rect x="252" y="0" width="3" height="28"/><rect x="257" y="0" width="2" height="28"/>
+          <rect x="261" y="0" width="3" height="28"/><rect x="266" y="0" width="1" height="28"/>
+          <rect x="269" y="0" width="2" height="28"/><rect x="273" y="0" width="3" height="28"/>
+          <rect x="278" y="0" width="2" height="28"/><rect x="282" y="0" width="3" height="28"/>
+          <rect x="287" y="0" width="1" height="28"/><rect x="290" y="0" width="2" height="28"/>
+          <rect x="294" y="0" width="3" height="28"/>
+        </g>
+      </svg>
+      <div class="text">SH-260501-00131-03</div>
+    </div>
+    <div class="footer">
+      <span>作業: 鈴木</span>
+      <span>2026/05/01 15:42</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- 06 送り状（汎用） -->
+<div class="section-divider"><span class="num">SAMPLE 06</span>送り状（汎用キャリア向け）</div>
+<div class="sample-info">
+  <b>用途</b>：自社配送・小口キャリア向けの汎用送り状。ヤマト・佐川等の純正フォームを使う場合は本テンプレ未使用。
+  <div class="specs">
+    <span>📐 100 × 150 mm</span>
+    <span>🖨️ 据置サーマル</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：本体3px太黒枠で他ラベルから一目で区別。追跡番号枠は3px太枠で囲み、絶対に見落とされない設計。
+</div>
+<div class="print-area">
+  <div class="label label-carrier">
+    <div class="header">
+      <span>宅配便</span>
+      <span style="font-size:10px;">控え用 / 元払</span>
+    </div>
+    <div class="section-title">お届け先 / TO</div>
+    <div class="to-block">
+      <div class="zip">〒 100-0001</div>
+      <div class="addr">東京都千代田区千代田1-1-1<br>◯◯ビル 5階</div>
+      <div class="name">◯◯株式会社 東京支店<br>　担当者様</div>
+      <div class="tel">TEL: 03-0000-0000</div>
+    </div>
+    <div class="section-title">ご依頼主 / FROM</div>
+    <div class="from-block">
+      ◯◯倉庫 東京DC（1F）<br>
+      〒135-0064 東京都江東区青海1-1-1<br>
+      TEL: 03-XXXX-XXXX
+    </div>
+    <div class="info-grid">
+      <div class="item">
+        <div class="lbl">出荷日</div>
+        <div class="val">5/1</div>
+      </div>
+      <div class="item">
+        <div class="lbl">指定日</div>
+        <div class="val">5/3 AM</div>
+      </div>
+      <div class="item">
+        <div class="lbl">個口</div>
+        <div class="val">3</div>
+      </div>
+    </div>
+    <div class="delivery-area">配送区分：関東 / 通常便</div>
+    <div class="tracking">
+      <div class="label-text">お問合せ伝票番号 (TRACKING NO.)</div>
+      <svg class="barcode-svg" viewBox="0 0 350 50" preserveAspectRatio="none" style="height:50px;">
+        <g fill="#000">
+          <rect x="0" y="0" width="3" height="50"/><rect x="5" y="0" width="2" height="50"/>
+          <rect x="10" y="0" width="4" height="50"/><rect x="17" y="0" width="2" height="50"/>
+          <rect x="22" y="0" width="3" height="50"/><rect x="28" y="0" width="2" height="50"/>
+          <rect x="33" y="0" width="1" height="50"/><rect x="36" y="0" width="4" height="50"/>
+          <rect x="43" y="0" width="2" height="50"/><rect x="48" y="0" width="3" height="50"/>
+          <rect x="54" y="0" width="2" height="50"/><rect x="59" y="0" width="4" height="50"/>
+          <rect x="66" y="0" width="2" height="50"/><rect x="71" y="0" width="3" height="50"/>
+          <rect x="77" y="0" width="2" height="50"/><rect x="82" y="0" width="1" height="50"/>
+          <rect x="85" y="0" width="4" height="50"/><rect x="92" y="0" width="2" height="50"/>
+          <rect x="97" y="0" width="3" height="50"/><rect x="103" y="0" width="2" height="50"/>
+          <rect x="108" y="0" width="4" height="50"/><rect x="115" y="0" width="2" height="50"/>
+          <rect x="120" y="0" width="3" height="50"/><rect x="126" y="0" width="2" height="50"/>
+          <rect x="131" y="0" width="1" height="50"/><rect x="134" y="0" width="4" height="50"/>
+          <rect x="141" y="0" width="2" height="50"/><rect x="146" y="0" width="3" height="50"/>
+          <rect x="152" y="0" width="2" height="50"/><rect x="157" y="0" width="4" height="50"/>
+          <rect x="164" y="0" width="2" height="50"/><rect x="169" y="0" width="3" height="50"/>
+          <rect x="175" y="0" width="2" height="50"/><rect x="180" y="0" width="1" height="50"/>
+          <rect x="183" y="0" width="4" height="50"/><rect x="190" y="0" width="2" height="50"/>
+          <rect x="195" y="0" width="3" height="50"/><rect x="201" y="0" width="2" height="50"/>
+          <rect x="206" y="0" width="4" height="50"/><rect x="213" y="0" width="2" height="50"/>
+          <rect x="218" y="0" width="3" height="50"/><rect x="224" y="0" width="2" height="50"/>
+          <rect x="229" y="0" width="1" height="50"/><rect x="232" y="0" width="4" height="50"/>
+          <rect x="239" y="0" width="2" height="50"/><rect x="244" y="0" width="3" height="50"/>
+          <rect x="250" y="0" width="2" height="50"/><rect x="255" y="0" width="4" height="50"/>
+          <rect x="262" y="0" width="2" height="50"/><rect x="267" y="0" width="3" height="50"/>
+          <rect x="273" y="0" width="2" height="50"/><rect x="278" y="0" width="1" height="50"/>
+          <rect x="281" y="0" width="4" height="50"/><rect x="288" y="0" width="2" height="50"/>
+          <rect x="293" y="0" width="3" height="50"/><rect x="299" y="0" width="2" height="50"/>
+          <rect x="304" y="0" width="4" height="50"/><rect x="311" y="0" width="2" height="50"/>
+          <rect x="316" y="0" width="3" height="50"/><rect x="322" y="0" width="2" height="50"/>
+          <rect x="327" y="0" width="1" height="50"/><rect x="330" y="0" width="4" height="50"/>
+          <rect x="337" y="0" width="2" height="50"/><rect x="342" y="0" width="3" height="50"/>
+          <rect x="348" y="0" width="2" height="50"/>
+        </g>
+      </svg>
+      <div class="num">1234-5678-9012</div>
+    </div>
+  </div>
+</div>
+
+<!-- 07 パレットラベル -->
+<div class="section-divider"><span class="num">SAMPLE 07</span>パレットラベル（GS1 SSCC・モノクロ）</div>
+<div class="sample-info">
+  <b>用途</b>：パレット側面に貼付。BtoB物流で標準化されつつあるGS1 SSCC対応。
+  <div class="specs">
+    <span>📐 100 × 150 mm</span>
+    <span>🖨️ 据置サーマル</span>
+    <span>📊 GS1-128</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：運送会社バンドはラベル中段に黒ベタ反転で配置。フォークリフト運転中でも視認可能なサイズ。SSCCバーコードは2px太枠で他要素と区別。
+</div>
+<div class="print-area">
+  <div class="label label-pallet">
+    <div class="header">
+      <div class="title">パレットラベル</div>
+      <div class="pallet-no">PL-260501-00007</div>
+    </div>
+    <div class="sscc-block">
+      <div class="lbl">SSCC (GS1-128)</div>
+      <svg class="barcode-svg" viewBox="0 0 350 60" preserveAspectRatio="none" style="height:60px;">
+        <g fill="#000">
+          <rect x="0" y="0" width="4" height="60"/><rect x="6" y="0" width="2" height="60"/>
+          <rect x="10" y="0" width="3" height="60"/><rect x="15" y="0" width="2" height="60"/>
+          <rect x="19" y="0" width="4" height="60"/><rect x="25" y="0" width="2" height="60"/>
+          <rect x="29" y="0" width="3" height="60"/><rect x="34" y="0" width="2" height="60"/>
+          <rect x="38" y="0" width="4" height="60"/><rect x="44" y="0" width="2" height="60"/>
+          <rect x="48" y="0" width="3" height="60"/><rect x="53" y="0" width="2" height="60"/>
+          <rect x="57" y="0" width="4" height="60"/><rect x="63" y="0" width="2" height="60"/>
+          <rect x="67" y="0" width="3" height="60"/><rect x="72" y="0" width="2" height="60"/>
+          <rect x="76" y="0" width="4" height="60"/><rect x="82" y="0" width="2" height="60"/>
+          <rect x="86" y="0" width="3" height="60"/><rect x="91" y="0" width="2" height="60"/>
+          <rect x="95" y="0" width="4" height="60"/><rect x="101" y="0" width="2" height="60"/>
+          <rect x="105" y="0" width="3" height="60"/><rect x="110" y="0" width="2" height="60"/>
+          <rect x="114" y="0" width="4" height="60"/><rect x="120" y="0" width="2" height="60"/>
+          <rect x="124" y="0" width="3" height="60"/><rect x="129" y="0" width="2" height="60"/>
+          <rect x="133" y="0" width="4" height="60"/><rect x="139" y="0" width="2" height="60"/>
+          <rect x="143" y="0" width="3" height="60"/><rect x="148" y="0" width="2" height="60"/>
+          <rect x="152" y="0" width="4" height="60"/><rect x="158" y="0" width="2" height="60"/>
+          <rect x="162" y="0" width="3" height="60"/><rect x="167" y="0" width="2" height="60"/>
+          <rect x="171" y="0" width="4" height="60"/><rect x="177" y="0" width="2" height="60"/>
+          <rect x="181" y="0" width="3" height="60"/><rect x="186" y="0" width="2" height="60"/>
+          <rect x="190" y="0" width="4" height="60"/><rect x="196" y="0" width="2" height="60"/>
+          <rect x="200" y="0" width="3" height="60"/><rect x="205" y="0" width="2" height="60"/>
+          <rect x="209" y="0" width="4" height="60"/><rect x="215" y="0" width="2" height="60"/>
+          <rect x="219" y="0" width="3" height="60"/><rect x="224" y="0" width="2" height="60"/>
+          <rect x="228" y="0" width="4" height="60"/><rect x="234" y="0" width="2" height="60"/>
+          <rect x="238" y="0" width="3" height="60"/><rect x="243" y="0" width="2" height="60"/>
+          <rect x="247" y="0" width="4" height="60"/><rect x="253" y="0" width="2" height="60"/>
+          <rect x="257" y="0" width="3" height="60"/><rect x="262" y="0" width="2" height="60"/>
+          <rect x="266" y="0" width="4" height="60"/><rect x="272" y="0" width="2" height="60"/>
+          <rect x="276" y="0" width="3" height="60"/><rect x="281" y="0" width="2" height="60"/>
+          <rect x="285" y="0" width="4" height="60"/><rect x="291" y="0" width="2" height="60"/>
+          <rect x="295" y="0" width="3" height="60"/><rect x="300" y="0" width="2" height="60"/>
+          <rect x="304" y="0" width="4" height="60"/><rect x="310" y="0" width="2" height="60"/>
+          <rect x="314" y="0" width="3" height="60"/><rect x="319" y="0" width="2" height="60"/>
+          <rect x="323" y="0" width="4" height="60"/><rect x="329" y="0" width="2" height="60"/>
+          <rect x="333" y="0" width="3" height="60"/><rect x="338" y="0" width="2" height="60"/>
+          <rect x="342" y="0" width="4" height="60"/>
+        </g>
+      </svg>
+      <div class="ai">(00) 1 1234567 000000007 4</div>
+    </div>
+    <div class="info-table">
+      <div class="row"><div class="lbl">出荷先</div><div class="val">◯◯株式会社 東京支店</div></div>
+      <div class="row"><div class="lbl">出荷No</div><div class="val">SH-260501-00123</div></div>
+      <div class="row"><div class="lbl">内容</div><div class="val">8 SKU / 192 PCS</div></div>
+      <div class="row"><div class="lbl">重量</div><div class="val">125.0 kg</div></div>
+      <div class="row"><div class="lbl">個口</div><div class="val">1 / 3 パレット</div></div>
+      <div class="row"><div class="lbl">出荷日</div><div class="val">2026/05/01</div></div>
+    </div>
+    <div class="carrier-band-l">
+      <span class="name">★ 福山通運 ★</span>
+      <span class="route">中部-F03 14:00</span>
+    </div>
+    <div class="pallet-footer">
+      <span>発行: 2026/05/01 13:45</span>
+      <span>作業: 鈴木</span>
+    </div>
+  </div>
+</div>
+
+<!-- 08 内訳ラベル -->
+<div class="section-divider"><span class="num">SAMPLE 08</span>パレット内訳ラベル</div>
+<div class="sample-info">
+  <b>用途</b>：パレット混載時の内訳明示。
+  <div class="specs">
+    <span>📐 100 × 150 mm</span>
+    <span>🖨️ 据置サーマル</span>
+  </div>
+</div>
+<div class="print-area">
+  <div class="label label-pack-list">
+    <div class="title">パレット内訳 PL-260501-00007</div>
+    <div class="pl-meta">
+      出荷No: <b>SH-260501-00123</b><br>
+      出荷先: ◯◯株式会社 東京支店<br>
+      パレット: 1/3 / 重量 125.0kg
+    </div>
+    <table class="pl-table">
+      <thead>
+        <tr><th>SKU</th><th>商品名</th><th>ロット</th><th style="text-align:right;">数量</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>S-00321</td><td>シャンプー300ml</td><td>LOT-26B</td><td style="text-align:right;">24</td></tr>
+        <tr><td>S-00322</td><td>リンス300ml</td><td>LOT-26B</td><td style="text-align:right;">24</td></tr>
+        <tr><td>S-00323</td><td>ボディソープ500ml</td><td>LOT-26C</td><td style="text-align:right;">12</td></tr>
+        <tr><td>S-00401</td><td>歯ブラシ 中硬</td><td>-</td><td style="text-align:right;">48</td></tr>
+        <tr><td>S-00402</td><td>歯ブラシ やわらか</td><td>-</td><td style="text-align:right;">36</td></tr>
+        <tr><td>S-00501</td><td>ティッシュ 5箱組</td><td>-</td><td style="text-align:right;">12</td></tr>
+        <tr><td>S-00601</td><td>洗剤 1kg</td><td>LOT-26A</td><td style="text-align:right;">24</td></tr>
+        <tr><td>S-00701</td><td>柔軟剤 大</td><td>LOT-26A</td><td style="text-align:right;">12</td></tr>
+        <tr style="background:#000; color:#fff; font-weight:900;">
+          <td colspan="3">合計</td>
+          <td style="text-align:right;">192 PCS</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pl-meta" style="margin-top:8px;">
+      検品チェック欄：<br>
+      数量確認 □　破損確認 □　受領印 □
+    </div>
+  </div>
+</div>
+
+<!-- 09 ピッキングリスト -->
+<div class="section-divider"><span class="num">SAMPLE 09</span>ピッキングリスト（A4）</div>
+<div class="sample-info">
+  <b>用途</b>：ウェーブ生成時に出力する作業指示書。
+  <div class="specs">
+    <span>📐 A4縦</span>
+    <span>🖨️ 据置レーザー</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：冷蔵行は<b>横縞地紋</b>、ヘッダ行は<b>黒ベタ反転</b>。チェック欄は1.5px太枠で見落とし防止。
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">ピッキングリスト</div>
+      <div class="meta">
+        <div class="form-no">WV-2605-001</div>
+        発行: 2026/05/01 10:00<br>
+        印刷: 山田リーダー
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">作業者</div>
+        <div class="val"><b>田中 太郎</b>（HT端末: BTA2000-7F3A）</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">編成方式</div>
+        <div class="val">マルチオーダー / FEFO引当</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">対応出荷</div>
+        <div class="val">SO-260501-00121, 00122, 00123</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">合計</div>
+        <div class="val"><b>12 SKU / 30 PCS</b>　締切 15:00</div>
+      </div>
+    </div>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th class="center" style="width:30px;">No</th>
+          <th class="center" style="width:36px;">✓</th>
+          <th style="width:90px;">ロケ</th>
+          <th style="width:80px;">SKU</th>
+          <th>商品名</th>
+          <th style="width:70px;">ロット</th>
+          <th class="right" style="width:50px;">数量</th>
+          <th style="width:90px;">受注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="center num">1</td><td class="center"><span class="check"></span></td><td class="num">A-05-02-1</td><td class="num">S-00210</td><td>洗剤500ml</td><td class="num">LOT-26B</td><td class="right num">3</td><td class="num">SO-00121</td></tr>
+        <tr><td class="center num">2</td><td class="center"><span class="check"></span></td><td class="num">A-05-03-2</td><td class="num">S-00211</td><td>洗剤詰替用</td><td class="num">LOT-26B</td><td class="right num">5</td><td class="num">SO-00122</td></tr>
+        <tr><td class="center num">3</td><td class="center"><span class="check"></span></td><td class="num">A-08-02-1</td><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26B</td><td class="right num">3</td><td class="num">SO-00121</td></tr>
+        <tr><td class="center num">4</td><td class="center"><span class="check"></span></td><td class="num">A-08-03-1</td><td class="num">S-00322</td><td>リンス300ml</td><td class="num">LOT-26B</td><td class="right num">1</td><td class="num">SO-00121</td></tr>
+        <tr><td class="center num">5</td><td class="center"><span class="check"></span></td><td class="num">A-12-04-3</td><td class="num">S-00401</td><td>歯ブラシ 中硬</td><td class="num">-</td><td class="right num">8</td><td class="num">SO-00122</td></tr>
+        <tr><td class="center num">6</td><td class="center"><span class="check"></span></td><td class="num">A-12-04-3</td><td class="num">S-00402</td><td>歯ブラシ やわらか</td><td class="num">-</td><td class="right num">4</td><td class="num">SO-00122</td></tr>
+        <tr><td class="center num">7</td><td class="center"><span class="check"></span></td><td class="num">B-01-02-1</td><td class="num">S-00501</td><td>ティッシュ 5箱組</td><td class="num">-</td><td class="right num">2</td><td class="num">SO-00122</td></tr>
+        <tr class="cold"><td class="center num">8</td><td class="center"><span class="check"></span></td><td class="num">F-01-01-1</td><td class="num">S-00701</td><td>❄ 冷蔵食品セット</td><td class="num">LOT-26C</td><td class="right num">2</td><td class="num">SO-00123</td></tr>
+        <tr class="cold"><td class="center num">9</td><td class="center"><span class="check"></span></td><td class="num">F-01-02-1</td><td class="num">S-00702</td><td>❄ 冷蔵スイーツ</td><td class="num">LOT-26C</td><td class="right num">1</td><td class="num">SO-00123</td></tr>
+        <tr><td class="center num">10</td><td class="center"><span class="check"></span></td><td class="num">P-03-01-1</td><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26C</td><td class="right num">1</td><td class="num">SO-00121</td></tr>
+      </tbody>
+    </table>
+
+    <div class="totals" style="width:280px;">
+      <div class="row"><div class="lbl">SKU数</div><div class="val">10 SKU</div></div>
+      <div class="row"><div class="lbl">総数量</div><div class="val">30 PCS</div></div>
+      <div class="row"><div class="lbl">合計</div><div class="val">30 / 30</div></div>
+    </div>
+
+    <div class="form-barcode">
+      <svg class="barcode-svg" viewBox="0 0 400 40" preserveAspectRatio="none" style="height:40px; width:60%;">
+        <g fill="#000">
+          <rect x="0" y="0" width="3" height="40"/><rect x="5" y="0" width="2" height="40"/>
+          <rect x="9" y="0" width="3" height="40"/><rect x="14" y="0" width="2" height="40"/>
+          <rect x="18" y="0" width="4" height="40"/><rect x="24" y="0" width="2" height="40"/>
+          <rect x="28" y="0" width="1" height="40"/><rect x="31" y="0" width="3" height="40"/>
+          <rect x="36" y="0" width="2" height="40"/><rect x="40" y="0" width="3" height="40"/>
+          <rect x="45" y="0" width="2" height="40"/><rect x="49" y="0" width="4" height="40"/>
+          <rect x="55" y="0" width="2" height="40"/><rect x="59" y="0" width="3" height="40"/>
+          <rect x="64" y="0" width="2" height="40"/><rect x="68" y="0" width="1" height="40"/>
+          <rect x="71" y="0" width="3" height="40"/><rect x="76" y="0" width="2" height="40"/>
+          <rect x="80" y="0" width="3" height="40"/><rect x="85" y="0" width="2" height="40"/>
+          <rect x="89" y="0" width="4" height="40"/><rect x="95" y="0" width="2" height="40"/>
+          <rect x="99" y="0" width="3" height="40"/><rect x="104" y="0" width="2" height="40"/>
+          <rect x="108" y="0" width="1" height="40"/><rect x="111" y="0" width="3" height="40"/>
+          <rect x="116" y="0" width="2" height="40"/><rect x="120" y="0" width="3" height="40"/>
+          <rect x="125" y="0" width="2" height="40"/><rect x="129" y="0" width="4" height="40"/>
+          <rect x="135" y="0" width="2" height="40"/><rect x="139" y="0" width="3" height="40"/>
+          <rect x="144" y="0" width="2" height="40"/><rect x="148" y="0" width="1" height="40"/>
+          <rect x="151" y="0" width="3" height="40"/><rect x="156" y="0" width="2" height="40"/>
+          <rect x="160" y="0" width="3" height="40"/><rect x="165" y="0" width="2" height="40"/>
+          <rect x="169" y="0" width="4" height="40"/><rect x="175" y="0" width="2" height="40"/>
+          <rect x="179" y="0" width="3" height="40"/><rect x="184" y="0" width="2" height="40"/>
+          <rect x="188" y="0" width="1" height="40"/><rect x="191" y="0" width="3" height="40"/>
+          <rect x="196" y="0" width="2" height="40"/><rect x="200" y="0" width="3" height="40"/>
+          <rect x="205" y="0" width="2" height="40"/><rect x="209" y="0" width="4" height="40"/>
+          <rect x="215" y="0" width="2" height="40"/><rect x="219" y="0" width="3" height="40"/>
+          <rect x="224" y="0" width="2" height="40"/><rect x="228" y="0" width="1" height="40"/>
+          <rect x="231" y="0" width="3" height="40"/><rect x="236" y="0" width="2" height="40"/>
+          <rect x="240" y="0" width="3" height="40"/><rect x="245" y="0" width="2" height="40"/>
+          <rect x="249" y="0" width="4" height="40"/><rect x="255" y="0" width="2" height="40"/>
+          <rect x="259" y="0" width="3" height="40"/><rect x="264" y="0" width="2" height="40"/>
+          <rect x="268" y="0" width="1" height="40"/><rect x="271" y="0" width="3" height="40"/>
+          <rect x="276" y="0" width="2" height="40"/><rect x="280" y="0" width="3" height="40"/>
+          <rect x="285" y="0" width="2" height="40"/><rect x="289" y="0" width="4" height="40"/>
+          <rect x="295" y="0" width="2" height="40"/><rect x="299" y="0" width="3" height="40"/>
+          <rect x="304" y="0" width="2" height="40"/><rect x="308" y="0" width="1" height="40"/>
+          <rect x="311" y="0" width="3" height="40"/><rect x="316" y="0" width="2" height="40"/>
+          <rect x="320" y="0" width="3" height="40"/><rect x="325" y="0" width="2" height="40"/>
+          <rect x="329" y="0" width="4" height="40"/><rect x="335" y="0" width="2" height="40"/>
+          <rect x="339" y="0" width="3" height="40"/><rect x="344" y="0" width="2" height="40"/>
+          <rect x="348" y="0" width="1" height="40"/><rect x="351" y="0" width="3" height="40"/>
+          <rect x="356" y="0" width="2" height="40"/><rect x="360" y="0" width="3" height="40"/>
+          <rect x="365" y="0" width="2" height="40"/><rect x="369" y="0" width="4" height="40"/>
+          <rect x="375" y="0" width="2" height="40"/><rect x="379" y="0" width="3" height="40"/>
+          <rect x="384" y="0" width="2" height="40"/><rect x="388" y="0" width="1" height="40"/>
+          <rect x="391" y="0" width="3" height="40"/><rect x="396" y="0" width="2" height="40"/>
+        </g>
+      </svg>
+      <div style="font-size:11px; font-family:Consolas,monospace; margin-top:2px;">WV-2605-001</div>
+    </div>
+
+    <div class="footer-info">
+      <span>※ HTで上記バーコードをスキャンするとウェーブを開始できます</span>
+      <span>page 1 / 1</span>
+    </div>
+  </div>
+</div>
+
+<!-- 10 納品書 -->
+<div class="section-divider"><span class="num">SAMPLE 10</span>納品書（A4・モノクロ）</div>
+<div class="sample-info">
+  <b>用途</b>：出荷確定時、配送先へ同梱する書類。
+  <div class="specs">
+    <span>📐 A4縦</span>
+    <span>🖨️ 据置レーザー</span>
+  </div>
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">納 品 書</div>
+      <div class="meta">
+        <div class="form-no">DN-260501-00123</div>
+        発行日: 2026年5月1日<br>
+        ページ: 1 / 1
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">納 品 先</div>
+        <div class="val">
+          〒100-0001<br>
+          東京都千代田区千代田1-1-1 ◯◯ビル 5階<br>
+          <b>◯◯株式会社 東京支店</b> 御中<br>
+          TEL: 03-0000-0000
+        </div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">出 荷 元</div>
+        <div class="val">
+          〒135-0064<br>
+          東京都江東区青海1-1-1<br>
+          <b>◯◯倉庫 株式会社</b><br>
+          TEL: 03-XXXX-XXXX<br>
+          登録番号: T1234567890123
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:13px; margin-bottom:10px;">下記の通り納品いたします。</p>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th class="center" style="width:30px;">No</th>
+          <th style="width:80px;">商品コード</th>
+          <th>商品名</th>
+          <th class="right" style="width:50px;">数量</th>
+          <th class="center" style="width:40px;">単位</th>
+          <th class="right" style="width:80px;">単価</th>
+          <th class="right" style="width:90px;">金額</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="center num">1</td><td class="num">S-00321</td><td>シャンプー300ml</td><td class="right num">3</td><td class="center">PCS</td><td class="right num">580</td><td class="right num">1,740</td></tr>
+        <tr><td class="center num">2</td><td class="num">S-00322</td><td>リンス300ml</td><td class="right num">1</td><td class="center">PCS</td><td class="right num">580</td><td class="right num">580</td></tr>
+        <tr><td class="center num">3</td><td class="num">S-00210</td><td>洗剤500ml</td><td class="right num">3</td><td class="center">PCS</td><td class="right num">320</td><td class="right num">960</td></tr>
+        <tr class="cold"><td class="center num">4</td><td class="num">S-00701</td><td>❄ 冷蔵食品セット</td><td class="right num">2</td><td class="center">PCS</td><td class="right num">1,200</td><td class="right num">2,400</td></tr>
+        <tr class="cold"><td class="center num">5</td><td class="num">S-00702</td><td>❄ 冷蔵スイーツ</td><td class="right num">1</td><td class="center">PCS</td><td class="right num">980</td><td class="right num">980</td></tr>
+        <tr><td colspan="7" style="height:30px; border-bottom:none;">　</td></tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="row"><div class="lbl">小計</div><div class="val">¥6,660</div></div>
+      <div class="row"><div class="lbl">消費税 (10%)</div><div class="val">¥666</div></div>
+      <div class="row"><div class="lbl">合計</div><div class="val">¥7,326</div></div>
+    </div>
+
+    <div style="margin-top:18px; padding:10px; border:2px solid #000; font-size:11px; line-height:1.6;">
+      <b>備考</b>：冷蔵商品が含まれます。受領後速やかに冷蔵保管をお願いいたします。<br>
+      関連: 出荷No SH-260501-00123 / 受注No SO-260501-00123
+    </div>
+
+    <div class="signature-area">
+      <div class="signature-box">
+        <div class="lbl">出荷担当</div>
+        <div class="stamp-circle">出荷</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">確認</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">受領印</div>
+      </div>
+    </div>
+
+    <div class="footer-info">
+      <span>※ お受取り後、内容に相違がないかご確認ください</span>
+      <span>SH-260501-00123</span>
+    </div>
+  </div>
+</div>
+
+<!-- 11 出荷明細書 -->
+<div class="section-divider"><span class="num">SAMPLE 11</span>出荷明細書（社内管理用）</div>
+<div class="sample-info">
+  <b>用途</b>：金額情報を持たない倉庫運用時の納品書相当。
+  <div class="specs">
+    <span>📐 A4縦</span>
+    <span>🖨️ 据置レーザー</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：冷蔵行は横縞地紋、温度欄は太字。合計行は黒ベタ反転で締めの印象を強める。
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">出 荷 明 細 書</div>
+      <div class="meta">
+        <div class="form-no">SH-260501-00123</div>
+        発行: 2026/05/01 14:08<br>
+        作業者: 田中
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">出荷先</div>
+        <div class="val">◯◯株式会社 東京支店<br>東京都千代田区千代田1-1-1</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">配送便</div>
+        <div class="val"><b>ヤマト運輸 / 関東-A14</b> / 14:30集荷 / 5/3 AM着</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">受注No</div>
+        <div class="val">SO-260501-00123</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">追跡番号</div>
+        <div class="val">1234-5678-9012</div>
+      </div>
+    </div>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th class="center" style="width:30px;">No</th>
+          <th style="width:80px;">SKU</th>
+          <th>商品名</th>
+          <th style="width:80px;">ロット</th>
+          <th style="width:80px;">期限</th>
+          <th class="right" style="width:60px;">数量</th>
+          <th class="center" style="width:40px;">単位</th>
+          <th class="center" style="width:50px;">温度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="center num">1</td><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26B</td><td class="num">27/03/31</td><td class="right num">3</td><td class="center">PCS</td><td class="center">常温</td></tr>
+        <tr><td class="center num">2</td><td class="num">S-00322</td><td>リンス300ml</td><td class="num">LOT-26B</td><td class="num">27/03/31</td><td class="right num">1</td><td class="center">PCS</td><td class="center">常温</td></tr>
+        <tr><td class="center num">3</td><td class="num">S-00210</td><td>洗剤500ml</td><td class="num">LOT-26B</td><td class="num">28/05/15</td><td class="right num">3</td><td class="center">PCS</td><td class="center">常温</td></tr>
+        <tr class="cold"><td class="center num">4</td><td class="num">S-00701</td><td>❄ 冷蔵食品セット</td><td class="num">LOT-26C</td><td class="num">26/05/15</td><td class="right num">2</td><td class="center">PCS</td><td class="center"><b>冷蔵</b></td></tr>
+        <tr class="cold"><td class="center num">5</td><td class="num">S-00702</td><td>❄ 冷蔵スイーツ</td><td class="num">LOT-26C</td><td class="num">26/05/10</td><td class="right num">1</td><td class="center">PCS</td><td class="center"><b>冷蔵</b></td></tr>
+        <tr style="background:#000; color:#fff; font-weight:900;">
+          <td colspan="5">合計</td>
+          <td class="right num">10</td>
+          <td class="center">PCS</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:18px; padding:10px; border:2px solid #000; font-size:11px; line-height:1.6;">
+      <b>個口情報</b>：本出荷は <b>3個口</b>に分かれます（個装ラベル参照）<br>
+      └ 1/3：常温品（SKU 1〜3）<br>
+      └ 2/3：冷蔵品（SKU 4〜5）<br>
+      └ 3/3：パンフレット同梱
+    </div>
+  </div>
+</div>
+
+<!-- 12 入荷検収書 -->
+<div class="section-divider"><span class="num">SAMPLE 12</span>入荷検収書（差異強調）</div>
+<div class="sample-info">
+  <b>用途</b>：入荷完了時の内部記録。仕入先控えとしても使用。
+  <div class="specs">
+    <span>📐 A4縦</span>
+    <span>🖨️ 据置レーザー</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：差異行は<b>斜線地紋＋3px太枠</b>で強調。色を使わずに「ここに注目」を明示。
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">入 荷 検 収 書</div>
+      <div class="meta">
+        <div class="form-no">RC-20260501-001</div>
+        検収日: 2026/05/01<br>
+        ページ: 1 / 1
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">仕 入 先</div>
+        <div class="val"><b>◯◯商事 株式会社</b><br>担当: 営業部 山田</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">入 荷 倉 庫</div>
+        <div class="val">◯◯倉庫 東京DC（1F）</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">ASN番号</div>
+        <div class="val">ASN-20260501-007</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">配送業者 / 車両</div>
+        <div class="val">山田運輸 / 品川 500 あ 12-34</div>
+      </div>
+    </div>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th class="center" style="width:30px;">No</th>
+          <th style="width:80px;">SKU</th>
+          <th>商品名</th>
+          <th style="width:70px;">ロット</th>
+          <th class="right" style="width:50px;">予定</th>
+          <th class="right" style="width:50px;">実数</th>
+          <th class="right" style="width:50px;">差異</th>
+          <th style="width:80px;">状態</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="center num">1</td><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26B</td><td class="right num">120</td><td class="right num">120</td><td class="right num">0</td><td>良品</td></tr>
+        <tr><td class="center num">2</td><td class="num">S-00322</td><td>リンス300ml</td><td class="num">LOT-26B</td><td class="right num">120</td><td class="right num">120</td><td class="right num">0</td><td>良品</td></tr>
+        <tr class="diff"><td class="center num">3</td><td class="num">S-00210</td><td>洗剤500ml</td><td class="num">LOT-26B</td><td class="right num">60</td><td class="right num">58</td><td class="right num">▼ 2</td><td>良品/輸送破損</td></tr>
+        <tr><td class="center num">4</td><td class="num">S-00211</td><td>洗剤詰替用</td><td class="num">LOT-26B</td><td class="right num">120</td><td class="right num">120</td><td class="right num">0</td><td>良品</td></tr>
+        <tr><td class="center num">5</td><td class="num">S-00401</td><td>歯ブラシ 中硬</td><td class="num">-</td><td class="right num">240</td><td class="right num">240</td><td class="right num">0</td><td>良品</td></tr>
+        <tr style="background:#000; color:#fff; font-weight:900;">
+          <td colspan="4">合計</td>
+          <td class="right num">660</td>
+          <td class="right num">658</td>
+          <td class="right num">▼ 2</td>
+          <td>差異1件</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:18px; padding:10px; border:3px solid #000; font-size:11px; line-height:1.6;">
+      <b>■ 差異の内容</b><br>
+      • 洗剤500ml LOT-26B：予定60→実数58（▼2 PCS）／ 理由：輸送中破損 ／ 承認: 山田リーダー（5/1 10:35）
+    </div>
+
+    <div class="signature-area">
+      <div class="signature-box">
+        <div class="lbl">検収者</div>
+        <div class="stamp-circle">田中</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">承認者</div>
+        <div class="stamp-circle">山田</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">仕入先確認</div>
+      </div>
+    </div>
+
+    <div class="footer-info">
+      <span>※ 本書は入荷確認の正式記録として保管されます</span>
+      <span>RC-20260501-001</span>
+    </div>
+  </div>
+</div>
+
+<!-- 13 棚卸結果表 -->
+<div class="section-divider"><span class="num">SAMPLE 13</span>棚卸結果表</div>
+<div class="sample-info">
+  <b>用途</b>：棚卸完了後の結果報告書。
+  <div class="specs">
+    <span>📐 A4縦</span>
+    <span>🖨️ 据置レーザー</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：差異行は斜線地紋＋太枠。差異マークは ▼（マイナス）／▲（プラス）で方向を明示。
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">棚 卸 結 果 表</div>
+      <div class="meta">
+        <div class="form-no">PLAN-26-04-W3</div>
+        棚卸実施: 2026/04/30<br>
+        ページ: 1 / 3
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">棚卸種別</div>
+        <div class="val">循環棚卸（A区画）</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">対象</div>
+        <div class="val">50ロケ / 312 SKU</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">一次担当</div>
+        <div class="val">田中、佐藤</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">差異率</div>
+        <div class="val"><b>0.32 %</b>（目標 0.5%以下）</div>
+      </div>
+    </div>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th style="width:90px;">ロケ</th>
+          <th style="width:80px;">SKU</th>
+          <th>商品名</th>
+          <th style="width:70px;">ロット</th>
+          <th class="right" style="width:60px;">システム</th>
+          <th class="right" style="width:60px;">カウント</th>
+          <th class="right" style="width:50px;">差異</th>
+          <th>理由 / 備考</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="num">A-01-01-1</td><td class="num">S-00100</td><td>食器用洗剤</td><td class="num">LOT-26B</td><td class="right num">48</td><td class="right num">48</td><td class="right num">0</td><td>—</td></tr>
+        <tr><td class="num">A-01-01-2</td><td class="num">S-00101</td><td>食器用洗剤 詰替</td><td class="num">LOT-26B</td><td class="right num">36</td><td class="right num">36</td><td class="right num">0</td><td>—</td></tr>
+        <tr class="diff"><td class="num">A-02-03-1</td><td class="num">S-00210</td><td>洗剤500ml</td><td class="num">LOT-26A</td><td class="right num">24</td><td class="right num">22</td><td class="right num">▼ 2</td><td>破損品発見・廃棄</td></tr>
+        <tr><td class="num">A-02-03-2</td><td class="num">S-00211</td><td>洗剤詰替用</td><td class="num">LOT-26B</td><td class="right num">60</td><td class="right num">60</td><td class="right num">0</td><td>—</td></tr>
+        <tr class="diff"><td class="num">A-03-01-1</td><td class="num">S-00301</td><td>柔軟剤 大</td><td class="num">LOT-26A</td><td class="right num">36</td><td class="right num">35</td><td class="right num">▼ 1</td><td>原因不明・要追跡</td></tr>
+        <tr><td class="num">A-03-01-2</td><td class="num">S-00302</td><td>柔軟剤 小</td><td class="num">LOT-26B</td><td class="right num">48</td><td class="right num">48</td><td class="right num">0</td><td>—</td></tr>
+        <tr><td class="num">A-04-02-1</td><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26B</td><td class="right num">120</td><td class="right num">120</td><td class="right num">0</td><td>—</td></tr>
+        <tr class="diff"><td class="num">A-05-01-1</td><td class="num">S-00401</td><td>歯ブラシ 中硬</td><td class="num">-</td><td class="right num">240</td><td class="right num">243</td><td class="right num">▲ 3</td><td>過剰計数 / 二次再カウント済</td></tr>
+        <tr style="background:#000; color:#fff; font-weight:900;">
+          <td colspan="6">小計（page 1）</td>
+          <td class="right num">0</td>
+          <td>差異3件</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px; padding:10px; border:2px solid #000; font-size:11px; line-height:1.7;">
+      <b>■ サマリー</b><br>
+      • 計画ロケ: 50 / 完了: 50（達成率 100%）<br>
+      • 一次カウント差異: 8件 / 二次カウント実施: 8件<br>
+      • 最終差異: 3件（▼2, ▼1, ▲3）<br>
+      • 在庫調整: 2件（差異理由が明確なもの）
+    </div>
+
+    <div class="signature-area">
+      <div class="signature-box">
+        <div class="lbl">棚卸責任者</div>
+        <div class="stamp-circle">山田</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">確認者</div>
+        <div class="stamp-circle">部長</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">最終承認</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14 在庫一覧表 -->
+<div class="section-divider"><span class="num">SAMPLE 14</span>在庫一覧表（A4横）</div>
+<div class="sample-info">
+  <b>用途</b>：在庫照会画面からPDF/印刷出力。
+  <div class="specs">
+    <span>📐 A4横</span>
+    <span>🖨️ 据置レーザー</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：期限警告は <b>⚠</b> 記号と太字で明示。冷蔵行は横縞地紋。引当中＝0は ▼ マークで負の意味を伝える。
+</div>
+<div class="print-area">
+  <div class="form-a4" style="width:1100px;">
+    <div class="form-header">
+      <div class="title">在 庫 一 覧 表</div>
+      <div class="meta">
+        <div class="form-no">基準: 2026/05/01 14:00</div>
+        東京DC（1F）<br>
+        ページ: 1 / 25
+      </div>
+    </div>
+
+    <div style="font-size:11px; margin-bottom:10px; padding:8px; border:1px solid #000; background:#e8e8e8;">
+      <b>検索条件</b>：在庫>0のみ / 良品 / 全荷主　<b>該当件数</b>：1,248件　<b>出力形式</b>：PDF
+    </div>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>商品名</th>
+          <th>カテゴリ</th>
+          <th>ロケ</th>
+          <th>ロット</th>
+          <th>期限</th>
+          <th class="right">在庫</th>
+          <th class="right">引当</th>
+          <th class="right">利用可</th>
+          <th>状態</th>
+          <th>温度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="num">S-00100</td><td>食器用洗剤</td><td>日用品</td><td class="num">A-01-01-1</td><td class="num">LOT-26B</td><td class="num">28/05/30</td><td class="right num">48</td><td class="right num">0</td><td class="right num"><b>48</b></td><td>良品</td><td>常温</td></tr>
+        <tr><td class="num">S-00101</td><td>食器用洗剤 詰替</td><td>日用品</td><td class="num">A-01-01-2</td><td class="num">LOT-26B</td><td class="num">28/05/30</td><td class="right num">36</td><td class="right num">6</td><td class="right num"><b>30</b></td><td>良品</td><td>常温</td></tr>
+        <tr><td class="num">S-00210</td><td>洗剤500ml</td><td>日用品</td><td class="num">A-02-03-1</td><td class="num">LOT-26A</td><td class="num">28/03/15</td><td class="right num">22</td><td class="right num">3</td><td class="right num"><b>19</b></td><td>良品</td><td>常温</td></tr>
+        <tr><td class="num">S-00321</td><td>シャンプー300ml</td><td>日用品</td><td class="num">A-08-02-1</td><td class="num">LOT-26B</td><td class="num">27/03/31</td><td class="right num">120</td><td class="right num">12</td><td class="right num"><b>108</b></td><td>良品</td><td>常温</td></tr>
+        <tr><td class="num">S-00321</td><td>シャンプー300ml</td><td>日用品</td><td class="num">A-08-02-2</td><td class="num">LOT-26C</td><td class="num">27/05/31</td><td class="right num">84</td><td class="right num">0</td><td class="right num"><b>84</b></td><td>良品</td><td>常温</td></tr>
+        <tr class="diff"><td class="num">S-00323</td><td>ボディソープ500ml</td><td>日用品</td><td class="num">A-09-01-2</td><td class="num">LOT-25Z</td><td class="num"><b>⚠ 26/06/15</b></td><td class="right num">36</td><td class="right num">0</td><td class="right num"><b>36</b></td><td>期限近</td><td>常温</td></tr>
+        <tr><td class="num">S-00401</td><td>歯ブラシ 中硬</td><td>日用品</td><td class="num">B-12-04-3</td><td class="num">-</td><td class="num">-</td><td class="right num">243</td><td class="right num">48</td><td class="right num"><b>195</b></td><td>良品</td><td>常温</td></tr>
+        <tr><td class="num">S-00501</td><td>ティッシュ 5箱組</td><td>日用品</td><td class="num">C-01-01-1</td><td class="num">-</td><td class="num">-</td><td class="right num">12</td><td class="right num">12</td><td class="right num"><b>▼ 0</b></td><td>引当中</td><td>常温</td></tr>
+        <tr class="cold"><td class="num">F-00701</td><td>❄ 冷蔵食品セット</td><td>食品</td><td class="num">F-01-01-1</td><td class="num">LOT-26C</td><td class="num">26/05/15</td><td class="right num">28</td><td class="right num">2</td><td class="right num"><b>26</b></td><td>良品</td><td><b>冷蔵</b></td></tr>
+        <tr class="cold"><td class="num">F-00702</td><td>❄ 冷蔵スイーツ</td><td>食品</td><td class="num">F-01-02-1</td><td class="num">LOT-26C</td><td class="num">26/05/10</td><td class="right num">15</td><td class="right num">1</td><td class="right num"><b>14</b></td><td>良品</td><td><b>冷蔵</b></td></tr>
+        <tr style="background:#000; color:#fff; font-weight:900;">
+          <td colspan="6">小計（page 1 / 表示10件）</td>
+          <td class="right num">644</td>
+          <td class="right num">84</td>
+          <td class="right num">560</td>
+          <td colspan="2">-</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="footer-info">
+      <span>※ ⚠：期限60日以内　※冷蔵品は横縞地紋　※▼ 0：引当中で利用可0　※斜線地紋：要注意行</span>
+      <span>page 1 / 25</span>
+    </div>
+  </div>
+</div>
+
+<!-- 15 仕分けカンバン -->
+<div class="section-divider"><span class="num">SAMPLE 15</span>方面別仕分けカンバン</div>
+<div class="sample-info">
+  <b>用途</b>：仕分けエリアの棚・カゴ車・パレット床に貼付。当日朝礼時に一括印刷→各レーンに掲示。
+  <div class="specs">
+    <span>📐 A5（148×210mm）</span>
+    <span>🖨️ 据置レーザー</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：方面コードは<b>72pxの極大文字</b>。色がなくても文字そのものが看板になる。出荷ラベルの方面コードと完全一致するため作業者が迷わない。
+</div>
+<div class="print-area" style="flex-direction: column; align-items: center; gap: 20px;">
+
+  <div class="label-sort-board">
+    <div class="sort-head">
+      <div class="ttl">▼ ヤマト運輸 ▼</div>
+      <div class="pickup">集荷 14:30</div>
+    </div>
+    <div class="sort-route">関東-A14</div>
+    <div class="sort-info">
+      <div class="item">
+        <div class="lbl">対象方面</div>
+        <div class="val">東京 23区南部</div>
+      </div>
+      <div class="item">
+        <div class="lbl">配達日</div>
+        <div class="val">5/3 (土) AM</div>
+      </div>
+      <div class="item">
+        <div class="lbl">予定件数</div>
+        <div class="val">12件 / 24個口</div>
+      </div>
+      <div class="item">
+        <div class="lbl">温度帯</div>
+        <div class="val">常温・冷蔵 混載可</div>
+      </div>
+    </div>
+    <div class="sort-foot">
+      <span>レーン番号: <b>L-04</b></span>
+      <span>2026/05/01 朝礼時印刷</span>
+    </div>
+  </div>
+
+  <div class="label-sort-board">
+    <div class="sort-head">
+      <div class="ttl">★ 福山通運 ★</div>
+      <div class="pickup">集荷 14:00</div>
+    </div>
+    <div class="sort-route">中部-F03</div>
+    <div class="sort-info">
+      <div class="item">
+        <div class="lbl">対象方面</div>
+        <div class="val">愛知・岐阜・三重</div>
+      </div>
+      <div class="item">
+        <div class="lbl">配達日</div>
+        <div class="val">5/2 (金) 翌着</div>
+      </div>
+      <div class="item">
+        <div class="lbl">予定件数</div>
+        <div class="val">8件 / 32パレット</div>
+      </div>
+      <div class="item">
+        <div class="lbl">温度帯</div>
+        <div class="val">常温のみ（BtoB）</div>
+      </div>
+    </div>
+    <div class="sort-foot">
+      <span>レーン番号: <b>L-09 (パレット)</b></span>
+      <span>2026/05/01 朝礼時印刷</span>
+    </div>
+  </div>
+
+</div>
+
+
+
+<!-- ====================================== -->
+<!-- ⑯ カゴラベル NEW v3.0 -->
+<!-- ====================================== -->
+<div class="section-divider"><span class="num">SAMPLE 16</span>カゴラベル（v3.0 NEW）</div>
+<div class="sample-info">
+  <b>用途</b>：エリア並行/ゾーンリレー方式のピッキング時、各カゴを識別するためのバーコードラベル。<br>
+  <b>運用</b>：ピック開始時にHTからBT-PR2で発行・カゴに貼付。仮置き・積込までこのラベルで追跡。
+  <div class="specs">
+    <span>📐 50 × 30 mm</span>
+    <span>🖨️ BT-PR2</span>
+    <span>📊 Code128</span>
+    <span>📁 CONTAINER_LABEL</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：カゴIDと対象受注を大きく表示。担当エリアは黒ベタ反転で目立たせる。
+</div>
+<div class="print-area">
+  <div class="label label-sku-s">
+    <div class="code">CON-260501-0001</div>
+    <div class="name" style="font-size:9px;">SO-00121<br>1F-AMB</div>
+    <svg class="barcode-svg" viewBox="0 0 200 24" preserveAspectRatio="none" style="height:24px;">
+      <g fill="#000">
+        <rect x="0" y="0" width="2" height="24"/><rect x="3" y="0" width="3" height="24"/>
+        <rect x="8" y="0" width="1" height="24"/><rect x="11" y="0" width="2" height="24"/>
+        <rect x="15" y="0" width="3" height="24"/><rect x="20" y="0" width="2" height="24"/>
+        <rect x="24" y="0" width="1" height="24"/><rect x="27" y="0" width="3" height="24"/>
+        <rect x="32" y="0" width="2" height="24"/><rect x="36" y="0" width="1" height="24"/>
+        <rect x="39" y="0" width="2" height="24"/><rect x="43" y="0" width="3" height="24"/>
+        <rect x="48" y="0" width="2" height="24"/><rect x="52" y="0" width="1" height="24"/>
+        <rect x="55" y="0" width="3" height="24"/><rect x="60" y="0" width="2" height="24"/>
+        <rect x="64" y="0" width="1" height="24"/><rect x="67" y="0" width="2" height="24"/>
+        <rect x="71" y="0" width="3" height="24"/><rect x="76" y="0" width="2" height="24"/>
+        <rect x="80" y="0" width="1" height="24"/><rect x="83" y="0" width="2" height="24"/>
+        <rect x="87" y="0" width="3" height="24"/><rect x="92" y="0" width="1" height="24"/>
+        <rect x="95" y="0" width="2" height="24"/><rect x="99" y="0" width="3" height="24"/>
+        <rect x="104" y="0" width="2" height="24"/><rect x="108" y="0" width="1" height="24"/>
+        <rect x="111" y="0" width="3" height="24"/><rect x="116" y="0" width="2" height="24"/>
+        <rect x="120" y="0" width="1" height="24"/><rect x="123" y="0" width="2" height="24"/>
+        <rect x="127" y="0" width="3" height="24"/><rect x="132" y="0" width="1" height="24"/>
+        <rect x="135" y="0" width="3" height="24"/><rect x="140" y="0" width="2" height="24"/>
+        <rect x="144" y="0" width="1" height="24"/><rect x="147" y="0" width="3" height="24"/>
+        <rect x="152" y="0" width="2" height="24"/><rect x="156" y="0" width="1" height="24"/>
+        <rect x="159" y="0" width="2" height="24"/><rect x="163" y="0" width="3" height="24"/>
+        <rect x="168" y="0" width="2" height="24"/><rect x="172" y="0" width="1" height="24"/>
+        <rect x="175" y="0" width="3" height="24"/><rect x="180" y="0" width="2" height="24"/>
+        <rect x="184" y="0" width="1" height="24"/><rect x="187" y="0" width="2" height="24"/>
+        <rect x="191" y="0" width="3" height="24"/><rect x="196" y="0" width="1" height="24"/>
+      </g>
+    </svg>
+    <div class="barcode-text">CON-260501-0001</div>
+    <div class="meta">
+      <span style="background:#000;color:#fff;padding:1px 4px;font-size:7px;font-weight:700;">1F-AMB</span>
+      <span>1/3</span>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- ⑰ 受注集合チェックリスト NEW v3.0 -->
+<!-- ====================================== -->
+<div class="section-divider"><span class="num">SAMPLE 17</span>受注集合チェックリスト（v3.0 NEW）</div>
+<div class="sample-info">
+  <b>用途</b>：仮置きエリアで引渡担当者が、受注ごとにカゴが揃ったかを確認するチェックリスト。<br>
+  <b>運用</b>：W-309 引渡管理画面から印刷。紙運用倉庫向け。
+  <div class="specs">
+    <span>📐 A4縦</span>
+    <span>🖨️ 据置レーザー</span>
+    <span>📁 STAGING_CHECKLIST</span>
+  </div>
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">受注集合チェックリスト</div>
+      <div class="meta">
+        <div class="form-no">対象便: ヤマト 関東-A14</div>
+        集荷時刻: 14:30<br>
+        印刷: 2026/05/01 13:30
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">荷主</div>
+        <div class="val"><b>株式会社マルキ食品</b></div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">引渡担当者</div>
+        <div class="val">伊藤</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">予定件数</div>
+        <div class="val"><b>5受注 / 12個口</b></div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">集合状況</div>
+        <div class="val">2 / 5 完了</div>
+      </div>
+    </div>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th class="center" style="width:30px;">No</th>
+          <th>受注No</th>
+          <th>顧客</th>
+          <th class="center" style="width:50px;">予定</th>
+          <th class="center" style="width:50px;">到着</th>
+          <th>不足カゴ（担当エリア）</th>
+          <th class="center" style="width:60px;">状態</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="center num">1</td><td class="num">SO-00121</td><td>○○商店</td><td class="center num">3</td><td class="center num">3</td><td>—</td><td class="center" style="background:#000;color:#fff;font-weight:700;">完了</td></tr>
+        <tr><td class="center num">2</td><td class="num">SO-00122</td><td>△△店</td><td class="center num">2</td><td class="center num">2</td><td>—</td><td class="center" style="background:#000;color:#fff;font-weight:700;">完了</td></tr>
+        <tr class="diff"><td class="center num">3</td><td class="num">SO-00123</td><td>□□倉庫</td><td class="center num">2</td><td class="center num">1</td><td>2/2 → COLD</td><td class="center">▲ 残1</td></tr>
+        <tr class="diff"><td class="center num">4</td><td class="num">SO-00124</td><td>◇◇商事</td><td class="center num">3</td><td class="center num">2</td><td>3/3 → 2F-AMB</td><td class="center">▲ 残1</td></tr>
+        <tr class="diff"><td class="center num">5</td><td class="num">SO-00125</td><td>※※スーパー</td><td class="center num">2</td><td class="center num">0</td><td>1/2, 2/2 → 1F-AMB</td><td class="center">▲ 残2</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px; padding:10px; border:2px solid #000; font-size:11px; line-height:1.7;">
+      <b>■ 引渡担当者チェック欄</b><br>
+      □ 全受注のカゴ到着確認<br>
+      □ カゴ内容と受注の整合性確認<br>
+      □ 方面別レーンへの集積完了<br>
+      □ 積込担当者への引継完了
+    </div>
+
+    <div class="signature-area">
+      <div class="signature-box">
+        <div class="lbl">引渡担当者</div>
+        <div class="stamp-circle">伊藤</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">確認者</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">最終確認</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- ⑱ 積込明細書（マニフェスト） NEW v3.0 -->
+<!-- ====================================== -->
+<div class="section-divider"><span class="num">SAMPLE 18</span>積込明細書/マニフェスト（v3.0 NEW）</div>
+<div class="sample-info">
+  <b>用途</b>：運送会社にトラックで引き渡す瞬間の確認書類。倉庫担当者・ドライバーの相互確認に使用。<br>
+  <b>運用</b>：集荷予定30分前に W-307 積込管理画面から自動印刷。2部印刷（ドライバー控え・倉庫保管用）。
+  <div class="specs">
+    <span>📐 A4縦</span>
+    <span>🖨️ 据置レーザー</span>
+    <span>📁 LOADING_MANIFEST</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：受領印欄を太枠で強調、ドライバー名・車両番号を手書き記入欄として大きく確保。
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">積込明細書（マニフェスト）</div>
+      <div class="meta">
+        <div class="form-no">LOAD-260501-001</div>
+        印刷: 2026/05/01 14:00<br>
+        ページ: 1 / 1
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">運 送 会 社</div>
+        <div class="val"><b>ヤマト運輸</b></div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">便・方面</div>
+        <div class="val"><b>関東-A14</b></div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">集荷予定</div>
+        <div class="val">2026/05/01 14:30</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">引渡倉庫</div>
+        <div class="val">XX物流 東京DC（1F）</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+      <div style="border:2px solid #000; padding:8px;">
+        <div style="font-size:10px; font-weight:700; color:#666; margin-bottom:4px;">ドライバー名</div>
+        <div style="height:30px; border-bottom:1px solid #000;"></div>
+      </div>
+      <div style="border:2px solid #000; padding:8px;">
+        <div style="font-size:10px; font-weight:700; color:#666; margin-bottom:4px;">車両番号</div>
+        <div style="height:30px; border-bottom:1px solid #000;">品川 500 あ 12-34</div>
+      </div>
+    </div>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th class="center" style="width:30px;">No</th>
+          <th>出荷No</th>
+          <th>顧客名</th>
+          <th>荷主</th>
+          <th class="center" style="width:60px;">個口</th>
+          <th class="right" style="width:80px;">重量(kg)</th>
+          <th>カゴID範囲</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="center num">1</td><td class="num">SH-00121</td><td>○○商店</td><td>マルキ食品</td><td class="center num">3</td><td class="right num">7.5</td><td class="num" style="font-size:10px;">CON-0001..0003</td></tr>
+        <tr><td class="center num">2</td><td class="num">SH-00122</td><td>△△店</td><td>マルキ食品</td><td class="center num">2</td><td class="right num">5.2</td><td class="num" style="font-size:10px;">CON-0004..0005</td></tr>
+        <tr><td class="center num">3</td><td class="num">SH-00123</td><td>□□倉庫</td><td>マルキ食品</td><td class="center num">2</td><td class="right num">12.8</td><td class="num" style="font-size:10px;">CON-0006..0007</td></tr>
+        <tr><td class="center num">4</td><td class="num">SH-00126</td><td>○○薬局</td><td>マルキ食品</td><td class="center num">2</td><td class="right num">4.5</td><td class="num" style="font-size:10px;">CON-0008..0009</td></tr>
+        <tr><td class="center num">5</td><td class="num">SH-00127</td><td>△△ストア</td><td>マルキ食品</td><td class="center num">3</td><td class="right num">9.2</td><td class="num" style="font-size:10px;">CON-0010..0012</td></tr>
+        <tr style="background:#000; color:#fff; font-weight:900;">
+          <td colspan="4">合計</td>
+          <td class="center num">12</td>
+          <td class="right num">39.2</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px;">
+      <div style="border:3px solid #000; padding:14px; min-height:120px;">
+        <div style="font-size:11px; font-weight:700; margin-bottom:8px;">倉庫担当者印（送り出し）</div>
+        <div style="font-size:10px; color:#666;">氏名：　　　　　　　　　　</div>
+        <div style="font-size:10px; color:#666; margin-top:6px;">日時：　　／　　　　：　　</div>
+        <div style="margin-top:14px; text-align:right;">
+          <div style="display:inline-block; width:50px; height:50px; border:2px solid #000; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; opacity:0.4;">印</div>
+        </div>
+      </div>
+      <div style="border:3px solid #000; padding:14px; min-height:120px;">
+        <div style="font-size:11px; font-weight:700; margin-bottom:8px;">ドライバー受領印</div>
+        <div style="font-size:10px; color:#666;">氏名：　　　　　　　　　　</div>
+        <div style="font-size:10px; color:#666; margin-top:6px;">日時：　　／　　　　：　　</div>
+        <div style="margin-top:14px; text-align:right;">
+          <div style="display:inline-block; width:50px; height:50px; border:2px solid #000; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; opacity:0.4;">印</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-info">
+      <span>※ 本書は引き渡し時の正式記録として5年間保管</span>
+      <span>LOAD-260501-001</span>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- ⑲ 日次出荷実績レポート NEW v3.0 -->
+<!-- ====================================== -->
+<div class="section-divider"><span class="num">SAMPLE 19</span>日次出荷実績レポート（v3.0 NEW）</div>
+<div class="sample-info">
+  <b>用途</b>：荷主向け日次レポート。倉庫運営側から荷主へ送付、または荷主ポータルから閲覧。<br>
+  <b>運用</b>：毎日23時に自動生成、メール添付（PDF）またはポータルで閲覧可能。
+  <div class="specs">
+    <span>📐 A4横</span>
+    <span>🖨️ 据置レーザー / PDF</span>
+    <span>📁 DAILY_SHIPMENT_REPORT</span>
+  </div>
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">日次出荷実績レポート</div>
+      <div class="meta">
+        <div class="form-no">2026年5月1日（金）</div>
+        荷主: マルキ食品<br>
+        発行: XX物流
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">出荷件数</div>
+        <div class="val"><b>198 / 245</b>（達成率 80.8%）</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">個口数</div>
+        <div class="val"><b>432 個口</b></div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">総重量</div>
+        <div class="val">1,245 kg</div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">誤出荷率</div>
+        <div class="val"><b>0.00%</b></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:13px; margin:16px 0 8px; border-bottom:1px solid #000; padding-bottom:4px;">配送業者別実績</h3>
+    <table class="detail">
+      <thead>
+        <tr><th>配送業者</th><th class="right">件数</th><th class="right">個口</th><th class="right">重量(kg)</th><th class="right">構成比</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ヤマト運輸</td><td class="right num">120</td><td class="right num">280</td><td class="right num">820.5</td><td class="right num">60.6%</td></tr>
+        <tr><td>佐川急便</td><td class="right num">52</td><td class="right num">110</td><td class="right num">312.0</td><td class="right num">26.3%</td></tr>
+        <tr><td>福山通運</td><td class="right num">26</td><td class="right num">42</td><td class="right num">112.5</td><td class="right num">13.1%</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:13px; margin:16px 0 8px; border-bottom:1px solid #000; padding-bottom:4px;">出荷ランキング Top 5</h3>
+    <table class="detail">
+      <thead>
+        <tr><th class="center">順位</th><th>SKU</th><th>商品名</th><th class="right">出荷数(PCS)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="center">1</td><td class="num">S-00321</td><td>シャンプー300ml</td><td class="right num">120</td></tr>
+        <tr><td class="center">2</td><td class="num">S-00210</td><td>洗剤500ml</td><td class="right num">98</td></tr>
+        <tr><td class="center">3</td><td class="num">S-00322</td><td>リンス300ml</td><td class="right num">76</td></tr>
+        <tr><td class="center">4</td><td class="num">S-00401</td><td>歯ブラシ</td><td class="right num">52</td></tr>
+        <tr><td class="center">5</td><td class="num">S-00501</td><td>ティッシュ</td><td class="right num">48</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px; padding:10px; border:2px solid #000; font-size:11px; line-height:1.7;">
+      <b>■ 本日のKPI</b><br>
+      • 出荷リードタイム平均：2.3時間（目標 3時間以内 ✓）<br>
+      • 引き渡し定時率：100%（目標 95%以上 ✓）<br>
+      • 誤出荷件数：0件（目標 0.05%以下 ✓）<br>
+      • 翌日に持ち越した出荷：47件（前日からの増減 -8件）
+    </div>
+  </div>
+</div>
+
+<!-- ====================================== -->
+<!-- ⑳ 月次請求書 NEW v3.0 -->
+<!-- ====================================== -->
+<div class="section-divider"><span class="num">SAMPLE 20</span>月次請求書（v3.0 NEW）</div>
+<div class="sample-info">
+  <b>用途</b>：3PL運用での荷主向け月次請求書。WMSで自動生成、管理者承認後に発行。<br>
+  <b>運用</b>：毎月1日にdraft生成 → 管理者確認 → 発行（issued）→ PDFを荷主へメール送付。
+  <div class="specs">
+    <span>📐 A4縦</span>
+    <span>🖨️ 据置レーザー / PDF</span>
+    <span>📁 MONTHLY_INVOICE</span>
+  </div>
+</div>
+<div class="design-tips">
+  <b>モノクロ識別の工夫</b>：合計欄を黒ベタ反転で強調。請求金額が一目で分かる。
+</div>
+<div class="print-area">
+  <div class="form-a4">
+    <div class="form-header">
+      <div class="title">請　求　書</div>
+      <div class="meta">
+        <div class="form-no">INV-MARUKI-202604</div>
+        発行: 2026年5月1日<br>
+        ページ: 1 / 1
+      </div>
+    </div>
+
+    <div class="info-area">
+      <div class="info-block">
+        <div class="lbl">請 求 先</div>
+        <div class="val">
+          〒100-0001<br>
+          東京都千代田区...<br>
+          <b>株式会社マルキ食品</b> 御中<br>
+          経理部　ご担当者様
+        </div>
+      </div>
+      <div class="info-block">
+        <div class="lbl">発　行　元</div>
+        <div class="val">
+          〒135-0064<br>
+          東京都江東区青海1-1-1<br>
+          <b>XX物流 株式会社</b><br>
+          登録番号: T9876543210123<br>
+          TEL: 03-XXXX-XXXX
+        </div>
+      </div>
+    </div>
+
+    <div style="margin:14px 0; padding:10px; border:1px solid #000; background:#e8e8e8; text-align:center;">
+      <span style="font-size:12px;">請求期間: <b>2026年4月1日 〜 4月30日</b>　／　支払期限: <b>2026年5月31日</b></span>
+    </div>
+
+    <p style="font-size:13px; margin-bottom:10px;">下記の通りご請求申し上げます。</p>
+
+    <table class="detail">
+      <thead>
+        <tr>
+          <th class="center" style="width:30px;">No</th>
+          <th>項目</th>
+          <th class="right" style="width:80px;">単価</th>
+          <th class="center" style="width:60px;">数量</th>
+          <th class="center" style="width:50px;">単位</th>
+          <th class="right" style="width:100px;">金額</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="center num">1</td><td>保管料（パレット日数）</td><td class="right num">80</td><td class="center num">2,500</td><td class="center">日</td><td class="right num">200,000</td></tr>
+        <tr><td class="center num">2</td><td>入荷料（件数）</td><td class="right num">200</td><td class="center num">400</td><td class="center">件</td><td class="right num">80,000</td></tr>
+        <tr><td class="center num">3</td><td>出荷料（件数）</td><td class="right num">200</td><td class="center num">350</td><td class="center">件</td><td class="right num">70,000</td></tr>
+        <tr><td class="center num">4</td><td>返品処理料</td><td class="right num">500</td><td class="center num">10</td><td class="center">件</td><td class="right num">5,000</td></tr>
+        <tr><td class="center num">5</td><td>廃棄処理料（実費）</td><td class="right num">—</td><td class="center num">—</td><td class="center">—</td><td class="right num">8,500</td></tr>
+        <tr><td class="center num">6</td><td>棚卸料</td><td class="right num">2,000</td><td class="center num">2</td><td class="center">回</td><td class="right num">4,000</td></tr>
+        <tr><td colspan="6" style="height:30px; border:1px solid #999;">　</td></tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="row"><div class="lbl">小計</div><div class="val">¥367,500</div></div>
+      <div class="row"><div class="lbl">消費税 (10%)</div><div class="val">¥36,750</div></div>
+      <div class="row"><div class="lbl">合計</div><div class="val">¥404,250</div></div>
+    </div>
+
+    <div style="margin-top:18px; padding:10px; border:2px solid #000; font-size:11px; line-height:1.6;">
+      <b>■ お振込先</b><br>
+      ◯◯銀行 ◯◯支店　普通口座 1234567<br>
+      口座名義：エックスエックスブツリュウ（カ<br>
+      ※振込手数料はご負担ください
+    </div>
+
+    <div class="signature-area">
+      <div class="signature-box">
+        <div class="lbl">担当者印</div>
+        <div class="stamp-circle">経理</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">承認者印</div>
+        <div class="stamp-circle">部長</div>
+      </div>
+      <div class="signature-box">
+        <div class="lbl">代表者印</div>
+      </div>
+    </div>
+
+    <div class="footer-info">
+      <span>※ 詳細は別添「月次出荷実績レポート」をご参照ください</span>
+      <span>INV-MARUKI-202604</span>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

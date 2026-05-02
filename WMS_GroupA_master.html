@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS グループA マスタ系（修正・新規）4画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-rev { display:inline-block; background:#b8002e; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:disabled, .field select:disabled { background:#f0f2f5; color:var(--c-text-mute); cursor:not-allowed; }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:14px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:16px; margin-top:16px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:12px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-alert-lt); border-left-color:var(--c-alert); }
+  .note-box.warn .label { color:var(--c-alert); }
+
+  .modal-style { background:var(--c-base); border:1px solid var(--c-line); max-width:900px; margin:0 auto; }
+  .modal-style .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-style .modal-header h2 { font-size:15px; font-weight:600; color:var(--c-text); }
+  .modal-style .modal-body { padding:18px; max-height:600px; overflow-y:auto; }
+  .modal-style .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+
+  .text-mono { font-family:var(--f-mono); }
+  .text-bold { font-weight:600; }
+
+  /* セクション内の小見出し */
+  .sub-section { margin:14px 0 8px; padding:8px 12px; background:var(--c-bg); border-left:3px solid var(--c-accent); font-size:12px; font-weight:600; color:var(--c-text); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">グループA　マスタ系（修正・新規）　4画面</h1>
+<p class="subtitle">倉庫マスタ修正／契約単価設定拡張／荷主×再保 控除設定（新）</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#W-505-list"><b>W-505</b>倉庫マスタ一覧（修正）</a>
+  <a href="#W-505-edit"><b>W-505</b>倉庫マスタ編集（修正）</a>
+  <a href="#W-511"><b>W-511</b>契約単価設定（拡張）</a>
+  <a href="#W-513"><b>W-513</b>荷主×再保 控除設定（新）</a>
+</div>
+
+<!-- ============================== -->
+<!-- W-505 倉庫マスタ 一覧（修正版） -->
+<!-- ============================== -->
+<div class="section-divider" id="W-505-list">
+  <span class="num">W-505</span>倉庫マスタ 一覧
+  <span class="badge-rev">REV</span>
+</div>
+<div class="desc">
+  <b>修正点</b>：コード体系を「英2桁＋3桁数字」に変更（WH001/YU001等）／運営区分（自社運営／外部委託）の表示を追加／枝番管理は廃止<br>
+  <b>用途</b>：自社事業所と外部委託先（再保管先）を統合的に管理。荷主と同じ命名規則で統一。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/master/warehouses</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#" class="active">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">ピッキングエリア</a>
+        <a href="#">在庫ステータス</a>
+        <a href="#">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#">ユーザー</a>
+        <a href="#">カレンダー</a>
+        <a href="#">契約単価</a>
+        <a href="#">荷主×再保 控除設定</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>倉庫マスタ</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>倉庫コード</label><input value="" placeholder="WH___, YU___ 等"></div>
+            <div class="field"><label>倉庫名</label><input value=""></div>
+            <div class="field"><label>運営区分</label>
+              <select>
+                <option>すべて</option>
+                <option>自社運営</option>
+                <option>外部委託（再保管先）</option>
+              </select>
+            </div>
+            <div class="field"><label>都道府県</label><select><option>すべて</option></select></div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b>5件</b>（自社3件＋外部委託2件）</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn primary sm">＋ 新規登録</button>
+              <button class="btn primary sm">検索</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>倉庫一覧</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:90px;">倉庫コード</th>
+                  <th>倉庫名</th>
+                  <th class="center" style="width:130px;">運営区分</th>
+                  <th>運営会社／委託先</th>
+                  <th>住所</th>
+                  <th class="center" style="width:80px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">WH001</td>
+                  <td>時吉倉庫 東京DC</td>
+                  <td class="center"><span class="pill accent">自社運営</span></td>
+                  <td>時吉倉庫㈱</td>
+                  <td>東京都江東区青海1-1-1</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">WH002</td>
+                  <td>時吉倉庫 大阪DC</td>
+                  <td class="center"><span class="pill accent">自社運営</span></td>
+                  <td>時吉倉庫㈱</td>
+                  <td>大阪府大阪市住之江区南港北2-1-10</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">WH003</td>
+                  <td>時吉倉庫 名古屋DC</td>
+                  <td class="center"><span class="pill accent">自社運営</span></td>
+                  <td>時吉倉庫㈱</td>
+                  <td>愛知県名古屋市港区本宮町1-2-3</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">YU001</td>
+                  <td>吉富運輸 千葉センター</td>
+                  <td class="center"><span class="pill">外部委託</span></td>
+                  <td>吉富運輸㈱</td>
+                  <td>千葉県市川市原木3-1-2</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">TK001</td>
+                  <td>○○倉庫 埼玉</td>
+                  <td class="center"><span class="pill">外部委託</span></td>
+                  <td>○○倉庫㈱</td>
+                  <td>埼玉県越谷市流通団地1-1</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-505 倉庫マスタ 編集（修正版） -->
+<!-- ============================== -->
+<div class="section-divider" id="W-505-edit">
+  <span class="num">W-505</span>倉庫マスタ 編集
+  <span class="badge-rev">REV</span>
+</div>
+<div class="desc">
+  <b>修正点</b>：運営区分を選択／外部委託の場合は委託先情報・契約単価リンクを表示／枝番欄を削除<br>
+  <b>動作</b>：「外部委託」を選択すると委託先関連の項目が表示される。コード変更は登録後不可。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/master/warehouses/YU001/edit</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#" class="active">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">契約単価</a>
+        <a href="#">荷主×再保 控除設定</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　倉庫マスタ　/　<b>YU001 吉富運輸 千葉センター 編集</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="modal-style">
+          <div class="modal-header">
+            <h2>倉庫マスタ 編集　/　YU001</h2>
+            <span class="pill">外部委託</span>
+          </div>
+          <div class="modal-body">
+
+            <div class="form-section">
+              <h3>基本情報</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>倉庫コード<span class="required">*</span></label>
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <input value="YU" disabled style="width:60px; text-align:center; font-family:var(--f-mono); font-weight:600;">
+                    <input value="001" disabled style="width:80px; text-align:center; font-family:var(--f-mono); font-weight:600;">
+                  </div>
+                  <div class="hint">英2桁（任意）＋3桁数字（自動採番）／登録後変更不可</div>
+                </div>
+                <div class="field">
+                  <label>倉庫名<span class="required">*</span></label>
+                  <input value="吉富運輸 千葉センター">
+                </div>
+                <div class="field">
+                  <label>運営区分<span class="required">*</span></label>
+                  <select>
+                    <option>自社運営</option>
+                    <option selected>外部委託（再保管先）</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>タイムゾーン<span class="required">*</span></label>
+                  <select><option selected>Asia/Tokyo</option></select>
+                </div>
+                <div class="field">
+                  <label>営業時間</label>
+                  <input value="08:00-18:00">
+                </div>
+                <div class="field">
+                  <label>運営会社（自社運営時）</label>
+                  <input value="" disabled placeholder="外部委託の場合は不要">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>外部委託先情報（運営区分＝外部委託の場合）</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>委託先業者名<span class="required">*</span></label>
+                  <input value="吉富運輸㈱">
+                </div>
+                <div class="field">
+                  <label>担当者氏名</label>
+                  <input value="○○ ○○">
+                </div>
+                <div class="field">
+                  <label>担当者連絡先</label>
+                  <input value="047-XXX-XXXX">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>支払締め日</label>
+                  <select>
+                    <option>月末締め</option>
+                    <option selected>20日締め</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>支払サイト</label>
+                  <select>
+                    <option selected>翌月末払い</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>振込先口座</label>
+                  <input value="○○銀行 ○○支店 普通 1234567">
+                </div>
+              </div>
+              <div class="note-box">
+                <div class="label">委託先への支払単価について</div>
+                委託先への支払単価は <b>W-511 契約単価設定</b> で管理します。荷主向け単価と同じ画面で「委託先向け」タブから設定してください。
+                <div style="margin-top:6px;">
+                  <button class="btn sm">→ W-511 契約単価設定 を開く</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>住所</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>郵便番号<span class="required">*</span></label>
+                  <input value="272-0014" style="max-width:140px;">
+                </div>
+                <div class="field" style="grid-column:span 2;">
+                  <label>住所<span class="required">*</span></label>
+                  <input value="千葉県市川市原木3-1-2">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>連絡先</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>電話<span class="required">*</span></label>
+                  <input value="047-XXX-XXXX">
+                </div>
+                <div class="field">
+                  <label>FAX</label>
+                  <input value="047-XXX-XXXY">
+                </div>
+                <div class="field">
+                  <label>メール</label>
+                  <input value="chiba@yoshitomi-trans.example.com">
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn">キャンセル</button>
+            <button class="btn danger">削除</button>
+            <button class="btn primary">保存</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-511 契約単価設定（拡張版） -->
+<!-- ============================== -->
+<div class="section-divider" id="W-511">
+  <span class="num">W-511</span>契約単価設定
+  <span class="badge-rev">REV</span>
+</div>
+<div class="desc">
+  <b>拡張点</b>：荷主向け／委託先向けの2タブで統合管理／保管料計算方式（3期/2期/坪貸し）／期分け設定／端数処理／単価変更履歴・自動切替<br>
+  <b>動作</b>：契約単価は履歴管理。事前登録した単価は適用開始日に自動切替。請求書発行済み月は変更不可。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/master/billing-rates/MK001</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#" class="active">契約単価</a>
+        <a href="#">荷主×再保 控除設定</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>契約単価設定</b></div>
+        <div class="actions">
+          <div class="owner-switcher">対象：<b>マルキ食品 (MK001)</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="tabs">
+          <div class="tab active">荷主向け契約単価（収入）</div>
+          <div class="tab">委託先向け支払単価（支出）</div>
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field">
+              <label>対象荷主</label>
+              <select>
+                <option selected>MK001 マルキ食品</option>
+                <option>MK002 マルキ食品 EC事業部</option>
+                <option>AL001 アルファ商事</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>有効日</label>
+              <input type="date" value="2026-05-01">
+              <div class="hint">この日に有効な単価を表示</div>
+            </div>
+            <div class="field">
+              <label>状態</label>
+              <select>
+                <option>すべて</option>
+                <option selected>現行＋予約のみ</option>
+                <option>履歴含む</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">現行：<b>7件</b>　／　予約：<b>2件</b>　／　履歴：<b>23件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">変更履歴</button>
+              <button class="btn primary sm">＋ 新規追加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">保管料設定</div>
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field">
+                <label>計算方式<span class="required">*</span></label>
+                <select>
+                  <option selected>3期制</option>
+                  <option>2期制</option>
+                  <option>坪貸し（固定額）</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>料金単位<span class="required">*</span></label>
+                <select>
+                  <option selected>パレット</option>
+                  <option>ケース</option>
+                  <option>ボール</option>
+                  <option>ピース</option>
+                  <option>坪</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>端数処理<span class="required">*</span></label>
+                <select>
+                  <option selected>切り上げ</option>
+                  <option>切り捨て</option>
+                  <option>小数点（按分）</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>単価<span class="required">*</span></label>
+                <div style="display:flex; gap:4px; align-items:center;">
+                  <input value="80" type="number" style="width:80px;">
+                  <span style="font-size:11px; color:var(--c-text-sub);">円/パレット/期</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>期分け設定</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>締め日<span class="required">*</span></label>
+                  <select>
+                    <option selected>月末</option>
+                    <option>20日</option>
+                    <option>15日</option>
+                    <option>10日</option>
+                    <option>その他（任意指定）</option>
+                  </select>
+                  <div class="hint">締め日の入力で期の区切りが自動算出</div>
+                </div>
+                <div class="field">
+                  <label>期制<span class="required">*</span></label>
+                  <select>
+                    <option selected>3期制</option>
+                    <option>2期制</option>
+                    <option>坪貸し（固定額）</option>
+                  </select>
+                </div>
+              </div>
+              <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:10px 14px; margin-top:8px;">
+                <div style="font-size:11px; color:var(--c-text-sub); font-weight:600; margin-bottom:6px;">システムが自動算出した期の切れ目（月末締め・3期制の場合）</div>
+                <div style="font-size:12px; line-height:1.8; font-family:var(--f-mono);">
+                  ・1期末：10日（締め日の20日前）<br>
+                  ・2期末：20日（締め日の10日前）<br>
+                  ・3期末：月末（締め日）→ 翌月への繰越となる
+                </div>
+              </div>
+              <div class="hint" style="font-size:11px; color:var(--c-text-mute); margin-top:8px;">
+                計算式：(前月繰越残 + 10日残 + 20日残 + 入庫総数) × 単価
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-section">荷役料設定</div>
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>項目</th>
+                  <th>単位</th>
+                  <th class="right">単価</th>
+                  <th>適用条件</th>
+                  <th>状態</th>
+                  <th>適用期間</th>
+                  <th class="center" style="width:80px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>入庫料</td>
+                  <td>件</td>
+                  <td class="right num">200</td>
+                  <td>標準入庫</td>
+                  <td><span class="pill accent">現行</span></td>
+                  <td class="num">2026/04/01〜</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>出庫料</td>
+                  <td>件</td>
+                  <td class="right num">200</td>
+                  <td>標準出庫</td>
+                  <td><span class="pill accent">現行</span></td>
+                  <td class="num">2026/04/01〜</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>返品処理料</td>
+                  <td>件</td>
+                  <td class="right num">500</td>
+                  <td>−</td>
+                  <td><span class="pill accent">現行</span></td>
+                  <td class="num">2026/04/01〜</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>棚卸料</td>
+                  <td>回</td>
+                  <td class="right num">2,000</td>
+                  <td>−</td>
+                  <td><span class="pill accent">現行</span></td>
+                  <td class="num">2026/04/01〜</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr style="background:var(--c-bg);">
+                  <td>出庫料</td>
+                  <td>件</td>
+                  <td class="right num">220</td>
+                  <td>原油高による値上げ</td>
+                  <td><span class="pill">予約</span></td>
+                  <td class="num">2026/07/01〜</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <div class="label">単価変更ルール</div>
+          ・変更は<b>事前登録</b>可能。適用開始日に自動切替。<br>
+          ・<b>請求書発行済み</b>の月分は遡って変更不可。<br>
+          ・過去日付での変更は登録漏れ等の例外時のみ可能（請求済み月除く）。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-513 荷主×再保 控除設定（新規） -->
+<!-- ============================== -->
+<div class="section-divider" id="W-513">
+  <span class="num">W-513</span>荷主×再保 控除設定
+  <span style="display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600;">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：再保管先（外部倉庫）に在庫を移動する際の料金条件を、荷主×再保の組み合わせで設定。<br>
+  <b>運用</b>：移動前に必ず登録。未登録だと再保への移動操作がシステムでブロックされる。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/master/owner-rewarehouse-deductions</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">契約単価</a>
+        <a href="#" class="active">荷主×再保 控除設定</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>荷主×再保 控除設定</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box">
+          <div class="label">この設定の役割</div>
+          再保管先（外部倉庫）に在庫を移動する際の料金条件を、<b>荷主×再保の組み合わせで設定</b>します。<br>
+          <b>移動前に必ず登録が必要</b>。未登録の組み合わせで再保への移動を行うとシステムでエラーとなります。
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field">
+              <label>荷主</label>
+              <select>
+                <option>すべて</option>
+                <option selected>MK001 マルキ食品</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>再保倉庫</label>
+              <select><option>すべて</option></select>
+            </div>
+            <div class="field">
+              <label>利用事情</label>
+              <select>
+                <option>すべて</option>
+                <option>荷主事情</option>
+                <option>倉庫事情</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">登録済み　<b>4件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn primary sm">＋ 新規登録</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>控除設定一覧</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>荷主</th>
+                  <th>再保倉庫</th>
+                  <th class="center" style="width:90px;">利用事情</th>
+                  <th class="center" style="width:90px;">入庫料</th>
+                  <th class="center" style="width:90px;">出庫料</th>
+                  <th class="center" style="width:90px;">保管料</th>
+                  <th>適用開始日</th>
+                  <th class="center" style="width:80px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>マルキ食品 (MK001)</td>
+                  <td>吉富運輸 千葉 (YU001)</td>
+                  <td class="center"><span class="pill accent">荷主事情</span></td>
+                  <td class="center"><span class="pill accent">収受</span></td>
+                  <td class="center"><span class="pill accent">収受</span></td>
+                  <td class="center"><span class="pill accent">収受</span></td>
+                  <td class="num">2026/04/01</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>マルキ食品 (MK001)</td>
+                  <td>○○倉庫 埼玉 (TK001)</td>
+                  <td class="center"><span class="pill">倉庫事情</span></td>
+                  <td class="center"><span class="pill">控除</span></td>
+                  <td class="center"><span class="pill">控除</span></td>
+                  <td class="center"><span class="pill">控除</span></td>
+                  <td class="num">2026/03/15</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>アルファ商事 (AL001)</td>
+                  <td>吉富運輸 千葉 (YU001)</td>
+                  <td class="center"><span class="pill accent">荷主事情</span></td>
+                  <td class="center"><span class="pill accent">収受</span></td>
+                  <td class="center"><span class="pill accent">収受</span></td>
+                  <td class="center"><span class="pill accent">収受（再保専用単価）</span></td>
+                  <td class="num">2026/04/01</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>ビーシー食品 (BC001)</td>
+                  <td>○○倉庫 埼玉 (TK001)</td>
+                  <td class="center"><span class="pill">倉庫事情</span></td>
+                  <td class="center"><span class="pill accent">収受</span></td>
+                  <td class="center"><span class="pill accent">収受</span></td>
+                  <td class="center"><span class="pill">控除</span></td>
+                  <td class="num">2026/02/01</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3 style="font-size:14px; margin:24px 0 8px;">編集画面プレビュー（マルキ食品 × 吉富運輸）</h3>
+
+        <div class="modal-style">
+          <div class="modal-header">
+            <h2>控除設定編集　/　MK001 × YU001</h2>
+          </div>
+          <div class="modal-body">
+
+            <div class="form-section">
+              <h3>対象</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>荷主<span class="required">*</span></label>
+                  <input value="MK001 マルキ食品" disabled>
+                </div>
+                <div class="field">
+                  <label>再保倉庫<span class="required">*</span></label>
+                  <input value="YU001 吉富運輸 千葉" disabled>
+                </div>
+                <div class="field">
+                  <label>利用事情<span class="required">*</span></label>
+                  <select>
+                    <option selected>荷主事情</option>
+                    <option>倉庫事情</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>料金設定</h3>
+              <div class="form-row" style="margin-bottom:8px;">
+                <div class="field"><label style="font-size:12px; font-weight:600; color:var(--c-text);">入庫料</label></div>
+                <div class="field">
+                  <label>収受／控除</label>
+                  <select>
+                    <option selected>収受</option>
+                    <option>控除</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>適用単価</label>
+                  <select>
+                    <option selected>本倉庫単価</option>
+                    <option>再保専用単価</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>再保専用単価</label>
+                  <input value="" disabled placeholder="本倉庫単価のため不要">
+                </div>
+              </div>
+              <div class="form-row" style="margin-bottom:8px;">
+                <div class="field"><label style="font-size:12px; font-weight:600; color:var(--c-text);">出庫料</label></div>
+                <div class="field">
+                  <label>収受／控除</label>
+                  <select>
+                    <option selected>収受</option>
+                    <option>控除</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>適用単価</label>
+                  <select>
+                    <option selected>本倉庫単価</option>
+                    <option>再保専用単価</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>再保専用単価</label>
+                  <input value="" disabled>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label style="font-size:12px; font-weight:600; color:var(--c-text);">保管料</label></div>
+                <div class="field">
+                  <label>収受／控除</label>
+                  <select>
+                    <option selected>収受</option>
+                    <option>控除</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>適用単価</label>
+                  <select>
+                    <option>本倉庫単価</option>
+                    <option selected>再保専用単価</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>再保専用単価<span class="required">*</span></label>
+                  <div style="display:flex; gap:4px; align-items:center;">
+                    <input value="100" type="number" style="width:80px;">
+                    <span style="font-size:11px;">円/パレット/期</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>適用期間・備考</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>適用開始日<span class="required">*</span></label>
+                  <input type="date" value="2026-04-01">
+                </div>
+                <div class="field">
+                  <label>適用終了日</label>
+                  <input type="date" value="" placeholder="未指定（現在も有効）">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field" style="grid-column:span 2;">
+                  <label>備考・交渉経緯</label>
+                  <textarea rows="2">荷主了承済（2026/3 営業会議）。保管料は再保専用単価100円で合意。</textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn">キャンセル</button>
+            <button class="btn primary">保存</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

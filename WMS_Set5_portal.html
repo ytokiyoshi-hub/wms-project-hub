@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 第5弾 荷主ポータル 9画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-weight:500; cursor:pointer; line-height:1.4; font-family:var(--f-base); }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+
+  .text-mono { font-family:var(--f-mono); }
+  .text-bold { font-weight:600; }
+
+  .kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:14px; }
+  .kpi { background:var(--c-base); border:1px solid var(--c-line); padding:14px 16px; }
+  .kpi .label { font-size:11px; color:var(--c-text-sub); font-weight:500; margin-bottom:8px; }
+  .kpi .value { font-size:24px; font-weight:600; color:var(--c-text); font-family:var(--f-mono); line-height:1.1; }
+  .kpi .value .unit { font-size:13px; color:var(--c-text-sub); font-weight:500; margin-left:2px; }
+  .kpi .delta { font-size:11px; color:var(--c-text-sub); margin-top:8px; font-family:var(--f-mono); }
+
+  .chart-bar { display:flex; align-items:flex-end; height:160px; gap:8px; padding:18px 0 0; }
+  .chart-bar .bar { flex:1; background:var(--c-accent); position:relative; min-width:18px; }
+  .chart-bar .bar .v { position:absolute; top:-14px; left:50%; transform:translateX(-50%); font-size:9px; color:var(--c-text); font-weight:600; font-family:var(--f-mono); }
+  .chart-bar .bar .l { position:absolute; bottom:-16px; left:50%; transform:translateX(-50%); font-size:9px; color:var(--c-text-sub); }
+
+  .login-screen { background:var(--c-bg); height:820px; display:flex; align-items:center; justify-content:center; }
+  .login-card { background:#fff; border:1px solid var(--c-line); padding:40px; max-width:420px; width:100%; }
+  .login-logo { text-align:center; margin-bottom:30px; }
+  .login-logo .ttl { font-size:18px; font-weight:600; color:var(--c-accent); }
+  .login-logo .sub { font-size:11px; color:var(--c-text-sub); margin-top:4px; }
+  .login-form .field { margin-bottom:14px; }
+  .login-form button { width:100%; padding:10px; background:var(--c-accent); color:#fff; border:none; font-size:14px; font-weight:600; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">第5弾　荷主ポータル　全9画面</h1>
+<p class="subtitle">荷主が自社の在庫・出荷・請求書を確認するための専用画面（別ドメイン運用推奨）</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#P-000"><b>P-000</b>ログイン</a>
+  <a href="#P-001"><b>P-001</b>ダッシュボード</a>
+  <a href="#P-101"><b>P-101</b>在庫照会</a>
+  <a href="#P-102"><b>P-102</b>在庫推移</a>
+  <a href="#P-201"><b>P-201</b>出荷状況</a>
+  <a href="#P-202"><b>P-202</b>配送追跡</a>
+  <a href="#P-301"><b>P-301</b>出荷指示登録</a>
+  <a href="#P-401"><b>P-401</b>レポート</a>
+  <a href="#P-501"><b>P-501</b>請求書</a>
+</div>
+
+<!-- P-000 ログイン -->
+<div class="section-divider" id="P-000">
+  <span class="num">P-000</span>ポータルログイン
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：荷主側ユーザーが自社の情報にアクセスするためのログイン。<br>
+  <b>運用</b>：別ドメイン運用推奨。倉庫運営側の管理画面とはセキュリティ分離。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/login</div></div>
+  <div class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="ttl">XX物流 荷主ポータル</div>
+        <div class="sub">荷主専用ログイン画面</div>
+      </div>
+      <div class="login-form">
+        <div class="field">
+          <label>メールアドレス</label>
+          <input value="" placeholder="user@maruki-foods.example.jp">
+        </div>
+        <div class="field">
+          <label>パスワード</label>
+          <input type="password" value="">
+        </div>
+        <div style="margin-bottom:14px;">
+          <label style="font-size:11px; display:flex; align-items:center; gap:6px;">
+            <input type="checkbox"> ログイン状態を保持
+          </label>
+        </div>
+        <button>ログイン</button>
+        <div style="text-align:center; margin-top:14px;">
+          <a href="#" style="font-size:11px; color:var(--c-accent); text-decoration:none;">パスワードを忘れた場合</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- P-001 ダッシュボード -->
+<div class="section-divider" id="P-001">
+  <span class="num">P-001</span>ポータルダッシュボード
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：荷主が自社の物流状況をひと目で把握。在庫サマリ・本日の出荷・配送状況等を集約。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/dashboard</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">荷主ポータル<small>マルキ食品 (MK001)</small></div>
+      <nav>
+        <a href="#" class="active">ダッシュボード</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫照会</a>
+        <a href="#">在庫推移</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷状況</a>
+        <a href="#">配送追跡</a>
+        <a href="#">出荷指示登録</a>
+        <div class="group">レポート</div>
+        <a href="#">日次/月次レポート</a>
+        <a href="#">請求書</a>
+      </nav>
+      <div class="sb-footer">XX物流 提供</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb"><b>ダッシュボード</b></div>
+        <div class="actions"><div class="user"><div class="avatar">マ</div>マルキ経理 ◯◯様</div></div>
+      </div>
+      <div class="content">
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">現在の保管在庫</div><div class="value">1,250<span class="unit">PL</span></div><div class="delta">前月末比 +50</div></div>
+          <div class="kpi"><div class="label">本日の出荷</div><div class="value">28<span class="unit">件</span></div><div class="delta">予定 35件</div></div>
+          <div class="kpi"><div class="label">本日の入荷</div><div class="value">5<span class="unit">件</span></div><div class="delta">予定通り</div></div>
+          <div class="kpi"><div class="label">今月の請求金額</div><div class="value">385<span class="unit">千円</span></div><div class="delta">前月比 +5.2%</div></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:14px;">
+          <div class="card">
+            <div class="card-header"><span>過去7日の出荷推移</span></div>
+            <div class="card-body">
+              <div class="chart-bar">
+                <div class="bar" style="height:55%;"><div class="v">22</div><div class="l">4/24</div></div>
+                <div class="bar" style="height:65%;"><div class="v">26</div><div class="l">4/25</div></div>
+                <div class="bar" style="height:30%;"><div class="v">12</div><div class="l">4/26土</div></div>
+                <div class="bar" style="height:0%;"><div class="l">4/27日</div></div>
+                <div class="bar" style="height:60%;"><div class="v">24</div><div class="l">4/28</div></div>
+                <div class="bar" style="height:75%;"><div class="v">30</div><div class="l">4/29</div></div>
+                <div class="bar" style="height:80%;"><div class="v">32</div><div class="l">4/30</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span>お知らせ</span></div>
+            <div class="card-body">
+              <div style="padding:8px 0; border-bottom:1px solid var(--c-line);">
+                <div style="font-size:12px; font-weight:600;">5/3-5/5 GW営業のお知らせ</div>
+                <div style="font-size:11px; color:var(--c-text-sub);">2026/04/28</div>
+              </div>
+              <div style="padding:8px 0; border-bottom:1px solid var(--c-line);">
+                <div style="font-size:12px; font-weight:600;">4月分請求書 発行のご案内</div>
+                <div style="font-size:11px; color:var(--c-text-sub);">2026/05/01</div>
+              </div>
+              <div style="padding:8px 0;">
+                <div style="font-size:12px; font-weight:600;">在庫保管料の改定について</div>
+                <div style="font-size:11px; color:var(--c-text-sub);">2026/04/15</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>本日の出荷状況</span><span class="meta">最終更新 14:08</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead><tr><th>出荷No</th><th>顧客</th><th>個口</th><th>配送業者</th><th>追跡番号</th><th class="center">状態</th></tr></thead>
+              <tbody>
+                <tr><td class="num">SH-00121</td><td>○○商店</td><td class="num">3</td><td>ヤマト運輸</td><td class="num">1234-5678-9012</td><td class="center"><span class="pill accent">配送中</span></td></tr>
+                <tr><td class="num">SH-00122</td><td>△△店</td><td class="num">2</td><td>ヤマト運輸</td><td class="num">1234-5678-9013</td><td class="center"><span class="pill accent">配送中</span></td></tr>
+                <tr><td class="num">SH-00123</td><td>□□倉庫</td><td class="num">2</td><td>ヤマト運輸</td><td class="num">1234-5678-9014</td><td class="center"><span class="pill">出荷準備中</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- P-101 在庫照会 -->
+<div class="section-divider" id="P-101">
+  <span class="num">P-101</span>在庫照会
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：荷主が自社の在庫を商品別・ロット別・倉庫別に照会。表示単位は荷主設定で切替可。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/stock</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">荷主ポータル<small>マルキ食品</small></div>
+      <nav>
+        <a href="#">ダッシュボード</a>
+        <div class="group">在庫</div>
+        <a href="#" class="active">在庫照会</a>
+        <a href="#">在庫推移</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷状況</a>
+        <a href="#">配送追跡</a>
+        <div class="group">レポート</div>
+        <a href="#">レポート</a>
+        <a href="#">請求書</a>
+      </nav>
+      <div class="sb-footer">XX物流 提供</div>
+    </aside>
+    <div class="main">
+      <div class="topbar"><div class="crumb">在庫　/　<b>在庫照会</b></div><div class="actions"><div class="user"><div class="avatar">マ</div>マルキ経理</div></div></div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>商品コード/JAN</label><input value=""></div>
+            <div class="field"><label>商品名</label><input value=""></div>
+            <div class="field"><label>倉庫</label><select><option>すべて</option><option>WH001 東京DC</option><option>YU001 吉富運輸</option></select></div>
+            <div class="field"><label>表示単位</label><select><option selected>全単位（PL/CS/BL/PCS）</option><option>パレットのみ</option><option>ケースのみ</option></select></div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b>48 SKU</b>　/　総在庫1,250パレット</span>
+            <div style="margin-left:auto;"><button class="btn sm">CSV出力</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>在庫一覧</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead><tr><th>SKU</th><th>商品名</th><th>ロット</th><th>期限</th><th>倉庫</th><th class="right">PL</th><th class="right">CS</th><th class="right">PCS</th></tr></thead>
+              <tbody>
+                <tr><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26B</td><td class="num">27/03</td><td>WH001</td><td class="right num">2.4</td><td class="right num">120</td><td class="right num">5,760</td></tr>
+                <tr><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26C</td><td class="num">27/05</td><td>WH001</td><td class="right num">1.7</td><td class="right num">84</td><td class="right num">4,032</td></tr>
+                <tr><td class="num">S-00321</td><td>シャンプー300ml</td><td class="num">LOT-26B</td><td class="num">27/03</td><td>YU001</td><td class="right num">5.0</td><td class="right num">250</td><td class="right num">12,000</td></tr>
+                <tr><td class="num">S-00210</td><td>洗剤500ml</td><td class="num">LOT-26B</td><td class="num">28/05</td><td>WH001</td><td class="right num">3.0</td><td class="right num">150</td><td class="right num">3,600</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- P-102 在庫推移 -->
+<div class="section-divider" id="P-102"><span class="num">P-102</span>在庫推移<span class="badge-new">NEW</span></div>
+<div class="desc">過去の在庫推移をグラフで確認。日次・週次・月次切替可。</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/stock/trend</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">荷主ポータル<small>マルキ食品</small></div>
+      <nav>
+        <a href="#">ダッシュボード</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫照会</a>
+        <a href="#" class="active">在庫推移</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷状況</a>
+      </nav>
+    </aside>
+    <div class="main">
+      <div class="topbar"><div class="crumb">在庫　/　<b>在庫推移</b></div></div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>期間</label><select><option selected>過去30日</option><option>過去3ヶ月</option><option>過去1年</option></select></div>
+            <div class="field"><label>商品</label><select><option selected>全商品（合計）</option><option>S-00321 シャンプー</option></select></div>
+            <div class="field"><label>表示単位</label><select><option selected>パレット</option></select></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>在庫推移（過去30日）</span></div>
+          <div class="card-body">
+            <div class="chart-bar" style="height:200px;">
+              <div class="bar" style="height:65%;"><div class="v">1,180</div><div class="l">4/1</div></div>
+              <div class="bar" style="height:68%;"><div class="v">1,200</div><div class="l">4/5</div></div>
+              <div class="bar" style="height:62%;"><div class="v">1,150</div><div class="l">4/10</div></div>
+              <div class="bar" style="height:70%;"><div class="v">1,220</div><div class="l">4/15</div></div>
+              <div class="bar" style="height:75%;"><div class="v">1,260</div><div class="l">4/20</div></div>
+              <div class="bar" style="height:72%;"><div class="v">1,240</div><div class="l">4/25</div></div>
+              <div class="bar" style="height:73%;"><div class="v">1,250</div><div class="l">4/30</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- P-201 出荷状況 -->
+<div class="section-divider" id="P-201"><span class="num">P-201</span>出荷状況<span class="badge-new">NEW</span></div>
+<div class="desc">出荷予定・進行中・完了の状況確認。</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/shipments</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">荷主ポータル<small>マルキ食品</small></div>
+      <nav>
+        <a href="#">ダッシュボード</a>
+        <a href="#">在庫照会</a>
+        <div class="group">出荷</div>
+        <a href="#" class="active">出荷状況</a>
+        <a href="#">配送追跡</a>
+        <a href="#">出荷指示登録</a>
+      </nav>
+    </aside>
+    <div class="main">
+      <div class="topbar"><div class="crumb">出荷　/　<b>出荷状況</b></div></div>
+      <div class="content">
+        <div class="tabs">
+          <div class="tab">出荷予定（5）</div>
+          <div class="tab active">進行中（28）</div>
+          <div class="tab">完了（128）</div>
+        </div>
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>出荷No</label><input value=""></div>
+            <div class="field"><label>配送先</label><input value=""></div>
+            <div class="field"><label>期間</label><input type="date" value="2026-05-01"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>進行中の出荷</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead><tr><th>出荷No</th><th>配送先</th><th>商品数</th><th>個口</th><th>配送業者</th><th>状態</th><th class="center">操作</th></tr></thead>
+              <tbody>
+                <tr><td class="num">SH-00121</td><td>○○商店</td><td>3</td><td class="num">3</td><td>ヤマト運輸</td><td><span class="pill accent">配送中</span></td><td class="center"><button class="btn sm">追跡</button></td></tr>
+                <tr><td class="num">SH-00122</td><td>△△店</td><td>5</td><td class="num">2</td><td>ヤマト運輸</td><td><span class="pill accent">配送中</span></td><td class="center"><button class="btn sm">追跡</button></td></tr>
+                <tr><td class="num">SH-00123</td><td>□□倉庫</td><td>2</td><td class="num">2</td><td>ヤマト運輸</td><td><span class="pill">出荷準備中</span></td><td class="center"><button class="btn sm">追跡</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- P-202 配送追跡 -->
+<div class="section-divider" id="P-202"><span class="num">P-202</span>配送追跡<span class="badge-new">NEW</span></div>
+<div class="desc">配送業者APIと連携した追跡情報の閲覧。</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/shipments/SH-00121/tracking</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">荷主ポータル<small>マルキ食品</small></div>
+      <nav>
+        <a href="#">ダッシュボード</a>
+        <a href="#">在庫照会</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷状況</a>
+        <a href="#" class="active">配送追跡</a>
+      </nav>
+    </aside>
+    <div class="main">
+      <div class="topbar"><div class="crumb">出荷　/　出荷状況　/　<b>SH-00121 配送追跡</b></div></div>
+      <div class="content">
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><span>SH-00121 配送状況</span></div>
+          <div class="card-body">
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; font-size:12px; margin-bottom:18px;">
+              <div><span style="color:var(--c-text-sub); font-size:11px;">配送先</span><br><b>○○商店</b></div>
+              <div><span style="color:var(--c-text-sub); font-size:11px;">配送業者</span><br><b>ヤマト運輸</b></div>
+              <div><span style="color:var(--c-text-sub); font-size:11px;">追跡番号</span><br><b class="text-mono">1234-5678-9012</b></div>
+            </div>
+            <div style="position:relative; padding-left:24px;">
+              <div style="position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--c-line);"></div>
+              <div style="position:relative; padding-bottom:14px;">
+                <div style="position:absolute; left:-20px; top:4px; width:10px; height:10px; background:var(--c-accent); border-radius:50%; border:2px solid #fff;"></div>
+                <div style="font-size:11px; color:var(--c-text-sub); font-family:var(--f-mono);">2026/05/01 14:35</div>
+                <div style="font-size:13px; font-weight:500; margin-top:2px;">配送中（ヤマト運輸 東京ベース店）</div>
+              </div>
+              <div style="position:relative; padding-bottom:14px;">
+                <div style="position:absolute; left:-20px; top:4px; width:10px; height:10px; background:var(--c-accent); border-radius:50%; border:2px solid #fff;"></div>
+                <div style="font-size:11px; color:var(--c-text-sub); font-family:var(--f-mono);">2026/05/01 14:30</div>
+                <div style="font-size:13px; font-weight:500; margin-top:2px;">XX物流 東京DC で集荷</div>
+              </div>
+              <div style="position:relative; padding-bottom:14px;">
+                <div style="position:absolute; left:-20px; top:4px; width:10px; height:10px; background:var(--c-text-sub); border-radius:50%; border:2px solid #fff;"></div>
+                <div style="font-size:11px; color:var(--c-text-sub); font-family:var(--f-mono);">2026/05/01 13:45</div>
+                <div style="font-size:13px; font-weight:500; margin-top:2px;">出荷確定・送り状発行</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- P-301 出荷指示登録 -->
+<div class="section-divider" id="P-301"><span class="num">P-301</span>出荷指示登録<span class="badge-new">NEW</span></div>
+<div class="desc">荷主が直接ポータルから出荷指示を入力（権限がある場合）。</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/orders/new</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">荷主ポータル<small>マルキ食品</small></div>
+      <nav>
+        <a href="#">ダッシュボード</a>
+        <a href="#">出荷状況</a>
+        <a href="#" class="active">出荷指示登録</a>
+      </nav>
+    </aside>
+    <div class="main">
+      <div class="topbar"><div class="crumb">出荷　/　<b>出荷指示登録</b></div></div>
+      <div class="content">
+        <div class="note-box">
+          <div class="label">荷主からの直接出荷指示</div>
+          ここから登録された指示はXX物流に自動連携され、当日17時までの登録分は翌日出荷対象となります。
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field"><label>用途区分</label><select><option selected>通常出荷</option><option>サンプル</option><option>廃棄</option></select></div>
+              <div class="field"><label>希望出荷日</label><input type="date" value="2026-05-03"></div>
+              <div class="field"><label>配送業者</label><select><option selected>ヤマト運輸</option></select></div>
+            </div>
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field" style="grid-column:span 2;"><label>配送先名</label><input value=""></div>
+              <div class="field"><label>郵便番号</label><input value=""></div>
+            </div>
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field" style="grid-column:span 3;"><label>住所</label><input value=""></div>
+            </div>
+            <div style="font-size:12px; font-weight:600; margin-bottom:6px;">明細</div>
+            <table class="list" style="margin-bottom:8px;">
+              <thead><tr><th style="width:40px;">No</th><th>商品コード</th><th>商品名</th><th class="right">数量</th><th>単位</th><th class="center" style="width:50px;">削除</th></tr></thead>
+              <tbody>
+                <tr><td class="num">1</td><td><input value="S-00321" style="width:100%; font-family:var(--f-mono);"></td><td>シャンプー300ml</td><td><input value="3" style="width:50px; text-align:right;"></td><td><select><option>ケース</option></select></td><td class="center"><button class="btn sm">×</button></td></tr>
+              </tbody>
+            </table>
+            <div style="display:flex; gap:6px;"><button class="btn sm">+ 行追加</button><button class="btn sm">CSV取込</button></div>
+            <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:18px;">
+              <button class="btn">キャンセル</button>
+              <button class="btn primary">登録（XX物流に通知）</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- P-401 レポート -->
+<div class="section-divider" id="P-401"><span class="num">P-401</span>レポート<span class="badge-new">NEW</span></div>
+<div class="desc">日次・月次の出荷実績レポート、各種KPI閲覧・PDF/CSVダウンロード。</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/reports</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">荷主ポータル<small>マルキ食品</small></div>
+      <nav>
+        <a href="#">ダッシュボード</a>
+        <a href="#">在庫照会</a>
+        <a href="#">出荷状況</a>
+        <div class="group">レポート</div>
+        <a href="#" class="active">レポート</a>
+        <a href="#">請求書</a>
+      </nav>
+    </aside>
+    <div class="main">
+      <div class="topbar"><div class="crumb"><b>レポート</b></div></div>
+      <div class="content">
+        <div class="tabs">
+          <div class="tab active">日次レポート</div>
+          <div class="tab">月次レポート</div>
+          <div class="tab">カスタム</div>
+        </div>
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>対象日</label><input type="date" value="2026-05-01"></div>
+          </div>
+          <div class="actions">
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">PDF出力</button>
+              <button class="btn sm">CSV出力</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><span>日次レポート 2026年5月1日</span></div>
+          <div class="card-body">
+            <div class="kpi-grid" style="margin-bottom:14px;">
+              <div class="kpi"><div class="label">出荷件数</div><div class="value">28<span class="unit">件</span></div></div>
+              <div class="kpi"><div class="label">個口数</div><div class="value">62<span class="unit">個口</span></div></div>
+              <div class="kpi"><div class="label">総重量</div><div class="value">175<span class="unit">kg</span></div></div>
+              <div class="kpi"><div class="label">誤出荷率</div><div class="value">0.00<span class="unit">%</span></div></div>
+            </div>
+            <h3 style="font-size:13px; margin:10px 0 8px; font-weight:600;">配送業者別実績</h3>
+            <table class="list">
+              <thead><tr><th>業者</th><th class="right">件数</th><th class="right">個口</th><th class="right">重量</th></tr></thead>
+              <tbody>
+                <tr><td>ヤマト運輸</td><td class="right num">18</td><td class="right num">42</td><td class="right num">120kg</td></tr>
+                <tr><td>佐川急便</td><td class="right num">7</td><td class="right num">15</td><td class="right num">38kg</td></tr>
+                <tr><td>福山通運</td><td class="right num">3</td><td class="right num">5</td><td class="right num">17kg</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- P-501 請求書 -->
+<div class="section-divider" id="P-501"><span class="num">P-501</span>請求書<span class="badge-new">NEW</span></div>
+<div class="desc">月次請求書の閲覧・PDFダウンロード。明細書も確認可能。</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://portal.example.com/invoices</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">荷主ポータル<small>マルキ食品</small></div>
+      <nav>
+        <a href="#">ダッシュボード</a>
+        <a href="#">在庫照会</a>
+        <a href="#">出荷状況</a>
+        <a href="#">レポート</a>
+        <a href="#" class="active">請求書</a>
+      </nav>
+    </aside>
+    <div class="main">
+      <div class="topbar"><div class="crumb"><b>請求書</b></div></div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>対象年</label><select><option selected>2026年</option><option>2025年</option></select></div>
+            <div class="field"><label>状態</label><select><option>すべて</option><option selected>発行済</option></select></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>請求書一覧</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead><tr><th>請求書番号</th><th>請求対象期間</th><th class="right">金額（税込）</th><th>支払期限</th><th class="center">状態</th><th class="center" style="width:140px;">操作</th></tr></thead>
+              <tbody>
+                <tr><td class="num">INV-2604-MK001</td><td class="num">2026/04/01〜04/30</td><td class="right num">385,000</td><td class="num">2026/05/31</td><td class="center"><span class="pill accent">発行済</span></td><td class="center"><button class="btn sm">PDF</button> <button class="btn sm">明細</button></td></tr>
+                <tr><td class="num">INV-2603-MK001</td><td class="num">2026/03/01〜03/31</td><td class="right num">365,000</td><td class="num">2026/04/30</td><td class="center"><span class="pill">入金済</span></td><td class="center"><button class="btn sm">PDF</button> <button class="btn sm">明細</button></td></tr>
+                <tr><td class="num">INV-2602-MK001</td><td class="num">2026/02/01〜02/28</td><td class="right num">340,000</td><td class="num">2026/03/31</td><td class="center"><span class="pill">入金済</span></td><td class="center"><button class="btn sm">PDF</button> <button class="btn sm">明細</button></td></tr>
+                <tr><td class="num">INV-2601-MK001</td><td class="num">2026/01/01〜01/31</td><td class="right num">320,000</td><td class="num">2026/02/28</td><td class="center"><span class="pill">入金済</span></td><td class="center"><button class="btn sm">PDF</button> <button class="btn sm">明細</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

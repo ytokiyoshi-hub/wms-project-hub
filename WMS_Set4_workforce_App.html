@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 従業員スマホアプリ 3画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .desc { max-width:1200px; margin:0 auto 24px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .smartphone-row { display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; max-width:1300px; margin:0 auto; justify-items:center; }
+
+  /* スマホフレーム（iPhone風縦長） */
+  .phone { width:340px; background:#1a1c22; border-radius:36px; padding:14px 10px; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.4); }
+  .phone::before { content:""; position:absolute; top:18px; left:50%; transform:translateX(-50%); width:120px; height:24px; background:#000; border-radius:14px; z-index:5; }
+  .phone .screen-body { background:var(--c-bg); border-radius:24px; height:680px; padding-top:46px; overflow:hidden; display:flex; flex-direction:column; }
+
+  .phone .status-bar { display:flex; justify-content:space-between; padding:0 22px 4px; font-size:11px; color:var(--c-text); font-weight:600; }
+
+  .phone .app-header { background:var(--c-accent); color:#fff; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; }
+  .phone .app-header .title { font-size:16px; font-weight:600; }
+  .phone .app-header .menu-btn { font-size:18px; }
+
+  .phone .app-content { flex:1; padding:14px; overflow-y:auto; background:var(--c-bg); display:flex; flex-direction:column; gap:10px; }
+
+  .phone .card { background:#fff; border:1px solid var(--c-line); padding:12px; border-radius:8px; }
+  .phone .card .h { font-size:12px; font-weight:600; color:var(--c-text); margin-bottom:6px; }
+  .phone .card .l { font-size:10px; color:var(--c-text-sub); }
+
+  /* タブバー（最下部） */
+  .phone .tab-bar { display:flex; background:#fff; border-top:1px solid var(--c-line); }
+  .phone .tab-bar .tab-item { flex:1; padding:10px 0; text-align:center; font-size:10px; color:var(--c-text-sub); }
+  .phone .tab-bar .tab-item.active { color:var(--c-accent); font-weight:600; }
+  .phone .tab-bar .tab-item .icon { display:block; font-size:18px; margin-bottom:2px; }
+
+  .device-label { color:#fff; font-size:14px; font-weight:600; text-align:center; margin-top:14px; }
+  .device-label .id { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+  .device-label .desc-text { font-size:11px; color:#a0a4ad; font-weight:400; margin-top:4px; max-width:300px; line-height:1.5; }
+
+  /* 希望シフトカレンダー */
+  .mini-cal { display:grid; grid-template-columns:repeat(7, 1fr); gap:2px; }
+  .mini-cal .day-head { font-size:9px; color:var(--c-text-sub); text-align:center; padding:3px 0; font-weight:600; }
+  .mini-cal .day-head.sun { color:var(--c-alert); }
+  .mini-cal .day-head.sat { color:var(--c-accent); }
+  .mini-cal .day { aspect-ratio:1; background:#fff; border:1px solid var(--c-line); padding:3px; font-size:10px; cursor:pointer; }
+  .mini-cal .day.empty { background:transparent; border:none; }
+  .mini-cal .day.want-work { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); font-weight:600; }
+  .mini-cal .day.want-off { background:var(--c-bg); color:var(--c-text-mute); }
+  .mini-cal .day.confirmed { background:var(--c-accent); color:#fff; font-weight:600; }
+  .mini-cal .day .area { display:block; font-size:8px; margin-top:2px; }
+
+  .legend-row { display:flex; gap:12px; font-size:10px; padding:6px 0; flex-wrap:wrap; }
+  .legend-row .item { display:flex; align-items:center; gap:4px; }
+  .legend-row .swatch { width:12px; height:12px; border:1px solid var(--c-line); }
+
+  .btn-primary { background:var(--c-accent); color:#fff; border:none; padding:10px 16px; font-size:13px; font-weight:600; width:100%; border-radius:6px; }
+
+  /* 通知 */
+  .notif-card { background:#fff; border:1px solid var(--c-line); border-left:3px solid var(--c-alert); padding:10px 12px; border-radius:6px; }
+  .notif-card.info { border-left-color:var(--c-accent); }
+  .notif-card .head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; }
+  .notif-card .ttl { font-size:12px; font-weight:600; }
+  .notif-card .time { font-size:10px; color:var(--c-text-mute); font-family:var(--f-mono); }
+  .notif-card .body-txt { font-size:11px; color:var(--c-text-sub); line-height:1.6; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">従業員スマホアプリ 3画面</h1>
+<p class="subtitle">A-001 シフト希望提出　/　A-002 確定シフト確認　/　A-003 シフト変更通知</p>
+
+<div class="desc">
+  <b>K-15 従業員スマホアプリ（案B：希望提出・確認・変更通知の標準機能）</b><br>
+  従業員が私物スマホで利用。シフト管理機能ON時のみ提供。欠勤連絡・代替募集応募・給与明細閲覧などは含めない最小構成。
+</div>
+
+<div class="smartphone-row">
+
+  <!-- A-001 シフト希望提出 -->
+  <div>
+    <div class="phone">
+      <div class="screen-body">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 5G ⚡</span>
+        </div>
+        <div class="app-header">
+          <span class="menu-btn">☰</span>
+          <span class="title">来月のシフト希望</span>
+          <span></span>
+        </div>
+        <div class="app-content">
+          <div class="card">
+            <div class="h">2026年5月分の希望提出</div>
+            <div class="l">提出締切：4月15日（あと3日）</div>
+          </div>
+
+          <div class="card">
+            <div class="h" style="margin-bottom:8px;">日付をタップして希望を選択</div>
+            <div class="mini-cal" style="margin-bottom:8px;">
+              <div class="day-head sun">日</div><div class="day-head">月</div><div class="day-head">火</div><div class="day-head">水</div><div class="day-head">木</div><div class="day-head">金</div><div class="day-head sat">土</div>
+              <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
+              <div class="day want-work">1</div><div class="day want-work">2</div><div class="day want-work">3</div>
+              <div class="day want-off">4</div><div class="day want-work">5</div><div class="day want-work">6</div>
+              <div class="day want-work">7</div><div class="day want-work">8</div><div class="day want-off">9</div><div class="day want-off">10</div>
+              <div class="day want-work">11</div><div class="day want-work">12</div><div class="day want-work">13</div>
+              <div class="day want-work">14</div><div class="day want-off">15</div><div class="day want-off">16</div><div class="day want-off">17</div>
+              <div class="day want-work">18</div><div class="day want-work">19</div><div class="day want-work">20</div>
+              <div class="day want-work">21</div><div class="day want-work">22</div><div class="day want-off">23</div><div class="day want-off">24</div>
+              <div class="day want-work">25</div><div class="day want-work">26</div><div class="day want-work">27</div>
+              <div class="day want-work">28</div><div class="day want-work">29</div><div class="day want-off">30</div><div class="day want-off">31</div>
+            </div>
+            <div class="legend-row">
+              <div class="item"><div class="swatch" style="background:var(--c-accent-lt);"></div>勤務希望</div>
+              <div class="item"><div class="swatch" style="background:var(--c-bg);"></div>休み希望</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="h">勤務希望日数</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-family:var(--f-mono); font-size:18px; font-weight:600; color:var(--c-accent);">19日</span>
+              <span class="l">月の目安：18〜22日</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="h">特記事項（任意）</div>
+            <textarea style="width:100%; border:1px solid var(--c-line); border-radius:4px; padding:6px; font-size:11px; min-height:50px; font-family:var(--f-base);" placeholder="連休希望・通院日など"></textarea>
+          </div>
+
+          <button class="btn-primary">希望を提出する</button>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">A-001</span>シフト希望提出
+      <div class="desc-text">月次サイクルで翌月シフトの希望を提出。締切リマインドあり。</div>
+    </div>
+  </div>
+
+  <!-- A-002 確定シフト確認 -->
+  <div>
+    <div class="phone">
+      <div class="screen-body">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 5G ⚡</span>
+        </div>
+        <div class="app-header">
+          <span class="menu-btn">☰</span>
+          <span class="title">私のシフト</span>
+          <span></span>
+        </div>
+        <div class="app-content">
+          <div class="card">
+            <div class="h">2026年5月（確定済）</div>
+            <div class="l">最終更新：4月25日 17:30</div>
+          </div>
+
+          <div class="card">
+            <div class="mini-cal" style="margin-bottom:8px;">
+              <div class="day-head sun">日</div><div class="day-head">月</div><div class="day-head">火</div><div class="day-head">水</div><div class="day-head">木</div><div class="day-head">金</div><div class="day-head sat">土</div>
+              <div class="day empty"></div><div class="day empty"></div><div class="day empty"></div><div class="day empty"></div>
+              <div class="day confirmed">1<span class="area">9-18</span></div>
+              <div class="day confirmed">2<span class="area">9-18</span></div>
+              <div class="day confirmed">3<span class="area">9-15</span></div>
+              <div class="day want-off">4</div>
+              <div class="day confirmed">5<span class="area">9-18</span></div>
+              <div class="day confirmed">6<span class="area">9-18</span></div>
+              <div class="day confirmed">7<span class="area">9-18</span></div>
+              <div class="day confirmed">8<span class="area">9-18</span></div>
+              <div class="day want-off">9</div><div class="day want-off">10</div>
+            </div>
+            <div class="legend-row">
+              <div class="item"><div class="swatch" style="background:var(--c-accent);"></div>確定（勤務）</div>
+              <div class="item"><div class="swatch" style="background:var(--c-bg);"></div>休み</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="h" style="margin-bottom:8px;">明日（5/1 金）の予定</div>
+            <div style="background:var(--c-accent-lt); padding:10px; border-radius:6px; margin-bottom:6px;">
+              <div style="font-size:18px; font-weight:600; color:var(--c-accent); font-family:var(--f-mono);">9:00 - 18:00</div>
+              <div style="font-size:11px; margin-top:4px;">担当：マルキ食品 / 1F常温エリア</div>
+            </div>
+            <div class="l">休憩：12:00-13:00 / その他15分×2回</div>
+          </div>
+
+          <div class="card">
+            <div class="h">5月の勤務サマリ</div>
+            <div style="display:flex; justify-content:space-between; padding:4px 0;">
+              <span class="l">勤務日数</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">19日</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:4px 0;">
+              <span class="l">予定勤務時間</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">156h</span>
+            </div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item">
+            <div class="icon">📝</div>
+            希望提出
+          </div>
+          <div class="tab-item active">
+            <div class="icon">📅</div>
+            シフト
+          </div>
+          <div class="tab-item">
+            <div class="icon">🔔</div>
+            通知
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">A-002</span>確定シフト確認
+      <div class="desc-text">確定したシフトの閲覧。月カレンダー＋明日の予定を表示。</div>
+    </div>
+  </div>
+
+  <!-- A-003 シフト変更通知 -->
+  <div>
+    <div class="phone">
+      <div class="screen-body">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 5G ⚡</span>
+        </div>
+        <div class="app-header">
+          <span class="menu-btn">☰</span>
+          <span class="title">通知</span>
+          <span style="background:var(--c-alert); color:#fff; padding:1px 7px; font-size:10px; border-radius:10px;">3</span>
+        </div>
+        <div class="app-content">
+          <div class="notif-card">
+            <div class="head">
+              <span class="ttl">⚠ 明日のシフト変更</span>
+              <span class="time">5分前</span>
+            </div>
+            <div class="body-txt">
+              5/1（金）の担当エリアが「1F常温」→「冷蔵」に変更されました。<br>
+              時間：9:00-18:00（変更なし）<br>
+              理由：冷蔵担当の急な欠勤対応
+            </div>
+            <div style="display:flex; gap:6px; margin-top:8px;">
+              <button class="btn-primary" style="padding:6px 12px; font-size:11px;">了解しました</button>
+              <button style="padding:6px 12px; font-size:11px; background:#fff; border:1px solid var(--c-line); border-radius:4px;">確認できない</button>
+            </div>
+          </div>
+
+          <div class="notif-card">
+            <div class="head">
+              <span class="ttl">📅 5月シフト確定</span>
+              <span class="time">3日前</span>
+            </div>
+            <div class="body-txt">
+              2026年5月のシフトが確定しました。「シフト」タブで確認してください。<br>
+              勤務日数：19日 / 予定156時間
+            </div>
+          </div>
+
+          <div class="notif-card info">
+            <div class="head">
+              <span class="ttl">🔔 シフト希望の提出締切</span>
+              <span class="time">5日前</span>
+            </div>
+            <div class="body-txt">
+              6月分のシフト希望提出締切は5月15日（あと10日）です。<br>
+              まだ提出していません。
+            </div>
+            <div style="display:flex; gap:6px; margin-top:8px;">
+              <button class="btn-primary" style="padding:6px 12px; font-size:11px;">希望を提出する</button>
+            </div>
+          </div>
+
+          <div class="notif-card info">
+            <div class="head">
+              <span class="ttl">📢 5月の業務予告</span>
+              <span class="time">1週間前</span>
+            </div>
+            <div class="body-txt">
+              5/8（金）はマルキ食品の物量ピーク日です。応援可の方は出勤検討をお願いします。
+            </div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item">
+            <div class="icon">📝</div>
+            希望提出
+          </div>
+          <div class="tab-item">
+            <div class="icon">📅</div>
+            シフト
+          </div>
+          <div class="tab-item active">
+            <div class="icon">🔔</div>
+            通知
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">A-003</span>シフト変更通知
+      <div class="desc-text">プッシュ通知で受け取り、アプリ内で確認・了解。</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

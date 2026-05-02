@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS グループC 収支・生産性レポート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:1100px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field input, .field select { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .text-mono { font-family:var(--f-mono); }
+
+  /* KPIカード */
+  .kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:14px; }
+  .kpi { background:var(--c-base); border:1px solid var(--c-line); padding:14px 16px; }
+  .kpi .label { font-size:11px; color:var(--c-text-sub); font-weight:500; margin-bottom:8px; }
+  .kpi .value { font-size:24px; font-weight:600; color:var(--c-text); font-family:var(--f-mono); line-height:1.1; }
+  .kpi .value .unit { font-size:13px; color:var(--c-text-sub); font-weight:500; margin-left:2px; }
+  .kpi .delta { font-size:11px; color:var(--c-text-sub); margin-top:8px; font-family:var(--f-mono); }
+  .kpi .delta.up { color:var(--c-accent); }
+  .kpi .delta.down { color:var(--c-alert); }
+
+  /* グラフ */
+  .chart-bar { display:flex; align-items:flex-end; height:170px; gap:14px; padding:18px 0; }
+  .chart-bar .bar { flex:1; background:var(--c-accent); position:relative; min-width:24px; }
+  .chart-bar .bar .v { position:absolute; top:-16px; left:50%; transform:translateX(-50%); font-size:10px; color:var(--c-text); font-weight:600; font-family:var(--f-mono); white-space:nowrap; }
+  .chart-bar .bar .l { position:absolute; bottom:-18px; left:50%; transform:translateX(-50%); font-size:10px; color:var(--c-text-sub); }
+  .chart-bar .bar.alert { background:var(--c-alert); }
+
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+
+  /* ランキング */
+  .rank-list { font-size:12px; }
+  .rank-row { display:flex; align-items:center; padding:6px 0; border-bottom:1px solid var(--c-line); }
+  .rank-row:last-child { border-bottom:none; }
+  .rank-row .rank { width:22px; height:22px; background:var(--c-bg); color:var(--c-text-sub); font-family:var(--f-mono); font-weight:700; font-size:11px; display:flex; align-items:center; justify-content:center; margin-right:10px; flex-shrink:0; }
+  .rank-row.top1 .rank { background:var(--c-accent); color:#fff; }
+  .rank-row.top2 .rank { background:var(--c-text-sub); color:#fff; }
+  .rank-row.top3 .rank { background:var(--c-line-dk); color:#fff; }
+  .rank-row .name { flex:1; }
+  .rank-row .value { font-family:var(--f-mono); font-weight:600; }
+
+  /* 比較ボックス */
+  .compare-box { display:flex; align-items:center; gap:14px; padding:14px; background:var(--c-bg); border:1px solid var(--c-line); }
+  .compare-box .compare-item { flex:1; }
+  .compare-box .compare-item .label { font-size:11px; color:var(--c-text-sub); margin-bottom:4px; }
+  .compare-box .compare-item .value { font-size:18px; font-weight:600; font-family:var(--f-mono); }
+  .compare-box .compare-arrow { font-size:18px; color:var(--c-text-sub); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">グループC　収支・生産性レポート</h1>
+<p class="subtitle">収入・生産性・比較分析を統合表示</p>
+
+<div class="section-divider" id="W-806">
+  <span class="num">W-806</span>収支・生産性レポート
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：3PL運用での収支管理。荷主からの収入・生産性指標・想定vs実績・ランキング・季節変動を統合表示。<br>
+  <b>利用層</b>：経営層（事業全体把握）・現場管理者（運営判断）・営業（料率交渉根拠）すべてに対応。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/reports/financial-productivity</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#">委託先請求書突合</a>
+        <a href="#" class="active">収支レポート</a>
+        <div class="group">レポート</div>
+        <a href="#">日次/月次レポート</a>
+        <a href="#">在庫レポート</a>
+        <a href="#">業務実績</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　<b>収支・生産性レポート</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>対象期間</label><input type="month" value="2026-04"></div>
+            <div class="field"><label>事業所</label>
+              <select>
+                <option>すべて</option>
+                <option selected>WH001 東京DC</option>
+              </select>
+            </div>
+            <div class="field"><label>荷主</label>
+              <select><option>すべて</option></select>
+            </div>
+            <div class="field"><label>表示単位</label>
+              <select>
+                <option selected>月次</option>
+                <option>四半期</option>
+                <option>年次</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">2026年4月分　最終更新：5/1 02:00</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">PDF出力</button>
+              <button class="btn sm">CSV出力</button>
+              <button class="btn primary sm">更新</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active">サマリ</div>
+          <div class="tab">収入分析</div>
+          <div class="tab">生産性分析</div>
+          <div class="tab">想定vs実績</div>
+          <div class="tab">ランキング</div>
+          <div class="tab">季節変動</div>
+        </div>
+
+        <h3 style="font-size:13px; font-weight:600; color:var(--c-text-sub); margin:16px 0 8px;">主要KPI（2026年4月）</h3>
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="label">月次総収入</div>
+            <div class="value">887<span class="unit">千円</span></div>
+            <div class="delta up">前月比 +5.2%</div>
+          </div>
+          <div class="kpi">
+            <div class="label">荷主数（取引中）</div>
+            <div class="value">5<span class="unit">社</span></div>
+            <div class="delta">前月比 ±0</div>
+          </div>
+          <div class="kpi">
+            <div class="label">月間処理件数</div>
+            <div class="value">1,250<span class="unit">件</span></div>
+            <div class="delta up">前月比 +3.8%</div>
+          </div>
+          <div class="kpi">
+            <div class="label">平均生産性</div>
+            <div class="value">12.3<span class="unit">件/h</span></div>
+            <div class="delta up">前月比 +0.5</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header"><span>料金種別 構成（2026/04）</span></div>
+            <div class="card-body" style="padding:0;">
+              <table class="list">
+                <thead><tr><th>料金種別</th><th class="right">金額</th><th class="right">構成比</th></tr></thead>
+                <tbody>
+                  <tr><td>保管料</td><td class="right num">510,000</td><td class="right num">57.5%</td></tr>
+                  <tr><td>入庫料</td><td class="right num">180,000</td><td class="right num">20.3%</td></tr>
+                  <tr><td>出庫料</td><td class="right num">158,000</td><td class="right num">17.8%</td></tr>
+                  <tr><td>返品処理料</td><td class="right num">22,000</td><td class="right num">2.5%</td></tr>
+                  <tr><td>その他</td><td class="right num">17,000</td><td class="right num">1.9%</td></tr>
+                </tbody>
+                <tfoot><tr><td>合計</td><td class="right num">887,000</td><td class="right num">100%</td></tr></tfoot>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span>収入推移（過去12ヶ月）</span></div>
+            <div class="card-body">
+              <div class="chart-bar">
+                <div class="bar" style="height:50%;"><div class="v">650</div><div class="l">5月</div></div>
+                <div class="bar" style="height:55%;"><div class="v">720</div><div class="l">6月</div></div>
+                <div class="bar" style="height:60%;"><div class="v">760</div><div class="l">7月</div></div>
+                <div class="bar" style="height:58%;"><div class="v">740</div><div class="l">8月</div></div>
+                <div class="bar" style="height:62%;"><div class="v">780</div><div class="l">9月</div></div>
+                <div class="bar" style="height:68%;"><div class="v">820</div><div class="l">10月</div></div>
+                <div class="bar" style="height:70%;"><div class="v">840</div><div class="l">11月</div></div>
+                <div class="bar" style="height:75%;"><div class="v">870</div><div class="l">12月</div></div>
+                <div class="bar" style="height:65%;"><div class="v">810</div><div class="l">1月</div></div>
+                <div class="bar" style="height:68%;"><div class="v">830</div><div class="l">2月</div></div>
+                <div class="bar" style="height:72%;"><div class="v">850</div><div class="l">3月</div></div>
+                <div class="bar" style="height:78%;"><div class="v">887</div><div class="l">4月</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-size:13px; font-weight:600; color:var(--c-text-sub); margin:24px 0 8px;">荷主別ランキング</h3>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header"><span>収入ランキング Top5</span></div>
+            <div class="card-body">
+              <div class="rank-list">
+                <div class="rank-row top1">
+                  <div class="rank">1</div>
+                  <div class="name">マルキ食品 (MK001)</div>
+                  <div class="value">385,000円</div>
+                </div>
+                <div class="rank-row top2">
+                  <div class="rank">2</div>
+                  <div class="name">アルファ商事 (AL001)</div>
+                  <div class="value">308,000円</div>
+                </div>
+                <div class="rank-row top3">
+                  <div class="rank">3</div>
+                  <div class="name">マルキ食品 EC (MK002)</div>
+                  <div class="value">132,000円</div>
+                </div>
+                <div class="rank-row">
+                  <div class="rank">4</div>
+                  <div class="name">ビーシー食品 (BC001)</div>
+                  <div class="value">104,500円</div>
+                </div>
+                <div class="rank-row">
+                  <div class="rank">5</div>
+                  <div class="name">スポット商会 (SP001)</div>
+                  <div class="value">46,200円</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span>業務量ランキング Top5（出荷件数）</span></div>
+            <div class="card-body">
+              <div class="rank-list">
+                <div class="rank-row top1">
+                  <div class="rank">1</div>
+                  <div class="name">マルキ食品 EC (MK002)</div>
+                  <div class="value">450件</div>
+                </div>
+                <div class="rank-row top2">
+                  <div class="rank">2</div>
+                  <div class="name">マルキ食品 (MK001)</div>
+                  <div class="value">350件</div>
+                </div>
+                <div class="rank-row top3">
+                  <div class="rank">3</div>
+                  <div class="name">アルファ商事 (AL001)</div>
+                  <div class="value">280件</div>
+                </div>
+                <div class="rank-row">
+                  <div class="rank">4</div>
+                  <div class="name">ビーシー食品 (BC001)</div>
+                  <div class="value">130件</div>
+                </div>
+                <div class="rank-row">
+                  <div class="rank">5</div>
+                  <div class="name">スポット商会 (SP001)</div>
+                  <div class="value">40件</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-header"><span>生産性ランキング Top5（業態別 件/h）</span></div>
+            <div class="card-body">
+              <div class="rank-list">
+                <div class="rank-row top1">
+                  <div class="rank">1</div>
+                  <div class="name">マルキ食品 ピッキング</div>
+                  <div class="value">15.2 件/h</div>
+                </div>
+                <div class="rank-row top2">
+                  <div class="rank">2</div>
+                  <div class="name">アルファ商事 入荷検品</div>
+                  <div class="value">14.8 件/h</div>
+                </div>
+                <div class="rank-row top3">
+                  <div class="rank">3</div>
+                  <div class="name">マルキ食品 出荷検品</div>
+                  <div class="value">13.5 件/h</div>
+                </div>
+                <div class="rank-row">
+                  <div class="rank">4</div>
+                  <div class="name">マルキEC ピッキング</div>
+                  <div class="value">12.0 件/h</div>
+                </div>
+                <div class="rank-row">
+                  <div class="rank">5</div>
+                  <div class="name">ビーシー食品 棚入れ</div>
+                  <div class="value">10.8 件/h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span>想定 vs 実績（4月）</span></div>
+            <div class="card-body">
+              <div class="compare-box" style="margin-bottom:8px;">
+                <div class="compare-item">
+                  <div class="label">想定収入</div>
+                  <div class="value">850,000円</div>
+                </div>
+                <div class="compare-arrow">→</div>
+                <div class="compare-item">
+                  <div class="label">実績収入</div>
+                  <div class="value" style="color:var(--c-accent);">887,000円</div>
+                </div>
+                <div class="compare-item">
+                  <div class="label">差異</div>
+                  <div class="value" style="color:var(--c-accent);">+37,000円</div>
+                </div>
+              </div>
+              <div class="compare-box" style="margin-bottom:8px;">
+                <div class="compare-item">
+                  <div class="label">想定処理件数</div>
+                  <div class="value">1,200件</div>
+                </div>
+                <div class="compare-arrow">→</div>
+                <div class="compare-item">
+                  <div class="label">実績処理件数</div>
+                  <div class="value" style="color:var(--c-accent);">1,250件</div>
+                </div>
+                <div class="compare-item">
+                  <div class="label">差異</div>
+                  <div class="value" style="color:var(--c-accent);">+50件</div>
+                </div>
+              </div>
+              <div class="compare-box">
+                <div class="compare-item">
+                  <div class="label">想定生産性</div>
+                  <div class="value">12.0 件/h</div>
+                </div>
+                <div class="compare-arrow">→</div>
+                <div class="compare-item">
+                  <div class="label">実績生産性</div>
+                  <div class="value" style="color:var(--c-accent);">12.3 件/h</div>
+                </div>
+                <div class="compare-item">
+                  <div class="label">差異</div>
+                  <div class="value" style="color:var(--c-accent);">+0.3</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="font-size:13px; font-weight:600; color:var(--c-text-sub); margin:24px 0 8px;">季節変動分析</h3>
+        <div class="card">
+          <div class="card-header"><span>業務量の季節パターン（過去12ヶ月）</span></div>
+          <div class="card-body">
+            <div class="chart-bar">
+              <div class="bar" style="height:55%;"><div class="v">980</div><div class="l">5月</div></div>
+              <div class="bar" style="height:62%;"><div class="v">1,100</div><div class="l">6月</div></div>
+              <div class="bar" style="height:68%;"><div class="v">1,180</div><div class="l">7月</div></div>
+              <div class="bar" style="height:65%;"><div class="v">1,150</div><div class="l">8月</div></div>
+              <div class="bar" style="height:75%;"><div class="v">1,300</div><div class="l">9月</div></div>
+              <div class="bar" style="height:80%;"><div class="v">1,380</div><div class="l">10月</div></div>
+              <div class="bar" style="height:85%;"><div class="v">1,450</div><div class="l">11月</div></div>
+              <div class="bar alert" style="height:95%;"><div class="v">1,580</div><div class="l">12月</div></div>
+              <div class="bar" style="height:60%;"><div class="v">1,050</div><div class="l">1月</div></div>
+              <div class="bar" style="height:65%;"><div class="v">1,150</div><div class="l">2月</div></div>
+              <div class="bar" style="height:70%;"><div class="v">1,200</div><div class="l">3月</div></div>
+              <div class="bar" style="height:73%;"><div class="v">1,250</div><div class="l">4月</div></div>
+            </div>
+            <div style="font-size:11px; color:var(--c-text-sub); margin-top:8px; padding-top:8px; border-top:1px solid var(--c-line);">
+              <span class="pill alert" style="margin-right:6px;">繁忙期</span>12月は前月比+9%の業務量増。シフト計画の見直し推奨。
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

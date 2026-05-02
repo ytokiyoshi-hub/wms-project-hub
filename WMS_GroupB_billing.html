@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS グループB 出荷・請求系 5画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tr.alert-row { background:var(--c-alert-lt); }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:disabled, .field select:disabled { background:#f0f2f5; color:var(--c-text-mute); cursor:not-allowed; }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:14px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:16px; margin-top:16px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:12px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-alert-lt); border-left-color:var(--c-alert); }
+  .note-box.warn .label { color:var(--c-alert); }
+
+  .modal-style { background:var(--c-base); border:1px solid var(--c-line); max-width:900px; margin:0 auto; }
+  .modal-style .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-style .modal-header h2 { font-size:15px; font-weight:600; color:var(--c-text); }
+  .modal-style .modal-body { padding:18px; max-height:600px; overflow-y:auto; }
+  .modal-style .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+
+  .text-mono { font-family:var(--f-mono); }
+  .text-bold { font-weight:600; }
+
+  /* 請求書本体表示用 */
+  .invoice-paper {
+    background:#fff; border:1px solid var(--c-line);
+    padding:30px; max-width:780px; margin:0 auto;
+    font-family: var(--f-base);
+  }
+  .invoice-paper h1 { font-size:24px; text-align:center; letter-spacing:0.2em; margin-bottom:14px; font-weight:700; padding-bottom:8px; border-bottom:2px solid var(--c-text); }
+  .invoice-paper .head { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; font-size:12px; }
+  .invoice-paper .head .block { padding:10px; border:1px solid var(--c-line); }
+  .invoice-paper .head .lbl { font-size:10px; color:var(--c-text-sub); margin-bottom:4px; }
+  .invoice-paper .head .val { font-weight:600; line-height:1.6; }
+  .invoice-paper .invoice-table { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:14px; }
+  .invoice-paper .invoice-table th { background:var(--c-bg); padding:7px; border:1px solid var(--c-line-dk); font-weight:600; }
+  .invoice-paper .invoice-table td { padding:7px; border:1px solid var(--c-line); }
+  .invoice-paper .invoice-table .right { text-align:right; font-family:var(--f-mono); }
+  .invoice-paper .total-row { background:var(--c-accent-lt); font-weight:700; }
+  .invoice-paper .total-row td { color:var(--c-accent); font-size:14px; }
+
+  /* セクションタイトル */
+  .sub-section { margin:14px 0 8px; padding:8px 12px; background:var(--c-bg); border-left:3px solid var(--c-accent); font-size:12px; font-weight:600; color:var(--c-text); }
+
+  /* 突合表 */
+  .reconcile-row { background:#fff; }
+  .reconcile-row.match td { background:#e6f4ea; }
+  .reconcile-row.diff td { background:var(--c-alert-lt); }
+  .reconcile-row .diff-amount { font-weight:600; color:var(--c-alert); font-family:var(--f-mono); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">グループB　出荷・請求系　5画面</h1>
+<p class="subtitle">出荷新規登録／請求書一覧・詳細／請求実績／委託先請求書突合</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#W-301a"><b>W-301a</b>出荷新規登録</a>
+  <a href="#W-701"><b>W-701</b>請求書一覧</a>
+  <a href="#W-702"><b>W-702</b>請求書詳細</a>
+  <a href="#W-703"><b>W-703</b>請求実績</a>
+  <a href="#W-714"><b>W-714</b>委託先請求書突合</a>
+</div>
+
+<!-- ============================== -->
+<!-- W-301a 出荷新規登録 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-301a">
+  <span class="num">W-301a</span>出荷新規登録（手入力・用途区分付き）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：紙の指示書・FAX・電話・メールで受けた荷主からの出荷指示を手入力。<br>
+  <b>用途区分</b>：通常出荷／廃棄／サンプル／仕入先返品／外部倉庫移管／その他から選択。在庫の所有権は荷主にあり、倉庫事業者は指示通りに実行する。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/outbound/orders/new</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">出荷</div>
+        <a href="#" class="active">出荷一覧</a>
+        <a href="#">引当・ウェーブ</a>
+        <a href="#">出荷指示</a>
+        <a href="#">梱包・送り状</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">出荷　/　出荷一覧　/　<b>新規登録</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>マルキ食品</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="modal-style">
+          <div class="modal-header">
+            <h2>出荷新規登録（手入力）</h2>
+          </div>
+          <div class="modal-body">
+
+            <div class="note-box">
+              <div class="label">手入力の使い方</div>
+              荷主からの<b>紙の指示書・FAX・電話・メール</b>などで受けた出荷指示を入力します。<br>
+              荷主のERP/OMSから自動連携される出荷指示は、この画面ではなく自動で取込まれます。
+            </div>
+
+            <div class="form-section">
+              <h3>出荷の基本情報</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>荷主<span class="required">*</span></label>
+                  <select>
+                    <option selected>MK001 マルキ食品</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>用途区分<span class="required">*</span></label>
+                  <select>
+                    <option selected>通常出荷（顧客向け配送）</option>
+                    <option>廃棄</option>
+                    <option>サンプル</option>
+                    <option>仕入先返品</option>
+                    <option>外部倉庫移管</option>
+                    <option>その他</option>
+                  </select>
+                  <div class="hint">用途別に集計可能。レポートでも区分ごとに分析可</div>
+                </div>
+                <div class="field">
+                  <label>出荷No</label>
+                  <input value="自動採番" disabled style="font-family:var(--f-mono);">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>指示書受領日<span class="required">*</span></label>
+                  <input type="date" value="2026-05-02">
+                </div>
+                <div class="field">
+                  <label>指示元</label>
+                  <select>
+                    <option>FAX</option>
+                    <option selected>メール</option>
+                    <option>電話</option>
+                    <option>紙の指示書（持参）</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>受付者</label>
+                  <input value="山田リーダー" disabled>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>希望出荷日<span class="required">*</span></label>
+                  <input type="date" value="2026-05-03">
+                </div>
+                <div class="field">
+                  <label>希望着日</label>
+                  <input type="date" value="2026-05-05">
+                </div>
+                <div class="field">
+                  <label>優先度</label>
+                  <select>
+                    <option>通常</option>
+                    <option>急（当日）</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>配送先情報</h3>
+              <div class="form-row">
+                <div class="field" style="grid-column:span 2;">
+                  <label>配送先名<span class="required">*</span></label>
+                  <input value="○○商店">
+                </div>
+                <div class="field">
+                  <label>配送業者<span class="required">*</span></label>
+                  <select>
+                    <option selected>ヤマト運輸</option>
+                    <option>佐川急便</option>
+                    <option>福山通運</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>郵便番号</label>
+                  <input value="100-0001" style="max-width:140px;">
+                </div>
+                <div class="field" style="grid-column:span 2;">
+                  <label>住所<span class="required">*</span></label>
+                  <input value="東京都千代田区千代田1-1-1">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>明細（出荷商品）</h3>
+              <div class="card" style="margin-bottom:8px;">
+                <div class="card-body" style="padding:0;">
+                  <table class="list">
+                    <thead>
+                      <tr>
+                        <th style="width:40px;">No</th>
+                        <th>商品コード</th>
+                        <th>商品名</th>
+                        <th class="right">数量</th>
+                        <th>単位</th>
+                        <th>備考</th>
+                        <th class="center" style="width:60px;">削除</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="num">1</td>
+                        <td><input value="S-00321" style="width:100%; font-family:var(--f-mono);"></td>
+                        <td>シャンプー300ml</td>
+                        <td><input value="3" type="number" style="width:60px; text-align:right;"></td>
+                        <td><select><option selected>ケース</option><option>ピース</option></select></td>
+                        <td><input value="" style="width:100%;"></td>
+                        <td class="center"><button class="btn sm">×</button></td>
+                      </tr>
+                      <tr>
+                        <td class="num">2</td>
+                        <td><input value="S-00322" style="width:100%; font-family:var(--f-mono);"></td>
+                        <td>リンス300ml</td>
+                        <td><input value="2" type="number" style="width:60px; text-align:right;"></td>
+                        <td><select><option selected>ケース</option></select></td>
+                        <td><input value="" style="width:100%;"></td>
+                        <td class="center"><button class="btn sm">×</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn sm">＋ 行追加</button>
+                <button class="btn sm">CSV取込</button>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>備考</h3>
+              <div class="field">
+                <label>特記事項</label>
+                <textarea rows="2"></textarea>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn">キャンセル</button>
+            <button class="btn">下書き保存</button>
+            <button class="btn primary">登録</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-701 請求書一覧 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-701">
+  <span class="num">W-701</span>請求書一覧
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：月次の請求書を一覧表示・管理。発行状況・送付状況・入金状況の把握。<br>
+  <b>運用</b>：毎月1日にdraft自動生成 → 管理者が確認・修正 → [発行]で確定 → PDF送付
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/invoices</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#" class="active">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#">委託先請求書突合</a>
+        <a href="#">収支レポート</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　<b>請求書一覧</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="tabs">
+          <div class="tab active">下書き（要確認）</div>
+          <div class="tab">発行済</div>
+          <div class="tab">送付済</div>
+          <div class="tab">入金済</div>
+          <div class="tab">すべて</div>
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>請求対象月</label><input type="month" value="2026-04"></div>
+            <div class="field"><label>荷主</label><select><option>すべて</option></select></div>
+            <div class="field"><label>請求書番号</label><input value="" placeholder="INV-..."></div>
+            <div class="field"><label>金額帯</label><select><option>すべて</option></select></div>
+          </div>
+          <div class="actions">
+            <span class="stats">下書き　<b>5件</b>（要確認）</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn primary sm">一括発行</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>下書き請求書一覧（4月分）</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>請求書番号</th>
+                  <th>荷主</th>
+                  <th>請求対象期間</th>
+                  <th class="right">小計</th>
+                  <th class="right">消費税</th>
+                  <th class="right">合計</th>
+                  <th>支払期限</th>
+                  <th class="center" style="width:80px;">状態</th>
+                  <th class="center" style="width:120px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">INV-2604-MK001</td>
+                  <td>マルキ食品 (MK001)</td>
+                  <td class="num">2026/04/01〜04/30</td>
+                  <td class="right num">350,000</td>
+                  <td class="right num">35,000</td>
+                  <td class="right num">385,000</td>
+                  <td class="num">2026/05/31</td>
+                  <td class="center"><span class="pill alert">下書き</span></td>
+                  <td class="center"><button class="btn sm">確認</button> <button class="btn primary sm">発行</button></td>
+                </tr>
+                <tr>
+                  <td class="num">INV-2604-MK002</td>
+                  <td>マルキ食品 EC (MK002)</td>
+                  <td class="num">2026/04/01〜04/30</td>
+                  <td class="right num">120,000</td>
+                  <td class="right num">12,000</td>
+                  <td class="right num">132,000</td>
+                  <td class="num">2026/05/31</td>
+                  <td class="center"><span class="pill alert">下書き</span></td>
+                  <td class="center"><button class="btn sm">確認</button> <button class="btn primary sm">発行</button></td>
+                </tr>
+                <tr>
+                  <td class="num">INV-2604-AL001</td>
+                  <td>アルファ商事 (AL001)</td>
+                  <td class="num">2026/04/01〜04/30</td>
+                  <td class="right num">280,000</td>
+                  <td class="right num">28,000</td>
+                  <td class="right num">308,000</td>
+                  <td class="num">2026/05/31</td>
+                  <td class="center"><span class="pill alert">下書き</span></td>
+                  <td class="center"><button class="btn sm">確認</button> <button class="btn primary sm">発行</button></td>
+                </tr>
+                <tr>
+                  <td class="num">INV-2604-BC001</td>
+                  <td>ビーシー食品 (BC001)</td>
+                  <td class="num">2026/04/01〜04/30</td>
+                  <td class="right num">95,000</td>
+                  <td class="right num">9,500</td>
+                  <td class="right num">104,500</td>
+                  <td class="num">2026/05/31</td>
+                  <td class="center"><span class="pill alert">下書き</span></td>
+                  <td class="center"><button class="btn sm">確認</button> <button class="btn primary sm">発行</button></td>
+                </tr>
+                <tr>
+                  <td class="num">INV-2604-SP001</td>
+                  <td>スポット商会 (SP001)</td>
+                  <td class="num">2026/04/01〜04/30</td>
+                  <td class="right num">42,000</td>
+                  <td class="right num">4,200</td>
+                  <td class="right num">46,200</td>
+                  <td class="num">2026/05/31</td>
+                  <td class="center"><span class="pill alert">下書き</span></td>
+                  <td class="center"><button class="btn sm">確認</button> <button class="btn primary sm">発行</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3">合計（5件）</td>
+                  <td class="right num">887,000</td>
+                  <td class="right num">88,700</td>
+                  <td class="right num">975,700</td>
+                  <td colspan="3"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-702 請求書詳細 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-702">
+  <span class="num">W-702</span>請求書詳細（明細レイアウト含む）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：個別請求書の確認・編集・発行。本体＋明細書（保管料・荷役料明細／在庫明細書／その他）の構成。<br>
+  <b>運用</b>：下書き状態のみ編集可。発行後は変更不可（差額調整は次月で）。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/invoices/INV-2604-MK001</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#" class="active">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#">委託先請求書突合</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　請求書一覧　/　<b>INV-2604-MK001</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="tabs">
+          <div class="tab active">請求書本体</div>
+          <div class="tab">保管料・荷役料明細</div>
+          <div class="tab">再保利用控除</div>
+          <div class="tab">その他料金</div>
+          <div class="tab">在庫明細書</div>
+        </div>
+
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px;">
+          <button class="btn sm">PDF出力</button>
+          <button class="btn sm">CSV出力</button>
+          <button class="btn sm">プレビュー</button>
+          <button class="btn primary sm">発行</button>
+        </div>
+
+        <div class="invoice-paper">
+          <h1>請　求　書</h1>
+          <div class="head">
+            <div class="block">
+              <div class="lbl">請求先</div>
+              <div class="val">
+                〒100-0001<br>
+                東京都千代田区千代田1-1-1<br>
+                <span style="font-size:14px;">株式会社マルキ食品 御中</span><br>
+                経理部　ご担当者様
+              </div>
+            </div>
+            <div class="block">
+              <div class="lbl">発行元</div>
+              <div class="val">
+                〒135-0064<br>
+                東京都江東区青海1-1-1<br>
+                <span style="font-size:14px;">時吉倉庫株式会社</span><br>
+                登録番号: T9876543210123<br>
+                TEL: 03-XXXX-XXXX
+              </div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; font-size:11px;">
+            <div><b>請求書番号：</b><span class="text-mono">INV-2604-MK001</span></div>
+            <div><b>発行日：</b>2026年5月1日</div>
+            <div><b>請求対象期間：</b>2026年4月1日 〜 4月30日</div>
+            <div><b>支払期限：</b>2026年5月31日</div>
+          </div>
+          <table class="invoice-table">
+            <thead>
+              <tr><th>項目</th><th>説明</th><th class="right" style="width:120px;">金額</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>保管料</td><td>3期制（本倉庫＋再保利用分）</td><td class="right">200,000</td></tr>
+              <tr><td>入庫料</td><td>400件 × 200円</td><td class="right">80,000</td></tr>
+              <tr><td>出庫料</td><td>350件 × 200円</td><td class="right">70,000</td></tr>
+              <tr><td>返品処理料</td><td>10件 × 500円</td><td class="right">5,000</td></tr>
+              <tr><td>棚卸料</td><td>2回 × 2,000円</td><td class="right">4,000</td></tr>
+              <tr><td>廃棄処理料</td><td>実費</td><td class="right">8,500</td></tr>
+              <tr><td colspan="2" class="right" style="font-weight:600;">小計</td><td class="right">367,500</td></tr>
+              <tr><td colspan="2" class="right" style="font-weight:600;">消費税（10%）</td><td class="right">36,750</td></tr>
+              <tr class="total-row"><td colspan="2" class="right">合計（税込）</td><td class="right">404,250</td></tr>
+            </tbody>
+          </table>
+          <div style="border:2px solid var(--c-text); padding:10px; font-size:11px;">
+            <b>お振込先</b><br>
+            ○○銀行 ○○支店　普通口座 1234567<br>
+            口座名義：トキヨシソウコ（カ<br>
+            ※振込手数料はご負担ください
+          </div>
+        </div>
+
+        <div class="note-box" style="margin-top:14px;">
+          <div class="label">添付明細書</div>
+          請求書送付時には、以下を添付：<br>
+          ・保管料・荷役料明細（商品別1行）<br>
+          ・再保利用控除内訳（該当時のみ）<br>
+          ・その他料金明細（廃棄料・棚卸料の内訳）<br>
+          ・在庫明細書（月末時点のスナップショット）
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-703 請求実績 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-703">
+  <span class="num">W-703</span>請求実績
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：日次の請求実績を確認。請求書のもとになる原データ。<br>
+  <b>運用</b>：毎日深夜にバッチ集計→翌日朝には前日分が見える。月末締め後に請求書生成。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/usage</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#">請求書一覧</a>
+        <a href="#" class="active">請求実績</a>
+        <a href="#">委託先請求書突合</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　<b>請求実績</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>マルキ食品</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>対象期間（開始）</label><input type="date" value="2026-04-01"></div>
+            <div class="field"><label>対象期間（終了）</label><input type="date" value="2026-04-30"></div>
+            <div class="field"><label>料金種別</label>
+              <select>
+                <option>すべて</option>
+                <option>保管料</option>
+                <option>入庫料</option>
+                <option>出庫料</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">期間合計：<b>350,000円</b>（税抜）</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn primary sm">検索</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><span>料金種別 サマリ（2026/04）</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>料金種別</th>
+                  <th class="right">数量</th>
+                  <th>単位</th>
+                  <th class="right">単価</th>
+                  <th class="right">金額</th>
+                  <th class="right">構成比</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>保管料</td><td class="right num">2,500</td><td>パレット/期</td><td class="right num">80</td><td class="right num">200,000</td><td class="right num">57.1%</td></tr>
+                <tr><td>入庫料</td><td class="right num">400</td><td>件</td><td class="right num">200</td><td class="right num">80,000</td><td class="right num">22.9%</td></tr>
+                <tr><td>出庫料</td><td class="right num">350</td><td>件</td><td class="right num">200</td><td class="right num">70,000</td><td class="right num">20.0%</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><td colspan="4" class="right">合計</td><td class="right num">350,000</td><td class="right num">100%</td></tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>日次推移（2026/04）</span></div>
+          <div class="card-body">
+            <div style="display:flex; align-items:flex-end; gap:2px; height:140px; padding:14px 0;">
+              <div style="flex:1; background:var(--c-accent); height:60%;" title="4/1"></div>
+              <div style="flex:1; background:var(--c-accent); height:65%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:70%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:55%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:75%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:80%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:60%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:65%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:70%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:78%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:82%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:85%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:88%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:80%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:75%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:70%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:72%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:68%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:80%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:90%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:95%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:88%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:85%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:83%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:80%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:75%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:78%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:82%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:85%;"></div>
+              <div style="flex:1; background:var(--c-accent); height:90%;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--c-text-sub);">
+              <span>4/1</span><span>4/10</span><span>4/20</span><span>4/30</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-714 委託先請求書突合 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-714">
+  <span class="num">W-714</span>委託先請求書突合
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：システムが計算した委託先への支払予定額と、委託先から届いた請求書の金額を突合。差異を検出してアラート。<br>
+  <b>運用</b>：月末バッチで予定額算出 → 委託先請求書を入力 → 突合 → 差異あれば原因調査
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/reconcile</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#" class="active">委託先請求書突合</a>
+        <a href="#">収支レポート</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　<b>委託先請求書突合</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>対象月</label><input type="month" value="2026-04"></div>
+            <div class="field"><label>委託先</label><select><option>すべて</option></select></div>
+            <div class="field"><label>状態</label>
+              <select>
+                <option>すべて</option>
+                <option selected>差異あり</option>
+                <option>未入力</option>
+                <option>突合OK</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">差異あり　<b>1件</b>　/　未入力　<b>1件</b>　/　突合OK　<b>1件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>委託先請求書 突合一覧（2026/04）</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>委託先</th>
+                  <th class="right">予定額（自動計算）</th>
+                  <th class="right">請求書金額（入力）</th>
+                  <th class="right">差額</th>
+                  <th class="center" style="width:100px;">状態</th>
+                  <th class="center" style="width:140px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="reconcile-row diff">
+                  <td>吉富運輸 (YU001)</td>
+                  <td class="right num">43,000</td>
+                  <td class="right num">45,000</td>
+                  <td class="right diff-amount">+2,000</td>
+                  <td class="center"><span class="pill alert">差異あり</span></td>
+                  <td class="center"><button class="btn sm">原因調査</button></td>
+                </tr>
+                <tr class="reconcile-row match">
+                  <td>○○倉庫 (TK001)</td>
+                  <td class="right num">28,500</td>
+                  <td class="right num">28,500</td>
+                  <td class="right num">0</td>
+                  <td class="center"><span class="pill accent">突合OK</span></td>
+                  <td class="center"><button class="btn primary sm">支払承認</button></td>
+                </tr>
+                <tr>
+                  <td>△△ロジ (DL001)</td>
+                  <td class="right num">15,800</td>
+                  <td class="right" style="color:var(--c-text-mute);">未入力</td>
+                  <td class="right" style="color:var(--c-text-mute);">−</td>
+                  <td class="center"><span class="pill">未入力</span></td>
+                  <td class="center"><button class="btn sm">請求書入力</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>合計</td>
+                  <td class="right num">87,300</td>
+                  <td class="right num">73,500</td>
+                  <td class="right num">+2,000</td>
+                  <td colspan="2"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <h3 style="font-size:14px; margin:24px 0 8px;">差異詳細プレビュー（吉富運輸）</h3>
+
+        <div class="card">
+          <div class="card-header"><span>YU001 吉富運輸 - 差異内訳</span></div>
+          <div class="card-body">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>項目</th>
+                  <th class="right">予定（自動計算）</th>
+                  <th class="right">請求書</th>
+                  <th class="right">差額</th>
+                  <th>差額の原因（推定）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>保管料</td><td class="right num">15,000</td><td class="right num">15,000</td><td class="right num">0</td><td>−</td></tr>
+                <tr><td>入庫料</td><td class="right num">16,000</td><td class="right num">16,000</td><td class="right num">0</td><td>−</td></tr>
+                <tr><td>出庫料</td><td class="right num">12,000</td><td class="right num">12,000</td><td class="right num">0</td><td>−</td></tr>
+                <tr class="alert-row"><td>付帯作業料</td><td class="right num">0</td><td class="right num">2,000</td><td class="right diff-amount">+2,000</td><td>システム未計上の特別作業</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><td>合計</td><td class="right num">43,000</td><td class="right num">45,000</td><td class="right num">+2,000</td><td></td></tr>
+              </tfoot>
+            </table>
+            <div class="note-box warn" style="margin-top:14px;">
+              <div class="label">差額の処理</div>
+              ・正当な追加作業の場合：「付帯作業料」として計上、支払承認<br>
+              ・委託先の計算誤りの場合：委託先に確認・訂正請求書を依頼<br>
+              ・コード化されていない作業の場合：契約単価マスタへ追加検討
+            </div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn">委託先に問合せ</button>
+              <button class="btn">付帯作業料として承認</button>
+              <button class="btn primary">支払承認</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS Project Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --bg-app: #0f1419;
+  --bg-sidebar: #161b22;
+  --bg-main: #f6f8fa;
+  --bg-card: #ffffff;
+  --bg-hover: #f0f3f6;
+  --bg-pill: #eef2f6;
+  --border: #d0d7de;
+  --border-strong: #afb8c1;
+  --text-main: #1f2328;
+  --text-sub: #656d76;
+  --text-mute: #8c959f;
+  --text-light: #ffffff;
+  --text-sb: #c9d1d9;
+  --text-sb-mute: #7d8590;
+  --accent: #2563eb;
+  --accent-dk: #1d4ed8;
+  --accent-lt: #dbeafe;
+  --success: #1a7f37;
+  --success-lt: #dcfce7;
+  --warning: #d97706;
+  --warning-lt: #fef3c7;
+  --danger: #cf222e;
+  --danger-lt: #ffe5e5;
+  --neutral: #656d76;
+  --neutral-lt: #eef2f6;
+  --purple: #8250df;
+  --purple-lt: #f0e7ff;
+  --f-base: 'Noto Sans JP', 'Inter', sans-serif;
+  --f-mono: 'JetBrains Mono', 'Roboto Mono', monospace;
+}
+
+html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base); color: var(--text-main); }
+
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ========== サイドバー ========== */
+.sidebar {
+  width: 260px;
+  background: var(--bg-sidebar);
+  color: var(--text-sb);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #21262d;
+}
+
+.sb-brand {
+  padding: 20px 22px;
+  border-bottom: 1px solid #21262d;
+}
+.sb-brand .logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+.sb-brand .sub {
+  font-size: 11px;
+  color: var(--text-sb-mute);
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+.sb-nav { flex: 1; padding: 14px 0; overflow-y: auto; }
+.sb-nav .group-label {
+  padding: 14px 22px 6px;
+  font-size: 10px;
+  color: var(--text-sb-mute);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.sb-nav .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 22px;
+  color: var(--text-sb);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background 0.1s;
+}
+.sb-nav .nav-item:hover { background: rgba(255,255,255,0.04); color: #fff; }
+.sb-nav .nav-item.active {
+  background: #21262d;
+  color: #fff;
+  border-left-color: var(--accent);
+}
+.sb-nav .nav-item .icon { font-size: 16px; width: 18px; text-align: center; }
+.sb-nav .nav-item .badge {
+  margin-left: auto;
+  background: rgba(255,255,255,0.08);
+  color: var(--text-sb-mute);
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--f-mono);
+}
+.sb-nav .nav-item.active .badge { background: var(--accent); color: #fff; }
+
+.sb-footer {
+  padding: 14px 22px;
+  border-top: 1px solid #21262d;
+  font-size: 11px;
+  color: var(--text-sb-mute);
+}
+.sb-footer .ver { font-family: var(--f-mono); margin-bottom: 4px; }
+
+/* ========== メイン ========== */
+.main {
+  flex: 1;
+  background: var(--bg-main);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar {
+  height: 56px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  flex-shrink: 0;
+  gap: 18px;
+}
+.topbar .crumb { font-size: 13px; color: var(--text-sub); flex: 1; }
+.topbar .crumb b { color: var(--text-main); font-weight: 600; }
+.topbar .last-updated { font-size: 11px; color: var(--text-mute); font-family: var(--f-mono); }
+
+.content { flex: 1; padding: 24px 28px 80px; overflow-y: auto; }
+
+/* タイトル */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.page-subtitle {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 22px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+  margin: 24px 0 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.section-title:first-child { margin-top: 0; }
+
+/* カード */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.card-h {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.card-h .meta { font-size: 11px; color: var(--text-sub); font-weight: 400; font-family: var(--f-mono); }
+.card-b { padding: 16px; }
+
+/* ステータスピル */
+.pill {
+  display: inline-block;
+  padding: 2px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 11px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.pill-success { background: var(--success-lt); color: var(--success); }
+.pill-progress { background: var(--accent-lt); color: var(--accent-dk); }
+.pill-pending { background: var(--neutral-lt); color: var(--neutral); }
+.pill-warning { background: var(--warning-lt); color: var(--warning); }
+.pill-danger { background: var(--danger-lt); color: var(--danger); }
+.pill-purple { background: var(--purple-lt); color: var(--purple); }
+
+/* ボタン */
+.btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  color: var(--text-main);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  font-family: var(--f-base);
+  transition: background 0.1s;
+}
+.btn:hover { background: var(--bg-hover); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary:hover { background: var(--accent-dk); }
+.btn-sm { padding: 3px 10px; font-size: 11px; }
+
+/* KPIカード */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.kpi {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.kpi .lbl {
+  font-size: 11px;
+  color: var(--text-sub);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.kpi .val {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text-main);
+  font-family: var(--f-mono);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.kpi .val .unit {
+  font-size: 14px;
+  color: var(--text-sub);
+  font-weight: 500;
+  margin-left: 4px;
+  font-family: var(--f-base);
+}
+.kpi .delta {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-top: 12px;
+  font-family: var(--f-mono);
+}
+
+/* 進捗バー */
+.pbar { height: 8px; background: var(--neutral-lt); border-radius: 4px; overflow: hidden; }
+.pbar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.3s; }
+.pbar-fill.success { background: var(--success); }
+.pbar-fill.warning { background: var(--warning); }
+
+/* テーブル */
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th, .tbl td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.tbl th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-strong);
+}
+.tbl tr:hover td { background: var(--bg-hover); }
+.tbl .num { font-family: var(--f-mono); }
+.tbl .right { text-align: right; }
+.tbl .center { text-align: center; }
+.tbl .id { font-family: var(--f-mono); font-weight: 600; color: var(--text-main); }
+
+/* リンク表示 */
+.link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+.link:hover { text-decoration: underline; }
+
+/* ページコンテンツ切替 */
+.page { display: none; }
+.page.active { display: block; }
+
+/* タイムラインフェーズ */
+.phase-list { display: flex; flex-direction: column; gap: 12px; }
+.phase {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.phase .marker {
+  width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+  background: var(--neutral-lt); border: 2px solid var(--border-strong);
+}
+.phase.done .marker { background: var(--success); border-color: var(--success); }
+.phase.progress .marker { background: var(--accent); border-color: var(--accent); }
+.phase .body { flex: 1; }
+.phase .title { font-weight: 600; font-size: 14px; }
+.phase .desc { font-size: 12px; color: var(--text-sub); margin-top: 3px; }
+.phase .pct { font-family: var(--f-mono); font-weight: 600; font-size: 15px; min-width: 50px; text-align: right; }
+
+/* 工程進捗グリッド */
+.proc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.proc-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.proc-card .h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.proc-card .name { font-weight: 600; font-size: 13px; }
+.proc-card .desc { font-size: 11px; color: var(--text-sub); margin-bottom: 10px; }
+
+/* 画面モックグリッド */
+.screen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.screen-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.screen-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+  transform: translateY(-1px);
+}
+.screen-card .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.screen-card .device {
+  font-size: 10px;
+  color: var(--text-sub);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.screen-card .title { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+.screen-card .meta { font-size: 11px; color: var(--text-sub); font-family: var(--f-mono); }
+
+/* タグ */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 500;
+  background: var(--bg-pill);
+  color: var(--text-sub);
+  border-radius: 10px;
+  margin-right: 4px;
+}
+.tag-pc { background: #dbeafe; color: #1d4ed8; }
+.tag-ht { background: #fef3c7; color: #92400e; }
+.tag-mobile { background: #dcfce7; color: #166534; }
+.tag-portal { background: #f0e7ff; color: #6b21a8; }
+
+/* タブ */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 18px;
+  gap: 0;
+}
+.tab {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-sub);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-weight: 500;
+}
+.tab:hover { color: var(--text-main); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+/* 検索 */
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: var(--f-base);
+  margin-bottom: 14px;
+}
+
+/* バッジ群 */
+.badges { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* 機能カードグリッド */
+.feat-grid { display: grid; gap: 10px; }
+.feat-row {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 90px 1fr 100px 100px;
+  gap: 14px;
+  align-items: center;
+  font-size: 13px;
+}
+.feat-row .id { font-family: var(--f-mono); font-weight: 600; color: var(--accent); }
+
+/* ドキュメントカード */
+.doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+.doc-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+.doc-card .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.doc-card .title { font-weight: 600; font-size: 14px; }
+.doc-card .desc { font-size: 12px; color: var(--text-sub); margin-bottom: 10px; }
+.doc-card .meta { font-size: 11px; color: var(--text-mute); font-family: var(--f-mono); }
+.doc-card .actions { display: flex; gap: 6px; margin-top: 10px; }
+
+/* 決定リスト */
+.decision { padding: 14px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; }
+.decision .h { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.decision .id { font-family: var(--f-mono); font-weight: 600; color: var(--accent); }
+.decision .title { font-weight: 600; font-size: 13px; }
+.decision .body { font-size: 12px; color: var(--text-sub); line-height: 1.6; }
+
+/* カテゴリバッジ */
+.cat-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--f-mono);
+  background: var(--accent);
+  color: #fff;
+  border-radius: 4px;
+}
+.cat-A { background: #2563eb; }
+.cat-B { background: #7c3aed; }
+.cat-C { background: #db2777; }
+.cat-D { background: #dc2626; }
+.cat-F { background: #ea580c; }
+.cat-G { background: #ca8a04; }
+.cat-H { background: #16a34a; }
+.cat-I { background: #0891b2; }
+.cat-J { background: #6366f1; }
+.cat-K { background: #be185d; }
+.cat-M { background: #b91c1c; }
+.cat-N { background: #a16207; }
+.cat-O { background: #15803d; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- サイドバー -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="logo">WMS Project Hub</div>
+      <div class="sub">3PL マルチテナント WMS</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="group-label">概要</div>
+      <div class="nav-item active" data-page="dashboard">
+        <span class="icon">▤</span>
+        <span>ダッシュボード</span>
+      </div>
+      <div class="nav-item" data-page="progress">
+        <span class="icon">◷</span>
+        <span>進捗詳細</span>
+      </div>
+
+      <div class="group-label">成果物</div>
+      <div class="nav-item" data-page="screens">
+        <span class="icon">◰</span>
+        <span>画面モック</span>
+        <span class="badge">65</span>
+      </div>
+      <div class="nav-item" data-page="documents">
+        <span class="icon">▦</span>
+        <span>ドキュメント</span>
+        <span class="badge">8</span>
+      </div>
+
+      <div class="group-label">仕様管理</div>
+      <div class="nav-item" data-page="features">
+        <span class="icon">◇</span>
+        <span>追加機能リスト</span>
+        <span class="badge">98</span>
+      </div>
+      <div class="nav-item" data-page="decisions">
+        <span class="icon">✓</span>
+        <span>確定事項</span>
+      </div>
+      <div class="nav-item" data-page="pending">
+        <span class="icon">!</span>
+        <span>未決事項</span>
+      </div>
+
+      <div class="group-label">開発</div>
+      <div class="nav-item" data-page="claudecode">
+        <span class="icon">⚡</span>
+        <span>Claude Code 連携</span>
+      </div>
+    </nav>
+    <div class="sb-footer">
+      <div class="ver">v3.1.0 / 仕様策定中</div>
+      <div>マルキ食品ベースシナリオ</div>
+    </div>
+  </aside>
+
+  <!-- メイン -->
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb"><b id="crumb-current">ダッシュボード</b></div>
+      <div class="last-updated">最終更新：2026/05/02</div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============ ダッシュボード ============ -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-title">プロジェクトダッシュボード</div>
+        <div class="page-subtitle">WMS（倉庫管理システム）3PL対応版の開発進捗ハブ</div>
+
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="lbl">フェーズ進捗</div>
+            <div class="val">2 <span class="unit">/ 5</span></div>
+            <div class="delta">仕様策定 完了 / 工程レビュー中</div>
+          </div>
+          <div class="kpi">
+            <div class="lbl">工程レビュー</div>
+            <div class="val">2 <span class="unit">/ 16</span></div>
+            <div class="delta">マスタ管理 進行中</div>
+          </div>
+          <div class="kpi">
+            <div class="lbl">追加機能</div>
+            <div class="val">98</div>
+            <div class="delta">設計確定 6件</div>
+          </div>
+          <div class="kpi">
+            <div class="lbl">画面モック</div>
+            <div class="val">65</div>
+            <div class="delta">PC 53 / HT 5 / Mobile 3 / Portal 9</div>
+          </div>
+        </div>
+
+        <div class="section-title">フェーズ別ステータス</div>
+        <div class="phase-list">
+          <div class="phase done">
+            <div class="marker"></div>
+            <div class="body">
+              <div class="title">フェーズ1：仕様策定（v1.0 → v3.1）</div>
+              <div class="desc">基本仕様書・API仕様書・ER図・印刷帳票仕様・実装ガイド・操作マニュアル すべて作成完了</div>
+            </div>
+            <div class="pct">100%</div>
+          </div>
+          <div class="phase progress">
+            <div class="marker"></div>
+            <div class="body">
+              <div class="title">フェーズ2：工程レビュー</div>
+              <div class="desc">業務工程ごとの詳細仕様レビュー（マスタ管理 進行中、課金・請求 完了、その他14工程未着手）</div>
+            </div>
+            <div class="pct">15%</div>
+          </div>
+          <div class="phase">
+            <div class="marker"></div>
+            <div class="body">
+              <div class="title">フェーズ3：ドキュメント最新化（v4.0）</div>
+              <div class="desc">レビューで確定した98機能をすべてのドキュメントに反映</div>
+            </div>
+            <div class="pct">0%</div>
+          </div>
+          <div class="phase">
+            <div class="marker"></div>
+            <div class="body">
+              <div class="title">フェーズ4：開発準備（Claude Code連携）</div>
+              <div class="desc">Claude Code向けスターターキット・指示書整備</div>
+            </div>
+            <div class="pct">0%</div>
+          </div>
+          <div class="phase">
+            <div class="marker"></div>
+            <div class="body">
+              <div class="title">フェーズ5：実装開発</div>
+              <div class="desc">Claude Code を使用した本格実装</div>
+            </div>
+            <div class="pct">0%</div>
+          </div>
+        </div>
+
+        <div class="section-title">工程レビュー進捗</div>
+        <div class="proc-grid">
+          <div class="proc-card">
+            <div class="h"><span class="name">工程1：マスタ管理</span><span class="pill pill-progress">進行中</span></div>
+            <div class="desc">2/10 マスタ完了（倉庫・荷主）</div>
+            <div class="pbar"><div class="pbar-fill" style="width:20%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程2：入荷・受入</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">ASN・検品・差異・棚入れ</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程3：保管・移動・補充</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">ロケ管理・庫内移動・補充指示</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程4：在庫管理</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">ステータス変更・ロット止め・調整</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程5：受注・引当</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">引当・ウェーブ・エリア分割</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程6：ピッキング</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">3ステップ・カゴ管理</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程7：出荷検品・梱包</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">検品・ラベル・梱包</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程8：仮置き・引渡</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">集合確認・引渡管理</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程9：積込・出荷確定</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">積込明細書・受領印</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程10：実績送信</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">荷主連携・配送追跡</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程11：返品処理</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">返品・状態判定・在庫戻し</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程12：請求管理</span><span class="pill pill-success">完了</span></div>
+            <div class="desc">3期制・控除・請求書・突合</div>
+            <div class="pbar"><div class="pbar-fill success" style="width:100%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程13：荷主ポータル</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">在庫照会・出荷状況・請求書</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程14：その他出庫</span><span class="pill pill-success">完了</span></div>
+            <div class="desc">受注手入力（用途区分付き）</div>
+            <div class="pbar"><div class="pbar-fill success" style="width:100%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程15：レポート・ログ</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">KPI・監査ログ</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+          <div class="proc-card">
+            <div class="h"><span class="name">工程16：イレギュラー対応</span><span class="pill pill-pending">未着手</span></div>
+            <div class="desc">例外シナリオ全般</div>
+            <div class="pbar"><div class="pbar-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 進捗詳細 ============ -->
+      <div class="page" id="page-progress">
+        <div class="page-title">進捗詳細</div>
+        <div class="page-subtitle">マスタ管理工程の詳細進捗とドキュメント反映状況</div>
+
+        <div class="section-title">マスタ管理：10マスタの状況</div>
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-b" style="padding:0;">
+            <table class="tbl">
+              <thead>
+                <tr><th>No</th><th>マスタ名</th><th>状態</th><th>確定論点数</th><th>備考</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">1</td><td>倉庫マスタ</td><td><span class="pill pill-success">完了</span></td><td class="center">5</td><td>WH001/YU001形式、運営区分</td></tr>
+                <tr><td class="num">2</td><td>荷主マスタ</td><td><span class="pill pill-success">完了</span></td><td class="center">3</td><td>MK001-01枝番管理</td></tr>
+                <tr><td class="num">3</td><td>ピッキングエリアマスタ</td><td><span class="pill pill-pending">未着手</span></td><td class="center">-</td><td>次レビュー対象</td></tr>
+                <tr><td class="num">4</td><td>ロケーションマスタ</td><td><span class="pill pill-pending">未着手</span></td><td class="center">-</td><td>-</td></tr>
+                <tr><td class="num">5</td><td>在庫ステータスマスタ</td><td><span class="pill pill-pending">未着手</span></td><td class="center">-</td><td>機能設計済み</td></tr>
+                <tr><td class="num">6</td><td>配送業者マスタ</td><td><span class="pill pill-pending">未着手</span></td><td class="center">-</td><td>-</td></tr>
+                <tr><td class="num">7</td><td>商品マスタ</td><td><span class="pill pill-pending">未着手</span></td><td class="center">-</td><td>4階層単位設計済み</td></tr>
+                <tr><td class="num">8</td><td>取引先マスタ</td><td><span class="pill pill-pending">未着手</span></td><td class="center">-</td><td>-</td></tr>
+                <tr><td class="num">9</td><td>ユーザーマスタ</td><td><span class="pill pill-pending">未着手</span></td><td class="center">-</td><td>荷主アクセス権検討済み</td></tr>
+                <tr><td class="num">10</td><td>従業員マスタ</td><td><span class="pill pill-warning">部分完了</span></td><td class="center">5</td><td>項目構造は人員管理時に確定</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-title">課金・請求工程の論点進捗（横断的に完了）</div>
+        <div class="card">
+          <div class="card-b" style="padding:0;">
+            <table class="tbl">
+              <thead><tr><th>論点</th><th>内容</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td class="id">論点1</td><td>荷主×再保 控除設定（収受/控除・再保専用単価）</td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">論点2</td><td>3期制計算ロジック（係数・端数・期分け・坪貸し）</td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">論点3</td><td>委託先支払単価管理（W-511統合・突合機能）</td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">論点4</td><td>請求書明細詳細（本体+明細+在庫明細書）</td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">論点5</td><td>収支管理レポート（収入×生産性 統合）</td><td><span class="pill pill-success">確定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 画面モック ============ -->
+      <div class="page" id="page-screens">
+        <div class="page-title">画面モック</div>
+        <div class="page-subtitle">確認済みの全画面（クリックで確認）</div>
+
+        <input type="text" class="search-input" placeholder="画面ID・名称で検索（W-XXX, HT-XXX...）" id="screen-search">
+
+        <div class="tabs">
+          <div class="tab active" data-screen-tab="all">すべて (65)</div>
+          <div class="tab" data-screen-tab="pc">PC (53)</div>
+          <div class="tab" data-screen-tab="ht">HT (5)</div>
+          <div class="tab" data-screen-tab="mobile">スマホ (3)</div>
+          <div class="tab" data-screen-tab="portal">ポータル (9)</div>
+        </div>
+
+        <div class="screen-grid" id="screen-list">
+          <!-- 動的生成 -->
+        </div>
+      </div>
+
+      <!-- ============ ドキュメント ============ -->
+      <div class="page" id="page-documents">
+        <div class="page-title">ドキュメント</div>
+        <div class="page-subtitle">仕様書・マニュアル・印刷サンプル等の最新版管理</div>
+
+        <div class="section-title">仕様書類</div>
+        <div class="doc-grid" style="margin-bottom:24px;">
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">WMS 仕様書</div>
+              <span class="pill pill-progress">v3.1</span>
+            </div>
+            <div class="desc">3PL対応・全機能網羅版。13章構成。</div>
+            <div class="meta">WMS_仕様書_v3.1.docx / 30KB</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="WMS_仕様書_v3.1.docx" download>ダウンロード</a>
+              <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">API 仕様書</div>
+              <span class="pill pill-progress">v3.1</span>
+            </div>
+            <div class="desc">90+ エンドポイント。3PL・ポータル対応済み。</div>
+            <div class="meta">WMS_API仕様書_v3.1.docx / 23KB</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="WMS_API仕様書_v3.1.docx" download>ダウンロード</a>
+              <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">ER図</div>
+              <span class="pill pill-progress">v3.0</span>
+            </div>
+            <div class="desc">60テーブル。Mermaid記法でテーブル間の関係を可視化。</div>
+            <div class="meta">WMS_ER図_v3.0.html / 36KB</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="WMS_ER図_v3.0.html" target="_blank">表示</a>
+              <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">印刷帳票仕様書</div>
+              <span class="pill pill-progress">v3.0</span>
+            </div>
+            <div class="desc">20種の印刷物（ラベル・帳票）の仕様。</div>
+            <div class="meta">WMS_印刷帳票仕様書_v3.0.docx / 18KB</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="WMS_印刷帳票仕様書_v3.0.docx" download>ダウンロード</a>
+              <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">実装ガイド</div>
+              <span class="pill pill-progress">v3.1</span>
+            </div>
+            <div class="desc">マスタ設計・テスト観点・キーエンスHT実装ノウハウ。</div>
+            <div class="meta">WMS_実装ガイド_v3.1.docx / 22KB</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="WMS_実装ガイド_v3.1.docx" download>ダウンロード</a>
+              <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">操作マニュアル</div>
+        <div class="doc-grid" style="margin-bottom:24px;">
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">操作マニュアル Web版</div>
+              <span class="pill pill-progress">v3.1</span>
+            </div>
+            <div class="desc">事務担当者向け Web画面の操作手順。</div>
+            <div class="meta">Manual_Web_v3.1.docx / 22KB</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="Manual_Web_v3.1.docx" download>ダウンロード</a>
+              <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">操作マニュアル HT版</div>
+              <span class="pill pill-progress">v3.0</span>
+            </div>
+            <div class="desc">現場作業者向け HT端末の操作手順。</div>
+            <div class="meta">Manual_HT_v3.0.docx / 17KB</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="Manual_HT_v3.0.docx" download>ダウンロード</a>
+              <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">サンプル類</div>
+        <div class="doc-grid">
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">印刷サンプル集</div>
+              <span class="pill pill-progress">v3.0</span>
+            </div>
+            <div class="desc">20種の印刷物の実物大サンプル（モノクロ・実機想定）。</div>
+            <div class="meta">WMS_印刷サンプル集_v3.0.html / 129KB</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="WMS_印刷サンプル集_v3.0.html" target="_blank">表示</a>
+              <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 追加機能リスト ============ -->
+      <div class="page" id="page-features">
+        <div class="page-title">追加機能リスト</div>
+        <div class="page-subtitle">レビューで確定した98の追加機能（13カテゴリ）</div>
+
+        <div class="kpi-grid" style="grid-template-columns:repeat(7,1fr);">
+          <div class="kpi" style="padding:12px;"><div class="lbl">A出庫</div><div class="val" style="font-size:20px;">1</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">B在庫S</div><div class="val" style="font-size:20px;">4</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">Cエリア</div><div class="val" style="font-size:20px;">7</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">D引渡</div><div class="val" style="font-size:20px;">6</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">F仮置</div><div class="val" style="font-size:20px;">5</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">G実績</div><div class="val" style="font-size:20px;">7</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">H 3PL</div><div class="val" style="font-size:20px;">11</div></div>
+        </div>
+        <div class="kpi-grid" style="grid-template-columns:repeat(7,1fr); margin-bottom:24px;">
+          <div class="kpi" style="padding:12px;"><div class="lbl">IO/F</div><div class="val" style="font-size:20px;">6</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">Jカレ</div><div class="val" style="font-size:20px;">4</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">K人員</div><div class="val" style="font-size:20px;">16</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">M外保</div><div class="val" style="font-size:20px;">13</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">N明細</div><div class="val" style="font-size:20px;">11</div></div>
+          <div class="kpi" style="padding:12px;"><div class="lbl">O収支</div><div class="val" style="font-size:20px;">7</div></div>
+          <div class="kpi" style="padding:12px; background:#dbeafe; border-color:#1d4ed8;"><div class="lbl" style="color:#1d4ed8;">合計</div><div class="val" style="font-size:20px; color:#1d4ed8;">98</div></div>
+        </div>
+
+        <input type="text" class="search-input" placeholder="機能ID・名称で検索（A-1, B-2...）" id="feat-search">
+
+        <div class="card">
+          <div class="card-b" style="padding:0;">
+            <table class="tbl" id="feat-table">
+              <thead>
+                <tr><th style="width:80px;">ID</th><th>機能名</th><th style="width:140px;">カテゴリ</th><th style="width:90px;">状態</th></tr>
+              </thead>
+              <tbody>
+                <!-- A. 出庫 -->
+                <tr><td class="id">A-1</td><td>受注手入力（用途区分付き）</td><td><span class="cat-badge cat-A">A 出庫</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- B. 在庫ステータス -->
+                <tr><td class="id">B-1</td><td>ステータスマスタ</td><td><span class="cat-badge cat-B">B 在庫S</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">B-2</td><td>ロット出荷止め</td><td><span class="cat-badge cat-B">B 在庫S</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">B-3</td><td>ロケ単位の引当除外</td><td><span class="cat-badge cat-B">B 在庫S</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">B-4</td><td>ステータス遷移履歴</td><td><span class="cat-badge cat-B">B 在庫S</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- C. ピッキングエリア -->
+                <tr><td class="id">C-1</td><td>ピッキングエリアマスタ</td><td><span class="cat-badge cat-C">C エリア</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">C-2</td><td>ウェーブのエリア分割</td><td><span class="cat-badge cat-C">C エリア</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">C-3</td><td>ゾーンリレー方式</td><td><span class="cat-badge cat-C">C エリア</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">C-4</td><td>受注分割管理</td><td><span class="cat-badge cat-C">C エリア</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">C-5</td><td>温度帯別自動分割</td><td><span class="cat-badge cat-C">C エリア</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">C-6</td><td>HT側エリア対応・サブウェーブ</td><td><span class="cat-badge cat-C">C エリア</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">C-7</td><td>日次担当エリア割当</td><td><span class="cat-badge cat-C">C エリア</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- D. 引き渡し -->
+                <tr><td class="id">D-1</td><td>W-307 積込管理</td><td><span class="cat-badge cat-D">D 引渡</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">D-2</td><td>積込明細書（マニフェスト）</td><td><span class="cat-badge cat-D">D 引渡</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">D-3</td><td>HT-306 積込確認</td><td><span class="cat-badge cat-D">D 引渡</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">D-4</td><td>集荷時刻アラート</td><td><span class="cat-badge cat-D">D 引渡</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">D-5</td><td>配送業者マスタ拡張</td><td><span class="cat-badge cat-D">D 引渡</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">D-6</td><td>W-308 引き渡し記録</td><td><span class="cat-badge cat-D">D 引渡</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- F. 仮置き -->
+                <tr><td class="id">F-1</td><td>W-309 引渡管理</td><td><span class="cat-badge cat-F">F 仮置</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">F-2</td><td>HT-307 引渡確認</td><td><span class="cat-badge cat-F">F 仮置</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">F-3</td><td>出荷集合チェックリスト</td><td><span class="cat-badge cat-F">F 仮置</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">F-4</td><td>カゴID管理</td><td><span class="cat-badge cat-F">F 仮置</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">F-5</td><td>仮置きエリアロケ管理</td><td><span class="cat-badge cat-F">F 仮置</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- G. 出荷実績送信 -->
+                <tr><td class="id">G-1</td><td>W-510 荷主連携設定</td><td><span class="cat-badge cat-G">G 実績</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">G-2</td><td>W-311 実績送信ジョブ管理</td><td><span class="cat-badge cat-G">G 実績</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">G-3</td><td>配送追跡取込</td><td><span class="cat-badge cat-G">G 実績</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">G-4</td><td>日次出荷実績レポート</td><td><span class="cat-badge cat-G">G 実績</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">G-5</td><td>月次出荷実績レポート</td><td><span class="cat-badge cat-G">G 実績</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">G-6</td><td>業界標準フォーマット対応（GS1/JIPC）</td><td><span class="cat-badge cat-G">G 実績</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">G-7</td><td>実績送信エラーアラート</td><td><span class="cat-badge cat-G">G 実績</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- H. 3PL -->
+                <tr><td class="id">H-1</td><td>荷主マスタ強化</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-2</td><td>データの荷主別分離</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-3</td><td>ユーザー荷主アクセス権</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-4</td><td>荷主切替機能</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-5</td><td>荷主別商品マスタ</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-6</td><td>共用ロケ管理</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-7</td><td>荷主専用ロケ管理</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-8</td><td>料金計算機能（保管料・荷役料）</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-9</td><td>請求書発行機能</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-10</td><td>荷主別KPIレポート</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">H-11</td><td>荷主ポータル</td><td><span class="cat-badge cat-H">H 3PL</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- I. 機能ON/OFF -->
+                <tr><td class="id">I-1</td><td>機能マスタ</td><td><span class="cat-badge cat-I">I O/F</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">I-2</td><td>機能ON/OFF設定画面</td><td><span class="cat-badge cat-I">I O/F</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">I-3</td><td>機能依存関係チェック</td><td><span class="cat-badge cat-I">I O/F</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">I-4</td><td>動的メニュー・画面表示</td><td><span class="cat-badge cat-I">I O/F</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">I-5</td><td>API レベルでのアクセス制御</td><td><span class="cat-badge cat-I">I O/F</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">I-6</td><td>機能ON/OFF履歴</td><td><span class="cat-badge cat-I">I O/F</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- J. カレンダー -->
+                <tr><td class="id">J-1</td><td>倉庫カレンダー</td><td><span class="cat-badge cat-J">J カレ</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">J-2</td><td>運送会社カレンダー（自動振替）</td><td><span class="cat-badge cat-J">J カレ</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">J-3</td><td>荷主カレンダー（割増課金等）</td><td><span class="cat-badge cat-J">J カレ</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">J-4</td><td>緊急対応フラグ</td><td><span class="cat-badge cat-J">J カレ</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- K. 人員管理 -->
+                <tr><td class="id">K-1</td><td>従業員マスタ</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-2</td><td>業態マスタ拡張（荷主紐付き区分）</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-3</td><td>業態実績入力（多経路）</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-4</td><td>生産性指標表示（11指標）</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-5</td><td>物量予測</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-6</td><td>必要人員自動算出</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-7</td><td>シフト適正提案（11項目）</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-8</td><td>月次シフトサイクル</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-9</td><td>シフト作成画面（3ビュー）</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-10</td><td>配置・割当（エリア・業態別）</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-11</td><td>シフト変更フロー</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-12</td><td>計画vs実績対比</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-13</td><td>荷主別労務コスト</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-14</td><td>評価・フィードバック</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-15</td><td>従業員スマホアプリ</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">K-16</td><td>法令対応支援</td><td><span class="cat-badge cat-K">K 人員</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- M. 外部倉庫 -->
+                <tr><td class="id">M-1</td><td>倉庫マスタの運営区分</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-2</td><td>外部委託先への支払単価管理</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-3</td><td>在庫の倉庫間分散管理</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-4</td><td>委託支払の自動計算</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-5</td><td>収支管理レポート</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-6</td><td>荷主×再保 控除設定マスタ</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-7</td><td>保管料計算機能（4方式）</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-8</td><td>期分け設定</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-9</td><td>計算式の変更</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-10</td><td>契約単価・控除設定の履歴管理</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-11</td><td>単価の事前登録・自動切替</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-12</td><td>請求済み月分の変更ブロック</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">M-13</td><td>委託先請求書突合機能</td><td><span class="cat-badge cat-M">M 外保</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- N. 請求書明細 -->
+                <tr><td class="id">N-1</td><td>請求明細の自動生成</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-2</td><td>期別保管料の内訳</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-3</td><td>入出庫件数の根拠表示</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-4</td><td>再保利用分の控除内訳</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-5</td><td>委託先別内訳</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-6</td><td>前月比較・差異説明</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-7</td><td>請求書PDF出力</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-8</td><td>明細データのCSV出力</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-9</td><td>保管料・荷役料明細（業界標準）</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-10</td><td>在庫明細書（月末時点）</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">N-11</td><td>表示単位の荷主別カスタマイズ</td><td><span class="cat-badge cat-N">N 明細</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <!-- O. 収支・生産性 -->
+                <tr><td class="id">O-1</td><td>収入レポート</td><td><span class="cat-badge cat-O">O 収支</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">O-2</td><td>収入推移グラフ</td><td><span class="cat-badge cat-O">O 収支</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">O-3</td><td>生産性連動表示</td><td><span class="cat-badge cat-O">O 収支</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">O-4</td><td>想定vs実績対比</td><td><span class="cat-badge cat-O">O 収支</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">O-5</td><td>荷主別ランキング</td><td><span class="cat-badge cat-O">O 収支</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">O-6</td><td>委託先利用の影響分析</td><td><span class="cat-badge cat-O">O 収支</span></td><td><span class="pill pill-success">確定</span></td></tr>
+                <tr><td class="id">O-7</td><td>季節変動分析</td><td><span class="cat-badge cat-O">O 収支</span></td><td><span class="pill pill-success">確定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 確定事項 ============ -->
+      <div class="page" id="page-decisions">
+        <div class="page-title">確定事項・決定履歴</div>
+        <div class="page-subtitle">レビューで決定した設計事項と運用ルール</div>
+
+        <div class="section-title">運用設計の確定事項（E系列）</div>
+
+        <div class="decision">
+          <div class="h"><span class="id">E-1</span><span class="title">受注ごとに引当方式を選択（エリア並行/ゾーンリレー）</span></div>
+          <div class="body">出荷ごとに「エリア並行方式」と「ゾーンリレー方式」を切替可能にする。倉庫運用の柔軟性を確保。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="id">E-2</span><span class="title">作業者は固定の専門担当を持たない</span></div>
+          <div class="body">中規模倉庫では人員配置の柔軟性が重要。誰でもどのエリアでも対応可とする。シフトの柔軟性を最大化。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="id">E-3</span><span class="title">日次でリーダーが柔軟に担当エリアを割り振る</span></div>
+          <div class="body">USER_DAILY_AREA テーブルで毎日の担当を管理。固定でなく日次調整可能。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="id">E-4</span><span class="title">3PL運用（複数荷主受託）</span></div>
+          <div class="body">課金請求機能・荷主ポータル・複数荷主管理を実装。マルキ食品はベースシナリオ（荷主の1社）。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="id">E-5</span><span class="title">機能ON/OFF制を採用</span></div>
+          <div class="body">全機能フルパッケージ提供。顧客側で必要に応じて機能をON/OFF設定可能。プラン制は将来検討。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="id">E-6</span><span class="title">ピッキングはFIFO強制</span></div>
+          <div class="body">HT側で違うパレットをスキャンするとエラー。先入先出を強制し、契約遵守を担保。</div>
+        </div>
+
+        <div class="section-title">主要な業務ルール</div>
+
+        <div class="decision">
+          <div class="h"><span class="title">出庫の概念整理</span></div>
+          <div class="body">倉庫事業者は荷主からの寄託物を保管している立場。倉庫事業者の意思で外部に出すことは法律・契約上不可。「廃棄」「サンプル」「仕入先返品」も全て荷主の指示として「受注」で処理。「W-310 その他出庫」は誤った設計のため廃止。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="title">外部倉庫（再保管先）の管理方式</span></div>
+          <div class="body">倉庫マスタの運営区分（自社運営／外部委託）で区別。コードは英2桁＋3桁数字（WH001/YU001等）。荷主×再保の組合せで「収受／控除」設定可能。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="title">3期制保管料計算式</span></div>
+          <div class="body">月の課金対象数量 = 前月繰越残 + 10日残 + 20日残 + 入庫総数 / 月の保管料 = 課金対象数量 × 単価 / 期分けは「締め日＋期制」から自動算出。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="title">保管料係数の管理（入庫No.単位）</span></div>
+          <div class="body">入庫の都度、ケース数→パレット数換算（端数切り上げ等）。同じ商品・同lotでも別入荷No.なら別レコード。出庫で残数が減れば係数も再計算。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="title">商品の単位構造（4階層）</span></div>
+          <div class="body">パレット／ケース／ボール／ピース。商品マスタには1段下の単位で保持（階層関係を明示）。契約単位は4種類すべて選択可能。</div>
+        </div>
+
+        <div class="decision">
+          <div class="h"><span class="title">用語の正式表記</span></div>
+          <div class="body">「受注」→「出荷／出荷指示」、「課金」→文脈により「請求／料金」、「もらう／もらわない」→「収受／控除」。B2B物流業界の正式用語で統一。</div>
+        </div>
+      </div>
+
+      <!-- ============ 未決事項 ============ -->
+      <div class="page" id="page-pending">
+        <div class="page-title">未決事項・宿題</div>
+        <div class="page-subtitle">今後のレビューで詰めるべき項目</div>
+
+        <div class="section-title">マスタ管理：未着手のマスタ（8項目）</div>
+        <div class="card">
+          <div class="card-b" style="padding:0;">
+            <table class="tbl">
+              <thead><tr><th>マスタ</th><th>主な論点</th></tr></thead>
+              <tbody>
+                <tr><td>ピッキングエリアマスタ</td><td>コード体系、エリア定義の粒度、HTでの活用方法</td></tr>
+                <tr><td>ロケーションマスタ</td><td>コード体系、属性（混載・温度帯）、ロケラベル印刷</td></tr>
+                <tr><td>在庫ステータスマスタ</td><td>標準ステータスの確定、ユーザー追加権限、表示色</td></tr>
+                <tr><td>配送業者マスタ</td><td>API連携設定、料金条件、複数キャリア管理</td></tr>
+                <tr><td>商品マスタ</td><td>項目構造、CSV取込、画像、属性（温度帯・危険物等）</td></tr>
+                <tr><td>取引先マスタ</td><td>仕入先・配送先の区分、複数住所、運用ルール</td></tr>
+                <tr><td>ユーザーマスタ</td><td>ロール体系、荷主アクセス権、認証方式（NFC等）</td></tr>
+                <tr><td>従業員マスタ</td><td>項目構造は確定済み、画面UIの詳細</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top:24px;">他工程：未着手の14工程</div>
+        <div class="card">
+          <div class="card-b">
+            <p style="font-size:13px; color:var(--text-sub); line-height:1.8;">
+              工程2〜11、13、15、16の各工程は、マスタ管理完了後に順次レビューを実施します。<br>
+              既に画面モックは完成しているため、レビューでは業務フロー・例外パターン・運用ルールに焦点を当てます。
+            </p>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top:24px;">将来検討事項</div>
+        <div class="decision">
+          <div class="h"><span class="title">プラン制の導入</span></div>
+          <div class="body">現在は機能ON/OFF制のみ。将来的にStarter/Standard/Professional/Enterpriseの4プラン制を検討する可能性あり。</div>
+        </div>
+        <div class="decision">
+          <div class="h"><span class="title">荷主別レイアウトカスタマイズの範囲</span></div>
+          <div class="body">帳票デザインを荷主ごとに変える機能の詳細範囲。基本テンプレート+差分管理の方針。</div>
+        </div>
+      </div>
+
+      <!-- ============ Claude Code 連携 ============ -->
+      <div class="page" id="page-claudecode">
+        <div class="page-title">Claude Code 連携</div>
+        <div class="page-subtitle">仕様確定後、Claude Code を使って実装フェーズに移行</div>
+
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-h">
+            <span>連携の準備状況</span>
+          </div>
+          <div class="card-b">
+            <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:14px;">
+              <div>
+                <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-bottom:6px;">必要な準備物</div>
+                <ul style="font-size:13px; line-height:2; padding-left:20px;">
+                  <li>仕様書（Markdown化）</li>
+                  <li>API仕様書（OpenAPI形式推奨）</li>
+                  <li>ER図・DB定義</li>
+                  <li>画面モック（HTML）</li>
+                  <li>CLAUDE.md（プロジェクト指示書）</li>
+                  <li>実装規約・コーディングスタイル</li>
+                </ul>
+              </div>
+              <div>
+                <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-bottom:6px;">現在の状況</div>
+                <ul style="font-size:13px; line-height:2; padding-left:20px;">
+                  <li>仕様書 v3.1（Word版）✓</li>
+                  <li>API仕様書 v3.1（Word版）✓</li>
+                  <li>ER図 v3.0（HTML/Mermaid）✓</li>
+                  <li>画面モック 65画面（HTML）✓</li>
+                  <li>CLAUDE.md ⬜ 未作成</li>
+                  <li>実装規約 ⬜ 未作成</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">推奨実装順序</div>
+        <div class="card">
+          <div class="card-b">
+            <ol style="font-size:13px; line-height:2;">
+              <li><b>Phase A：基盤整備</b> - DB設計、認証基盤、マスタ系API</li>
+              <li><b>Phase B：マスタ画面</b> - 全マスタのCRUD画面（10マスタ）</li>
+              <li><b>Phase C：入出荷フロー</b> - 入荷→在庫→ピック→出荷の基本フロー</li>
+              <li><b>Phase D：3PL機能</b> - 荷主管理、ポータル、データ分離</li>
+              <li><b>Phase E：請求・収支</b> - 3期制計算、請求書、収支レポート</li>
+              <li><b>Phase F：人員管理</b> - シフト、生産性、適正提案</li>
+              <li><b>Phase G：HTアプリ</b> - 現場用ハンディターミナル画面</li>
+              <li><b>Phase H：仕上げ</b> - イレギュラー対応、運用準備</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top:24px;">次のステップ</div>
+        <div class="card">
+          <div class="card-b">
+            <p style="font-size:13px; line-height:1.8;">
+              フェーズ2（工程レビュー）が完了次第、フェーズ3でドキュメントを v4.0 に最新化し、その後フェーズ4でClaude Code連携キット（CLAUDE.md・実装規約・スターターテンプレート）を準備します。<br><br>
+              現状は<b>仕様策定の最終段階</b>。基本方針・主要論点はすべて確定済みのため、<b>マスタ管理の残り8マスタ</b>と<b>他工程の業務フロー詳細</b>を詰めれば、すぐに実装フェーズへ移行可能です。
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// ナビゲーション切替
+const navItems = document.querySelectorAll('.nav-item');
+const pages = document.querySelectorAll('.page');
+const crumb = document.getElementById('crumb-current');
+
+const pageNames = {
+  dashboard: 'ダッシュボード',
+  progress: '進捗詳細',
+  screens: '画面モック',
+  documents: 'ドキュメント',
+  features: '追加機能リスト',
+  decisions: '確定事項',
+  pending: '未決事項',
+  claudecode: 'Claude Code 連携'
+};
+
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    navItems.forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    pages.forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    crumb.textContent = pageNames[page];
+    document.querySelector('.content').scrollTop = 0;
+  });
+});
+
+// 画面モック一覧の動的生成
+const screens = [
+  // PC - マスタ
+  {id:'W-505',name:'倉庫マスタ',device:'pc',file:'WMS_GroupA_master.html#W-505-list'},
+  {id:'W-507',name:'荷主マスタ',device:'pc',file:'WMS_Web_master_warehouse_owner.html#W-507-list'},
+  {id:'W-508',name:'ピッキングエリアマスタ',device:'pc',file:'WMS_Set1_master.html#W-508'},
+  {id:'W-509',name:'在庫ステータスマスタ',device:'pc',file:'WMS_Set1_master.html#W-509'},
+  {id:'W-510',name:'荷主連携設定',device:'pc',file:'WMS_Set1_master.html#W-510'},
+  {id:'W-511',name:'契約単価設定',device:'pc',file:'WMS_GroupA_master.html#W-511'},
+  {id:'W-512',name:'カレンダーマスタ',device:'pc',file:'WMS_Set1_master.html#W-512'},
+  {id:'W-513',name:'荷主×再保 控除設定',device:'pc',file:'WMS_GroupA_master.html#W-513'},
+  {id:'W-902',name:'機能設定（ON/OFF）',device:'pc',file:'WMS_Set1_master.html#W-902'},
+  {id:'W-003',name:'荷主切替',device:'pc',file:'WMS_Set1_master.html#W-003'},
+  // PC - 在庫
+  {id:'W-207',name:'ステータス変更',device:'pc',file:'WMS_Set2_inventory.html#W-207'},
+  {id:'W-208',name:'ロット出荷止め',device:'pc',file:'WMS_Set2_inventory.html#W-208'},
+  // PC - 出荷
+  {id:'W-301a',name:'出荷新規登録（手入力）',device:'pc',file:'WMS_GroupB_billing.html#W-301a'},
+  {id:'W-302',name:'引当・ウェーブ生成',device:'pc',file:'WMS_Set3_outbound.html#W-302'},
+  {id:'W-307',name:'積込管理',device:'pc',file:'WMS_Set3_outbound.html#W-307'},
+  {id:'W-308',name:'引き渡し記録',device:'pc',file:'WMS_Set3_outbound.html#W-308'},
+  {id:'W-309',name:'引渡管理',device:'pc',file:'WMS_Set3_outbound.html#W-309'},
+  {id:'W-311',name:'実績送信ジョブ管理',device:'pc',file:'WMS_Set3_outbound.html#W-311'},
+  // PC - 請求
+  {id:'W-701',name:'請求書一覧',device:'pc',file:'WMS_GroupB_billing.html#W-701'},
+  {id:'W-702',name:'請求書詳細',device:'pc',file:'WMS_GroupB_billing.html#W-702'},
+  {id:'W-703',name:'請求実績',device:'pc',file:'WMS_GroupB_billing.html#W-703'},
+  {id:'W-714',name:'委託先請求書突合',device:'pc',file:'WMS_GroupB_billing.html#W-714'},
+  // PC - 人員
+  {id:'W-513b',name:'従業員マスタ',device:'pc',file:'WMS_Set4_workforce_PC.html#W-513'},
+  {id:'W-514',name:'業態マスタ',device:'pc',file:'WMS_Set4_workforce_PC.html#W-514'},
+  {id:'W-801',name:'シフト作成（週次マトリクス）',device:'pc',file:'WMS_Set4_workforce_PC.html#W-801'},
+  {id:'W-801b',name:'シフト作成（1名×1ヶ月）',device:'pc',file:'WMS_Set4_workforce_PC.html#W-801b'},
+  {id:'W-802',name:'物量予測',device:'pc',file:'WMS_Set4_workforce_PC.html#W-802'},
+  {id:'W-803',name:'生産性ダッシュボード',device:'pc',file:'WMS_Set4_workforce_PC.html#W-803'},
+  {id:'W-804',name:'シフト適正提案',device:'pc',file:'WMS_Set4_workforce_PC.html#W-804'},
+  {id:'W-805',name:'計画vs実績対比',device:'pc',file:'WMS_Set4_workforce_PC.html#W-805'},
+  // PC - レポート
+  {id:'W-806',name:'収支・生産性レポート',device:'pc',file:'WMS_GroupC_report.html#W-806'},
+  // HT
+  {id:'HT-004',name:'荷主切替',device:'ht',file:'WMS_Set1_master.html#HT-004'},
+  {id:'HT-208',name:'サブウェーブ進捗',device:'ht',file:'WMS_Set3_outbound.html#HT-208'},
+  {id:'HT-306',name:'積込確認',device:'ht',file:'WMS_Set3_outbound.html#HT-306'},
+  {id:'HT-307',name:'引渡確認',device:'ht',file:'WMS_Set3_outbound.html#HT-307'},
+  {id:'HT-504',name:'ステータス変更',device:'ht',file:'WMS_Set2_inventory.html#HT-504'},
+  // スマホアプリ
+  {id:'A-001',name:'シフト希望提出',device:'mobile',file:'WMS_Set4_workforce_App.html'},
+  {id:'A-002',name:'確定シフト確認',device:'mobile',file:'WMS_Set4_workforce_App.html'},
+  {id:'A-003',name:'シフト変更通知',device:'mobile',file:'WMS_Set4_workforce_App.html'},
+  // ポータル
+  {id:'P-000',name:'ポータルログイン',device:'portal',file:'WMS_Set5_portal.html#P-000'},
+  {id:'P-001',name:'ポータルダッシュボード',device:'portal',file:'WMS_Set5_portal.html#P-001'},
+  {id:'P-101',name:'在庫照会（ポータル）',device:'portal',file:'WMS_Set5_portal.html#P-101'},
+  {id:'P-102',name:'在庫推移（ポータル）',device:'portal',file:'WMS_Set5_portal.html#P-102'},
+  {id:'P-201',name:'出荷状況（ポータル）',device:'portal',file:'WMS_Set5_portal.html#P-201'},
+  {id:'P-202',name:'配送追跡（ポータル）',device:'portal',file:'WMS_Set5_portal.html#P-202'},
+  {id:'P-301',name:'出荷指示登録（ポータル）',device:'portal',file:'WMS_Set5_portal.html#P-301'},
+  {id:'P-401',name:'レポート（ポータル）',device:'portal',file:'WMS_Set5_portal.html#P-401'},
+  {id:'P-501',name:'請求書（ポータル）',device:'portal',file:'WMS_Set5_portal.html#P-501'},
+];
+
+const screenList = document.getElementById('screen-list');
+
+const deviceLabel = {pc:'PC',ht:'HT',mobile:'Mobile',portal:'Portal'};
+const deviceTagClass = {pc:'tag-pc',ht:'tag-ht',mobile:'tag-mobile',portal:'tag-portal'};
+
+function renderScreens(filter, search) {
+  screenList.innerHTML = '';
+  const filtered = screens.filter(s => {
+    if (filter !== 'all' && s.device !== filter) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      if (!s.id.toLowerCase().includes(q) && !s.name.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+  filtered.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'screen-card';
+    card.innerHTML = `
+      <div class="top">
+        <span class="tag ${deviceTagClass[s.device]}">${deviceLabel[s.device]}</span>
+        <span class="pill pill-success">確認済</span>
+      </div>
+      <div class="title">${s.name}</div>
+      <div class="meta">${s.id}</div>
+    `;
+    card.addEventListener('click', () => window.open(s.file, '_blank'));
+    screenList.appendChild(card);
+  });
+}
+
+renderScreens('all', '');
+
+document.querySelectorAll('[data-screen-tab]').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('[data-screen-tab]').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderScreens(tab.dataset.screenTab, document.getElementById('screen-search').value);
+  });
+});
+
+document.getElementById('screen-search').addEventListener('input', e => {
+  const activeTab = document.querySelector('[data-screen-tab].active').dataset.screenTab;
+  renderScreens(activeTab, e.target.value);
+});
+
+// 機能リストの検索
+document.getElementById('feat-search').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('#feat-table tbody tr').forEach(tr => {
+    const id = tr.cells[0].textContent.toLowerCase();
+    const name = tr.cells[1].textContent.toLowerCase();
+    tr.style.display = (id.includes(q) || name.includes(q)) ? '' : 'none';
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 第4弾 人員・シフト管理 画面群</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-weight:500; cursor:pointer; line-height:1.4; font-family:var(--f-base); }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+
+  .text-mono { font-family:var(--f-mono); }
+
+  /* KPIタイル */
+  .kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:14px; }
+  .kpi { background:var(--c-base); border:1px solid var(--c-line); padding:14px 16px; }
+  .kpi .label { font-size:11px; color:var(--c-text-sub); font-weight:500; margin-bottom:8px; }
+  .kpi .value { font-size:24px; font-weight:600; color:var(--c-text); font-family:var(--f-mono); line-height:1.1; }
+  .kpi .value .unit { font-size:13px; color:var(--c-text-sub); font-weight:500; margin-left:2px; }
+  .kpi .delta { font-size:11px; color:var(--c-text-sub); margin-top:8px; font-family:var(--f-mono); }
+  .kpi .delta.up { color:var(--c-accent); }
+  .kpi .delta.down { color:var(--c-alert); }
+
+  /* グラフ */
+  .chart-bar { display:flex; align-items:flex-end; height:140px; gap:6px; padding:18px 4px 0; }
+  .chart-bar .bar { flex:1; background:var(--c-accent); position:relative; min-width:18px; }
+  .chart-bar .bar.alert { background:var(--c-alert); }
+  .chart-bar .bar.predict { background:var(--c-accent); opacity:0.4; }
+  .chart-bar .bar .v { position:absolute; top:-14px; left:50%; transform:translateX(-50%); font-size:9px; color:var(--c-text); font-weight:600; font-family:var(--f-mono); }
+  .chart-bar .bar .l { position:absolute; bottom:-16px; left:50%; transform:translateX(-50%); font-size:9px; color:var(--c-text-sub); }
+
+  /* シフトカレンダー */
+  .shift-cal { display:grid; grid-template-columns:120px repeat(7, 1fr); gap:1px; background:var(--c-line); }
+  .shift-cal > div { background:var(--c-base); padding:8px; font-size:11px; }
+  .shift-cal .header-row { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); }
+  .shift-cal .header-row.sun { color:var(--c-alert); }
+  .shift-cal .header-row.sat { color:var(--c-accent); }
+  .shift-cal .name-cell { font-weight:600; background:var(--c-bg); }
+  .shift-cal .shift-cell { font-size:10px; cursor:pointer; }
+  .shift-cal .shift-cell.shift-day { background:var(--c-accent-lt); color:var(--c-accent); font-weight:600; }
+  .shift-cal .shift-cell.shift-night { background:#fff4e0; color:#d97706; }
+  .shift-cal .shift-cell.shift-off { background:var(--c-bg); color:var(--c-text-mute); }
+  .shift-cal .shift-cell .area { display:block; font-size:9px; color:var(--c-text-sub); margin-top:2px; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">第4弾　人員・シフト管理　PC 画面群</h1>
+<p class="subtitle">従業員マスタ／業態マスタ／シフト作成／物量予測／生産性ダッシュボード／適正提案／実績対比</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#W-513"><b>W-513</b>従業員マスタ</a>
+  <a href="#W-514"><b>W-514</b>業態マスタ</a>
+  <a href="#W-801"><b>W-801</b>シフト作成（週次）</a>
+  <a href="#W-801b"><b>W-801</b>シフト作成（1名×1ヶ月）</a>
+  <a href="#W-802"><b>W-802</b>物量予測</a>
+  <a href="#W-803"><b>W-803</b>生産性</a>
+  <a href="#W-804"><b>W-804</b>適正提案</a>
+  <a href="#W-805"><b>W-805</b>計画vs実績</a>
+</div>
+
+<!-- W-513 従業員マスタ -->
+<div class="section-divider" id="W-513">
+  <span class="num">W-513</span>従業員マスタ
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：シフト管理対象の従業員を管理。個人情報は最小限／メイン荷主・応援可荷主・スキル・賃金。<br>
+  <b>位置づけ</b>：シフト管理機能のサブマスタ（機能ON時のみ有効）。ユーザーマスタとは別物（ログインしない人も登録可）。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/shift/employees</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">シフト管理</div>
+        <a href="#" class="active">従業員マスタ</a>
+        <a href="#">業態マスタ</a>
+        <a href="#">シフト作成</a>
+        <a href="#">物量予測</a>
+        <a href="#">生産性</a>
+        <a href="#">適正提案</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">シフト管理　/　<b>従業員マスタ</b></div>
+        <div class="actions"><div class="user"><div class="avatar">山</div>山田</div></div>
+      </div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>従業員コード</label><input value="" placeholder="E0001"></div>
+            <div class="field"><label>氏名</label><input value=""></div>
+            <div class="field"><label>雇用形態</label><select><option>すべて</option><option>正社員</option><option>契約</option><option>派遣</option><option>アルバイト</option></select></div>
+            <div class="field"><label>メイン荷主</label><select><option>すべて</option></select></div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b>32名</b>（在籍中）</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn primary sm">＋ 新規登録</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>従業員一覧</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead><tr><th style="width:80px;">コード</th><th>氏名</th><th class="center" style="width:90px;">雇用形態</th><th>メイン荷主</th><th>応援可荷主</th><th>主スキル</th><th class="right" style="width:80px;">時給</th><th class="center" style="width:80px;">操作</th></tr></thead>
+              <tbody>
+                <tr><td class="num">E0001</td><td>田中 太郎</td><td class="center"><span class="pill accent">正社員</span></td><td>マルキ食品</td><td>マルキEC</td><td>ピック・検品</td><td class="right num">−</td><td class="center"><button class="btn sm">編集</button></td></tr>
+                <tr><td class="num">E0002</td><td>佐藤 次郎</td><td class="center"><span class="pill accent">正社員</span></td><td>アルファ商事</td><td>−</td><td>入荷・棚入</td><td class="right num">−</td><td class="center"><button class="btn sm">編集</button></td></tr>
+                <tr><td class="num">E0003</td><td>鈴木 三郎</td><td class="center"><span class="pill">契約</span></td><td>マルキ食品</td><td>BC食品</td><td>ピック</td><td class="right num">1,500</td><td class="center"><button class="btn sm">編集</button></td></tr>
+                <tr><td class="num">E0004</td><td>伊藤 花子</td><td class="center"><span class="pill">派遣</span></td><td>マルキ食品</td><td>マルキEC, AL001</td><td>梱包・検品</td><td class="right num">1,400</td><td class="center"><button class="btn sm">編集</button></td></tr>
+                <tr><td class="num">E0005</td><td>山本 一郎</td><td class="center"><span class="pill">アルバイト</span></td><td>マルキEC</td><td>マルキ食品</td><td>ピック</td><td class="right num">1,200</td><td class="center"><button class="btn sm">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- W-514 業態マスタ -->
+<div class="section-divider" id="W-514">
+  <span class="num">W-514</span>業態マスタ
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：作業区分（業態）を定義。荷主紐付け区分・自由追加可。生産性指標と紐付く。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/shift/work-types</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">シフト管理</div>
+        <a href="#">従業員マスタ</a>
+        <a href="#" class="active">業態マスタ</a>
+        <a href="#">シフト作成</a>
+        <a href="#">物量予測</a>
+        <a href="#">生産性</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">シフト管理　/　<b>業態マスタ</b></div>
+        <div class="actions"><div class="user"><div class="avatar">山</div>山田</div></div>
+      </div>
+      <div class="content">
+        <div class="note-box">
+          <div class="label">業態の役割</div>
+          「どの作業に何時間費やしたか」を記録するための作業区分。<b>荷主紐付き業態のみ</b>が荷主別労務コスト計算の対象。
+        </div>
+        <div class="search-bar">
+          <div class="actions">
+            <span class="stats">表示中　<b>15件</b>（標準12＋ユーザー追加3）</span>
+            <div style="margin-left:auto;"><button class="btn primary sm">＋ 新規追加</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>業態一覧</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead><tr><th style="width:130px;">コード</th><th>業態名</th><th>カテゴリ</th><th class="center" style="width:120px;">荷主紐付け</th><th>生産性指標</th><th class="center" style="width:80px;">区分</th><th class="center" style="width:90px;">操作</th></tr></thead>
+              <tbody>
+                <tr><td class="num">RECEIVE</td><td>入荷検品</td><td>入荷</td><td class="center"><span class="pill accent">紐付く</span></td><td>件数/時間</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">PICK</td><td>ピッキング</td><td>出荷</td><td class="center"><span class="pill accent">紐付く</span></td><td>行数/時間</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">PICK_COLD</td><td>ピッキング（冷蔵）</td><td>出荷</td><td class="center"><span class="pill accent">紐付く</span></td><td>行数/時間</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">PACK</td><td>梱包</td><td>出荷</td><td class="center"><span class="pill accent">紐付く</span></td><td>個口/時間</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">SHIP_INSPECT</td><td>出荷検品</td><td>出荷</td><td class="center"><span class="pill accent">紐付く</span></td><td>件数/時間</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">STOCKTAKE</td><td>棚卸</td><td>在庫</td><td class="center"><span class="pill accent">紐付く</span></td><td>ロケ数/時間</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">ADMIN_OWNER</td><td>荷主専用事務</td><td>間接</td><td class="center"><span class="pill accent">紐付く</span></td><td>−</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">ADMIN</td><td>一般事務</td><td>間接</td><td class="center"><span class="pill">紐付かない</span></td><td>−</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">CLEAN</td><td>共用部清掃</td><td>間接</td><td class="center"><span class="pill">紐付かない</span></td><td>−</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">TRAINING</td><td>研修</td><td>間接</td><td class="center"><span class="pill">紐付かない</span></td><td>−</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">BREAK</td><td>休憩</td><td>間接</td><td class="center"><span class="pill">紐付かない</span></td><td>−</td><td class="center"><span class="pill">標準</span></td><td class="center"><button class="btn sm" disabled>標準</button></td></tr>
+                <tr><td class="num">SPECIAL_PACK_MK</td><td>マルキ食品 特別包装</td><td>出荷</td><td class="center"><span class="pill accent">紐付く</span></td><td>件数/時間</td><td class="center"><span class="pill accent">追加</span></td><td class="center"><button class="btn sm">編集</button></td></tr>
+                <tr><td class="num">QC_AL</td><td>アルファ商事 品質チェック</td><td>在庫</td><td class="center"><span class="pill accent">紐付く</span></td><td>件数/時間</td><td class="center"><span class="pill accent">追加</span></td><td class="center"><button class="btn sm">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- W-801 シフト作成（週次マトリクスビュー） -->
+<div class="section-divider" id="W-801">
+  <span class="num">W-801</span>シフト作成 - 週次マトリクスビュー
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：荷主担当リーダーがシフトを作成。月次サイクル（希望収集→調整→確定→通知）で運用。<br>
+  <b>機能</b>：物量予測連動／必要人員自動算出／時間重複チェック（15分単位）／作業者の応援可フラグ参照<br>
+  <b>ビュー</b>：3種類切替可（週次マトリクス／<b>1名×1ヶ月</b>／1名×1週間）
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/shift/create</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">シフト管理</div>
+        <a href="#">従業員マスタ</a>
+        <a href="#">業態マスタ</a>
+        <a href="#" class="active">シフト作成</a>
+        <a href="#">物量予測</a>
+        <a href="#">生産性</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">シフト管理　/　<b>シフト作成</b></div>
+        <div class="actions"><div class="user"><div class="avatar">山</div>山田</div></div>
+      </div>
+      <div class="content">
+        <div class="tabs">
+          <div class="tab">希望収集中</div>
+          <div class="tab active">調整中（4月後半）</div>
+          <div class="tab">確定済</div>
+          <div class="tab">過去シフト</div>
+        </div>
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>対象荷主</label><select><option selected>マルキ食品</option><option>アルファ商事</option></select></div>
+            <div class="field"><label>対象週</label><input type="week" value="2026-W18"></div>
+            <div class="field">
+              <label>ビュー切替</label>
+              <select>
+                <option selected>週次マトリクス（全員×1週間）</option>
+                <option>1名×1ヶ月</option>
+                <option>1名×1週間</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">未提出　<b>3名</b> ／ 調整中　<b>5</b> ／ 確定済 24</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">適正提案を見る</button>
+              <button class="btn sm">未提出にリマインド</button>
+              <button class="btn primary sm">シフト確定（通知送信）</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span>マルキ食品 シフト　/　2026年4月27日（月）〜5月3日（日）</span>
+            <span class="meta">時間重複チェック：15分単位</span>
+          </div>
+          <div class="card-body">
+            <div class="shift-cal">
+              <div class="header-row">従業員</div>
+              <div class="header-row">月 4/27</div>
+              <div class="header-row">火 4/28</div>
+              <div class="header-row">水 4/29</div>
+              <div class="header-row">木 4/30</div>
+              <div class="header-row">金 5/1</div>
+              <div class="header-row sat">土 5/2</div>
+              <div class="header-row sun">日 5/3</div>
+
+              <div class="name-cell">田中 太郎<br><span style="font-size:9px; color:var(--c-text-sub);">メイン担当</span></div>
+              <div class="shift-cell shift-day">9-18<span class="area">1F常温</span></div>
+              <div class="shift-cell shift-day">9-18<span class="area">1F常温</span></div>
+              <div class="shift-cell shift-off">休</div>
+              <div class="shift-cell shift-day">9-18<span class="area">1F常温</span></div>
+              <div class="shift-cell shift-day">9-18<span class="area">1F常温</span></div>
+              <div class="shift-cell shift-day">9-15<span class="area">1F常温</span></div>
+              <div class="shift-cell shift-off">休</div>
+
+              <div class="name-cell">佐藤 次郎<br><span style="font-size:9px; color:var(--c-text-sub);">メイン担当</span></div>
+              <div class="shift-cell shift-day">9-18<span class="area">2F常温</span></div>
+              <div class="shift-cell shift-off">休</div>
+              <div class="shift-cell shift-day">9-18<span class="area">2F常温</span></div>
+              <div class="shift-cell shift-day">9-18<span class="area">2F常温</span></div>
+              <div class="shift-cell shift-day">9-18<span class="area">2F常温</span></div>
+              <div class="shift-cell shift-off">休</div>
+              <div class="shift-cell shift-off">休</div>
+
+              <div class="name-cell">鈴木 三郎<br><span style="font-size:9px; color:var(--c-accent);">応援可</span></div>
+              <div class="shift-cell shift-day">10-18<span class="area">冷蔵</span></div>
+              <div class="shift-cell shift-day">10-18<span class="area">冷蔵</span></div>
+              <div class="shift-cell shift-day">10-18<span class="area">冷蔵</span></div>
+              <div class="shift-cell shift-day">10-18<span class="area">冷蔵</span></div>
+              <div class="shift-cell shift-day">10-18<span class="area">冷蔵</span></div>
+              <div class="shift-cell shift-off">休</div>
+              <div class="shift-cell shift-off">休</div>
+
+              <div class="name-cell">伊藤 花子<br><span style="font-size:9px; color:var(--c-text-sub);">派遣</span></div>
+              <div class="shift-cell shift-day">9-17<span class="area">梱包</span></div>
+              <div class="shift-cell shift-day">9-17<span class="area">梱包</span></div>
+              <div class="shift-cell shift-day">9-17<span class="area">梱包</span></div>
+              <div class="shift-cell shift-off">休</div>
+              <div class="shift-cell shift-day">9-17<span class="area">梱包</span></div>
+              <div class="shift-cell shift-off">休</div>
+              <div class="shift-cell shift-off">休</div>
+
+              <div class="name-cell">山本 一郎<br><span style="font-size:9px; color:var(--c-text-sub);">アルバイト</span></div>
+              <div class="shift-cell shift-off">休</div>
+              <div class="shift-cell shift-day">13-18<span class="area">ピック</span></div>
+              <div class="shift-cell shift-day">13-18<span class="area">ピック</span></div>
+              <div class="shift-cell shift-day">13-18<span class="area">ピック</span></div>
+              <div class="shift-cell shift-day">13-18<span class="area">ピック</span></div>
+              <div class="shift-cell shift-day">13-18<span class="area">ピック</span></div>
+              <div class="shift-cell shift-off">休</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- W-801b シフト作成（1名×1ヶ月ビュー） -->
+<div class="section-divider" id="W-801b">
+  <span class="num">W-801</span>シフト作成 - 1名×1ヶ月ビュー
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：特定の従業員の1ヶ月のシフトを俯瞰。偏りの確認・個別調整・法令チェックに使用。<br>
+  <b>用途</b>：「田中さんは今月何日働く予定か」「連勤続きになっていないか」など個人視点でシフトを管理。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/shift/create?view=monthly&emp=E0001</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">シフト管理</div>
+        <a href="#">従業員マスタ</a>
+        <a href="#">業態マスタ</a>
+        <a href="#" class="active">シフト作成</a>
+        <a href="#">物量予測</a>
+        <a href="#">生産性</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">シフト管理　/　シフト作成　/　<b>1名×1ヶ月ビュー</b></div>
+        <div class="actions"><div class="user"><div class="avatar">山</div>山田</div></div>
+      </div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field">
+              <label>従業員</label>
+              <select>
+                <option selected>E0001 田中 太郎（メイン：マルキ食品）</option>
+                <option>E0002 佐藤 次郎</option>
+                <option>E0003 鈴木 三郎</option>
+              </select>
+            </div>
+            <div class="field"><label>対象月</label><input type="month" value="2026-05"></div>
+            <div class="field">
+              <label>ビュー切替</label>
+              <select>
+                <option>週次マトリクス（全員×1週間）</option>
+                <option selected>1名×1ヶ月</option>
+                <option>1名×1週間</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- サマリ + 法令チェック -->
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:14px;">
+          <div class="card">
+            <div class="card-header"><span>5月のサマリ - 田中 太郎</span></div>
+            <div class="card-body">
+              <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:14px;">
+                <div>
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">勤務日数</div>
+                  <div style="font-size:22px; font-weight:600; font-family:var(--f-mono);">19<span style="font-size:13px; color:var(--c-text-sub);">日</span></div>
+                </div>
+                <div>
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">予定総時間</div>
+                  <div style="font-size:22px; font-weight:600; font-family:var(--f-mono);">154<span style="font-size:13px; color:var(--c-text-sub);">h</span></div>
+                </div>
+                <div>
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">残業見込</div>
+                  <div style="font-size:22px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent);">6<span style="font-size:13px; color:var(--c-text-sub);">h</span></div>
+                </div>
+                <div>
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">最大連勤</div>
+                  <div style="font-size:22px; font-weight:600; font-family:var(--f-mono);">4<span style="font-size:13px; color:var(--c-text-sub);">日</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span>法令・運用チェック</span></div>
+            <div class="card-body">
+              <div style="display:flex; align-items:center; gap:8px; padding:4px 0; font-size:12px;">
+                <span style="color:var(--c-accent); font-weight:700;">✓</span>
+                <span>週40h以内（最大38h）</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; padding:4px 0; font-size:12px;">
+                <span style="color:var(--c-accent); font-weight:700;">✓</span>
+                <span>連続勤務6日以内（最大4日）</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; padding:4px 0; font-size:12px;">
+                <span style="color:var(--c-accent); font-weight:700;">✓</span>
+                <span>月185h上限（154h、余裕あり）</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; padding:4px 0; font-size:12px;">
+                <span style="color:var(--c-accent); font-weight:700;">✓</span>
+                <span>休日4日以上（12日）</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 月次カレンダー -->
+        <div class="card">
+          <div class="card-header">
+            <span>2026年5月のシフト</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn sm">前月</button>
+              <button class="btn sm">翌月</button>
+              <button class="btn primary sm">編集モード</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- 曜日ヘッダ -->
+            <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin-bottom:6px;">
+              <div style="text-align:center; font-size:11px; font-weight:600; padding:4px; color:var(--c-alert);">日</div>
+              <div style="text-align:center; font-size:11px; font-weight:600; padding:4px; color:var(--c-text-sub);">月</div>
+              <div style="text-align:center; font-size:11px; font-weight:600; padding:4px; color:var(--c-text-sub);">火</div>
+              <div style="text-align:center; font-size:11px; font-weight:600; padding:4px; color:var(--c-text-sub);">水</div>
+              <div style="text-align:center; font-size:11px; font-weight:600; padding:4px; color:var(--c-text-sub);">木</div>
+              <div style="text-align:center; font-size:11px; font-weight:600; padding:4px; color:var(--c-text-sub);">金</div>
+              <div style="text-align:center; font-size:11px; font-weight:600; padding:4px; color:var(--c-accent);">土</div>
+            </div>
+            <!-- カレンダー本体（5月の正確な配置：1日が金曜） -->
+            <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px;">
+              <!-- 第1週：1日が金曜 -->
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <!-- 5/1 金 -->
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">1</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <!-- 5/2 土 -->
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">2</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-15</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+
+              <!-- 第2週 -->
+              <!-- 5/3 日 休 -->
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="color:var(--c-alert); font-weight:600;">3</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <!-- 5/4 月 -->
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">4</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <!-- 5/5 火 -->
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">5</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <!-- 5/6 水 -->
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">6</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <!-- 5/7 木 休 -->
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="font-weight:600;">7</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <!-- 5/8 金 -->
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">8</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <!-- 5/9 土 -->
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">9</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-15</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+
+              <!-- 第3週 -->
+              <!-- 5/10 日 休 -->
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="color:var(--c-alert); font-weight:600;">10</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">11</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">12</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="font-weight:600;">13</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">14</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">15</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">16</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-15</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+
+              <!-- 第4週 -->
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="color:var(--c-alert); font-weight:600;">17</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">18</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">19</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="font-weight:600;">20</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">21</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">22</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">23</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-15</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+
+              <!-- 第5週 -->
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="color:var(--c-alert); font-weight:600;">24</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">25</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">26</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">27</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="font-weight:600;">28</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">29</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-18</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px; font-size:10px;">
+                <div style="font-weight:600; color:var(--c-accent);">30</div>
+                <div style="margin-top:2px; font-family:var(--f-mono); color:var(--c-accent); font-weight:600;">9-15</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">1F常温</div>
+              </div>
+
+              <!-- 第6週（5/31 日のみ） -->
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:5px; font-size:10px;">
+                <div style="color:var(--c-alert); font-weight:600;">31</div>
+                <div style="margin-top:6px; color:var(--c-text-mute); font-size:9px;">休</div>
+              </div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+              <div style="aspect-ratio:1; background:var(--c-bg); border:1px solid var(--c-line); padding:4px; opacity:0.4;"></div>
+            </div>
+
+            <!-- 凡例 -->
+            <div style="display:flex; gap:14px; margin-top:14px; padding:8px 10px; background:var(--c-bg); border:1px solid var(--c-line); font-size:11px;">
+              <span><span style="display:inline-block; width:12px; height:12px; background:var(--c-accent-lt); border:1px solid var(--c-accent); vertical-align:middle; margin-right:4px;"></span>勤務日</span>
+              <span><span style="display:inline-block; width:12px; height:12px; background:var(--c-bg); border:1px solid var(--c-line); vertical-align:middle; margin-right:4px;"></span>休み</span>
+              <span style="margin-left:auto; color:var(--c-text-sub);">日付クリックで個別編集 / 編集モードでドラッグ可</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- W-802 物量予測 -->
+<div class="section-divider" id="W-802">
+  <span class="num">W-802</span>物量予測
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：過去実績・荷主予告・季節変動から物量を予測。シフト計画の起点。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/shift/forecast</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">シフト管理</div>
+        <a href="#">従業員マスタ</a>
+        <a href="#">業態マスタ</a>
+        <a href="#">シフト作成</a>
+        <a href="#" class="active">物量予測</a>
+        <a href="#">生産性</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">シフト管理　/　<b>物量予測</b></div>
+        <div class="actions"><div class="user"><div class="avatar">山</div>山田</div></div>
+      </div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>荷主</label><select><option selected>マルキ食品</option></select></div>
+            <div class="field"><label>予測期間</label><select><option selected>翌週（5/4〜5/10）</option><option>翌月</option></select></div>
+            <div class="field"><label>業態</label><select><option selected>すべて</option><option>ピッキング</option></select></div>
+          </div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">予測 出荷件数</div><div class="value">280</div><div class="delta up">前週比 +5.2%</div></div>
+          <div class="kpi"><div class="label">予測 入荷件数</div><div class="value">120</div><div class="delta up">前週比 +3.8%</div></div>
+          <div class="kpi"><div class="label">予測 必要工数</div><div class="value">156<span class="unit">h</span></div><div class="delta up">前週比 +4.5%</div></div>
+          <div class="kpi"><div class="label">必要人員</div><div class="value">7<span class="unit">人</span></div><div class="delta">前週比 ±0</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>日別予測（過去実績ベース）</span><span class="meta">点線：予測 / 実線：実績</span></div>
+          <div class="card-body">
+            <div class="chart-bar" style="height:180px;">
+              <div class="bar" style="height:60%;"><div class="v">240</div><div class="l">4/27月</div></div>
+              <div class="bar" style="height:65%;"><div class="v">260</div><div class="l">4/28火</div></div>
+              <div class="bar" style="height:70%;"><div class="v">280</div><div class="l">4/29水</div></div>
+              <div class="bar" style="height:75%;"><div class="v">300</div><div class="l">4/30木</div></div>
+              <div class="bar" style="height:78%;"><div class="v">310</div><div class="l">5/1金</div></div>
+              <div class="bar" style="height:50%;"><div class="v">200</div><div class="l">5/2土</div></div>
+              <div class="bar predict" style="height:0%;"><div class="l">5/3日</div></div>
+              <div class="bar predict" style="height:62%;"><div class="v">250</div><div class="l">5/4月</div></div>
+              <div class="bar predict" style="height:68%;"><div class="v">270</div><div class="l">5/5火</div></div>
+              <div class="bar predict" style="height:75%;"><div class="v">300</div><div class="l">5/6水</div></div>
+              <div class="bar predict" style="height:80%;"><div class="v">320</div><div class="l">5/7木</div></div>
+              <div class="bar predict alert" style="height:88%;"><div class="v">350</div><div class="l">5/8金</div></div>
+              <div class="bar predict" style="height:55%;"><div class="v">220</div><div class="l">5/9土</div></div>
+              <div class="bar predict" style="height:0%;"><div class="l">5/10日</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- W-803 生産性ダッシュボード -->
+<div class="section-divider" id="W-803">
+  <span class="num">W-803</span>生産性ダッシュボード
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：個人別／業態別／時系列の生産性指標を統合表示。改善のヒント提示。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/shift/productivity</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">シフト管理</div>
+        <a href="#">従業員マスタ</a>
+        <a href="#">業態マスタ</a>
+        <a href="#">シフト作成</a>
+        <a href="#">物量予測</a>
+        <a href="#" class="active">生産性</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">シフト管理　/　<b>生産性ダッシュボード</b></div>
+        <div class="actions"><div class="user"><div class="avatar">山</div>山田</div></div>
+      </div>
+      <div class="content">
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">事業所平均（ピック）</div><div class="value">12.3<span class="unit">件/h</span></div><div class="delta up">前月比 +0.5</div></div>
+          <div class="kpi"><div class="label">事業所平均（検品）</div><div class="value">18.5<span class="unit">件/h</span></div><div class="delta up">前月比 +1.2</div></div>
+          <div class="kpi"><div class="label">荷主別labor cost（マルキ）</div><div class="value">285<span class="unit">千円</span></div><div class="delta down">+5%</div></div>
+          <div class="kpi"><div class="label">異常検知</div><div class="value">2<span class="unit">件</span></div><div class="delta down">要確認</div></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+          <div class="card">
+            <div class="card-header"><span>個人別生産性ランキング（ピッキング）</span></div>
+            <div class="card-body">
+              <table class="list">
+                <thead><tr><th class="center" style="width:40px;">順</th><th>従業員</th><th class="right">件/h</th><th class="right">平均比</th></tr></thead>
+                <tbody>
+                  <tr><td class="center num">1</td><td>田中 太郎</td><td class="right num">15.2</td><td class="right num" style="color:var(--c-accent);">+24%</td></tr>
+                  <tr><td class="center num">2</td><td>鈴木 三郎</td><td class="right num">13.8</td><td class="right num" style="color:var(--c-accent);">+12%</td></tr>
+                  <tr><td class="center num">3</td><td>山本 一郎</td><td class="right num">12.5</td><td class="right num" style="color:var(--c-accent);">+2%</td></tr>
+                  <tr><td class="center num">4</td><td>伊藤 花子</td><td class="right num">11.0</td><td class="right num" style="color:var(--c-alert);">-11%</td></tr>
+                  <tr><td class="center num">5</td><td>佐藤 次郎</td><td class="right num">10.2</td><td class="right num" style="color:var(--c-alert);">-17%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span>業態別生産性 推移（過去6ヶ月）</span></div>
+            <div class="card-body">
+              <div class="chart-bar" style="height:160px;">
+                <div class="bar" style="height:55%;"><div class="v">11.2</div><div class="l">11月</div></div>
+                <div class="bar" style="height:58%;"><div class="v">11.5</div><div class="l">12月</div></div>
+                <div class="bar" style="height:60%;"><div class="v">11.8</div><div class="l">1月</div></div>
+                <div class="bar" style="height:62%;"><div class="v">11.8</div><div class="l">2月</div></div>
+                <div class="bar" style="height:65%;"><div class="v">12.1</div><div class="l">3月</div></div>
+                <div class="bar" style="height:68%;"><div class="v">12.3</div><div class="l">4月</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>異常検知</span></div>
+          <div class="card-body">
+            <div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--c-line);">
+              <div style="width:4px; align-self:stretch; background:var(--c-alert);"></div>
+              <div style="flex:1; font-size:12px;">
+                <div style="font-weight:600;">佐藤 次郎：3日連続で平均比 -15%以下</div>
+                <div style="font-size:11px; color:var(--c-text-sub);">直近3日の平均：10.2件/h（事業所平均 12.3件/h）/ 体調・配置エリアの確認推奨</div>
+              </div>
+              <button class="btn sm">詳細</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; padding:8px 0;">
+              <div style="width:4px; align-self:stretch; background:var(--c-alert);"></div>
+              <div style="flex:1; font-size:12px;">
+                <div style="font-weight:600;">伊藤 花子：今週生産性が前週比 -20%</div>
+                <div style="font-size:11px; color:var(--c-text-sub);">特定の業態（梱包）で時間がかかっている / リーダーへの相談推奨</div>
+              </div>
+              <button class="btn sm">詳細</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- W-804 シフト適正提案 -->
+<div class="section-divider" id="W-804">
+  <span class="num">W-804</span>シフト適正提案
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：物量予測と生産性データから「明日は何人必要か」を自動提案。応援要請・不足警告も。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/shift/recommend</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">シフト管理</div>
+        <a href="#">物量予測</a>
+        <a href="#">生産性</a>
+        <a href="#" class="active">適正提案</a>
+        <a href="#">計画vs実績</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">シフト管理　/　<b>シフト適正提案</b></div>
+        <div class="actions"><div class="user"><div class="avatar">山</div>山田</div></div>
+      </div>
+      <div class="content">
+        <div class="note-box">
+          <div class="label">適正提案ロジック</div>
+          物量予測 ÷ 業態別の標準生産性 = 必要工数 → 必要人員数として提示。応援可従業員も自動候補化。
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><span>5/4（月）の必要人員提案 - マルキ食品</span></div>
+          <div class="card-body">
+            <table class="list">
+              <thead><tr><th>業態</th><th class="right">予測物量</th><th class="right">標準生産性</th><th class="right">必要工数</th><th class="right">必要人員</th><th>推奨者</th></tr></thead>
+              <tbody>
+                <tr><td>入荷検品</td><td class="right num">120件</td><td class="right num">18.5/h</td><td class="right num">6.5h</td><td class="right num">1名</td><td>佐藤</td></tr>
+                <tr><td>ピッキング（常温）</td><td class="right num">250行</td><td class="right num">12.3/h</td><td class="right num">20.3h</td><td class="right num">3名</td><td>田中, 山本, 鈴木</td></tr>
+                <tr><td>ピッキング（冷蔵）</td><td class="right num">50行</td><td class="right num">10.5/h</td><td class="right num">4.8h</td><td class="right num">1名</td><td>鈴木（応援）</td></tr>
+                <tr><td>梱包</td><td class="right num">130件</td><td class="right num">25/h</td><td class="right num">5.2h</td><td class="right num">1名</td><td>伊藤</td></tr>
+                <tr><td>出荷検品</td><td class="right num">280件</td><td class="right num">22/h</td><td class="right num">12.7h</td><td class="right num">2名</td><td>田中, 佐藤</td></tr>
+              </tbody>
+              <tfoot><tr><td colspan="3">合計</td><td class="right num">49.5h</td><td class="right num">7名</td><td>−</td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>警告・提案</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--c-line);">
+              <div style="width:4px; background:var(--c-alert); align-self:stretch;"></div>
+              <div style="flex:1; font-size:12px;">
+                <div style="font-weight:600;">5/8（金）：物量ピーク予測。現シフトで不足</div>
+                <div style="font-size:11px; color:var(--c-text-sub);">予測350件、必要人員9名 / 現シフト7名 → アルファ商事から伊藤の応援要請を推奨</div>
+              </div>
+              <button class="btn primary sm">応援要請</button>
+            </div>
+            <div style="display:flex; gap:10px; padding:8px 0;">
+              <div style="width:4px; background:var(--c-accent); align-self:stretch;"></div>
+              <div style="flex:1; font-size:12px;">
+                <div style="font-weight:600;">5/3（日）：物量ゼロ予測。シフト過剰</div>
+                <div style="font-size:11px; color:var(--c-text-sub);">日曜出勤予定者を別日に振替推奨</div>
+              </div>
+              <button class="btn sm">調整</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- W-805 計画vs実績 -->
+<div class="section-divider" id="W-805">
+  <span class="num">W-805</span>計画vs実績対比
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：シフト計画と実績の対比。過剰投入・不足投入の検出。次回シフト計画の精度向上に活用。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/shift/comparison</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">シフト管理</div>
+        <a href="#">物量予測</a>
+        <a href="#">生産性</a>
+        <a href="#">適正提案</a>
+        <a href="#" class="active">計画vs実績</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">シフト管理　/　<b>計画vs実績</b></div>
+        <div class="actions"><div class="user"><div class="avatar">山</div>山田</div></div>
+      </div>
+      <div class="content">
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>対象期間</label><input type="month" value="2026-04"></div>
+            <div class="field"><label>荷主</label><select><option selected>マルキ食品</option></select></div>
+            <div class="field"><label>業態</label><select><option>すべて</option></select></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><span>4月 計画 vs 実績</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead><tr><th>業態</th><th class="right">計画工数</th><th class="right">実績工数</th><th class="right">差異</th><th>判定</th></tr></thead>
+              <tbody>
+                <tr><td>入荷検品</td><td class="right num">120h</td><td class="right num">115h</td><td class="right num" style="color:var(--c-accent);">-5h</td><td><span class="pill accent">適正</span></td></tr>
+                <tr><td>ピッキング</td><td class="right num">450h</td><td class="right num">485h</td><td class="right num" style="color:var(--c-alert);">+35h</td><td><span class="pill alert">不足</span></td></tr>
+                <tr><td>梱包</td><td class="right num">100h</td><td class="right num">95h</td><td class="right num" style="color:var(--c-accent);">-5h</td><td><span class="pill accent">適正</span></td></tr>
+                <tr><td>出荷検品</td><td class="right num">220h</td><td class="right num">240h</td><td class="right num" style="color:var(--c-alert);">+20h</td><td><span class="pill alert">不足</span></td></tr>
+                <tr><td>棚卸</td><td class="right num">40h</td><td class="right num">25h</td><td class="right num" style="color:var(--c-accent-lt); color:var(--c-accent);">-15h</td><td><span class="pill">過剰</span></td></tr>
+              </tbody>
+              <tfoot><tr><td>合計</td><td class="right num">930h</td><td class="right num">960h</td><td class="right num" style="color:var(--c-alert);">+30h</td><td>−</td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="note-box">
+          <div class="label">改善提案（次月シフトへの反映）</div>
+          ・ピッキング、出荷検品で工数超過 → 5月シフトでピーク日に+1名の応援を推奨<br>
+          ・棚卸は計画過剰 → 次回は計画工数を実績に合わせて圧縮<br>
+          ・全体としては+30h、人件費換算で約45,000円の超過
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
