@@ -499,7 +499,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
       <div class="nav-item" data-page="screens">
         <span class="icon">◰</span>
         <span>画面モック</span>
-        <span class="badge">65</span>
+        <span class="badge">75</span>
       </div>
       <div class="nav-item" data-page="documents">
         <span class="icon">▦</span>
@@ -566,7 +566,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
           <div class="kpi">
             <div class="lbl">画面モック</div>
-            <div class="val">65</div>
+            <div class="val">75</div>
             <div class="delta">PC 53 / HT 5 / Mobile 3 / Portal 9</div>
           </div>
         </div>
@@ -753,8 +753,8 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         <input type="text" class="search-input" placeholder="画面ID・名称で検索（W-XXX, HT-XXX...）" id="screen-search">
 
         <div class="tabs">
-          <div class="tab active" data-screen-tab="all">すべて (65)</div>
-          <div class="tab" data-screen-tab="pc">PC (53)</div>
+          <div class="tab active" data-screen-tab="all">すべて (75)</div>
+          <div class="tab" data-screen-tab="pc">PC (63)</div>
           <div class="tab" data-screen-tab="ht">HT (5)</div>
           <div class="tab" data-screen-tab="mobile">スマホ (3)</div>
           <div class="tab" data-screen-tab="portal">ポータル (9)</div>
@@ -1172,7 +1172,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                   <li>仕様書 v3.1（Word版）✓</li>
                   <li>API仕様書 v3.1（Word版）✓</li>
                   <li>ER図 v3.0（HTML/Mermaid）✓</li>
-                  <li>画面モック 65画面（HTML）✓</li>
+                  <li>画面モック 75画面（HTML）✓</li>
                   <li>CLAUDE.md ⬜ 未作成</li>
                   <li>実装規約 ⬜ 未作成</li>
                 </ul>
@@ -1254,6 +1254,16 @@ const screens = [
   {id:'W-513',name:'荷主×再保 控除設定',device:'pc',file:'WMS_GroupA_master.html#W-513'},
   {id:'W-902',name:'機能設定（ON/OFF）',device:'pc',file:'WMS_Set1_master_PC.html#W-902'},
   {id:'W-003',name:'荷主切替',device:'pc',file:'WMS_Set1_master_PC.html#W-003'},
+  {id:'W-501',name:'ロケーションマスタ',device:'pc',file:'WMS_Master_Location.html'},
+  {id:'W-502',name:'商品マスタ',device:'pc',file:'WMS_Master_Product.html'},
+  {id:'W-503',name:'取引先マスタ',device:'pc',file:'WMS_Master_Customer.html'},
+  {id:'W-504',name:'配送業者マスタ',device:'pc',file:'WMS_Master_Carrier.html'},
+  {id:'W-506',name:'ロケ種別マスタ',device:'pc',file:'WMS_Master_LocationType.html'},
+  {id:'W-515',name:'便マスタ（配送ルート）',device:'pc',file:'WMS_Master_CarrierRoute.html'},
+  {id:'W-516',name:'梱包材マスタ',device:'pc',file:'WMS_Master_Packaging.html'},
+  {id:'W-517',name:'梱包ロジック設定',device:'pc',file:'WMS_Master_PackagingRule.html'},
+  {id:'W-518',name:'補充ルール設定',device:'pc',file:'WMS_Master_ReplenishmentRule.html'},
+  {id:'W-520',name:'方面マスタ',device:'pc',file:'WMS_Master_Region.html'},
   // PC - 在庫
   {id:'W-207',name:'ステータス変更',device:'pc',file:'WMS_Set2_inventory_PC.html#W-207'},
   {id:'W-208',name:'ロット出荷止め',device:'pc',file:'WMS_Set2_inventory_PC.html#W-208'},

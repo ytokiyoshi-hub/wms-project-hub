@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 配送業者マスタ（W-504）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:12px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .modal-overlay { display:none; position:absolute; inset:0; background:rgba(26,31,41,0.55); z-index:100; align-items:flex-start; justify-content:center; padding:30px 20px; overflow-y:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:720px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-body { padding:18px; max-height:580px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+  .check-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; padding:10px; border:1px solid var(--c-line-dk); background:var(--c-bg); }
+  .check-grid label { display:flex; align-items:center; gap:5px; font-size:12px; cursor:pointer; padding:3px 4px; }
+  .check-grid label:hover { background:var(--c-accent-lt); }
+  .check-grid input[type="checkbox"] { accent-color:var(--c-accent); width:13px; height:13px; }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-504 配送業者マスタ</h1>
+<p class="subtitle">D-5 配送業者マスタ拡張 / D-4 集荷時刻アラート / Q-3 便候補の自動抽出</p>
+
+<div class="section-divider"><span class="num">W-504</span>配送業者マスタ</div>
+<div class="desc">
+  <b>役割</b>：配送業者の基本情報・対応方面・温度帯・カレンダーを管理する。集荷時刻アラート閾値（D-4）と対応方面（Q-3 便候補自動抽出）の設定が重要。<br>
+  <b>コード体系</b>：CR___（英2桁＋3桁数字）
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/carriers</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">取引先</a>
+        <a href="#" class="active">配送業者</a>
+        <a href="#">便（ルート）</a>
+        <a href="#">方面</a>
+        <a href="#">カレンダー</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>配送業者</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>業者コード・名称</label><input type="text" placeholder="CR001、ヤマト 等"></div>
+            <div class="field"><label>対応方面</label>
+              <select><option>すべて</option><option>KANTO 関東</option><option>KANSAI 関西</option><option>CHUBU 中部</option><option>KYUSHU 九州</option><option>TOHOKU 東北</option></select>
+            </div>
+            <div class="field"><label>状態</label>
+              <select><option>すべて</option><option selected>有効</option><option>無効</option></select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b>5件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn primary sm" onclick="openModal()">＋ 新規登録</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>配送業者一覧</span><span class="meta">コード順</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:90px;">業者コード</th>
+                  <th style="width:140px;">業者名</th>
+                  <th style="width:60px;">略称</th>
+                  <th>対応方面</th>
+                  <th style="width:120px;">対応温度帯</th>
+                  <th style="width:120px;">集荷締切</th>
+                  <th class="center" style="width:90px;">アラート閾値</th>
+                  <th class="center" style="width:70px;">状態</th>
+                  <th class="center" style="width:70px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">CR001</td>
+                  <td>ヤマト運輸</td>
+                  <td>ヤマト</td>
+                  <td style="font-size:11px;">KANTO / TOHOKU / 全国</td>
+                  <td style="font-size:11px;">常温 / 冷蔵 / 冷凍</td>
+                  <td class="num">13:30</td>
+                  <td class="center num">30分前</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('CR001')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">CR002</td>
+                  <td>佐川急便</td>
+                  <td>佐川</td>
+                  <td style="font-size:11px;">CHUBU / KANSAI / 全国</td>
+                  <td style="font-size:11px;">常温 / 冷蔵</td>
+                  <td class="num">15:00</td>
+                  <td class="center num">30分前</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('CR002')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">CR003</td>
+                  <td>西濃運輸</td>
+                  <td>西濃</td>
+                  <td style="font-size:11px;">KANSAI / 中国 / 九州</td>
+                  <td style="font-size:11px;">常温</td>
+                  <td class="num">15:30</td>
+                  <td class="center num">60分前</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('CR003')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">CR004</td>
+                  <td>福山通運</td>
+                  <td>福山</td>
+                  <td style="font-size:11px;">KYUSHU / 中国</td>
+                  <td style="font-size:11px;">常温 / 冷蔵</td>
+                  <td class="num">16:00</td>
+                  <td class="center num">60分前</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('CR004')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">CR005</td>
+                  <td>日本郵便</td>
+                  <td>郵便</td>
+                  <td style="font-size:11px;">全国（離島含む）</td>
+                  <td style="font-size:11px;">常温</td>
+                  <td class="num">12:00</td>
+                  <td class="center num">30分前</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('CR005')">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- モーダル -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 id="modal-title">配送業者 新規登録</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-section">
+            <h3>基本情報</h3>
+            <div class="form-row">
+              <div class="field"><label>業者コード<span class="required">*</span></label><input type="text" placeholder="例：CR001" style="font-family:var(--f-mono);"><span class="hint">英2桁＋3桁数字（CR___）</span></div>
+              <div class="field"><label>業者名<span class="required">*</span></label><input type="text" placeholder="例：ヤマト運輸"></div>
+              <div class="field"><label>略称</label><input type="text" placeholder="例：ヤマト"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>カレンダー紐づけ</label><select><option>WH001カレンダーに従う</option><option>業者固有カレンダーを登録</option></select></div>
+              <div class="field"><label>状態</label><select><option>有効</option><option>無効</option></select></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>対応方面（Q-3 便候補の自動抽出に使用）</h3>
+            <div class="check-grid">
+              <label><input type="checkbox"> KANTO 関東</label>
+              <label><input type="checkbox"> KANSAI 関西</label>
+              <label><input type="checkbox"> CHUBU 中部</label>
+              <label><input type="checkbox"> KYUSHU 九州</label>
+              <label><input type="checkbox"> TOHOKU 東北</label>
+              <label><input type="checkbox"> 全国共通</label>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>対応温度帯</h3>
+            <div class="check-grid">
+              <label><input type="checkbox" checked> 常温(AMB)</label>
+              <label><input type="checkbox"> 冷蔵(COLD)</label>
+              <label><input type="checkbox"> 冷凍(FROZ)</label>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>集荷時刻設定（D-4 アラート）</h3>
+            <div class="form-row">
+              <div class="field"><label>標準集荷締切時刻<span class="required">*</span></label><input type="time" value="13:30"></div>
+              <div class="field"><label>集荷時刻アラート閾値<span class="required">*</span></label>
+                <select><option>15分前</option><option selected>30分前</option><option>60分前</option><option>120分前</option></select>
+                <span class="hint">締切まで残り指定時間を切るとアラート</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>備考</h3>
+            <div class="field"><textarea rows="2" placeholder="特記事項・連絡先等"></textarea></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">キャンセル</button>
+          <button class="btn primary">登録</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openModal() { document.getElementById('modal-title').textContent='配送業者 新規登録'; document.getElementById('modal-overlay').classList.add('open'); }
+  function openEditModal(code) { document.getElementById('modal-title').textContent='配送業者 編集：'+code; document.getElementById('modal-overlay').classList.add('open'); }
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+  function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay'))closeModal(); }
+</script>
+</body>
+</html>

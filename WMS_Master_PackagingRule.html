@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 梱包ロジック設定（W-517）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); margin-bottom:14px; }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:16px; }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:16px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .tabs .tab:hover { color:var(--c-text); }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:14px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border:1px solid var(--c-line); margin-bottom:8px; background:var(--c-bg); }
+  .toggle-row .tl { font-size:13px; font-weight:500; }
+  .toggle-row .td { font-size:11px; color:var(--c-text-sub); margin-top:2px; }
+  .toggle-row .toggle { width:40px; height:22px; background:var(--c-line-dk); border-radius:11px; position:relative; cursor:pointer; flex-shrink:0; }
+  .toggle-row .toggle.on { background:var(--c-accent); }
+  .toggle-row .toggle::after { content:""; position:absolute; left:2px; top:2px; width:18px; height:18px; background:#fff; border-radius:50%; transition:left 0.15s; }
+  .toggle-row .toggle.on::after { left:20px; }
+  .modal-overlay { display:none; position:absolute; inset:0; background:rgba(26,31,41,0.55); z-index:100; align-items:flex-start; justify-content:center; padding:30px 20px; overflow-y:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:680px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-body { padding:18px; max-height:560px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-517 梱包ロジック設定</h1>
+<p class="subtitle">S-2 計算方式 / S-5 引当時個口数自動確定 / S-6 荷札事前発行 / S-7 並行作業 / S-11 梱包確定方式（荷主単位）</p>
+
+<div class="section-divider"><span class="num">W-517</span>梱包ロジック設定</div>
+<div class="desc">
+  <b>役割</b>：荷主ごとの梱包ルール（計算方式・確定タイミング・荷札・並行作業）を設定する。S-11梱包確定方式は荷主単位でカスタマイズ可能。<br>
+  <b>計算方式（S-2）</b>：容積優先 / 重量優先 / 個数固定 から選択。商品ごとの梱包係数（S-4）と組み合わせて個口数を自動確定（S-5）。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/packaging-rules</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">梱包材</a>
+        <a href="#" class="active">梱包ロジック設定</a>
+        <a href="#">補充ルール</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>梱包ロジック設定</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box">
+          <div class="label">梱包ロジック設定について</div>
+          荷主ごとに梱包ルールをカスタマイズできます（S-11）。未設定の荷主はシステムデフォルトが適用されます。設定変更は次回引当処理から反映されます。
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" onclick="switchOwner('MK001',this)">MK001 マルキ食品</div>
+          <div class="tab" onclick="switchOwner('MK002',this)">MK002 マルキ食品EC</div>
+          <div class="tab" onclick="switchOwner('AL001',this)">AL001 アルファ商事</div>
+          <div class="tab" onclick="switchOwner('default',this)">（デフォルト設定）</div>
+        </div>
+
+        <div id="owner-panel">
+          <!-- MK001 設定 -->
+          <div class="card">
+            <div class="card-header">
+              <span>梱包ロジック設定 - MK001 マルキ食品</span>
+              <button class="btn primary sm" onclick="openModal()">編集</button>
+            </div>
+            <div class="card-body">
+              <div class="form-row">
+                <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:12px;">
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">計算方式（S-2）</div>
+                  <div style="font-size:14px; font-weight:600; color:var(--c-accent);">容積優先</div>
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-top:4px;">商品の体積合計÷梱包材の有効容積で個口数を算出</div>
+                </div>
+                <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:12px;">
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">デフォルト梱包材</div>
+                  <div style="font-size:14px; font-weight:600;">PKG001 標準段ボールA</div>
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-top:4px;">商品ごと個別設定がある場合はそちらを優先</div>
+                </div>
+                <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:12px;">
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">梱包確定方式（S-11）</div>
+                  <div style="font-size:14px; font-weight:600; color:var(--c-accent);">引当時自動確定（S-5）</div>
+                  <div style="font-size:11px; color:var(--c-text-sub); margin-top:4px;">引当完了と同時に個口数・梱包材を自動確定</div>
+                </div>
+              </div>
+              <div style="margin-top:4px;">
+                <div class="toggle-row">
+                  <div>
+                    <div class="tl">荷札の事前発行（S-6）</div>
+                    <div class="td">引当完了時点で荷札（送り状）を事前に発行する</div>
+                  </div>
+                  <div class="toggle on"></div>
+                </div>
+                <div class="toggle-row">
+                  <div>
+                    <div class="tl">ケース・バラの並行作業化（S-7）</div>
+                    <div class="td">ケース単位とバラ単位のピッキングを別作業者が同時に行える</div>
+                  </div>
+                  <div class="toggle on"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 編集モーダル -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>梱包ロジック設定 編集：MK001 マルキ食品</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-section">
+            <h3>計算方式（S-2）</h3>
+            <div class="field">
+              <label>梱包サイズ計算方式<span class="required">*</span></label>
+              <select>
+                <option selected>容積優先（体積合計÷梱包材有効容積）</option>
+                <option>重量優先（重量合計÷梱包材最大積載重量）</option>
+                <option>個数固定（商品ごとに固定個口数）</option>
+              </select>
+              <span class="hint">容積・重量で超過した場合は自動的に個口数を増加</span>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>デフォルト梱包材</h3>
+            <div class="field">
+              <label>デフォルト梱包材</label>
+              <select>
+                <option>PKG001 標準段ボールA（400×300×300 / 20kg）</option>
+                <option>PKG002 標準段ボールB（600×400×400 / 30kg）</option>
+                <option>PKG005 マルキ専用箱A（500×350×250 / 15kg）</option>
+              </select>
+              <span class="hint">商品ごとに個別設定がある場合はそちらを優先（S-4）</span>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>梱包確定タイミング（S-11）</h3>
+            <div class="field">
+              <label>梱包確定方式<span class="required">*</span></label>
+              <select>
+                <option selected>引当時自動確定（S-5）</option>
+                <option>ピッキング完了後に確定</option>
+                <option>手動指定（スタッフが個口数を入力）</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>オプション設定</h3>
+            <div class="form-row">
+              <div class="field">
+                <label>荷札の事前発行（S-6）</label>
+                <select><option selected>する（引当完了時に発行）</option><option>しない（出荷確定後に発行）</option></select>
+              </div>
+              <div class="field">
+                <label>ケース・バラ並行作業（S-7）</label>
+                <select><option selected>する（並行作業を許可）</option><option>しない（順次作業）</option></select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">キャンセル</button>
+          <button class="btn primary">保存</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openModal() { document.getElementById('modal-overlay').classList.add('open'); }
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+  function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay'))closeModal(); }
+  function switchOwner(id,el) {
+    document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  document.querySelectorAll('.toggle').forEach(t=>{ t.addEventListener('click',()=>t.classList.toggle('on')); });
+</script>
+</body>
+</html>

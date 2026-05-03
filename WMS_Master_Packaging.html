@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 梱包材マスタ（W-516）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.warning { background:#d97706; color:#fff; border-color:#d97706; }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.warn { background:#fef3c7; border-color:#d97706; color:#d97706; }
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .center { text-align:center; }
+  table.list .right { text-align:right; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:12px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+  .modal-overlay { display:none; position:absolute; inset:0; background:rgba(26,31,41,0.55); z-index:100; align-items:flex-start; justify-content:center; padding:28px 20px; overflow-y:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:720px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-body { padding:18px; max-height:560px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+  .stock-bar { height:8px; background:var(--c-line); border-radius:2px; overflow:hidden; }
+  .stock-bar .fill { height:100%; background:var(--c-accent); border-radius:2px; }
+  .stock-bar .fill.warn { background:#d97706; }
+  .stock-bar .fill.low { background:var(--c-alert); }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-516 梱包材マスタ</h1>
+<p class="subtitle">S-1 梱包材マスタ / S-3 使用率上限 / S-9 資材在庫管理</p>
+
+<div class="section-divider"><span class="num">W-516</span>梱包材マスタ</div>
+<div class="desc">
+  <b>役割</b>：使用する梱包材（段ボール・ポリ袋・緩衝材等）の仕様を管理する。S-3使用率上限・S-9在庫管理・S-10梱包コスト算出の基準データ。<br>
+  <b>在庫アラート</b>：現在庫が発注点を下回った場合に警告表示。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/packaging-materials</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#" class="active">梱包材</a>
+        <a href="#">梱包ロジック設定</a>
+        <a href="#">補充ルール</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>梱包材</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>梱包材コード・名称</label><input type="text" placeholder="PKG001、段ボール 等"></div>
+            <div class="field"><label>種別</label>
+              <select><option>すべて</option><option>段ボール</option><option>ポリ袋</option><option>エアパッキン</option><option>クッション材</option><option>テープ</option><option>ラベル</option></select>
+            </div>
+            <div class="field"><label>荷主区分</label>
+              <select><option>すべて</option><option>共用</option><option>荷主専用</option></select>
+            </div>
+            <div class="field"><label>在庫状態</label>
+              <select><option>すべて</option><option>正常</option><option>発注点以下</option></select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b>5件</b>　/ <span style="color:var(--c-alert);">発注点以下 1件</span></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">在庫一覧CSV</button>
+              <button class="btn primary sm" onclick="openModal()">＋ 新規登録</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>梱包材一覧</span><span class="meta">コード順</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:90px;">コード</th>
+                  <th>名称</th>
+                  <th style="width:80px;">種別</th>
+                  <th style="width:130px;">サイズ（W×D×H mm）</th>
+                  <th class="right" style="width:90px;">最大積載(kg)</th>
+                  <th class="right" style="width:80px;">使用率上限</th>
+                  <th style="width:120px;">在庫数 / 発注点</th>
+                  <th style="width:80px;">荷主区分</th>
+                  <th class="center" style="width:60px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">PKG001</td>
+                  <td>標準段ボールA</td>
+                  <td>段ボール</td>
+                  <td class="num" style="font-size:11px;">400×300×300</td>
+                  <td class="right num">20</td>
+                  <td class="right num">80%</td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span class="num" style="font-size:11px;">500 / 100</span>
+                      <div class="stock-bar" style="width:60px;"><div class="fill" style="width:100%;"></div></div>
+                    </div>
+                  </td>
+                  <td>共用</td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('PKG001')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">PKG002</td>
+                  <td>標準段ボールB</td>
+                  <td>段ボール</td>
+                  <td class="num" style="font-size:11px;">600×400×400</td>
+                  <td class="right num">30</td>
+                  <td class="right num">75%</td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span class="num" style="font-size:11px;">300 / 50</span>
+                      <div class="stock-bar" style="width:60px;"><div class="fill" style="width:100%;"></div></div>
+                    </div>
+                  </td>
+                  <td>共用</td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('PKG002')">編集</button></td>
+                </tr>
+                <tr style="background:#fff8f8;">
+                  <td class="num">PKG003</td>
+                  <td>冷凍用ポリ袋（大）</td>
+                  <td>ポリ袋</td>
+                  <td style="color:var(--c-text-mute); font-size:11px;">-</td>
+                  <td class="right num">5</td>
+                  <td class="right num">90%</td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span class="num" style="font-size:11px; color:var(--c-alert);">80 / 200</span>
+                      <div class="stock-bar" style="width:60px;"><div class="fill low" style="width:40%;"></div></div>
+                    </div>
+                  </td>
+                  <td>共用</td>
+                  <td class="center"><button class="btn sm warning" onclick="openEditModal('PKG003')">発注!</button></td>
+                </tr>
+                <tr>
+                  <td class="num">PKG004</td>
+                  <td>緩衝材エアパッキン（大）</td>
+                  <td>エアパッキン</td>
+                  <td style="color:var(--c-text-mute); font-size:11px;">-</td>
+                  <td style="color:var(--c-text-mute);">-</td>
+                  <td style="color:var(--c-text-mute);">-</td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span class="num" style="font-size:11px;">800 / 100</span>
+                      <div class="stock-bar" style="width:60px;"><div class="fill" style="width:100%;"></div></div>
+                    </div>
+                  </td>
+                  <td>共用</td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('PKG004')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">PKG005</td>
+                  <td>マルキ専用箱A</td>
+                  <td>段ボール</td>
+                  <td class="num" style="font-size:11px;">500×350×250</td>
+                  <td class="right num">15</td>
+                  <td class="right num">85%</td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span class="num" style="font-size:11px;">200 / 50</span>
+                      <div class="stock-bar" style="width:60px;"><div class="fill" style="width:100%;"></div></div>
+                    </div>
+                  </td>
+                  <td><span class="pill accent">MK001専用</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('PKG005')">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- モーダル -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 id="modal-title">梱包材 新規登録</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-section">
+            <h3>基本情報</h3>
+            <div class="form-row">
+              <div class="field"><label>梱包材コード<span class="required">*</span></label><input type="text" placeholder="例：PKG001" style="font-family:var(--f-mono);"></div>
+              <div class="field"><label>名称<span class="required">*</span></label><input type="text" placeholder="例：標準段ボールA"></div>
+              <div class="field"><label>種別<span class="required">*</span></label>
+                <select><option>段ボール</option><option>ポリ袋</option><option>エアパッキン</option><option>クッション材</option><option>テープ</option><option>ラベル</option><option>その他</option></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>荷主区分</label><select><option>共用</option><option>荷主専用</option></select></div>
+              <div class="field"><label>荷主コード（専用時）</label><input type="text" placeholder="MK001" style="font-family:var(--f-mono);"></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>サイズ・重量</h3>
+            <div class="form-row">
+              <div class="field"><label>サイズW（mm）</label><input type="number" placeholder="例：400"></div>
+              <div class="field"><label>サイズD（mm）</label><input type="number" placeholder="例：300"></div>
+              <div class="field"><label>サイズH（mm）</label><input type="number" placeholder="例：300"></div>
+              <div class="field"><label>最大積載重量（kg）</label><input type="number" placeholder="例：20"></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>使用率・在庫管理（S-3・S-9）</h3>
+            <div class="form-row">
+              <div class="field"><label>使用率上限（%）（S-3）</label><input type="number" placeholder="例：80" min="1" max="100"><span class="hint">容積に対する商品充填率の上限</span></div>
+              <div class="field"><label>現在庫数（S-9）</label><input type="number" placeholder="例：500"></div>
+              <div class="field"><label>発注点</label><input type="number" placeholder="例：100"><span class="hint">在庫がこの数を下回るとアラート</span></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>1個あたり単価（円）（S-10）</label><input type="number" placeholder="例：85"><span class="hint">梱包コスト算出に使用</span></div>
+              <div class="field"><label>状態</label><select><option>有効</option><option>無効</option></select></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">キャンセル</button>
+          <button class="btn primary">登録</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openModal() { document.getElementById('modal-title').textContent='梱包材 新規登録'; document.getElementById('modal-overlay').classList.add('open'); }
+  function openEditModal(code) { document.getElementById('modal-title').textContent='梱包材 編集：'+code; document.getElementById('modal-overlay').classList.add('open'); }
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+  function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay'))closeModal(); }
+</script>
+</body>
+</html>

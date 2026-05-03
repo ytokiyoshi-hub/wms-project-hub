@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 取引先マスタ（W-503）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:12px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .modal-overlay { display:none; position:absolute; inset:0; background:rgba(26,31,41,0.55); z-index:100; align-items:flex-start; justify-content:center; padding:24px 20px; overflow-y:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:760px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-body { padding:18px; max-height:560px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-503 取引先マスタ</h1>
+<p class="subtitle">配送先（得意先・営業所等）の登録・営業所別枝番管理</p>
+
+<div class="section-divider"><span class="num">W-503</span>取引先マスタ</div>
+<div class="desc">
+  <b>役割</b>：出荷先となる取引先（得意先・店舗・営業所等）を管理する。同一法人の複数拠点は枝番（TP001-02等）で管理し履歴重視で保持（リネーム不可）。<br>
+  <b>方面自動判定</b>：住所の都道府県をもとに方面コードを自動付与（Q-2）。配送業者の自動振り分けに使用。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/customers</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#" class="active">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#">方面</a>
+        <a href="#">カレンダー</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>取引先</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>マルキ食品 (MK001)</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>取引先コード</label><input type="text" placeholder="TP001 等（全枝番検索）" style="font-family:var(--f-mono);"></div>
+            <div class="field"><label>取引先名</label><input type="text" placeholder="部分一致"></div>
+            <div class="field"><label>方面</label>
+              <select><option>すべて</option><option>KANTO 関東</option><option>KANSAI 関西</option><option>CHUBU 中部</option><option>KYUSHU 九州</option><option>TOHOKU 東北</option></select>
+            </div>
+            <div class="field"><label>状態</label>
+              <select><option>すべて</option><option selected>有効</option><option>無効</option></select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b>5件</b>　/　全88件</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn primary sm" onclick="openModal()">＋ 新規登録</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>取引先一覧（MK001 マルキ食品）</span><span class="meta">コード順 ※枝番まとめ表示</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:120px;">取引先コード</th>
+                  <th>取引先名</th>
+                  <th style="width:80px;">区分</th>
+                  <th style="width:100px;">都道府県</th>
+                  <th style="width:90px;">方面</th>
+                  <th style="width:90px;">配送業者</th>
+                  <th class="center" style="width:70px;">状態</th>
+                  <th class="center" style="width:70px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">TP001</td>
+                  <td>スーパーマルヤマ 本部</td>
+                  <td><span class="pill">本社</span></td>
+                  <td>東京都</td>
+                  <td class="num">KANTO</td>
+                  <td class="num">CR001</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('TP001')">編集</button></td>
+                </tr>
+                <tr style="background:#fafbfc;">
+                  <td class="num">TP001-02</td>
+                  <td>スーパーマルヤマ 横浜支店</td>
+                  <td><span class="pill accent">営業所</span></td>
+                  <td>神奈川県</td>
+                  <td class="num">KANTO</td>
+                  <td class="num">CR001</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('TP001-02')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">TP002</td>
+                  <td>フードジャパン株式会社</td>
+                  <td><span class="pill">本社</span></td>
+                  <td>大阪府</td>
+                  <td class="num">KANSAI</td>
+                  <td class="num">CR002</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('TP002')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">TP003</td>
+                  <td>名古屋デリバリーセンター</td>
+                  <td><span class="pill">本社</span></td>
+                  <td>愛知県</td>
+                  <td class="num">CHUBU</td>
+                  <td class="num">CR003</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('TP003')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">TP004</td>
+                  <td>九州食品センター株式会社</td>
+                  <td><span class="pill">本社</span></td>
+                  <td>福岡県</td>
+                  <td class="num">KYUSHU</td>
+                  <td class="num">CR004</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('TP004')">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- モーダル -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 id="modal-title">取引先 新規登録</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-section">
+            <h3>コード・区分</h3>
+            <div class="form-row">
+              <div class="field"><label>取引先コード<span class="required">*</span></label><input type="text" placeholder="例：TP001" style="font-family:var(--f-mono);"><span class="hint">英2桁＋3桁数字（TP___）</span></div>
+              <div class="field"><label>枝番</label><select><option value="">本社（枝番なし）</option><option>-02</option><option>-03</option><option>-04</option><option>-05</option></select><span class="hint">本社と異なる拠点の場合のみ設定</span></div>
+              <div class="field"><label>取引先区分</label><select><option>本社</option><option>営業所</option><option>店舗</option><option>工場</option><option>配送センター</option><option>倉庫</option></select></div>
+            </div>
+            <div class="form-row">
+              <div class="field" style="grid-column:span 2;"><label>取引先名<span class="required">*</span></label><input type="text" placeholder="例：スーパーマルヤマ 横浜支店"></div>
+              <div class="field"><label>荷主コード<span class="required">*</span></label><input type="text" value="MK001" style="font-family:var(--f-mono);"></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>住所（方面自動判定に使用・Q-2）</h3>
+            <div class="form-row">
+              <div class="field"><label>郵便番号</label><input type="text" placeholder="000-0000" style="font-family:var(--f-mono);"></div>
+              <div class="field"><label>都道府県<span class="required">*</span></label><select><option>東京都</option><option>神奈川県</option><option>大阪府</option><option>愛知県</option><option>福岡県</option></select></div>
+              <div class="field"><label>方面（自動）</label><input type="text" value="KANTO" readonly style="background:#f0f2f5; font-family:var(--f-mono);"></div>
+            </div>
+            <div class="form-row">
+              <div class="field" style="grid-column:span 2;"><label>市区町村・番地</label><input type="text" placeholder="例：横浜市西区みなとみらい1-1-1"></div>
+              <div class="field"><label>建物名・部屋番号</label><input type="text" placeholder="例：マルヤマビル3F"></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>連絡先・配送設定</h3>
+            <div class="form-row">
+              <div class="field"><label>電話番号</label><input type="tel" placeholder="000-0000-0000" style="font-family:var(--f-mono);"></div>
+              <div class="field"><label>FAX番号</label><input type="tel" placeholder="000-0000-0000" style="font-family:var(--f-mono);"></div>
+              <div class="field"><label>担当者名</label><input type="text" placeholder="例：佐藤 一郎"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>指定配送業者（Q-6）</label><select><option value="">自動振り分け（方面ルールに従う）</option><option>CR001 ヤマト運輸</option><option>CR002 佐川急便</option><option>CR003 西濃運輸</option></select><span class="hint">設定時は配送先指定業者を最優先</span></div>
+              <div class="field"><label>状態</label><select><option>有効</option><option>無効</option></select></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>備考</h3>
+            <div class="field"><textarea rows="2" placeholder="配送時の注意事項、受取時間指定等"></textarea></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">キャンセル</button>
+          <button class="btn primary">登録</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openModal() { document.getElementById('modal-title').textContent='取引先 新規登録'; document.getElementById('modal-overlay').classList.add('open'); }
+  function openEditModal(code) { document.getElementById('modal-title').textContent='取引先 編集：'+code; document.getElementById('modal-overlay').classList.add('open'); }
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+  function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay'))closeModal(); }
+</script>
+</body>
+</html>
