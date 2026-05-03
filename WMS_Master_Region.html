@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 方面マスタ（W-520）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list .pref-cell { font-size:11px; color:var(--c-text-sub); max-width:320px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus, .field textarea:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:14px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:16px; margin-top:16px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:12px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+
+  /* モーダルオーバーレイ */
+  .modal-overlay {
+    display:none;
+    position:absolute;
+    inset:0;
+    background:rgba(26,31,41,0.55);
+    z-index:100;
+    align-items:flex-start;
+    justify-content:center;
+    padding:40px 20px;
+    overflow-y:auto;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:680px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; color:var(--c-text); }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-header .close-btn:hover { color:var(--c-text); }
+  .modal-body { padding:18px; max-height:560px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+
+  /* 都道府県チェックボックスグリッド */
+  .pref-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; padding:10px; border:1px solid var(--c-line-dk); background:var(--c-bg); max-height:180px; overflow-y:auto; }
+  .pref-grid label { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--c-text); cursor:pointer; padding:3px 4px; }
+  .pref-grid label:hover { background:var(--c-accent-lt); }
+  .pref-grid input[type="checkbox"] { accent-color:var(--c-accent); width:13px; height:13px; flex-shrink:0; }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-520 方面マスタ</h1>
+<p class="subtitle">配送業者の自動振り分け（Q系列） / 方面コード・対象都道府県の定義</p>
+
+<div class="section-divider" id="W-520"><span class="num">W-520</span>方面マスタ</div>
+<div class="desc">
+  <b>役割</b>：配送先住所→配送業者の自動振り分けに使う「方面」を定義する。都道府県と方面を紐づけ、振り分けロジックの基準データとなる。<br>
+  <b>関連機能</b>：Q-1 方面マスタ / Q-2 配送先住所→方面の自動判定 / Q-4 振り分けロジック
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/regions</div>
+  </div>
+  <div class="screen">
+
+    <!-- サイドバー -->
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">ピッキングエリア</a>
+        <a href="#">在庫ステータス</a>
+        <a href="#">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#" class="active">方面</a>
+        <a href="#">ユーザー</a>
+        <a href="#">カレンダー</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+
+    <!-- メインエリア -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>方面マスタ</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box">
+          <div class="label">方面マスタの役割</div>
+          都道府県と配送方面を紐づけます。出荷指示の配送先住所から都道府県を自動判定し、対応する方面コードを付与することで配送業者の自動振り分けが機能します。
+        </div>
+
+        <!-- 検索バー -->
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field">
+              <label>方面名・コード</label>
+              <input type="text" placeholder="KANTO、関東　等">
+            </div>
+            <div class="field">
+              <label>状態</label>
+              <select>
+                <option value="">すべて</option>
+                <option value="active" selected>有効のみ</option>
+                <option value="inactive">無効のみ</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>都道府県</label>
+              <select>
+                <option value="">すべて</option>
+                <option>東京都</option>
+                <option>大阪府</option>
+                <option>愛知県</option>
+                <option>福岡県</option>
+                <option>宮城県</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b>5件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn sm" onclick="document.getElementById('modal-search').click()">検索</button>
+              <button class="btn primary sm" onclick="openModal()">＋ 新規登録</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 一覧テーブル -->
+        <div class="card">
+          <div class="card-header">
+            <span>方面一覧</span>
+            <span class="meta">コード順</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:110px;">方面コード</th>
+                  <th style="width:100px;">方面名</th>
+                  <th>対象都道府県</th>
+                  <th class="center" style="width:70px;">件数</th>
+                  <th class="center" style="width:70px;">状態</th>
+                  <th>備考</th>
+                  <th class="center" style="width:80px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">KANTO</td>
+                  <td>関東</td>
+                  <td class="pref-cell">東京都、神奈川県、埼玉県、千葉県、茨城県、栃木県、群馬県</td>
+                  <td class="center num">7</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">首都圏・主力エリア</td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('KANTO')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">KANSAI</td>
+                  <td>関西</td>
+                  <td class="pref-cell">大阪府、兵庫県、京都府、滋賀県、奈良県、和歌山県</td>
+                  <td class="center num">6</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">関西DC連携エリア</td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('KANSAI')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">CHUBU</td>
+                  <td>中部</td>
+                  <td class="pref-cell">愛知県、静岡県、岐阜県、三重県、長野県、山梨県、新潟県、富山県、石川県、福井県</td>
+                  <td class="center num">10</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">-</td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('CHUBU')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">KYUSHU</td>
+                  <td>九州</td>
+                  <td class="pref-cell">福岡県、佐賀県、長崎県、熊本県、大分県、宮崎県、鹿児島県、沖縄県</td>
+                  <td class="center num">8</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">沖縄は航空便対応</td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('KYUSHU')">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">TOHOKU</td>
+                  <td>東北</td>
+                  <td class="pref-cell">青森県、岩手県、宮城県、秋田県、山形県、福島県</td>
+                  <td class="center num">6</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">-</td>
+                  <td class="center"><button class="btn sm" onclick="openEditModal('TOHOKU')">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- モーダルオーバーレイ（新規登録） -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal-box" id="modal-box">
+        <div class="modal-header">
+          <h2 id="modal-title">方面マスタ 新規登録</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+
+          <div class="form-section">
+            <h3>基本情報</h3>
+            <div class="form-row">
+              <div class="field">
+                <label>方面コード<span class="required">*</span></label>
+                <input type="text" id="input-code" placeholder="例：KANTO" style="font-family:var(--f-mono);" maxlength="20">
+                <span class="hint">英大文字・数字。他マスタとの紐づけに使用</span>
+              </div>
+              <div class="field">
+                <label>方面名<span class="required">*</span></label>
+                <input type="text" id="input-name" placeholder="例：関東">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>状態<span class="required">*</span></label>
+                <select id="input-status">
+                  <option value="active">有効</option>
+                  <option value="inactive">無効</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>備考</label>
+                <input type="text" id="input-note" placeholder="運用上の補足など">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>対象都道府県<span style="color:var(--c-alert); margin-left:3px; font-weight:700;">*</span></h3>
+            <div class="note-box" style="margin-bottom:10px;">
+              <div class="label">注意</div>
+              1つの都道府県は必ず1つの方面に属してください。複数方面への重複登録は振り分けエラーの原因になります。
+            </div>
+            <div class="pref-grid">
+              <!-- 北海道・東北 -->
+              <label><input type="checkbox"> 北海道</label>
+              <label><input type="checkbox"> 青森県</label>
+              <label><input type="checkbox"> 岩手県</label>
+              <label><input type="checkbox"> 宮城県</label>
+              <label><input type="checkbox"> 秋田県</label>
+              <label><input type="checkbox"> 山形県</label>
+              <label><input type="checkbox"> 福島県</label>
+              <!-- 関東 -->
+              <label><input type="checkbox"> 茨城県</label>
+              <label><input type="checkbox"> 栃木県</label>
+              <label><input type="checkbox"> 群馬県</label>
+              <label><input type="checkbox"> 埼玉県</label>
+              <label><input type="checkbox"> 千葉県</label>
+              <label><input type="checkbox"> 東京都</label>
+              <label><input type="checkbox"> 神奈川県</label>
+              <!-- 中部 -->
+              <label><input type="checkbox"> 新潟県</label>
+              <label><input type="checkbox"> 富山県</label>
+              <label><input type="checkbox"> 石川県</label>
+              <label><input type="checkbox"> 福井県</label>
+              <label><input type="checkbox"> 山梨県</label>
+              <label><input type="checkbox"> 長野県</label>
+              <label><input type="checkbox"> 岐阜県</label>
+              <label><input type="checkbox"> 静岡県</label>
+              <label><input type="checkbox"> 愛知県</label>
+              <!-- 近畿 -->
+              <label><input type="checkbox"> 三重県</label>
+              <label><input type="checkbox"> 滋賀県</label>
+              <label><input type="checkbox"> 京都府</label>
+              <label><input type="checkbox"> 大阪府</label>
+              <label><input type="checkbox"> 兵庫県</label>
+              <label><input type="checkbox"> 奈良県</label>
+              <label><input type="checkbox"> 和歌山県</label>
+              <!-- 中国・四国 -->
+              <label><input type="checkbox"> 鳥取県</label>
+              <label><input type="checkbox"> 島根県</label>
+              <label><input type="checkbox"> 岡山県</label>
+              <label><input type="checkbox"> 広島県</label>
+              <label><input type="checkbox"> 山口県</label>
+              <label><input type="checkbox"> 徳島県</label>
+              <label><input type="checkbox"> 香川県</label>
+              <label><input type="checkbox"> 愛媛県</label>
+              <label><input type="checkbox"> 高知県</label>
+              <!-- 九州 -->
+              <label><input type="checkbox"> 福岡県</label>
+              <label><input type="checkbox"> 佐賀県</label>
+              <label><input type="checkbox"> 長崎県</label>
+              <label><input type="checkbox"> 熊本県</label>
+              <label><input type="checkbox"> 大分県</label>
+              <label><input type="checkbox"> 宮崎県</label>
+              <label><input type="checkbox"> 鹿児島県</label>
+              <label><input type="checkbox"> 沖縄県</label>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">キャンセル</button>
+          <button class="btn primary" onclick="handleSave()">登録</button>
+        </div>
+      </div>
+    </div>
+    <!-- /モーダル -->
+
+  </div><!-- /.screen -->
+</div><!-- /.pc-frame -->
+
+<script>
+  function openModal() {
+    document.getElementById('modal-title').textContent = '方面マスタ 新規登録';
+    document.getElementById('input-code').value = '';
+    document.getElementById('input-name').value = '';
+    document.getElementById('input-status').value = 'active';
+    document.getElementById('input-note').value = '';
+    document.querySelectorAll('.pref-grid input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function openEditModal(code) {
+    const data = {
+      KANTO:  { name:'関東',  status:'active', note:'首都圏・主力エリア', prefs:['茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県'] },
+      KANSAI: { name:'関西',  status:'active', note:'関西DC連携エリア',   prefs:['滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県'] },
+      CHUBU:  { name:'中部',  status:'active', note:'',                  prefs:['新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県'] },
+      KYUSHU: { name:'九州',  status:'active', note:'沖縄は航空便対応',   prefs:['福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'] },
+      TOHOKU: { name:'東北',  status:'active', note:'',                  prefs:['青森県','岩手県','宮城県','秋田県','山形県','福島県'] },
+    };
+    const d = data[code];
+    document.getElementById('modal-title').textContent = '方面マスタ 編集：' + code;
+    document.getElementById('input-code').value = code;
+    document.getElementById('input-name').value = d.name;
+    document.getElementById('input-status').value = d.status;
+    document.getElementById('input-note').value = d.note;
+    document.querySelectorAll('.pref-grid input[type="checkbox"]').forEach(cb => {
+      const label = cb.parentElement.textContent.trim();
+      cb.checked = d.prefs.includes(label);
+    });
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+
+  function handleSave() {
+    const code = document.getElementById('input-code').value.trim();
+    const name = document.getElementById('input-name').value.trim();
+    const checked = Array.from(document.querySelectorAll('.pref-grid input[type="checkbox"]:checked')).map(cb => cb.parentElement.textContent.trim());
+    if (!code || !name) { alert('方面コードと方面名は必須です。'); return; }
+    if (checked.length === 0) { alert('対象都道府県を1件以上選択してください。'); return; }
+    alert('登録しました（モックのため実際には保存されません）\n\nコード：' + code + '\n方面名：' + name + '\n都道府県：' + checked.join('、'));
+    closeModal();
+  }
+</script>
+</body>
+</html>
