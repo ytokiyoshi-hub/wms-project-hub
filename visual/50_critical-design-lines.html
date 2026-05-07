@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>#50 致命傷ライン15項目 | あーちゃん成果物</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .page-header {
+      max-width: 960px;
+      margin: 0 auto 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #7c2d12;
+      color: #fca5a5;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .page-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #f1f5f9;
+      line-height: 1.3;
+    }
+
+    .page-header .desc {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    .page-header .meta {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 8px;
+    }
+
+    .page-header .meta span { margin-right: 16px; }
+
+    /* Summary bar */
+    .summary-bar {
+      max-width: 960px;
+      margin: 0 auto 24px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .summary-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid;
+      cursor: default;
+    }
+
+    .chip-red    { background: #2d0a0a; border-color: #7f1d1d; color: #fca5a5; }
+    .chip-blue   { background: #0a1929; border-color: #1e3a5f; color: #93c5fd; }
+    .chip-yellow { background: #1c1200; border-color: #451a03; color: #fcd34d; }
+    .chip-purple { background: #1a0a2e; border-color: #3b0764; color: #c4b5fd; }
+    .chip-green  { background: #0a1f0f; border-color: #14532d; color: #86efac; }
+
+    /* Section label */
+    .section-label {
+      max-width: 960px;
+      margin: 28px auto 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .section-label h2 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .section-label .count {
+      font-size: 11px;
+      color: #64748b;
+      background: #1e293b;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* Card */
+    .item-card {
+      max-width: 960px;
+      margin: 0 auto 10px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 5px 1fr;
+    }
+
+    .item-card .accent-bar {
+      width: 5px;
+    }
+
+    .item-card .body {
+      padding: 14px 18px;
+    }
+
+    .item-card .top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .item-card .title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .item-card .num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      background: #0f172a;
+      padding: 2px 7px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .item-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .cost-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cost-xl  { background: #450a0a; color: #f87171; }
+    .cost-l   { background: #431407; color: #fb923c; }
+    .cost-m   { background: #422006; color: #fbbf24; }
+    .cost-s   { background: #1e3a5f; color: #60a5fa; }
+
+    .item-card .detail {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.65;
+    }
+
+    .item-card .decision {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #64748b;
+      display: flex;
+      gap: 6px;
+    }
+
+    .item-card .decision strong {
+      color: #475569;
+      font-weight: 600;
+    }
+
+    /* Color variants */
+    .cat-red    .accent-bar { background: #ef4444; }
+    .cat-blue   .accent-bar { background: #3b82f6; }
+    .cat-yellow .accent-bar { background: #f59e0b; }
+    .cat-purple .accent-bar { background: #a855f7; }
+    .cat-green  .accent-bar { background: #22c55e; }
+
+    /* Footer */
+    .footer-link {
+      max-width: 960px;
+      margin: 32px auto 0;
+      text-align: center;
+    }
+
+    .footer-link a {
+      font-size: 12px;
+      color: #3b82f6;
+      text-decoration: none;
+    }
+
+    .footer-link a:hover { text-decoration: underline; }
+
+    .warning-box {
+      max-width: 960px;
+      margin: 0 auto 24px;
+      background: #2d0a0a;
+      border: 1px solid #7f1d1d;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #fca5a5;
+      line-height: 1.6;
+    }
+
+    .warning-box strong { color: #f87171; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="badge">TASK #50 · 設計判断</div>
+    <h1>WMS 致命傷ライン 15項目</h1>
+    <div class="desc">
+      一度決めたら変更コストが極めて高い設計判断。着手前に必ず確定させる。
+    </div>
+    <div class="meta">
+      <span>📅 生成日: 2026-05-07</span>
+      <span>🤖 生成者: あーちゃん</span>
+      <span>🎯 15項目 / 5カテゴリ</span>
+    </div>
+  </div>
+
+  <!-- Category summary -->
+  <div class="summary-bar">
+    <div class="summary-chip chip-red">🔴 DB設計 &nbsp;<strong>5項目</strong></div>
+    <div class="summary-chip chip-blue">🔵 業務フロー &nbsp;<strong>4項目</strong></div>
+    <div class="summary-chip chip-yellow">🟡 計算式 &nbsp;<strong>2項目</strong></div>
+    <div class="summary-chip chip-purple">🟣 権限・ID管理 &nbsp;<strong>2項目</strong></div>
+    <div class="summary-chip chip-green">🟢 外部連携 &nbsp;<strong>2項目</strong></div>
+  </div>
+
+  <!-- Warning -->
+  <div class="warning-box">
+    <strong>⚠️ 致命傷ラインとは：</strong>
+    実装後に変更すると全テーブルマイグレーション・業務再設計・荷主への再申請等が必要になる設計判断。
+    スプリント開始前に全項目の「決定値」を確定し、CLAUDE.md へ記録すること。
+  </div>
+
+  <!-- ======== DB設計（赤） ======== -->
+  <div class="section-label">
+    <div class="dot" style="background:#ef4444;"></div>
+    <h2 style="color:#fca5a5;">DB設計</h2>
+    <span class="count">5項目 / 変更コスト：極大</span>
+  </div>
+
+  <div class="item-card cat-red">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">01</span>
+          <h3>テナント分離設計</h3>
+        </div>
+        <span class="cost-badge cost-xl">変更コスト 極大</span>
+      </div>
+      <div class="detail">荷主（テナント）ごとのデータ分離方式。スキーマ分離・Row Level Security (RLS)・アプリ層フィルタの3択。変更時は全テーブルの再設計＋全データマイグレーションが必要。</div>
+      <div class="decision"><strong>決定候補：</strong>RLS（Supabase標準）＋ tenant_id カラム統一</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-red">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">02</span>
+          <h3>ロット・シリアル管理テーブル設計</h3>
+        </div>
+        <span class="cost-badge cost-xl">変更コスト 極大</span>
+      </div>
+      <div class="detail">ロット番号・シリアル番号を管理するか、どの粒度で在庫を紐付けるか。後から追加した場合、既存在庫データのバックフィルが不可能なケースがある。</div>
+      <div class="decision"><strong>決定候補：</strong>最初からロット管理テーブルを設計し、不要荷主はNULL許容</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-red">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">03</span>
+          <h3>在庫引当ロック方式</h3>
+        </div>
+        <span class="cost-badge cost-xl">変更コスト 極大</span>
+      </div>
+      <div class="detail">悲観的ロック（SELECT FOR UPDATE）vs 楽観的ロック（バージョン番号）vs キュー方式。同時出荷指示が多い3PLではデッドロック・在庫二重引当のリスクが直結する。</div>
+      <div class="decision"><strong>決定候補：</strong>キュー + 悲観的ロック（同時性が高い業務に合わせて）</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-red">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">04</span>
+          <h3>在庫マイナス許容設計</h3>
+        </div>
+        <span class="cost-badge cost-xl">変更コスト 極大</span>
+      </div>
+      <div class="detail">在庫がマイナスになることを業務上許容するか。DB制約・アプリロジック・アラート設計すべてに影響。3PLでは「在庫不足でも出荷」が現場判断で発生するケースあり。</div>
+      <div class="decision"><strong>決定候補：</strong>マイナス禁止（DB制約）＋緊急時のみ管理者オーバーライド</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-red">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">05</span>
+          <h3>棚番体系設計（ロケーションコード）</h3>
+        </div>
+        <span class="cost-badge cost-xl">変更コスト 極大</span>
+      </div>
+      <div class="detail">エリア・ゾーン・棚番・段・列の階層構造。一度運用開始後に変更すると、全在庫の棚番データ更新＋HT設定変更が必要。将来の倉庫拡張も考慮した設計が必須。</div>
+      <div class="decision"><strong>決定候補：</strong>ゾーン-通路-棚-段の4階層（最大拡張を前提）</div>
+    </div>
+  </div>
+
+  <!-- ======== 業務フロー（青） ======== -->
+  <div class="section-label">
+    <div class="dot" style="background:#3b82f6;"></div>
+    <h2 style="color:#93c5fd;">業務フロー</h2>
+    <span class="count">4項目 / 変更コスト：大</span>
+  </div>
+
+  <div class="item-card cat-blue">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">06</span>
+          <h3>入荷検品フロー</h3>
+        </div>
+        <span class="cost-badge cost-l">変更コスト 大</span>
+      </div>
+      <div class="detail">検品なし・抜取検品・全数検品の3択。荷主ごとに設定できるか否か。フロー変更時はHT画面・業務マニュアル・荷主契約書すべての改訂が必要。</div>
+      <div class="decision"><strong>決定候補：</strong>荷主単位で方式を設定可能（デフォルト全数検品）</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-blue">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">07</span>
+          <h3>ピッキング方式</h3>
+        </div>
+        <span class="cost-badge cost-l">変更コスト 大</span>
+      </div>
+      <div class="detail">摘取り方式（1オーダー→ピッキング）・種まき方式（まとめピック→仕分け）・混在の3択。現場レイアウト・荷量・荷主構成に依存。変更時はHT画面・ピッキングロジック・帳票が全面改訂。</div>
+      <div class="decision"><strong>決定候補：</strong>摘取り基本 + 大量時の種まきオプション（両対応設計）</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-blue">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">08</span>
+          <h3>棚卸方式</h3>
+        </div>
+        <span class="cost-badge cost-l">変更コスト 大</span>
+      </div>
+      <div class="detail">停止棚卸（業務止める）vs サイクルカウント（部分棚卸）。データモデルと業務フロー両方に影響。サイクルカウントを後から追加するとロック設計の大幅改修が必要。</div>
+      <div class="decision"><strong>決定候補：</strong>最初からサイクルカウント対応設計（停止棚卸も実施可能に）</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-blue">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">09</span>
+          <h3>返品・逆物流フロー</h3>
+        </div>
+        <span class="cost-badge cost-l">変更コスト 大</span>
+      </div>
+      <div class="detail">返品受付→検品→良品・不良品仕分け→在庫復元のフロー。荷主ごとに返品ルールが異なる3PLでは特に複雑。後から追加するとテーブル設計・UI・帳票の全改修が必要。</div>
+      <div class="decision"><strong>決定候補：</strong>返品フローを最初から必須機能として設計</div>
+    </div>
+  </div>
+
+  <!-- ======== 計算式（黄） ======== -->
+  <div class="section-label">
+    <div class="dot" style="background:#f59e0b;"></div>
+    <h2 style="color:#fcd34d;">計算式</h2>
+    <span class="count">2項目 / 変更コスト：中〜大</span>
+  </div>
+
+  <div class="item-card cat-yellow">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">10</span>
+          <h3>保管料計算式</h3>
+        </div>
+        <span class="cost-badge cost-m">変更コスト 中大</span>
+      </div>
+      <div class="detail">個数課金・重量課金・CBM（体積）課金・回転日数課金の4択。荷主ごとに異なる場合も多い。計算式を変更すると過去請求データとの整合性が崩れ、会計システムへの影響も大きい。</div>
+      <div class="decision"><strong>決定候補：</strong>荷主単位で計算方式を設定可能（個数・重量・CBM対応）</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-yellow">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">11</span>
+          <h3>作業料計算式</h3>
+        </div>
+        <span class="cost-badge cost-m">変更コスト 中大</span>
+      </div>
+      <div class="detail">ピッキング・梱包・検品等の作業費用の計算単位（件数・個数・時間・混在）。請求書自動生成に直結するため、変更時は過去請求の再計算・荷主への説明が必要。</div>
+      <div class="decision"><strong>決定候補：</strong>入出庫件数ベース + 特別作業は時間課金（荷主別設定可）</div>
+    </div>
+  </div>
+
+  <!-- ======== 権限・ID管理（紫） ======== -->
+  <div class="section-label">
+    <div class="dot" style="background:#a855f7;"></div>
+    <h2 style="color:#c4b5fd;">権限・ID管理</h2>
+    <span class="count">2項目 / 変更コスト：中</span>
+  </div>
+
+  <div class="item-card cat-purple">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">12</span>
+          <h3>テナント権限分離（荷主が見えるデータ範囲）</h3>
+        </div>
+        <span class="cost-badge cost-s">変更コスト 中</span>
+      </div>
+      <div class="detail">荷主がポータルから閲覧できるデータ範囲（自社分のみ vs 倉庫全体の統計）。変更時はRLSポリシー・API設計・UI全面改修が必要。セキュリティ要件に直結。</div>
+      <div class="decision"><strong>決定候補：</strong>荷主は自社データのみ閲覧可（RLSで厳密に制御）</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-purple">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">13</span>
+          <h3>オペレーター権限粒度</h3>
+        </div>
+        <span class="cost-badge cost-s">変更コスト 中</span>
+      </div>
+      <div class="detail">画面単位・機能単位・データ単位の3段階。粒度が粗いと後から細かくできない（既存ユーザーへの影響）。細かすぎると管理コストが増大。倉庫運営の実態に合わせた設計が必要。</div>
+      <div class="decision"><strong>決定候補：</strong>ロールベース（役割5種） + 機能単位のON/OFFオプション</div>
+    </div>
+  </div>
+
+  <!-- ======== 外部連携（緑） ======== -->
+  <div class="section-label">
+    <div class="dot" style="background:#22c55e;"></div>
+    <h2 style="color:#86efac;">外部連携</h2>
+    <span class="count">2項目 / 変更コスト：中</span>
+  </div>
+
+  <div class="item-card cat-green">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">14</span>
+          <h3>EC／OMS連携API設計</h3>
+        </div>
+        <span class="cost-badge cost-s">変更コスト 中</span>
+      </div>
+      <div class="detail">REST APIのエンドポイント設計・Webhook通知方式・認証方式（APIキー vs OAuth）。荷主のEC事業者（Shopify・楽天・Yahoo等）との接続に直結。変更時は荷主側のシステム改修も必要になる。</div>
+      <div class="decision"><strong>決定候補：</strong>RESTful API（OpenAPI仕様書付）+ Webhook、APIキー認証</div>
+    </div>
+  </div>
+
+  <div class="item-card cat-green">
+    <div class="accent-bar"></div>
+    <div class="body">
+      <div class="top-row">
+        <div class="title-wrap">
+          <span class="num">15</span>
+          <h3>会計・請求システム連携</h3>
+        </div>
+        <span class="cost-badge cost-s">変更コスト 中</span>
+      </div>
+      <div class="detail">自動仕訳・請求書発行のデータ形式・連携タイミング（月次/日次/リアルタイム）。freee・弥生・SAP等の外部会計システムとの接続設計。変更時は会計側の設定変更と過去データの整合確認が必要。</div>
+      <div class="decision"><strong>決定候補：</strong>月次バッチで会計CSVエクスポート（将来のAPI連携を考慮した設計）</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-link">
+    <a href="./README.md">← 成果物一覧に戻る</a>
+    &nbsp;|&nbsp;
+    <a href="https://ytokiyoshi-hub.github.io/wms-project-hub/visual/" target="_blank">公開ページを開く</a>
+  </div>
+
+</body>
+</html>
