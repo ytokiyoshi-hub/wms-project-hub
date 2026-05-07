@@ -472,6 +472,18 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
 .cat-M { background: #b91c1c; }
 .cat-N { background: #a16207; }
 .cat-O { background: #15803d; }
+.sb-nav a.nav-item { text-decoration: none; }
+.morning-check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.morning-spec-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.morning-spec-card .msc-head { padding: 10px 14px; background: var(--accent-lt); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.morning-spec-card .msc-head .msc-title { font-size: 12px; font-weight: 700; color: var(--accent-dk); }
+.morning-spec-card .msc-head a.msc-open { font-size: 11px; font-weight: 600; color: var(--accent); text-decoration: none; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 4px; padding: 2px 8px; white-space: nowrap; }
+.morning-spec-card .msc-head a.msc-open:hover { background: var(--accent); color: #fff; }
+.morning-spec-card .msc-body { padding: 10px 14px; }
+.morning-spec-card .msc-body ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.morning-spec-card .msc-body li { font-size: 12px; color: var(--text-main); line-height: 1.5; padding: 2px 0; border-bottom: 1px dashed var(--border); }
+.morning-spec-card .msc-body li:last-child { border-bottom: none; }
+.morning-spec-card .msc-body li .item-id { font-family: var(--f-mono); font-size: 10px; color: var(--accent); font-weight: 600; margin-right: 6px; }
 </style>
 </head>
 <body>
@@ -526,6 +538,24 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         <span>工程レビュー記録</span>
         <span class="badge">1</span>
       </div>
+
+      <div class="group-label">致命傷ライン</div>
+      <a class="nav-item" href="specs/process_03_db_design.md" target="_blank" rel="noopener">
+        <span class="icon">🗄</span>
+        <span>DB設計（DB-1〜DB-5）</span>
+      </a>
+      <a class="nav-item" href="specs/process_02_system_design.md" target="_blank" rel="noopener">
+        <span class="icon">⚙</span>
+        <span>システム設計（BF/CA/AU/LK）</span>
+      </a>
+      <a class="nav-item" href="specs/process_02_inbound.md" target="_blank" rel="noopener">
+        <span class="icon">📦</span>
+        <span>入荷（Q1〜Q5）</span>
+      </a>
+      <a class="nav-item" href="specs/er_diagram_core.md" target="_blank" rel="noopener">
+        <span class="icon">📐</span>
+        <span>ER図コア</span>
+      </a>
 
       <div class="group-label">開発</div>
       <div class="nav-item" data-page="claudecode">
@@ -1154,6 +1184,84 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         <div class="page-title">工程レビュー記録</div>
         <div class="page-subtitle">工程ごとのレビュー結果（論点・決定事項・仕様への影響）を構造化して管理</div>
 
+        <!-- ===== 朝の時吉さん判断項目 ===== -->
+        <div class="section-title">朝の時吉さん判断項目（Step 1：致命傷15項目 / 目安10分）</div>
+        <div class="morning-check-grid" style="margin-bottom:24px;">
+
+          <div class="morning-spec-card">
+            <div class="msc-head">
+              <span class="msc-title">🗄 DB設計（5項目）</span>
+              <a class="msc-open" href="specs/process_03_db_design.md" target="_blank" rel="noopener">開く →</a>
+            </div>
+            <div class="msc-body">
+              <ul>
+                <li><span class="item-id">DB-1</span>在庫の持ち方（ロット・シリアル管理）</li>
+                <li><span class="item-id">DB-2</span>ロット管理方式</li>
+                <li><span class="item-id">DB-3</span>シリアル管理方式</li>
+                <li><span class="item-id">DB-4</span>荷主切替の方式</li>
+                <li><span class="item-id">DB-5</span>ロケーション管理方式</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="morning-spec-card">
+            <div class="msc-head">
+              <span class="msc-title">⚙ システム設計（10項目）</span>
+              <a class="msc-open" href="specs/process_02_system_design.md" target="_blank" rel="noopener">開く →</a>
+            </div>
+            <div class="msc-body">
+              <ul>
+                <li><span class="item-id">BF-1</span>検品・ピッキング順序</li>
+                <li><span class="item-id">BF-2</span>引当ロジック</li>
+                <li><span class="item-id">BF-3</span>ピッキング方式（ウェーブ・ゾーン等）</li>
+                <li><span class="item-id">BF-4</span>返品・誤出荷処理</li>
+                <li><span class="item-id">CA-1</span>請求賃率計算</li>
+                <li><span class="item-id">CA-2</span>原価評価方式</li>
+                <li><span class="item-id">AU-1</span>権限・承認フロー</li>
+                <li><span class="item-id">AU-2</span>SKU/JANコード管理</li>
+                <li><span class="item-id">LK-1</span>外部連携方式</li>
+                <li><span class="item-id">LK-2</span>HTバーコード仕様</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="morning-spec-card">
+            <div class="msc-head">
+              <span class="msc-title">📦 入荷（Q1〜Q5）</span>
+              <a class="msc-open" href="specs/process_02_inbound.md" target="_blank" rel="noopener">開く →</a>
+            </div>
+            <div class="msc-body">
+              <ul>
+                <li><span class="item-id">Q1</span>入荷予定データのフォーマット</li>
+                <li><span class="item-id">Q2</span>検品方式（全数・抜き取り）</li>
+                <li><span class="item-id">Q3</span>差異処理フロー</li>
+                <li><span class="item-id">Q4</span>荷主別ASNルール差異</li>
+                <li><span class="item-id">Q5</span>入荷返品処理</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="morning-spec-card">
+            <div class="msc-head">
+              <span class="msc-title">📐 ER図コア</span>
+              <a class="msc-open" href="specs/er_diagram_core.md" target="_blank" rel="noopener">開く →</a>
+            </div>
+            <div class="msc-body">
+              <ul>
+                <li><span class="item-id">owners</span>荷主マスタ（DB-4 起点）</li>
+                <li><span class="item-id">skus</span>商品（AU-2・DB-3）</li>
+                <li><span class="item-id">lots</span>ロット（DB-2）</li>
+                <li><span class="item-id">locations</span>ロケーション（DB-5）</li>
+                <li><span class="item-id">inventory</span>在庫4軸（DB-1）</li>
+                <li><span class="item-id">users</span>権限・荷主紐付け（AU-1）</li>
+                <li><span class="item-id">billing_rules</span>請求ルール（CA-1）</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+        <!-- ===== /朝の時吉さん判断項目 ===== -->
+
         <div class="section-title">テンプレート</div>
         <div class="card" style="margin-bottom:24px;">
           <div class="card-b">
@@ -1336,6 +1444,7 @@ const pageNames = {
 navItems.forEach(item => {
   item.addEventListener('click', () => {
     const page = item.dataset.page;
+    if (!page) return;
     navItems.forEach(i => i.classList.remove('active'));
     item.classList.add('active');
     pages.forEach(p => p.classList.remove('active'));
