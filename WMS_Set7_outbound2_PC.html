@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS Set7 出庫・ピッキング・出荷系 PC画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.ok { background:#e8f5ea; border-color:#2d7a3a; color:#2d7a3a; }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list tbody tr.selected { background:var(--c-accent-lt); }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-alert-lt); border-left-color:var(--c-alert); }
+  .note-box.warn .label { color:var(--c-alert); }
+
+  .text-mono { font-family:var(--f-mono); }
+  .text-bold { font-weight:600; }
+
+  .step-progress { display:flex; gap:0; border:1px solid var(--c-line-dk); }
+  .step-progress .step { flex:1; padding:6px 4px; text-align:center; font-size:11px; color:var(--c-text-sub); border-right:1px solid var(--c-line-dk); background:var(--c-bg); }
+  .step-progress .step:last-child { border-right:none; }
+  .step-progress .step.done { background:var(--c-text-sub); color:#fff; }
+  .step-progress .step.current { background:var(--c-accent); color:#fff; font-weight:600; }
+  .step-progress .step .num { font-family:var(--f-mono); font-weight:700; margin-right:4px; }
+
+  .pbar { height:6px; background:var(--c-line); position:relative; }
+  .pbar .fill { height:100%; background:var(--c-accent); }
+  .pbar .fill.alert { background:var(--c-alert); }
+  .pbar .fill.ok { background:#2d7a3a; }
+</style>
+</head>
+<body>
+<h1 class="page-title">Set7 出庫・ピッキング・出荷系 PC画面</h1>
+<p class="subtitle">出庫指示一覧 / ピッキングリスト / 梱包・出荷検品 / 出荷実績 / 出荷確定・伝票発行</p>
+<div class="quick-nav"><span class="label">画面ジャンプ：</span>
+  <a href="#W-801"><b>W-801</b>出庫指示一覧</a>
+  <a href="#W-802"><b>W-802</b>ピッキングリスト</a>
+  <a href="#W-803"><b>W-803</b>梱包・出荷検品</a>
+  <a href="#W-804"><b>W-804</b>出荷実績一覧</a>
+  <a href="#W-805"><b>W-805</b>出荷確定・伝票発行</a>
+</div>
+
+<!-- ============================== -->
+<!-- W-801 出庫指示一覧 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-801">
+  <span class="num">W-801</span>出庫指示一覧
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：受注・出荷指示の一覧管理。未引当の出荷をピックアップして引当・ウェーブへ送る起点画面。<br>
+  <b>確定事項</b>：荷主別に表示切替可能 / 温度帯混在時は警告 / 締切時刻でソート・カラーアラート
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/outbound/orders</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">出荷</div>
+        <a href="#" class="active">出庫指示一覧</a>
+        <a href="#">引当・ウェーブ</a>
+        <a href="#">ピッキング管理</a>
+        <a href="#">梱包・検品</a>
+        <a href="#">積込管理</a>
+        <a href="#">出荷確定</a>
+        <a href="#">出荷実績</a>
+      </nav>
+      <div class="sb-footer">v3.2.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">出荷　/　<b>出庫指示一覧</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>すべて</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="tabs">
+          <div class="tab active">未引当（18）</div>
+          <div class="tab">引当済・未ウェーブ（7）</div>
+          <div class="tab">ウェーブ中（5）</div>
+          <div class="tab">出荷完了（142）</div>
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>出荷日</label><input type="date" value="2026-05-09"></div>
+            <div class="field"><label>荷主</label>
+              <select><option>すべて</option><option>マルキ食品</option><option>アルファ商事</option></select>
+            </div>
+            <div class="field"><label>温度帯</label>
+              <select><option>すべて</option><option>常温</option><option>冷蔵</option><option>冷凍</option></select>
+            </div>
+            <div class="field"><label>締切</label>
+              <select><option>すべて</option><option selected>本日中</option><option>15:00まで</option></select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">未引当　<b>18件</b> / うち今日締切 <b style="color:var(--c-alert);">6件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn sm">出荷指示取込（CSV）</button>
+              <button class="btn primary sm">選択して引当・ウェーブへ</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span>出庫指示一覧 <span class="meta">締切時刻順</span></span>
+            <div style="display:flex; gap:8px;">
+              <button class="btn sm">全選択</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:30px;"><input type="checkbox"></th>
+                  <th>出荷No</th>
+                  <th>荷主</th>
+                  <th>届け先</th>
+                  <th class="center">締切</th>
+                  <th>温度帯</th>
+                  <th class="right">行数</th>
+                  <th class="right">数量</th>
+                  <th class="center" style="width:100px;">状態</th>
+                  <th class="center" style="width:80px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#fff8e1;">
+                  <td><input type="checkbox" checked></td>
+                  <td class="num">SO-00201</td>
+                  <td>マルキ食品</td>
+                  <td>○○スーパー 渋谷店</td>
+                  <td class="center num" style="color:var(--c-alert); font-weight:600;">13:30 ⚠</td>
+                  <td>常温</td>
+                  <td class="right num">4</td>
+                  <td class="right num">48</td>
+                  <td class="center"><span class="pill alert">至急</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr style="background:#fff8e1;">
+                  <td><input type="checkbox" checked></td>
+                  <td class="num">SO-00202</td>
+                  <td>マルキ食品</td>
+                  <td>△△コンビニ 新宿店</td>
+                  <td class="center num" style="color:var(--c-alert); font-weight:600;">13:30 ⚠</td>
+                  <td><span class="pill accent">冷蔵</span></td>
+                  <td class="right num">2</td>
+                  <td class="right num">12</td>
+                  <td class="center"><span class="pill alert">至急</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" checked></td>
+                  <td class="num">SO-00203</td>
+                  <td>アルファ商事</td>
+                  <td>□□薬局 池袋本店</td>
+                  <td class="center num">15:00</td>
+                  <td>常温</td>
+                  <td class="right num">6</td>
+                  <td class="right num">30</td>
+                  <td class="center"><span class="pill">未引当</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="num">SO-00204</td>
+                  <td>マルキ食品</td>
+                  <td>◇◇百貨店 新宿店</td>
+                  <td class="center num">15:00</td>
+                  <td>常温</td>
+                  <td class="right num">8</td>
+                  <td class="right num">96</td>
+                  <td class="center"><span class="pill">未引当</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="num">SO-00205</td>
+                  <td>ビーシー食品</td>
+                  <td>※※レストラン 六本木</td>
+                  <td class="center num">17:00</td>
+                  <td><span class="pill" style="background:#e8f0fe; border-color:#3d5afe; color:#3d5afe;">冷凍</span></td>
+                  <td class="right num">3</td>
+                  <td class="right num">18</td>
+                  <td class="center"><span class="pill">未引当</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="num">SO-00206</td>
+                  <td>アルファ商事</td>
+                  <td>◎◎ドラッグ 渋谷</td>
+                  <td class="center num">17:00</td>
+                  <td>常温</td>
+                  <td class="right num">5</td>
+                  <td class="right num">60</td>
+                  <td class="center"><span class="pill">未引当</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box warn">
+          <div class="label">温度帯混在アラート</div>
+          SO-00201（常温）とSO-00202（冷蔵）が同時選択されています。温度帯が混在しています。ウェーブを分割するか、対応可能な方式を確認してください。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-802 ピッキングリスト -->
+<!-- ============================== -->
+<div class="section-divider" id="W-802">
+  <span class="num">W-802</span>ピッキングリスト（ウェーブ管理）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：ウェーブ単位のピッキング進捗管理。担当者・エリア別の進捗確認と、完了後の梱包へのハンドオフ。<br>
+  <b>確定事項</b>：ウェーブ番号でHT-804と連動 / 部分完了・再ピック対応 / 担当者別残量表示
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/outbound/picking</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">出荷</div>
+        <a href="#">出庫指示一覧</a>
+        <a href="#">引当・ウェーブ</a>
+        <a href="#" class="active">ピッキング管理</a>
+        <a href="#">梱包・検品</a>
+        <a href="#">積込管理</a>
+        <a href="#">出荷確定</a>
+        <a href="#">出荷実績</a>
+      </nav>
+      <div class="sb-footer">v3.2.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">出荷　/　<b>ピッキング管理</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>マルキ食品</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="tabs">
+          <div class="tab active">進行中のウェーブ（3）</div>
+          <div class="tab">完了済み（15）</div>
+          <div class="tab">中断・再割当（1）</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1.4fr; gap:14px;">
+
+          <div>
+            <div class="card" style="margin-bottom:12px;">
+              <div class="card-header">ウェーブ一覧 <span class="meta">3件進行中</span></div>
+              <div class="card-body" style="padding:0;">
+                <table class="list">
+                  <thead><tr><th>ウェーブNo</th><th>出荷</th><th>行</th><th>進捗</th><th class="center">状態</th></tr></thead>
+                  <tbody>
+                    <tr class="selected">
+                      <td class="num">WV-2605-003</td>
+                      <td class="num">3件</td>
+                      <td class="right num">10</td>
+                      <td>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                          <div class="pbar" style="flex:1; height:8px;"><div class="fill" style="width:80%;"></div></div>
+                          <span class="text-mono" style="font-size:11px;">8/10</span>
+                        </div>
+                      </td>
+                      <td class="center"><span class="pill accent">進行中</span></td>
+                    </tr>
+                    <tr>
+                      <td class="num">WV-2605-004</td>
+                      <td class="num">5件</td>
+                      <td class="right num">22</td>
+                      <td>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                          <div class="pbar" style="flex:1; height:8px;"><div class="fill" style="width:36%;"></div></div>
+                          <span class="text-mono" style="font-size:11px;">8/22</span>
+                        </div>
+                      </td>
+                      <td class="center"><span class="pill accent">進行中</span></td>
+                    </tr>
+                    <tr>
+                      <td class="num">WV-2605-005</td>
+                      <td class="num">2件</td>
+                      <td class="right num">5</td>
+                      <td>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                          <div class="pbar" style="flex:1; height:8px;"><div class="fill" style="width:0%;"></div></div>
+                          <span class="text-mono" style="font-size:11px;">0/5</span>
+                        </div>
+                      </td>
+                      <td class="center"><span class="pill">待機中</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-header">WV-2605-003 詳細 <span class="meta">2026/05/09 12:30 生成</span></div>
+              <div class="card-body">
+
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:14px;">
+                  <div style="background:var(--c-accent-lt); padding:10px; text-align:center;">
+                    <div style="font-size:11px; color:var(--c-text-sub);">出荷件数</div>
+                    <div style="font-family:var(--f-mono); font-size:22px; font-weight:700; color:var(--c-accent);">3</div>
+                  </div>
+                  <div style="background:var(--c-accent-lt); padding:10px; text-align:center;">
+                    <div style="font-size:11px; color:var(--c-text-sub);">完了行</div>
+                    <div style="font-family:var(--f-mono); font-size:22px; font-weight:700; color:var(--c-accent);">8<span style="font-size:13px;"> / 10</span></div>
+                  </div>
+                  <div style="background:var(--c-accent-lt); padding:10px; text-align:center;">
+                    <div style="font-size:11px; color:var(--c-text-sub);">締切</div>
+                    <div style="font-family:var(--f-mono); font-size:18px; font-weight:700; color:var(--c-accent);">15:00</div>
+                  </div>
+                </div>
+
+                <div style="font-size:12px; font-weight:600; margin-bottom:8px;">担当者別進捗</div>
+                <table class="list" style="font-size:11px; margin-bottom:14px;">
+                  <thead><tr><th>担当者</th><th>エリア</th><th class="right">割当行</th><th class="right">完了行</th><th>進捗</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td>田中 一郎</td>
+                      <td>1F常温</td>
+                      <td class="right num">5</td>
+                      <td class="right num">5</td>
+                      <td><span class="pill ok">完了</span></td>
+                    </tr>
+                    <tr>
+                      <td>佐藤 花子</td>
+                      <td>2F常温</td>
+                      <td class="right num">3</td>
+                      <td class="right num">3</td>
+                      <td><span class="pill ok">完了</span></td>
+                    </tr>
+                    <tr style="background:var(--c-accent-lt);">
+                      <td>鈴木 次郎</td>
+                      <td>冷蔵</td>
+                      <td class="right num">2</td>
+                      <td class="right num">0</td>
+                      <td>
+                        <div style="display:flex; align-items:center; gap:5px;">
+                          <div class="pbar" style="flex:1; height:6px;"><div class="fill" style="width:0%;"></div></div>
+                          <span class="text-mono" style="font-size:10px;">0/2</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div style="font-size:12px; font-weight:600; margin-bottom:8px;">ピッキング指示明細</div>
+                <table class="list" style="font-size:11px;">
+                  <thead><tr><th>ロケ</th><th>SKU</th><th>品名</th><th class="right">指示数</th><th class="right">完了数</th><th class="center">状態</th></tr></thead>
+                  <tbody>
+                    <tr><td class="num">A-1-01-03</td><td class="num">SKU-10021</td><td>マルキ醤油 1L</td><td class="right num">12</td><td class="right num">12</td><td class="center"><span class="pill ok">済</span></td></tr>
+                    <tr><td class="num">A-2-03-01</td><td class="num">SKU-10045</td><td>マルキ味噌 500g</td><td class="right num">6</td><td class="right num">6</td><td class="center"><span class="pill ok">済</span></td></tr>
+                    <tr><td class="num">B-1-02-05</td><td class="num">SKU-20012</td><td>アルファ塩 1kg</td><td class="right num">18</td><td class="right num">0</td><td class="center"><span class="pill">未</span></td></tr>
+                    <tr><td class="num">C-3-01-02</td><td class="num">SKU-20099</td><td>アルファ砂糖 2kg</td><td class="right num">8</td><td class="right num">0</td><td class="center"><span class="pill">未</span></td></tr>
+                  </tbody>
+                </table>
+
+                <div style="display:flex; gap:8px; margin-top:14px;">
+                  <button class="btn sm">ピッキングリスト印刷</button>
+                  <button class="btn sm">担当変更</button>
+                  <button class="btn primary sm" style="margin-left:auto;">完了済みを梱包へ</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-803 梱包・出荷検品（PC） -->
+<!-- ============================== -->
+<div class="section-divider" id="W-803">
+  <span class="num">W-803</span>梱包・出荷検品（PC）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：ピッキング完了後の梱包処理・出荷前検品。梱包形態の登録と個口確定、送り状準備情報の入力。<br>
+  <b>確定事項</b>：SKUチェックリストで員数確認 / 梱包箱タイプ・個口数を記録 / 重量入力（オプション）/ 送り状APIとの連携起点
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/outbound/packing/SO-00203</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">出荷</div>
+        <a href="#">出庫指示一覧</a>
+        <a href="#">引当・ウェーブ</a>
+        <a href="#">ピッキング管理</a>
+        <a href="#" class="active">梱包・検品</a>
+        <a href="#">積込管理</a>
+        <a href="#">出荷確定</a>
+        <a href="#">出荷実績</a>
+      </nav>
+      <div class="sb-footer">v3.2.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">出荷　/　梱包・検品　/　<b>SO-00203</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">伊</div>伊藤（検品担当）</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="step-progress" style="margin-bottom:16px;">
+          <div class="step done"><span class="num">1</span>ピッキング</div>
+          <div class="step current"><span class="num">2</span>梱包・検品</div>
+          <div class="step"><span class="num">3</span>送り状発行</div>
+          <div class="step"><span class="num">4</span>仮置き・積込</div>
+          <div class="step"><span class="num">5</span>出荷確定</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="card-header">出荷情報</div>
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px;">
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">出荷No</div>
+                    <div class="text-mono text-bold">SO-00203</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">荷主</div>
+                    <div class="text-bold">アルファ商事</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">届け先</div>
+                    <div>□□薬局 池袋本店</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">締切</div>
+                    <div class="text-mono">15:00</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">温度帯</div>
+                    <div>常温</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">ウェーブ</div>
+                    <div class="text-mono">WV-2605-003</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">梱包入力</div>
+              <div class="card-body">
+                <div class="form-row" style="margin-bottom:12px;">
+                  <div class="field">
+                    <label>梱包箱タイプ<span class="required">*</span></label>
+                    <select>
+                      <option>段ボール 60サイズ</option>
+                      <option selected>段ボール 80サイズ</option>
+                      <option>段ボール 100サイズ</option>
+                      <option>段ボール 120サイズ</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>個口数<span class="required">*</span></label>
+                    <input type="number" value="2" min="1">
+                    <div class="hint">引当時の計画：2個口</div>
+                  </div>
+                </div>
+                <div class="form-row" style="margin-bottom:12px;">
+                  <div class="field">
+                    <label>実重量（kg）</label>
+                    <input type="number" value="8.5" step="0.1" placeholder="任意">
+                  </div>
+                  <div class="field">
+                    <label>梱包担当者</label>
+                    <select><option>伊藤（担当）</option><option>田中</option></select>
+                  </div>
+                </div>
+                <div class="field">
+                  <label>梱包メモ（任意）</label>
+                  <textarea rows="2" placeholder="特記事項があれば記入"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-header">検品チェックリスト <span class="meta">6行 / 確認 4行済</span></div>
+              <div class="card-body" style="padding:0;">
+                <table class="list">
+                  <thead>
+                    <tr>
+                      <th>SKU</th>
+                      <th>品名</th>
+                      <th class="right">指示数</th>
+                      <th class="right">確認数</th>
+                      <th class="center" style="width:80px;">確認</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="num">SKU-30001</td>
+                      <td>アルファ錠剤A 100T</td>
+                      <td class="right num">6</td>
+                      <td class="right num">6</td>
+                      <td class="center"><span class="pill ok">OK</span></td>
+                    </tr>
+                    <tr>
+                      <td class="num">SKU-30002</td>
+                      <td>アルファビタミンC 60T</td>
+                      <td class="right num">4</td>
+                      <td class="right num">4</td>
+                      <td class="center"><span class="pill ok">OK</span></td>
+                    </tr>
+                    <tr>
+                      <td class="num">SKU-30003</td>
+                      <td>アルファミネラル 30T</td>
+                      <td class="right num">8</td>
+                      <td class="right num">8</td>
+                      <td class="center"><span class="pill ok">OK</span></td>
+                    </tr>
+                    <tr>
+                      <td class="num">SKU-30010</td>
+                      <td>アルファ塩化ナトリウム 1kg</td>
+                      <td class="right num">6</td>
+                      <td class="right num">6</td>
+                      <td class="center"><span class="pill ok">OK</span></td>
+                    </tr>
+                    <tr style="background:var(--c-accent-lt);">
+                      <td class="num">SKU-30025</td>
+                      <td>アルファゼリー 200g × 12</td>
+                      <td class="right num">2</td>
+                      <td class="right num">—</td>
+                      <td class="center"><button class="btn primary sm">スキャン</button></td>
+                    </tr>
+                    <tr style="background:var(--c-accent-lt);">
+                      <td class="num">SKU-30040</td>
+                      <td>アルファドリンク 500ml × 6</td>
+                      <td class="right num">4</td>
+                      <td class="right num">—</td>
+                      <td class="center"><button class="btn primary sm">スキャン</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="note-box" style="margin-top:14px;">
+              <div class="label">HT連携</div>
+              梱包作業をHT端末（HT-803）で行う場合は、ハンディでSKUをスキャンしてください。<br>
+              PC画面とリアルタイム同期されます。
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top:14px; justify-content:flex-end;">
+              <button class="btn">キャンセル</button>
+              <button class="btn">一時保存</button>
+              <button class="btn primary">梱包完了 → 送り状発行へ</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-804 出荷実績一覧 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-804">
+  <span class="num">W-804</span>出荷実績一覧
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：出荷確定済みの実績を一覧管理。配送追跡番号の確認・荷主への実績通知状況の把握。<br>
+  <b>確定事項</b>：出荷確定後にのみ表示 / 配送業者API連携で追跡番号自動取得 / 荷主通知状況を色分け表示
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/outbound/results</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">出荷</div>
+        <a href="#">出庫指示一覧</a>
+        <a href="#">引当・ウェーブ</a>
+        <a href="#">ピッキング管理</a>
+        <a href="#">梱包・検品</a>
+        <a href="#">積込管理</a>
+        <a href="#">出荷確定</a>
+        <a href="#" class="active">出荷実績</a>
+      </nav>
+      <div class="sb-footer">v3.2.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">出荷　/　<b>出荷実績一覧</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>すべて</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="tabs">
+          <div class="tab active">本日（25）</div>
+          <div class="tab">今週（142）</div>
+          <div class="tab">今月（583）</div>
+          <div class="tab">カスタム期間</div>
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>荷主</label>
+              <select><option>すべて</option><option>マルキ食品</option><option>アルファ商事</option></select>
+            </div>
+            <div class="field"><label>運送会社</label>
+              <select><option>すべて</option><option>ヤマト運輸</option><option>佐川急便</option><option>福山通運</option></select>
+            </div>
+            <div class="field"><label>配送状況</label>
+              <select><option>すべて</option><option>輸送中</option><option>配達完了</option><option>通知失敗</option></select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">本日出荷　<b>25件</b>　個口計 <b>87個口</b>　/ 通知失敗 <b style="color:var(--c-alert);">2件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn sm">実績送信ジョブ確認</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>出荷No</th>
+                  <th>荷主</th>
+                  <th>届け先</th>
+                  <th class="center">出荷確定</th>
+                  <th class="right">個口</th>
+                  <th>運送会社</th>
+                  <th>追跡番号</th>
+                  <th class="center" style="width:100px;">配送状況</th>
+                  <th class="center" style="width:90px;">通知</th>
+                  <th class="center" style="width:60px;">詳細</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">SO-00190</td>
+                  <td>マルキ食品</td>
+                  <td>○○スーパー</td>
+                  <td class="center num">13:45</td>
+                  <td class="right num">3</td>
+                  <td>ヤマト運輸</td>
+                  <td class="num">1234-5678-9012</td>
+                  <td class="center"><span class="pill accent">輸送中</span></td>
+                  <td class="center"><span class="pill ok">送信済</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td class="num">SO-00191</td>
+                  <td>アルファ商事</td>
+                  <td>△△薬局</td>
+                  <td class="center num">13:45</td>
+                  <td class="right num">2</td>
+                  <td>佐川急便</td>
+                  <td class="num">3456-7890-1234</td>
+                  <td class="center"><span class="pill accent">輸送中</span></td>
+                  <td class="center"><span class="pill ok">送信済</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td class="num">SO-00185</td>
+                  <td>マルキ食品</td>
+                  <td>□□コンビニ</td>
+                  <td class="center num">11:20</td>
+                  <td class="right num">5</td>
+                  <td>福山通運</td>
+                  <td class="num">5678-9012-3456</td>
+                  <td class="center"><span class="pill ok">配達完了</span></td>
+                  <td class="center"><span class="pill ok">送信済</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr style="background:var(--c-alert-lt);">
+                  <td class="num">SO-00183</td>
+                  <td>ビーシー食品</td>
+                  <td>※※レストラン</td>
+                  <td class="center num">10:05</td>
+                  <td class="right num">4</td>
+                  <td>西濃運輸</td>
+                  <td class="num">7890-1234-5678</td>
+                  <td class="center"><span class="pill accent">輸送中</span></td>
+                  <td class="center"><span class="pill alert">通知失敗</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr style="background:var(--c-alert-lt);">
+                  <td class="num">SO-00181</td>
+                  <td>アルファ商事</td>
+                  <td>◎◎ドラッグ</td>
+                  <td class="center num">09:30</td>
+                  <td class="right num">2</td>
+                  <td>ヤマト運輸</td>
+                  <td class="num">9012-3456-7890</td>
+                  <td class="center"><span class="pill ok">配達完了</span></td>
+                  <td class="center"><span class="pill alert">通知失敗</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box warn" style="margin-top:14px;">
+          <div class="label">通知失敗 2件</div>
+          荷主への実績通知に失敗したジョブがあります。「実績送信ジョブ確認」から原因を確認して手動再送してください。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-805 出荷確定・伝票発行 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-805">
+  <span class="num">W-805</span>出荷確定・伝票発行
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：梱包完了後の送り状・納品書の発行と出荷確定処理。確定と同時に配送業者APIへ追跡情報を登録し荷主通知を起動。<br>
+  <b>確定事項</b>：送り状は運送会社API連携 / 納品書は荷主指定フォーマット / 確定後の取消は原則不可（フロー逆戻し必要）
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/outbound/confirm/SO-00203</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">出荷</div>
+        <a href="#">出庫指示一覧</a>
+        <a href="#">引当・ウェーブ</a>
+        <a href="#">ピッキング管理</a>
+        <a href="#">梱包・検品</a>
+        <a href="#">積込管理</a>
+        <a href="#" class="active">出荷確定</a>
+        <a href="#">出荷実績</a>
+      </nav>
+      <div class="sb-footer">v3.2.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">出荷　/　出荷確定　/　<b>SO-00203</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="step-progress" style="margin-bottom:16px;">
+          <div class="step done"><span class="num">1</span>ピッキング</div>
+          <div class="step done"><span class="num">2</span>梱包・検品</div>
+          <div class="step current"><span class="num">3</span>送り状発行</div>
+          <div class="step"><span class="num">4</span>仮置き・積込</div>
+          <div class="step"><span class="num">5</span>出荷確定</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:14px;">
+
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="card-header">出荷内容確認</div>
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:12px; margin-bottom:14px;">
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">出荷No</div>
+                    <div class="text-mono text-bold" style="font-size:14px;">SO-00203</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">荷主</div>
+                    <div class="text-bold">アルファ商事</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">届け先</div>
+                    <div>□□薬局 池袋本店<br>〒171-0022 東京都豊島区南池袋2-00-00</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">梱包状況</div>
+                    <div><span class="pill ok">梱包完了</span></div>
+                    <div style="font-size:11px; margin-top:4px;">段ボール80サイズ × 2個口 / 8.5kg</div>
+                  </div>
+                </div>
+
+                <table class="list" style="font-size:11px;">
+                  <thead><tr><th>SKU</th><th>品名</th><th class="right">数量</th></tr></thead>
+                  <tbody>
+                    <tr><td class="num">SKU-30001</td><td>アルファ錠剤A 100T</td><td class="right num">6</td></tr>
+                    <tr><td class="num">SKU-30002</td><td>アルファビタミンC 60T</td><td class="right num">4</td></tr>
+                    <tr><td class="num">SKU-30003</td><td>アルファミネラル 30T</td><td class="right num">8</td></tr>
+                    <tr><td class="num">SKU-30010</td><td>アルファ塩化ナトリウム 1kg</td><td class="right num">6</td></tr>
+                    <tr><td class="num">SKU-30025</td><td>アルファゼリー 200g × 12</td><td class="right num">2</td></tr>
+                    <tr><td class="num">SKU-30040</td><td>アルファドリンク 500ml × 6</td><td class="right num">4</td></tr>
+                  </tbody>
+                  <tfoot><tr><td colspan="2">合計 6品目</td><td class="right num">30</td></tr></tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="card-header">送り状発行</div>
+              <div class="card-body">
+                <div class="field" style="margin-bottom:12px;">
+                  <label>運送会社<span class="required">*</span></label>
+                  <select>
+                    <option>佐川急便</option>
+                    <option selected>ヤマト運輸</option>
+                    <option>福山通運</option>
+                    <option>西濃運輸</option>
+                  </select>
+                </div>
+                <div class="field" style="margin-bottom:12px;">
+                  <label>サービス区分<span class="required">*</span></label>
+                  <select>
+                    <option>通常便</option>
+                    <option selected>宅急便 80サイズ</option>
+                    <option>宅急便コンパクト</option>
+                    <option>時間指定（14〜16時）</option>
+                  </select>
+                </div>
+                <div class="form-row" style="margin-bottom:12px;">
+                  <div class="field">
+                    <label>発行枚数</label>
+                    <input type="number" value="2" min="1">
+                    <div class="hint">個口数と同じ枚数</div>
+                  </div>
+                  <div class="field">
+                    <label>送り状NO（API取得後）</label>
+                    <input value="—" disabled style="color:var(--c-text-mute);">
+                  </div>
+                </div>
+
+                <button class="btn primary" style="width:100%; margin-bottom:8px;">送り状発行（API呼び出し）</button>
+
+                <div class="note-box" style="margin:0;">
+                  <div class="label">発行後の流れ</div>
+                  1. 送り状番号がシステムに登録される<br>
+                  2. プリンターで送り状を印刷・梱包に貼付<br>
+                  3. 納品書も同時発行（荷主指定フォーマット）
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:14px;">
+              <div class="card-header">納品書発行</div>
+              <div class="card-body">
+                <div class="field" style="margin-bottom:12px;">
+                  <label>フォーマット</label>
+                  <select>
+                    <option selected>アルファ商事 標準フォーマット</option>
+                    <option>簡易版（アイテム一覧のみ）</option>
+                  </select>
+                </div>
+                <button class="btn" style="width:100%;">納品書印刷</button>
+              </div>
+            </div>
+
+            <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:16px;">
+              <div style="font-size:13px; font-weight:600; color:var(--c-accent); margin-bottom:8px;">出荷確定</div>
+              <div style="font-size:12px; color:var(--c-text-sub); margin-bottom:12px;">
+                送り状発行・検品完了後に出荷確定を行います。<br>
+                確定後は出荷実績に反映され、荷主へ自動通知されます。
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn" style="flex:1;">キャンセル</button>
+                <button class="btn primary" style="flex:2;">出荷確定（完了処理）</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
