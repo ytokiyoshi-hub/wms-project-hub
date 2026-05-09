@@ -557,6 +557,35 @@ CLAUDE.md やリポジトリ内のドキュメントを参照して判断。
 
 ---
 
+## Skill発動ルール（自動発動・必須）
+
+時吉さん指示：全Skillは「稼働内容に応じて」確実に発動させること（Phase 8-SK-activate）。
+
+### 実装済みSkill（即時有効）
+
+| Skill | TRIGGER条件 | 発動仕組み |
+|-------|-------------|-----------|
+| **vp-behavior** | Edit/Write/WebSearch/deploy を使う前; 「実装します」「調査します」「編集します」「デプロイします」「見送り」と書く前; 根拠なく「完了」「OK」を報告する前; 2問以上を1メッセージで聞く前 | PreToolUse hook (vp-behavior-check.sh) ※MACHAN_SESSION=1のみ動作 |
+| **machan-ops-check** | 会話開始時; 「確認して」「誰か動いてる」「異常」「止まってる」「動かない」「全員」を書く前; 完了報告・起票の前; runner状態・トークン残量を聞かれた時 | システムプロンプトのTRIGGER条件（Skill自動判定）|
+
+### Skill発動の義務
+
+- TRIGGERキーワードを見たら**必ずSkillを発動**すること
+- 「既にこのターンで発動済み」の場合のみSKIPを許可
+- 発動しなかった場合は failure_pattern #26 と同等の違反
+
+### 未実装Skill（完成次第順次追加）
+
+| Skill | TRIGGER条件 | 実装方法（TODO）|
+|-------|-------------|---------------|
+| task-completion-verify (SK6) | タスクをcompletedにする前; 「完了しました」と報告する前 | Stop hook（予定） |
+| machan-director (SK4) | タスク起票しようとする前; 「実装します」「修正します」 | CLAUDE.md記述（予定） |
+| member-assignment (SK5) | assigned_to を決める前; タスク起票時 | CLAUDE.md記述（予定） |
+| failure-manager (FM1) | failed/timeout タスクを発見した時 | CLAUDE.md記述（予定） |
+| no-reflection-loop (SK7) | 「反省します」「徹底します」と書く前 | CLAUDE.md記述（予定） |
+
+---
+
 ## 全タスク標準フロー（必須）
 
 時吉さん指示：全タスクをこのフローに統一する。
