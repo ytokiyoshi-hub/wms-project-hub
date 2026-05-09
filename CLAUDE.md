@@ -554,3 +554,34 @@ CLAUDE.md やリポジトリ内のドキュメントを参照して判断。
 - 定期実行系: 実際に発火したログを確認
 - LINE通知系: 実際にLINEに届いたか確認
 - Skill系: TRIGGERで実際に発動するか確認
+
+---
+
+## 全タスク標準フロー（必須）
+
+時吉さん指示：全タスクをこのフローに統一する。
+
+### Step 1: 起票
+- タスクをpendingでINSERT → まーちゃんがapprovedに変更
+- descriptionに完了条件・テスト手順を明記してから起票
+
+### Step 2: 実装（作業）
+- in_progressで作業開始
+- 実装完了してもまだcompletedにしない
+
+### Step 3: テスト（動作確認）
+- 実装した機能が実際に動くかをログ・DB・実機で確認
+- Skillを実装した場合: TRIGGERキーワードで実際に発動するかテスト
+- 定期実行系: 実際に発火したログを確認
+- LINE系: 実際にLINEに届いたか確認
+- テスト結果をkurokun_memoに記録（category=test_result）
+
+### Step 4: 動作確認OK報告
+- 全テスト通過後のみcompleted
+- completedにする前に task-completion-verify Skill を発動
+- 「動作確認OK: [確認した内容]」をログに記録
+- まーちゃんへ報告（kurokun_outboxまたはSELECT結果）
+
+### 違反した場合
+- テストせずcompletedにした = failure_pattern #26再発
+- 「動作確認OK報告」なしの完了報告は受け付けない
