@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 第6弾 入荷・検品・棚入れ工程 PC画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list tbody tr.selected { background:var(--c-accent-lt); }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-alert-lt); border-left-color:var(--c-alert); }
+  .note-box.warn .label { color:var(--c-alert); }
+
+  .text-mono { font-family:var(--f-mono); }
+  .text-bold { font-weight:600; }
+
+  /* ステップ進捗バー */
+  .step-progress { display:flex; gap:0; border:1px solid var(--c-line-dk); }
+  .step-progress .step { flex:1; padding:6px 4px; text-align:center; font-size:11px; color:var(--c-text-sub); border-right:1px solid var(--c-line-dk); background:var(--c-bg); }
+  .step-progress .step:last-child { border-right:none; }
+  .step-progress .step.done { background:var(--c-text-sub); color:#fff; }
+  .step-progress .step.current { background:var(--c-accent); color:#fff; font-weight:600; }
+  .step-progress .step .num { font-family:var(--f-mono); font-weight:700; margin-right:4px; }
+
+  /* 進捗バー */
+  .pbar { height:6px; background:var(--c-line); position:relative; }
+  .pbar .fill { height:100%; background:var(--c-accent); }
+  .pbar .fill.alert { background:var(--c-alert); }
+
+  /* サマリーカード */
+  .summary-cards { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-bottom:14px; }
+  .summary-card { background:var(--c-base); border:1px solid var(--c-line); padding:16px 18px; }
+  .summary-card .sc-label { font-size:11px; color:var(--c-text-sub); font-weight:500; margin-bottom:6px; }
+  .summary-card .sc-num { font-size:36px; font-family:var(--f-mono); font-weight:700; color:var(--c-accent); line-height:1.1; }
+  .summary-card .sc-sub { font-size:11px; color:var(--c-text-mute); margin-top:4px; }
+  .summary-card.alert-card .sc-num { color:var(--c-alert); }
+</style>
+</head>
+<body>
+<h1 class="page-title">Set6 入荷・検品・棚入れ工程関連 PC画面</h1>
+<p class="subtitle">入荷予定一覧／入荷予定登録・編集／入荷実績一覧／棚入れ指示一覧</p>
+<div class="quick-nav"><span class="label">画面ジャンプ：</span>
+<a href="#W-401"><b>W-401</b>入荷予定一覧</a>
+<a href="#W-402"><b>W-402</b>入荷予定登録・編集</a>
+<a href="#W-403"><b>W-403</b>入荷実績一覧</a>
+<a href="#W-405"><b>W-405</b>棚入れ指示一覧</a>
+</div>
+
+<!-- ============================== -->
+<!-- W-401 入荷予定一覧 -->
+<!-- ============================== -->
+
+<div class="section-divider" id="W-401">
+  <span class="num">W-401</span>入荷予定一覧（PC）
+</div>
+<div class="desc">
+  <b>役割</b>：ASN受信・手入力された入荷予定の一覧。ステータス管理と現物到着時の紐付け起点。<br>
+  <b>確定事項</b>：荷主必須（owner_id）／ASNなし入荷モードあり（予定なしで直接W-402へ）
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/inbound/plans</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#W-401" class="active">入荷予定一覧</a>
+        <a href="#W-402">入荷予定登録</a>
+        <a href="#W-403">入荷実績一覧</a>
+        <a href="#">差異処理</a>
+        <a href="#W-405">棚入れ指示</a>
+        <a href="#">入荷返品</a>
+        <div class="group">在庫・ロケ</div>
+        <a href="#">ロケーション管理</a>
+        <a href="#">在庫照会</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">入荷　/　<b>入荷予定一覧</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>マルキ食品</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>入荷予定日</label><input type="date" value="2026-05-10"></div>
+            <div class="field"><label>ステータス</label>
+              <select>
+                <option>未到着</option>
+                <option>到着済</option>
+                <option>完了</option>
+                <option selected>全て</option>
+              </select>
+            </div>
+            <div class="field"><label>サプライヤー</label><input type="text" placeholder="サプライヤー名"></div>
+            <div class="field"><label>ASN番号</label><input type="text" placeholder="ASN番号"></div>
+          </div>
+          <div class="actions">
+            <button class="btn primary sm">検索</button>
+            <span class="stats">全28件 / 本日入荷予定 5件</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">ASN取込（CSV）</button>
+              <button class="btn sm">入荷予定手入力登録</button>
+              <button class="btn primary sm">ASNなし入荷</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>入荷予定一覧</span><span class="meta">28件中 6件表示</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>ASN番号</th>
+                  <th>荷主</th>
+                  <th>サプライヤー</th>
+                  <th>予定日</th>
+                  <th class="right">予定数量</th>
+                  <th class="center">品目数</th>
+                  <th class="center">ステータス</th>
+                  <th class="center" style="width:160px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">ASN-260510-001</td>
+                  <td>マルキ食品</td>
+                  <td>農林水産商事</td>
+                  <td class="num">2026-05-10</td>
+                  <td class="right num">1,250ケース</td>
+                  <td class="center">3品目</td>
+                  <td class="center"><span class="pill accent">到着待ち</span></td>
+                  <td class="center"><button class="btn sm">詳細</button> <button class="btn primary sm">入荷登録</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ASN-260510-002</td>
+                  <td>マルキ食品</td>
+                  <td>鈴木農産</td>
+                  <td class="num">2026-05-10</td>
+                  <td class="right num">480箱</td>
+                  <td class="center">2品目</td>
+                  <td class="center"><span class="pill">入荷中</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ASN-260509-003</td>
+                  <td>マルキ食品</td>
+                  <td>全国食品流通</td>
+                  <td class="num">2026-05-09</td>
+                  <td class="right num">320ケース</td>
+                  <td class="center">5品目</td>
+                  <td class="center"><span class="pill">検品待ち</span></td>
+                  <td class="center"><button class="btn sm">詳細</button> <button class="btn sm">検品へ</button></td>
+                </tr>
+                <tr style="background:var(--c-alert-lt);">
+                  <td class="num">ASN-260509-004</td>
+                  <td>健康美容社</td>
+                  <td>ODMメーカー</td>
+                  <td class="num">2026-05-09</td>
+                  <td class="right num">2,100個</td>
+                  <td class="center">8品目</td>
+                  <td class="center"><span class="pill alert">差異あり</span></td>
+                  <td class="center"><button class="btn sm">詳細</button> <button class="btn danger sm">差異処理</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ASN-260508-005</td>
+                  <td>マルキ食品</td>
+                  <td>東西食材</td>
+                  <td class="num">2026-05-08</td>
+                  <td class="right num">680ケース</td>
+                  <td class="center">4品目</td>
+                  <td class="center"><span class="pill">棚入れ待ち</span></td>
+                  <td class="center"><button class="btn sm">詳細</button> <button class="btn sm">棚入れ指示</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ASN-260507-006</td>
+                  <td>健康美容社</td>
+                  <td>田中製造</td>
+                  <td class="num">2026-05-07</td>
+                  <td class="right num">850個</td>
+                  <td class="center">6品目</td>
+                  <td class="center"><span class="pill">完了</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <div class="label">ASNなし入荷モードについて</div>
+          入荷予定と紐付けずに直接現物を登録できます。仕入先が事前通知をしない場合に使用。棚入れ後に入荷予定と突合可能。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-402 入荷予定登録・編集 -->
+<!-- ============================== -->
+
+<div class="section-divider" id="W-402">
+  <span class="num">W-402</span>入荷予定登録・編集（PC）
+</div>
+<div class="desc">
+  <b>役割</b>：ASN手入力または編集画面。CSV取込失敗時やイレギュラー入荷時に使用。<br>
+  <b>確定事項</b>：荷主切替必須（owner_id）／明細行（SKU・数量）の手入力に対応
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/inbound/plans/new</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#W-401">入荷予定一覧</a>
+        <a href="#W-402" class="active">入荷予定登録</a>
+        <a href="#W-403">入荷実績一覧</a>
+        <a href="#">差異処理</a>
+        <a href="#W-405">棚入れ指示</a>
+        <a href="#">入荷返品</a>
+        <div class="group">在庫・ロケ</div>
+        <a href="#">ロケーション管理</a>
+        <a href="#">在庫照会</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">入荷　/　入荷予定一覧　/　<b>入荷予定登録</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- 基本情報 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">基本情報</div>
+          <div class="card-body">
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field">
+                <label>荷主<span class="required">*</span></label>
+                <select><option selected>マルキ食品</option><option>健康美容社</option></select>
+              </div>
+              <div class="field">
+                <label>ASN番号</label>
+                <input type="text" placeholder="空白で自動採番">
+                <div class="hint">空白で自動採番</div>
+              </div>
+              <div class="field">
+                <label>入荷予定日<span class="required">*</span></label>
+                <input type="date" value="2026-05-12">
+              </div>
+              <div class="field">
+                <label>入荷形態</label>
+                <select>
+                  <option selected>通常入荷</option>
+                  <option>緊急入荷</option>
+                  <option>返品受入</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field">
+                <label>サプライヤー<span class="required">*</span></label>
+                <select><option selected>農林水産商事</option><option>鈴木農産</option><option>全国食品流通</option><option>東西食材</option></select>
+              </div>
+              <div class="field">
+                <label>担当倉庫</label>
+                <select><option selected>WH001 東京DC</option><option>WH002 大阪DC</option></select>
+              </div>
+              <div class="field">
+                <label>検品方式</label>
+                <select>
+                  <option selected>全数</option>
+                  <option>抜き取り10%</option>
+                  <option>サインオンリー</option>
+                </select>
+                <div class="hint">荷主デフォルト：全数</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>備考</label>
+              <textarea rows="2" placeholder="特記事項があれば入力"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 入荷明細 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">
+            <span>入荷明細（SKU一覧）</span>
+            <button class="btn sm">行を追加</button>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list" style="font-size:11px;">
+              <thead>
+                <tr>
+                  <th style="width:32px;">#</th>
+                  <th style="width:100px;">SKUコード</th>
+                  <th style="width:130px;">JANコード</th>
+                  <th>品名</th>
+                  <th style="width:90px;" class="right">予定数量</th>
+                  <th style="width:60px;">単位</th>
+                  <th style="width:100px;">ロット番号</th>
+                  <th style="width:110px;">製造日</th>
+                  <th style="width:110px;">賞味期限</th>
+                  <th style="width:60px;" class="center">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="center num">1</td>
+                  <td class="num">SKU-10012</td>
+                  <td class="num">4900000111111</td>
+                  <td>特製みそ汁（20食入）</td>
+                  <td class="right"><input type="number" value="500" style="width:70px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px; font-family:var(--f-mono); text-align:right;"></td>
+                  <td>ケース</td>
+                  <td><input type="text" placeholder="ロット番号" style="width:90px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px;"></td>
+                  <td><input type="date" style="width:105px; border:1px solid var(--c-line-dk); padding:3px 4px; font-size:10px;"></td>
+                  <td><input type="date" style="width:105px; border:1px solid var(--c-line-dk); padding:3px 4px; font-size:10px;"></td>
+                  <td class="center"><button class="btn sm" style="color:var(--c-alert); border-color:var(--c-alert);">削除</button></td>
+                </tr>
+                <tr>
+                  <td class="center num">2</td>
+                  <td class="num">SKU-10045</td>
+                  <td class="num">4900000222222</td>
+                  <td>だし醤油1L</td>
+                  <td class="right"><input type="number" value="300" style="width:70px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px; font-family:var(--f-mono); text-align:right;"></td>
+                  <td>ケース</td>
+                  <td><input type="text" placeholder="ロット番号" style="width:90px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px;"></td>
+                  <td><input type="date" style="width:105px; border:1px solid var(--c-line-dk); padding:3px 4px; font-size:10px;"></td>
+                  <td><input type="date" style="width:105px; border:1px solid var(--c-line-dk); padding:3px 4px; font-size:10px;"></td>
+                  <td class="center"><button class="btn sm" style="color:var(--c-alert); border-color:var(--c-alert);">削除</button></td>
+                </tr>
+                <tr>
+                  <td class="center num">3</td>
+                  <td class="num">SKU-10078</td>
+                  <td class="num">4900000333333</td>
+                  <td>昆布だし粉末500g</td>
+                  <td class="right"><input type="number" value="450" style="width:70px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px; font-family:var(--f-mono); text-align:right;"></td>
+                  <td>箱</td>
+                  <td><input type="text" placeholder="ロット番号" style="width:90px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px;"></td>
+                  <td><input type="date" style="width:105px; border:1px solid var(--c-line-dk); padding:3px 4px; font-size:10px;"></td>
+                  <td><input type="date" style="width:105px; border:1px solid var(--c-line-dk); padding:3px 4px; font-size:10px;"></td>
+                  <td class="center"><button class="btn sm" style="color:var(--c-alert); border-color:var(--c-alert);">削除</button></td>
+                </tr>
+                <tr style="background:var(--c-bg);">
+                  <td class="center" style="color:var(--c-text-mute);">+</td>
+                  <td><input type="text" placeholder="SKUコード" style="width:95px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px;"></td>
+                  <td><input type="text" placeholder="JANコード" style="width:120px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px;"></td>
+                  <td><input type="text" placeholder="品名（自動補完）" style="width:100%; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px;"></td>
+                  <td class="right"><input type="number" placeholder="0" style="width:70px; border:1px solid var(--c-line-dk); padding:3px 6px; font-size:11px; font-family:var(--f-mono); text-align:right;"></td>
+                  <td><select style="width:58px; border:1px solid var(--c-line-dk); padding:3px 4px; font-size:11px;"><option>ケース</option><option>箱</option><option>個</option></select></td>
+                  <td colspan="3"></td>
+                  <td></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4" style="text-align:right; font-size:12px;">計 3品目 / 1,250ケース相当</td>
+                  <td colspan="6"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box" style="margin-bottom:14px;">
+          <div class="label">JANコードから自動補完</div>
+          JANコード入力後にTABキーでSKU情報が自動入力されます。
+        </div>
+
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+          <button class="btn">キャンセル</button>
+          <button class="btn">下書き保存</button>
+          <button class="btn primary">登録して閉じる</button>
+          <button class="btn primary">登録して入荷登録へ</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-403 入荷実績一覧 -->
+<!-- ============================== -->
+
+<div class="section-divider" id="W-403">
+  <span class="num">W-403</span>入荷実績一覧（PC）
+</div>
+<div class="desc">
+  <b>役割</b>：入荷完了した実績の一覧と差異確認。ASN紐付け情報・検品結果も参照可能。<br>
+  <b>確定事項</b>：差異（数量・品違い・破損）は別テーブルで管理／inbound_discrepanciesに記録
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/inbound/movements</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#W-401">入荷予定一覧</a>
+        <a href="#W-402">入荷予定登録</a>
+        <a href="#W-403" class="active">入荷実績一覧</a>
+        <a href="#">差異処理</a>
+        <a href="#W-405">棚入れ指示</a>
+        <a href="#">入荷返品</a>
+        <div class="group">在庫・ロケ</div>
+        <a href="#">ロケーション管理</a>
+        <a href="#">在庫照会</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">入荷　/　<b>入荷実績一覧</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="tabs">
+          <div class="tab active">本日（8件）</div>
+          <div class="tab">直近7日（42件）</div>
+          <div class="tab">月次（189件）</div>
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>入荷日</label><input type="date" value="2026-05-09"></div>
+            <div class="field"><label>ステータス</label>
+              <select>
+                <option selected>全て</option>
+                <option>棚入れ待ち</option>
+                <option>棚入れ中</option>
+                <option>差異処理中</option>
+                <option>完了</option>
+              </select>
+            </div>
+            <div class="field"><label>荷主</label>
+              <select>
+                <option selected>全て</option>
+                <option>マルキ食品</option>
+                <option>健康美容社</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn primary sm">検索</button>
+            <span class="stats">本日入荷 8件 / <b style="color:var(--c-alert);">差異あり 2件</b> / 棚入れ待ち 3件</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>入荷実績一覧</span><span class="meta">2026-05-09 / 8件中 5件表示</span></div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>入荷No</th>
+                  <th>ASN</th>
+                  <th>荷主</th>
+                  <th>サプライヤー</th>
+                  <th class="center">入荷日時</th>
+                  <th class="center">品目数</th>
+                  <th class="right">実績数量</th>
+                  <th class="center">差異</th>
+                  <th class="center">ステータス</th>
+                  <th class="center" style="width:160px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">INB-260509-001</td>
+                  <td class="num">ASN-260509-003</td>
+                  <td>マルキ食品</td>
+                  <td>全国食品流通</td>
+                  <td class="center num">09:15</td>
+                  <td class="center">5品目</td>
+                  <td class="right num">320ケース</td>
+                  <td class="center">—</td>
+                  <td class="center"><span class="pill">棚入れ待ち</span></td>
+                  <td class="center"><button class="btn sm">詳細</button> <button class="btn sm">棚入れ指示</button></td>
+                </tr>
+                <tr style="background:var(--c-alert-lt);">
+                  <td class="num">INB-260509-002</td>
+                  <td class="num">ASN-260509-004</td>
+                  <td>健康美容社</td>
+                  <td>ODMメーカー</td>
+                  <td class="center num">11:30</td>
+                  <td class="center">8品目</td>
+                  <td class="right num">2,088個</td>
+                  <td class="center"><span class="pill alert">差異−12個</span></td>
+                  <td class="center"><span class="pill alert">差異処理中</span></td>
+                  <td class="center"><button class="btn sm">詳細</button> <button class="btn danger sm">差異処理</button></td>
+                </tr>
+                <tr>
+                  <td class="num">INB-260509-003</td>
+                  <td style="color:var(--c-text-mute);">—</td>
+                  <td>マルキ食品</td>
+                  <td style="color:var(--c-text-mute);">（ASNなし）</td>
+                  <td class="center num">13:45</td>
+                  <td class="center">2品目</td>
+                  <td class="right num">150ケース</td>
+                  <td class="center">—</td>
+                  <td class="center"><span class="pill accent">棚入れ中</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td class="num">INB-260509-004</td>
+                  <td class="num">ASN-260508-005</td>
+                  <td>マルキ食品</td>
+                  <td>東西食材</td>
+                  <td class="center num">14:20</td>
+                  <td class="center">4品目</td>
+                  <td class="right num">680ケース</td>
+                  <td class="center">—</td>
+                  <td class="center"><span class="pill">完了</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td class="num">INB-260509-005</td>
+                  <td class="num">ASN-260507-006</td>
+                  <td>健康美容社</td>
+                  <td>田中製造</td>
+                  <td class="center num">16:00</td>
+                  <td class="center">6品目</td>
+                  <td class="right num">850個</td>
+                  <td class="center">—</td>
+                  <td class="center"><span class="pill">完了</span></td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-405 棚入れ指示一覧 -->
+<!-- ============================== -->
+
+<div class="section-divider" id="W-405">
+  <span class="num">W-405</span>棚入れ指示一覧（PC）
+</div>
+<div class="desc">
+  <b>役割</b>：検品OKの商品に対してシステムが生成した棚入れ指示の一覧。HT担当者が参照しながら作業。<br>
+  <b>確定事項</b>：ロケポリシーに従い棚入れ先を決定（固定/フリー/ABC）／putaway_ordersテーブル
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/inbound/putaway</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#W-401">入荷予定一覧</a>
+        <a href="#W-402">入荷予定登録</a>
+        <a href="#W-403">入荷実績一覧</a>
+        <a href="#">差異処理</a>
+        <a href="#W-405" class="active">棚入れ指示</a>
+        <a href="#">入荷返品</a>
+        <div class="group">在庫・ロケ</div>
+        <a href="#">ロケーション管理</a>
+        <a href="#">在庫照会</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">入荷　/　<b>棚入れ指示一覧</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- サマリーカード -->
+        <div class="summary-cards">
+          <div class="summary-card">
+            <div class="sc-label">棚入れ待ち</div>
+            <div class="sc-num">3</div>
+            <div class="sc-sub">入荷番号3件対応</div>
+          </div>
+          <div class="summary-card">
+            <div class="sc-label">棚入れ中</div>
+            <div class="sc-num">1</div>
+            <div class="sc-sub">担当：田中</div>
+          </div>
+          <div class="summary-card">
+            <div class="sc-label">本日完了</div>
+            <div class="sc-num">5</div>
+            <div class="sc-sub">累計</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span>棚入れ指示一覧</span>
+            <div style="display:flex; gap:8px;">
+              <button class="btn sm">HT一括配信</button>
+              <button class="btn sm">CSV出力</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>指示No</th>
+                  <th>入荷No</th>
+                  <th>荷主</th>
+                  <th>SKU</th>
+                  <th>品名</th>
+                  <th class="right">数量</th>
+                  <th>棚入れ先ロケ</th>
+                  <th>ロケ方式</th>
+                  <th>担当者</th>
+                  <th class="center">ステータス</th>
+                  <th class="center" style="width:100px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">PUT-260509-001</td>
+                  <td class="num">INB-260509-001</td>
+                  <td>マルキ食品</td>
+                  <td class="num">SKU-10012</td>
+                  <td>特製みそ汁</td>
+                  <td class="right num">500ケース</td>
+                  <td class="num text-bold">B-03-05</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">固定ロケ</td>
+                  <td>田中</td>
+                  <td class="center"><span class="pill">待機中</span></td>
+                  <td class="center"><button class="btn primary sm">HT配信</button></td>
+                </tr>
+                <tr>
+                  <td class="num">PUT-260509-002</td>
+                  <td class="num">INB-260509-001</td>
+                  <td>マルキ食品</td>
+                  <td class="num">SKU-10045</td>
+                  <td>だし醤油1L</td>
+                  <td class="right num">300ケース</td>
+                  <td class="num text-bold">C-01-12</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">固定ロケ</td>
+                  <td style="color:var(--c-text-mute);">—</td>
+                  <td class="center"><span class="pill">待機中</span></td>
+                  <td class="center"><button class="btn primary sm">HT配信</button></td>
+                </tr>
+                <tr style="background:var(--c-alert-lt);">
+                  <td class="num">PUT-260509-003</td>
+                  <td class="num">INB-260509-003</td>
+                  <td>マルキ食品</td>
+                  <td class="num">SKU-20033</td>
+                  <td>有機玄米2kg</td>
+                  <td class="right num">150ケース</td>
+                  <td><span class="pill alert">ロケ未割当</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">フリーロケ</td>
+                  <td style="color:var(--c-text-mute);">—</td>
+                  <td class="center"><span class="pill alert">要確認</span></td>
+                  <td class="center"><button class="btn danger sm">ロケ割当</button></td>
+                </tr>
+                <tr>
+                  <td class="num">PUT-260509-004</td>
+                  <td class="num">INB-260509-001</td>
+                  <td>マルキ食品</td>
+                  <td class="num">SKU-10078</td>
+                  <td>昆布だし粉末</td>
+                  <td class="right num">450箱</td>
+                  <td class="num text-bold">A-02-08</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">ABC-A</td>
+                  <td>鈴木</td>
+                  <td class="center"><span class="pill accent">作業中</span></td>
+                  <td class="center"><button class="btn sm">進捗</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box warn" style="margin-top:14px;">
+          <div class="label">フリーロケ未割当あり</div>
+          フリーロケ未割当があります（PUT-260509-003）。ロケ容量を確認してから割当してください。荷主マルキ食品のフリーロケポリシー：空きロケから近い順に自動提案。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
