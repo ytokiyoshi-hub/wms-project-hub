@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMS 検品差異処理 PC画面モック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#1a6c3a; --c-ok-lt:#e6f4ec;
+    --c-warn:#7a4a00; --c-warn-lt:#fff3cd;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge { display:inline-block; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .section-divider .badge-new { background:#1a3a5c; color:#fff; }
+  .section-divider .badge-alert { background:#b8002e; color:#fff; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  /* PC フレーム */
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; margin-bottom:0; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; display:inline-block; border-radius:50%; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); display:flex; overflow:hidden; }
+
+  /* サイドバー */
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; text-transform:uppercase; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  /* メインエリア */
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .topbar-actions { display:flex; gap:12px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:16px 20px; overflow-y:auto; background:var(--c-bg); display:flex; flex-direction:column; gap:14px; }
+
+  /* カード */
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:10px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  /* ボタン */
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; display:inline-block; }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.success { background:var(--c-ok); color:#fff; border-color:var(--c-ok); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.warn { background:var(--c-warn); color:#fff; border-color:var(--c-warn); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .btn.xs { padding:2px 8px; font-size:10px; }
+
+  /* ピル */
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.warn { background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn); }
+
+  /* テーブル */
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); white-space:nowrap; }
+  table.list tbody tr:hover { background:#fafbfc; cursor:pointer; }
+  table.list tbody tr.selected { background:var(--c-accent-lt); }
+  table.list tbody tr.alert-row { background:var(--c-alert-lt); }
+  table.list .right { text-align:right; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+
+  /* フォームフィールド */
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:12px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; }
+
+  /* 差異サマリーKPI */
+  .kpi-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; }
+  .kpi-card { background:var(--c-base); border:1px solid var(--c-line); padding:12px 16px; }
+  .kpi-card .label { font-size:11px; color:var(--c-text-sub); margin-bottom:4px; }
+  .kpi-card .value { font-size:24px; font-weight:700; font-family:var(--f-mono); color:var(--c-text); }
+  .kpi-card .value.alert { color:var(--c-alert); }
+  .kpi-card .value.ok { color:var(--c-ok); }
+  .kpi-card .value.warn { color:var(--c-warn); }
+  .kpi-card .sub { font-size:11px; color:var(--c-text-mute); margin-top:3px; }
+
+  /* アクションパネル */
+  .action-panel { background:var(--c-base); border:1px solid var(--c-line); }
+  .action-panel-header { padding:10px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; background:var(--c-bg); }
+  .action-panel-body { padding:16px; display:flex; flex-direction:column; gap:14px; }
+  .action-option { border:1px solid var(--c-line-dk); padding:12px 16px; cursor:pointer; display:flex; align-items:flex-start; gap:12px; }
+  .action-option:hover { background:var(--c-bg); }
+  .action-option.selected { border-color:var(--c-accent); background:var(--c-accent-lt); }
+  .action-option .radio { width:16px; height:16px; border:2px solid var(--c-line-dk); border-radius:50%; flex-shrink:0; margin-top:2px; }
+  .action-option.selected .radio { border-color:var(--c-accent); background:var(--c-accent); }
+  .action-option .option-content .option-title { font-size:13px; font-weight:600; color:var(--c-text); }
+  .action-option .option-content .option-desc { font-size:11px; color:var(--c-text-sub); margin-top:3px; }
+  .action-option.danger-opt { border-color:var(--c-alert-lt); }
+  .action-option.danger-opt.selected { border-color:var(--c-alert); background:var(--c-alert-lt); }
+  .action-option.danger-opt.selected .radio { border-color:var(--c-alert); background:var(--c-alert); }
+
+  /* 詳細スライドパネル */
+  .detail-panel { background:var(--c-base); border:1px solid var(--c-line); border-left:4px solid var(--c-accent); }
+  .detail-panel.alert-panel { border-left-color:var(--c-alert); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">WMS 検品差異処理 PC画面</h1>
+<p class="subtitle">Phase 9-UI6 / 差異一覧 → 原因分類 → 対応アクション選択（保留/廃棄/再入荷）</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#DI-PC-01"><b>DI-PC-01</b>差異一覧</a>
+  <a href="#DI-PC-02"><b>DI-PC-02</b>差異詳細・原因分類</a>
+  <a href="#DI-PC-03"><b>DI-PC-03</b>対応アクション選択</a>
+  <a href="#DI-PC-04"><b>DI-PC-04</b>一括処理確認</a>
+</div>
+
+<!-- ============================== -->
+<!-- DI-PC-01 差異一覧              -->
+<!-- ============================== -->
+<div class="section-divider" id="DI-PC-01">
+  <span class="num">DI-PC-01</span>差異一覧
+  <span class="badge badge-alert">要対応</span>
+</div>
+<div class="desc">
+  <b>役割</b>：HTによる返品受付・検品で検出された差異（数量相違・品質不良等）を一覧表示する。担当者が差異をクリックして詳細確認・処置決定へ進む。<br>
+  <b>主なデータ</b>：RMA番号 / SKU / 差異種別 / 差異数量 / 返品理由コード / ステータス（未処置 / 処置中 / 完了）
+</div>
+
+<div class="pc-frame" id="DI-PC-01">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/discrepancy</div>
+  </div>
+  <div class="screen" style="height:820px;">
+    <!-- サイドバー -->
+    <div class="sidebar">
+      <div class="logo">WMS Console<small>倉庫管理システム</small></div>
+      <nav>
+        <div class="group">返品処理</div>
+        <a href="#">返品受付一覧</a>
+        <a href="#" class="active">検品差異処理</a>
+        <a href="#">返品完了一覧</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫照会</a>
+        <a href="#">ロケーション管理</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品マスタ</a>
+        <a href="#">取引先マスタ</a>
+      </nav>
+      <div class="sb-footer">倉庫管理者 / 管理者権限</div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">返品処理 <span style="color:var(--c-line-dk);">/</span> <b>検品差異処理</b></div>
+        <div class="topbar-actions">
+          <span class="pill alert">未処置 <b>5件</b></span>
+          <div class="user">
+            <div class="avatar">田</div>
+            田中 恵子
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- KPI サマリー -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="label">本日の差異件数</div>
+            <div class="value alert">8</div>
+            <div class="sub">未処置 5 / 処置中 3</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">数量差異</div>
+            <div class="value warn">3</div>
+            <div class="sub">合計 −12ケース</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">品質不良</div>
+            <div class="value alert">4</div>
+            <div class="sub">要廃棄判定 2件含む</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">本日処理完了</div>
+            <div class="value ok">12</div>
+            <div class="sub">累計 / 通常営業日</div>
+          </div>
+        </div>
+
+        <!-- 検索バー -->
+        <div class="card">
+          <div class="card-body" style="padding:12px 16px;">
+            <div class="form-row" style="align-items:flex-end;">
+              <div class="field">
+                <label>RMA番号</label>
+                <input type="text" placeholder="RMA-260510-" style="font-family:var(--f-mono);">
+              </div>
+              <div class="field">
+                <label>ステータス</label>
+                <select>
+                  <option>未処置のみ</option>
+                  <option>すべて</option>
+                  <option>処置中</option>
+                  <option>完了</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>差異種別</label>
+                <select>
+                  <option>すべて</option>
+                  <option>数量差異</option>
+                  <option>品質不良</option>
+                  <option>誤納品</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>荷主</label>
+                <select>
+                  <option>すべて</option>
+                  <option>マルキ食品</option>
+                  <option>農林水産商事</option>
+                </select>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn primary">検索</button>
+                <button class="btn">リセット</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 差異一覧テーブル -->
+        <div class="card">
+          <div class="card-header">
+            差異一覧
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span class="meta">5件表示 / 未処置のみ</span>
+              <button class="btn sm">一括処理</button>
+              <button class="btn sm primary">CSVエクスポート</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:32px;"><input type="checkbox"></th>
+                  <th>RMA番号</th>
+                  <th>SKU</th>
+                  <th>商品名</th>
+                  <th>差異種別</th>
+                  <th class="right">予定数</th>
+                  <th class="right">確認数</th>
+                  <th class="right">差異</th>
+                  <th>返品理由</th>
+                  <th>ステータス</th>
+                  <th>受付日時</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="selected">
+                  <td><input type="checkbox" checked></td>
+                  <td class="num">RMA-260510-0042</td>
+                  <td class="num">SKU-0088</td>
+                  <td>マルキパスタ 500g×20</td>
+                  <td><span class="pill warn">数量差異</span></td>
+                  <td class="right num">5</td>
+                  <td class="right num">3</td>
+                  <td class="right num" style="color:var(--c-alert); font-weight:600;">−2</td>
+                  <td><span class="pill">R04 誤納品</span></td>
+                  <td><span class="pill accent">未処置</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">09:11</td>
+                  <td><button class="btn xs primary">処置</button></td>
+                </tr>
+                <tr class="alert-row">
+                  <td><input type="checkbox"></td>
+                  <td class="num">RMA-260510-0039</td>
+                  <td class="num">SKU-0031</td>
+                  <td>農林米 5kg</td>
+                  <td><span class="pill alert">品質不良</span></td>
+                  <td class="right num">10</td>
+                  <td class="right num">10</td>
+                  <td class="right num" style="color:var(--c-text-mute);">±0</td>
+                  <td><span class="pill alert">R03 内容不良</span></td>
+                  <td><span class="pill accent">未処置</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">08:52</td>
+                  <td><button class="btn xs primary">処置</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="num">RMA-260510-0037</td>
+                  <td class="num">SKU-0045</td>
+                  <td>トマト缶 400g×24</td>
+                  <td><span class="pill warn">数量差異</span></td>
+                  <td class="right num">20</td>
+                  <td class="right num">18</td>
+                  <td class="right num" style="color:var(--c-alert); font-weight:600;">−2</td>
+                  <td><span class="pill">R05 数量相違</span></td>
+                  <td><span class="pill accent">未処置</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">08:44</td>
+                  <td><button class="btn xs primary">処置</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="num">RMA-260510-0035</td>
+                  <td class="num">SKU-0102</td>
+                  <td>オリーブオイル 500ml</td>
+                  <td><span class="pill alert">品質不良</span></td>
+                  <td class="right num">6</td>
+                  <td class="right num">6</td>
+                  <td class="right num" style="color:var(--c-text-mute);">±0</td>
+                  <td><span class="pill">R02 外観不良</span></td>
+                  <td><span class="pill accent">未処置</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">08:31</td>
+                  <td><button class="btn xs primary">処置</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td class="num">RMA-260510-0033</td>
+                  <td class="num">SKU-0076</td>
+                  <td>そうめん 50g×30束</td>
+                  <td><span class="pill warn">数量差異</span></td>
+                  <td class="right num">12</td>
+                  <td class="right num">12</td>
+                  <td class="right num" style="color:var(--c-text-mute);">±0</td>
+                  <td><span class="pill warn">R01 期限切れ近</span></td>
+                  <td><span class="pill" style="background:var(--c-bg); color:var(--c-text-sub);">処置中</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">08:19</td>
+                  <td><button class="btn xs">詳細</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- DI-PC-02 差異詳細・原因分類    -->
+<!-- ============================== -->
+<div class="section-divider" id="DI-PC-02">
+  <span class="num">DI-PC-02</span>差異詳細・原因分類
+  <span class="badge badge-new">処置フロー</span>
+</div>
+<div class="desc">
+  <b>役割</b>：選択した差異明細の詳細を表示し、原因区分（荷主起因 / 倉庫起因 / 輸送中 / 原因不明）を分類する。分類結果が請求・クレーム処理の根拠データとなる。<br>
+  <b>主なデータ</b>：差異詳細 / 原因区分 / 担当者コメント / 証拠写真（将来実装）
+</div>
+
+<div class="pc-frame" id="DI-PC-02">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/discrepancy/RMA-260510-0042/detail</div>
+  </div>
+  <div class="screen" style="height:860px;">
+    <div class="sidebar">
+      <div class="logo">WMS Console<small>倉庫管理システム</small></div>
+      <nav>
+        <div class="group">返品処理</div>
+        <a href="#">返品受付一覧</a>
+        <a href="#" class="active">検品差異処理</a>
+        <a href="#">返品完了一覧</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫照会</a>
+        <a href="#">ロケーション管理</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品マスタ</a>
+        <a href="#">取引先マスタ</a>
+      </nav>
+      <div class="sb-footer">倉庫管理者 / 管理者権限</div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">検品差異処理 <span style="color:var(--c-line-dk);">/</span> <b>RMA-260510-0042 詳細</b></div>
+        <div class="topbar-actions">
+          <button class="btn sm">← 一覧に戻る</button>
+          <div class="user">
+            <div class="avatar">田</div>
+            田中 恵子
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- 差異基本情報 -->
+        <div class="detail-panel alert-panel">
+          <div style="padding:12px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:14px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent);">RMA-260510-0042</div>
+              <div style="font-size:12px; color:var(--c-text-sub); margin-top:2px;">返品受付 2026-05-10 09:11 / 担当: HT-1001 (佐藤)</div>
+            </div>
+            <span class="pill alert">未処置</span>
+          </div>
+          <div style="padding:14px 16px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+            <div>
+              <div style="font-size:11px; color:var(--c-text-sub);">荷主 / 顧客</div>
+              <div style="font-size:13px; font-weight:600; margin-top:3px;">マルキ食品</div>
+              <div style="font-size:12px; color:var(--c-text-sub);">東京スーパー 渋谷店</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--c-text-sub);">商品</div>
+              <div style="font-size:12px; font-family:var(--f-mono); font-weight:600; margin-top:3px; color:var(--c-accent);">SKU-0088</div>
+              <div style="font-size:12px;">マルキパスタ 500g×20入</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--c-text-sub);">差異内容</div>
+              <div style="margin-top:3px; display:flex; gap:6px; align-items:baseline;">
+                <span class="pill warn" style="font-size:12px;">数量差異</span>
+              </div>
+              <div style="font-size:13px; font-weight:700; color:var(--c-alert); margin-top:4px; font-family:var(--f-mono);">
+                予定 5ケース → 確認 3ケース (−2ケース)
+              </div>
+            </div>
+          </div>
+          <div style="padding:0 16px 14px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+            <div>
+              <div style="font-size:11px; color:var(--c-text-sub);">LOT番号</div>
+              <div style="font-size:12px; font-family:var(--f-mono); margin-top:3px;">LOT-260401</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--c-text-sub);">賞味期限</div>
+              <div style="font-size:12px; font-family:var(--f-mono); margin-top:3px;">2027-04-01</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--c-text-sub);">返品理由コード</div>
+              <div style="font-size:12px; font-family:var(--f-mono); font-weight:600; margin-top:3px; color:var(--c-accent);">R04 誤納品（品番相違）</div>
+            </div>
+          </div>
+          <div style="background:var(--c-warn-lt); border-top:1px solid var(--c-line); padding:10px 16px; font-size:12px; color:var(--c-warn);">
+            <b>HTオペレーターメモ：</b>「返品ラベルには5ケース記載あるが現物は3ケースのみ。梱包内に残り2ケースは見当たらず。」
+          </div>
+        </div>
+
+        <!-- 原因分類 -->
+        <div class="card">
+          <div class="card-header">
+            原因分類
+            <span class="meta">必須 — 請求・クレーム処理に使用</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field">
+                <label>原因区分 <span class="required">*</span></label>
+                <select>
+                  <option value="">── 選択してください ──</option>
+                  <option value="shipper" selected>荷主起因（梱包ミス・出荷ミス）</option>
+                  <option value="warehouse">倉庫起因（仕分けミス・記録ミス）</option>
+                  <option value="transport">輸送中（紛失・破損）</option>
+                  <option value="customer">顧客起因（過剰返品・誤申告）</option>
+                  <option value="unknown">原因不明（調査中）</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>責任所在</label>
+                <select>
+                  <option value="shipper" selected>荷主（マルキ食品）</option>
+                  <option value="warehouse">倉庫（当社）</option>
+                  <option value="carrier">配送業者</option>
+                  <option value="customer">顧客（東京スーパー）</option>
+                  <option value="shared">責任共有</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>緊急度</label>
+                <select>
+                  <option>通常</option>
+                  <option>急ぎ</option>
+                  <option selected>高（荷主連絡要）</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>担当者コメント</label>
+              <textarea rows="3" style="border:1px solid var(--c-line-dk); padding:8px 10px; font-size:12px; font-family:var(--f-base); resize:vertical;">荷主梱包ミスと判断。マルキ食品の出荷記録と照合が必要。返品伝票の修正依頼を行う。</textarea>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:8px; align-items:center; font-size:12px; color:var(--c-text-sub);">
+              <input type="checkbox" id="notify-shipper">
+              <label for="notify-shipper">荷主（マルキ食品）に自動通知メールを送信する</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 次へボタン -->
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button class="btn">保存して後で処理</button>
+          <button class="btn primary">原因確定 → 対応アクション選択へ</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- DI-PC-03 対応アクション選択    -->
+<!-- ============================== -->
+<div class="section-divider" id="DI-PC-03">
+  <span class="num">DI-PC-03</span>対応アクション選択
+  <span class="badge badge-new">処置フロー</span>
+</div>
+<div class="desc">
+  <b>役割</b>：原因分類確定後、返品品に対する具体的な対応アクションを選択する。アクションにより在庫ステータス・ロケーション・廃棄記録が自動更新される。<br>
+  <b>アクション選択肢</b>：①再入荷（良品在庫に戻す）　②保留（荷主確認待ち）　③廃棄（廃棄記録・在庫減算）
+</div>
+
+<div class="pc-frame" id="DI-PC-03">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/discrepancy/RMA-260510-0042/action</div>
+  </div>
+  <div class="screen" style="height:820px;">
+    <div class="sidebar">
+      <div class="logo">WMS Console<small>倉庫管理システム</small></div>
+      <nav>
+        <div class="group">返品処理</div>
+        <a href="#">返品受付一覧</a>
+        <a href="#" class="active">検品差異処理</a>
+        <a href="#">返品完了一覧</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫照会</a>
+        <a href="#">ロケーション管理</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品マスタ</a>
+        <a href="#">取引先マスタ</a>
+      </nav>
+      <div class="sb-footer">倉庫管理者 / 管理者権限</div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">検品差異処理 <span style="color:var(--c-line-dk);">/</span> RMA-260510-0042 <span style="color:var(--c-line-dk);">/</span> <b>対応アクション選択</b></div>
+        <div class="topbar-actions">
+          <button class="btn sm">← 原因分類に戻る</button>
+          <div class="user">
+            <div class="avatar">田</div>
+            田中 恵子
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- 確認サマリー -->
+        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:10px 16px; font-size:12px;">
+          <div style="font-weight:600; color:var(--c-accent); margin-bottom:4px;">処置対象</div>
+          <div style="display:flex; gap:24px; flex-wrap:wrap;">
+            <span><b style="font-family:var(--f-mono); color:var(--c-accent);">RMA-260510-0042</b> / SKU-0088 マルキパスタ 500g×20入</span>
+            <span>差異数量: <b style="color:var(--c-alert);">−2ケース</b></span>
+            <span>原因: <b>荷主起因（梱包ミス）</b></span>
+          </div>
+        </div>
+
+        <!-- アクション選択 -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+          <!-- 左: アクション選択パネル -->
+          <div class="action-panel">
+            <div class="action-panel-header">
+              対応アクションを選択
+              <span style="font-size:11px; font-weight:400; color:var(--c-text-sub);">3ケース分の処置</span>
+            </div>
+            <div class="action-panel-body">
+
+              <!-- 再入荷 -->
+              <div class="action-option selected">
+                <div class="radio"></div>
+                <div class="option-content">
+                  <div class="option-title" style="color:var(--c-ok);">再入荷（良品在庫へ戻す）</div>
+                  <div class="option-desc">
+                    返品品を良品として在庫に戻す。指定ロケーションへ格納し、在庫数を増算する。<br>
+                    <b>対象:</b> 3ケース → 通常在庫エリア
+                  </div>
+                  <div style="margin-top:8px; padding:8px 10px; background:var(--c-ok-lt); border:1px solid var(--c-ok); font-size:11px; color:var(--c-text);">
+                    <div class="field" style="flex-direction:row; align-items:center; gap:8px; flex-wrap:wrap;">
+                      <label style="white-space:nowrap;">入庫ロケーション</label>
+                      <input type="text" value="A-01-003" style="font-family:var(--f-mono); width:120px;">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 保留 -->
+              <div class="action-option">
+                <div class="radio"></div>
+                <div class="option-content">
+                  <div class="option-title" style="color:var(--c-warn);">保留（荷主確認待ち）</div>
+                  <div class="option-desc">
+                    荷主からの確認・指示が出るまで返品置き場に保管する。ステータスは「保留」となり荷主通知が送信される。<br>
+                    <b>最大保留期間:</b> 30日
+                  </div>
+                </div>
+              </div>
+
+              <!-- 廃棄 -->
+              <div class="action-option danger-opt">
+                <div class="radio"></div>
+                <div class="option-content">
+                  <div class="option-title" style="color:var(--c-alert);">廃棄（在庫から除去）</div>
+                  <div class="option-desc">
+                    商品を廃棄処分とする。廃棄記録が生成され在庫数が減算される。荷主への廃棄報告書が自動生成される。<br>
+                    <b style="color:var(--c-alert);">この操作は取り消しできません。</b>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 右: 処置プレビュー -->
+          <div class="card">
+            <div class="card-header">
+              処置後のシステム更新プレビュー
+              <span class="pill ok">再入荷選択中</span>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+
+              <div style="background:var(--c-ok-lt); border:1px solid var(--c-ok); padding:10px 14px; font-size:12px;">
+                <div style="font-weight:600; color:var(--c-ok); margin-bottom:6px;">実行される更新</div>
+                <div style="display:flex; flex-direction:column; gap:5px; color:var(--c-text);">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="color:var(--c-ok); font-size:14px; line-height:1;">✓</span>
+                    在庫数 +3ケース（SKU-0088 / LOT-260401）
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="color:var(--c-ok); font-size:14px; line-height:1;">✓</span>
+                    格納ロケーション: A-01-003
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="color:var(--c-ok); font-size:14px; line-height:1;">✓</span>
+                    返品ステータス: 完了
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="color:var(--c-ok); font-size:14px; line-height:1;">✓</span>
+                    差異記録: 荷主起因 / 梱包ミス
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="color:var(--c-ok); font-size:14px; line-height:1;">✓</span>
+                    荷主通知メール: マルキ食品 宛に送信
+                  </div>
+                </div>
+              </div>
+
+              <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:10px 14px; font-size:12px;">
+                <div style="font-weight:600; margin-bottom:6px;">残り2ケースの扱い</div>
+                <div style="color:var(--c-text-sub); font-size:11px;">差異数量（−2ケース）は荷主梱包ミスと判断のため、<b style="color:var(--c-text);">荷主への請求減算処理</b>として記録します。</div>
+                <div style="margin-top:8px; display:flex; gap:8px; align-items:center; font-size:11px; color:var(--c-text-sub);">
+                  <input type="checkbox" checked id="claim">
+                  <label for="claim">クレーム・精算レコードを自動生成する</label>
+                </div>
+              </div>
+
+              <div style="border-top:1px solid var(--c-line); padding-top:14px;">
+                <div style="font-size:11px; color:var(--c-text-sub); margin-bottom:10px;">確認後に「処置を実行」してください。完了後は一覧に戻ります。</div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <button class="btn success" style="flex:1; text-align:center;">処置を実行（再入荷）</button>
+                </div>
+                <div style="margin-top:8px;">
+                  <button class="btn" style="width:100%; text-align:center;">保存して後で実行</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- DI-PC-04 一括処理確認          -->
+<!-- ============================== -->
+<div class="section-divider" id="DI-PC-04">
+  <span class="num">DI-PC-04</span>一括処理確認
+  <span class="badge badge-new">バルク操作</span>
+</div>
+<div class="desc">
+  <b>役割</b>：差異一覧で複数件を選択した後、同一アクション（例：全件保留）を一括実行するための確認画面。件数と影響範囲を提示し、担当者が最終確認する。<br>
+  <b>主なデータ</b>：処理件数 / 対象RMA一覧 / 実行アクション / 在庫影響サマリー
+</div>
+
+<div class="pc-frame" id="DI-PC-04">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/discrepancy/bulk-action</div>
+  </div>
+  <div class="screen" style="height:720px;">
+    <div class="sidebar">
+      <div class="logo">WMS Console<small>倉庫管理システム</small></div>
+      <nav>
+        <div class="group">返品処理</div>
+        <a href="#">返品受付一覧</a>
+        <a href="#" class="active">検品差異処理</a>
+        <a href="#">返品完了一覧</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫照会</a>
+        <a href="#">ロケーション管理</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品マスタ</a>
+        <a href="#">取引先マスタ</a>
+      </nav>
+      <div class="sb-footer">倉庫管理者 / 管理者権限</div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">検品差異処理 <span style="color:var(--c-line-dk);">/</span> <b>一括処理確認</b></div>
+        <div class="topbar-actions">
+          <button class="btn sm">← キャンセル</button>
+          <div class="user">
+            <div class="avatar">田</div>
+            田中 恵子
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div style="background:var(--c-warn-lt); border:1px solid var(--c-warn); padding:12px 16px; font-size:13px; color:var(--c-warn); font-weight:500;">
+          一括処理を実行すると 3件の差異レコードが更新されます。処理内容をご確認ください。
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+          <div class="card">
+            <div class="card-header">処理対象 (3件)</div>
+            <div class="card-body" style="padding:0;">
+              <table class="list" style="font-size:11px;">
+                <thead>
+                  <tr>
+                    <th>RMA番号</th>
+                    <th>SKU</th>
+                    <th>差異種別</th>
+                    <th>選択アクション</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="num" style="font-size:10px;">RMA-260510-0037</td>
+                    <td class="num">SKU-0045</td>
+                    <td><span class="pill warn" style="font-size:10px;">数量差異</span></td>
+                    <td><span class="pill" style="font-size:10px; background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn);">保留</span></td>
+                  </tr>
+                  <tr>
+                    <td class="num" style="font-size:10px;">RMA-260510-0035</td>
+                    <td class="num">SKU-0102</td>
+                    <td><span class="pill alert" style="font-size:10px;">品質不良</span></td>
+                    <td><span class="pill" style="font-size:10px; background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn);">保留</span></td>
+                  </tr>
+                  <tr>
+                    <td class="num" style="font-size:10px;">RMA-260510-0033</td>
+                    <td class="num">SKU-0076</td>
+                    <td><span class="pill warn" style="font-size:10px;">数量差異</span></td>
+                    <td><span class="pill" style="font-size:10px; background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn);">保留</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">実行内容・影響サマリー</div>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
+              <div style="background:var(--c-warn-lt); border:1px solid var(--c-warn); padding:10px 14px; font-size:12px; color:var(--c-text);">
+                <b style="color:var(--c-warn);">一括アクション: 保留</b><br>
+                3件のステータスを「保留（荷主確認待ち）」に変更します。最大30日間保管後、自動で廃棄処理候補に移行します。
+              </div>
+              <div style="font-size:12px; color:var(--c-text-sub); display:flex; flex-direction:column; gap:5px;">
+                <div style="display:flex; justify-content:space-between;"><span>在庫変動</span><span style="color:var(--c-text); font-family:var(--f-mono);">なし（保留中）</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>荷主通知</span><span style="color:var(--c-text);">3社に送信</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>保留期限</span><span style="color:var(--c-text); font-family:var(--f-mono);">2026-06-09</span></div>
+              </div>
+              <div style="border-top:1px solid var(--c-line); padding-top:12px; display:flex; flex-direction:column; gap:8px;">
+                <button class="btn warn" style="text-align:center;">一括保留を実行</button>
+                <button class="btn" style="text-align:center;">キャンセル</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
