@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WMS 操作画面モック 一覧 — WMS Project Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f6f8fa; --surface: #ffffff; --border: #d0d7de;
+      --accent: #2563eb; --accent-dk: #1d4ed8; --text: #1f2328; --muted: #656d76;
+      --success: #1a7f37; --success-lt: #dcfce7;
+      --purple: #8250df; --purple-lt: #f0e7ff;
+      --warning: #d97706; --warning-lt: #fef3c7;
+      --radius: 8px; --shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", "Hiragino Sans", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
+
+    .topbar { background: #161b22; color: #c9d1d9; padding: 12px 24px; display: flex; align-items: center; gap: 14px; font-size: 13px; }
+    .topbar .logo { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.02em; text-decoration: none; }
+    .topbar .sep { color: #444d56; }
+    .topbar .current { color: #c9d1d9; }
+
+    .main { max-width: 1000px; margin: 0 auto; padding: 32px 24px 80px; }
+    .page-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -0.02em; }
+    .page-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .08em; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label .phase-badge {
+      background: var(--accent); color: #fff; padding: 1px 7px; border-radius: 4px;
+      font-size: 10px; font-weight: 700; letter-spacing: .04em;
+    }
+
+    .screen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 32px; }
+
+    .screen-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; text-decoration: none; color: var(--text);
+      transition: box-shadow .15s, transform .15s; display: flex; flex-direction: column;
+    }
+    .screen-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); transform: translateY(-2px); }
+
+    .card-thumb {
+      height: 80px; display: flex; align-items: center; justify-content: center;
+      font-size: 28px; flex-shrink: 0;
+    }
+    .thumb-blue     { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
+    .thumb-green    { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
+    .thumb-yellow   { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
+    .thumb-purple   { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
+    .thumb-orange   { background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); }
+    .thumb-teal     { background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%); }
+    .thumb-pink     { background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); }
+    .thumb-indigo   { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); }
+    .thumb-red      { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); }
+
+    .card-body { padding: 12px 14px; flex: 1; }
+    .card-title { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+    .card-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+    .card-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+    .tag { padding: 1px 7px; border-radius: 99px; font-size: 10px; font-weight: 600; background: var(--bg); border: 1px solid var(--border); color: var(--muted); }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px; color: var(--accent);
+      text-decoration: none; font-size: 13px; font-weight: 500; margin-bottom: 24px;
+    }
+    .back-btn:hover { text-decoration: underline; }
+
+    .meta-box {
+      margin-top: 24px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 12px; color: var(--muted); line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="logo" href="../index.html">WMS Project Hub</a>
+    <span class="sep">/</span>
+    <span class="current">操作画面モック</span>
+  </div>
+
+  <div class="main">
+    <a class="back-btn" href="../index.html">← WMS Project Hub に戻る</a>
+
+    <div class="page-title">操作画面モック 一覧</div>
+    <div class="page-sub">在庫管理・入出荷・ピッキング系の操作画面モック（Phase 9-UI1〜UI3）</div>
+
+    <!-- UI1: 在庫管理・ロケーション系 -->
+    <div class="section-label">
+      <span class="phase-badge">Phase 9-UI1</span>
+      在庫管理・ロケーション系 (4画面)
+    </div>
+    <div class="screen-grid">
+      <a class="screen-card" href="../inventory-list.html" target="_blank">
+        <div class="card-thumb thumb-blue">📦</div>
+        <div class="card-body">
+          <div class="card-title">在庫一覧画面</div>
+          <div class="card-desc">SKU × ロケーション × ロット軸で在庫を表示。荷主・SKU・ロット・ステータスでフィルター可能。在庫不足・期限切れアラートを表示。</div>
+          <div class="card-tags">
+            <span class="tag">フィルター</span><span class="tag">ロット管理</span>
+            <span class="tag">シリアル管理</span><span class="tag">アラート</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="screen-card" href="../location-management.html" target="_blank">
+        <div class="card-thumb thumb-green">🏭</div>
+        <div class="card-body">
+          <div class="card-title">ロケーション管理画面</div>
+          <div class="card-desc">倉庫 › エリア › 棚 › 段 › 列の階層でロケーションを管理。使用率・ステータス・荷主専用区画を可視化。</div>
+          <div class="card-tags">
+            <span class="tag">階層ビュー</span><span class="tag">使用率</span><span class="tag">frozen管理</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="screen-card" href="../stock-movement.html" target="_blank">
+        <div class="card-thumb thumb-yellow">↔️</div>
+        <div class="card-body">
+          <div class="card-title">在庫移動画面</div>
+          <div class="card-desc">ロケーション間の在庫移動指示を入力。ロット選択・数量入力・移動理由を記録。移動履歴をリアルタイム表示。</div>
+          <div class="card-tags">
+            <span class="tag">移動指示</span><span class="tag">ロット選択</span><span class="tag">移動履歴</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="screen-card" href="../lot-serial-trace.html" target="_blank">
+        <div class="card-thumb thumb-purple">🔍</div>
+        <div class="card-body">
+          <div class="card-title">ロット・シリアル照会画面</div>
+          <div class="card-desc">特定ロット/シリアルの入荷→検品→棚入れ→ピッキング→出荷までを時系列で追跡。トレーサビリティを一画面で確認。</div>
+          <div class="card-tags">
+            <span class="tag">トレーサビリティ</span><span class="tag">タイムライン</span><span class="tag">シリアル追跡</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- UI2: 入荷フロー -->
+    <div class="section-label">
+      <span class="phase-badge">Phase 9-UI2</span>
+      入荷フロー操作 (1画面)
+    </div>
+    <div class="screen-grid">
+      <a class="screen-card" href="../inbound-flow.html" target="_blank">
+        <div class="card-thumb thumb-orange">📥</div>
+        <div class="card-body">
+          <div class="card-title">入荷業務フロー画面</div>
+          <div class="card-desc">入荷予定の確認から検品・棚入れまでのフロー全体を操作。入荷オーダー・車両・作業者を管理し工程ごとのステータスをリアルタイム表示。</div>
+          <div class="card-tags">
+            <span class="tag">フロー管理</span><span class="tag">入荷オーダー</span><span class="tag">検品</span><span class="tag">棚入れ</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- UI3: 出荷・ピッキング系 -->
+    <div class="section-label">
+      <span class="phase-badge">Phase 9-UI3</span>
+      出荷・ピッキング系 (4画面)
+    </div>
+    <div class="screen-grid">
+      <a class="screen-card" href="../docs/wms-screens/WMS_UI3_shipping_order.html" target="_blank">
+        <div class="card-thumb thumb-teal">📋</div>
+        <div class="card-body">
+          <div class="card-title">出荷オーダー一覧</div>
+          <div class="card-desc">当日出荷予定のオーダーを一覧表示。優先度・出荷先・ステータスでフィルター。ピッキング指示の発行・バッチ操作に対応。</div>
+          <div class="card-tags">
+            <span class="tag">出荷指示</span><span class="tag">バッチ処理</span><span class="tag">優先度管理</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="screen-card" href="../docs/wms-screens/WMS_UI3_picking_list.html" target="_blank">
+        <div class="card-thumb thumb-indigo">🧺</div>
+        <div class="card-body">
+          <div class="card-title">ピッキングリスト</div>
+          <div class="card-desc">ピッキング対象のSKU・ロット・ロケーションを作業順に表示。作業者アサイン・完了チェックをリアルタイム管理。</div>
+          <div class="card-tags">
+            <span class="tag">ピッキング</span><span class="tag">ロケーション誘導</span><span class="tag">作業進捗</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="screen-card" href="../docs/wms-screens/WMS_UI3_packing.html" target="_blank">
+        <div class="card-thumb thumb-pink">📦</div>
+        <div class="card-body">
+          <div class="card-title">梱包・荷姿確認画面</div>
+          <div class="card-desc">ピッキング完了品の梱包作業を管理。荷姿・重量・個口数を入力し、梱包ラベルを発行。出荷準備完了をシステムに登録。</div>
+          <div class="card-tags">
+            <span class="tag">梱包</span><span class="tag">ラベル発行</span><span class="tag">荷姿管理</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="screen-card" href="../docs/wms-screens/WMS_UI3_shipping_confirm.html" target="_blank">
+        <div class="card-thumb thumb-red">🚚</div>
+        <div class="card-body">
+          <div class="card-title">出荷確認・伝票発行画面</div>
+          <div class="card-desc">最終出荷確認と伝票（納品書・送り状）の発行。ドライバー確認・積み込み完了を登録し出荷確定。</div>
+          <div class="card-tags">
+            <span class="tag">出荷確定</span><span class="tag">伝票発行</span><span class="tag">積み込み確認</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="meta-box">
+      <b>Phase:</b> 9-UI1〜UI3 &nbsp;/&nbsp; <b>担当:</b> まーちゃん2号 (id=8), こーちゃん (id=2)
+      &nbsp;/&nbsp; <b>最終更新:</b> 2026-05-10<br>
+      <b>関連タスク:</b> #222 (UI1 在庫管理系) / #227 (UI2 入荷フロー) / #228 (UI3 出荷系)<br>
+      <b>デザイン方針:</b> 実業務を想定したモック。ダミーデータハードコード。スマホ・タブレット対応レスポンシブ。
+    </div>
+  </div>
+
+</body>
+</html>
