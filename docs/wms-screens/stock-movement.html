@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 在庫移動 PC画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-warn:#b85c00; --c-warn-lt:#fef3e6;
+    --c-ok:#2d7a3a; --c-ok-lt:#e8f5ea;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  /* PC Frame */
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .pc-device { width:1100px; background:#fff; border-radius:8px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  /* Sidebar */
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  /* Main */
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:16px; overflow-y:auto; background:var(--c-bg); }
+
+  /* Split layout */
+  .split-layout { display:grid; grid-template-columns:360px 1fr; gap:12px; min-height:100%; }
+  .left-panel { display:flex; flex-direction:column; gap:10px; }
+  .right-panel { display:flex; flex-direction:column; }
+
+  /* Card */
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  /* Button */
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  /* Pill */
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.warn { background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn); }
+  .pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+
+  /* Field */
+  .field { display:flex; flex-direction:column; gap:4px; margin-bottom:11px; }
+  .field:last-child { margin-bottom:0; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .req { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+
+  /* Move flow visual */
+  .move-flow { display:flex; align-items:center; gap:8px; margin-bottom:14px; padding:10px 12px; background:var(--c-bg); border:1px solid var(--c-line); }
+  .move-box { flex:1; text-align:center; padding:8px; border:2px dashed var(--c-line-dk); }
+  .move-box.filled { border:2px solid var(--c-accent); background:var(--c-accent-lt); }
+  .move-box .move-lbl { font-size:10px; color:var(--c-text-sub); font-weight:600; letter-spacing:0.05em; margin-bottom:2px; }
+  .move-box.filled .move-lbl { color:var(--c-accent); }
+  .move-box .move-val { font-family:var(--f-mono); font-size:12px; font-weight:700; color:var(--c-text-sub); }
+  .move-box.filled .move-val { color:var(--c-accent); }
+  .move-arrow { font-size:18px; color:var(--c-text-sub); flex-shrink:0; }
+
+  /* Info block */
+  .info-block { background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:7px 10px; margin-top:5px; font-size:11px; }
+  .info-block .ib-row { display:flex; justify-content:space-between; padding:2px 0; }
+  .info-block .ib-key { color:var(--c-text-sub); }
+  .info-block .ib-val { font-weight:600; color:var(--c-accent); }
+
+  /* Qty stepper */
+  .qty-row { display:flex; align-items:center; gap:8px; }
+  .qty-btn { width:28px; height:28px; border:1px solid var(--c-line-dk); background:var(--c-base); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--c-accent); font-weight:700; }
+  .qty-input { text-align:center; width:70px; height:28px; font-size:14px; font-weight:700; border:1px solid var(--c-line-dk); font-family:var(--f-mono); }
+  .qty-max { font-size:11px; color:var(--c-text-sub); }
+
+  /* Reason grid */
+  .reason-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:5px; }
+  .reason-opt { padding:6px 8px; border:1px solid var(--c-line-dk); font-size:12px; cursor:pointer; text-align:center; background:var(--c-base); color:var(--c-text); }
+  .reason-opt:hover { background:var(--c-bg); }
+  .reason-opt.selected { border-color:var(--c-accent); background:var(--c-accent-lt); color:var(--c-accent); font-weight:600; }
+
+  /* Action bar */
+  .action-bar { padding:10px 16px; border-top:1px solid var(--c-line); display:flex; gap:8px; justify-content:flex-end; background:var(--c-bg); }
+
+  /* Preview table */
+  .preview-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .preview-table td { padding:5px 0; vertical-align:top; border-bottom:1px solid var(--c-line); }
+  .preview-table tr:last-child td { border-bottom:none; }
+  .preview-table .pt-key { color:var(--c-text-sub); width:110px; }
+  .preview-table .pt-val { font-weight:500; }
+  .preview-table .pt-val.mono { font-family:var(--f-mono); font-weight:600; color:var(--c-accent); }
+
+  /* History table */
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:7px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); white-space:nowrap; }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .right { text-align:right; }
+  table.list .num { font-family:var(--f-mono); font-weight:600; }
+  table.list .mono { font-family:var(--f-mono); font-size:11px; }
+
+  /* Filter row */
+  .filter-row { display:flex; gap:8px; margin-bottom:10px; align-items:center; flex-wrap:wrap; }
+  .filter-row select { border:1px solid var(--c-line-dk); padding:5px 8px; font-size:12px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .filter-row .stats { margin-left:auto; font-size:11px; color:var(--c-text-sub); }
+  .filter-row .stats b { color:var(--c-text); }
+
+  .text-mono { font-family:var(--f-mono); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">在庫移動 PC画面</h1>
+<p class="subtitle">在庫管理 ／ ロケーション間移動指示・履歴照会</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#w210"><b>W-210</b>在庫移動</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- W-210: 在庫移動 -->
+<!-- ============================================================ -->
+<div class="section-divider" id="w210">
+  <span class="num">W-210</span>在庫移動
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：ロケーション間の在庫移動を指示・実行する。移動元／移動先／数量／理由を入力し、移動履歴テーブルで実績を管理。<br>
+  <b>確定事項</b>：ロケーションコードはバーコードスキャンまたは手入力 / ロット指定可 / 移動後在庫数は即時反映 / 理由コード必須
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/inventory/stock-movement</div>
+  </div>
+  <div class="screen">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定一覧</a>
+        <a href="#">入荷実績一覧</a>
+        <a href="#">棚入れ指示</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+        <a href="#" class="active">在庫移動</a>
+        <a href="#">ロケーション管理</a>
+        <a href="#">在庫調整</a>
+        <a href="#">ステータス変更</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷指示一覧</a>
+        <a href="#">ピッキング進捗</a>
+        <div class="group">帳票</div>
+        <a href="#">移動伝票印刷</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">在庫　/　<b>在庫移動</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>全荷主</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="split-layout">
+
+          <!-- Left: 移動フォーム -->
+          <div class="left-panel">
+
+            <div class="card">
+              <div class="card-header">
+                在庫移動入力
+                <span class="meta">W-210</span>
+              </div>
+              <div class="card-body">
+
+                <!-- 移動フロービジュアル -->
+                <div class="move-flow">
+                  <div class="move-box filled">
+                    <div class="move-lbl">移動元</div>
+                    <div class="move-val">FDB-C-02-01-1</div>
+                  </div>
+                  <div class="move-arrow">→</div>
+                  <div class="move-box">
+                    <div class="move-lbl">移動先</div>
+                    <div class="move-val">未選択</div>
+                  </div>
+                </div>
+
+                <!-- 移動元ロケーション -->
+                <div class="field">
+                  <label>移動元ロケーション<span class="req">*</span></label>
+                  <input type="text" value="FDB-C-02-01-1" placeholder="例: TKY-A-01-01-1">
+                  <div class="hint">バーコードスキャンまたは手入力</div>
+                  <div class="info-block">
+                    <div class="ib-row"><span class="ib-key">ロケーション名</span><span class="ib-val">FDB倉庫 C棟 通路2 棚1 1段1列</span></div>
+                    <div class="ib-row"><span class="ib-key">荷主</span><span class="ib-val">FDB（富士食品）</span></div>
+                    <div class="ib-row"><span class="ib-key">タイプ</span><span class="ib-val">保管</span></div>
+                  </div>
+                </div>
+
+                <!-- SKU / 商品 -->
+                <div class="field">
+                  <label>SKU / 商品<span class="req">*</span></label>
+                  <select>
+                    <option value="" disabled>選択してください</option>
+                    <option selected>FDB-001 — みかんジュース 200ml（4902234000001）</option>
+                    <option>FDB-002 — りんごジュース 350ml（4902234000002）</option>
+                  </select>
+                </div>
+
+                <!-- ロット -->
+                <div class="field">
+                  <label>ロット<span class="req">*</span></label>
+                  <select>
+                    <option selected>FDB-L11-001（期限: 2026-07-10 / 在庫: 480本）</option>
+                    <option>FDB-L11-NOEXP（期限なし / 在庫: 120本）</option>
+                  </select>
+                </div>
+
+                <!-- 移動先ロケーション -->
+                <div class="field">
+                  <label>移動先ロケーション<span class="req">*</span></label>
+                  <input type="text" placeholder="例: FDB-C-02-02-1">
+                  <div class="hint">バーコードスキャンまたは手入力</div>
+                </div>
+
+                <!-- 数量 -->
+                <div class="field">
+                  <label>移動数量<span class="req">*</span></label>
+                  <div class="qty-row">
+                    <button class="qty-btn">−</button>
+                    <input type="number" class="qty-input" value="100">
+                    <button class="qty-btn">+</button>
+                    <span class="qty-max">最大 480 本</span>
+                  </div>
+                </div>
+
+                <!-- 移動理由 -->
+                <div class="field">
+                  <label>移動理由<span class="req">*</span></label>
+                  <div class="reason-grid">
+                    <div class="reason-opt selected">棚替え</div>
+                    <div class="reason-opt">ピッキング補充</div>
+                    <div class="reason-opt">在庫整理</div>
+                    <div class="reason-opt">その他</div>
+                  </div>
+                </div>
+
+                <!-- メモ -->
+                <div class="field">
+                  <label>メモ（任意）</label>
+                  <textarea rows="2" placeholder="作業メモを入力..."></textarea>
+                </div>
+
+              </div>
+              <div class="action-bar">
+                <button class="btn sm">リセット</button>
+                <button class="btn sm primary">在庫移動を実行</button>
+              </div>
+            </div>
+
+            <!-- 確認プレビュー -->
+            <div class="card">
+              <div class="card-header">確認プレビュー</div>
+              <div class="card-body">
+                <table class="preview-table">
+                  <tr>
+                    <td class="pt-key">移動元</td>
+                    <td class="pt-val mono">FDB-C-02-01-1</td>
+                  </tr>
+                  <tr>
+                    <td class="pt-key">移動先</td>
+                    <td class="pt-val" style="color:var(--c-text-mute)">— 未選択 —</td>
+                  </tr>
+                  <tr>
+                    <td class="pt-key">商品</td>
+                    <td class="pt-val">FDB-001 / みかんジュース 200ml</td>
+                  </tr>
+                  <tr>
+                    <td class="pt-key">ロット</td>
+                    <td class="pt-val mono">FDB-L11-001</td>
+                  </tr>
+                  <tr>
+                    <td class="pt-key">移動数量</td>
+                    <td class="pt-val"><span style="font-size:16px;font-family:var(--f-mono);color:var(--c-accent);font-weight:700">100</span> 本</td>
+                  </tr>
+                  <tr>
+                    <td class="pt-key">移動後在庫</td>
+                    <td class="pt-val">元: 480 → <b>380</b>本 ／ 先: 0 → <b>100</b>本</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: 移動履歴 -->
+          <div class="right-panel">
+            <div class="card" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+              <div class="card-header">
+                移動履歴
+                <span class="meta">直近30件</span>
+              </div>
+              <div class="card-body" style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px 14px;">
+
+                <div class="filter-row">
+                  <select>
+                    <option>全タイプ</option>
+                    <option>移動</option>
+                    <option>出庫</option>
+                    <option>調整</option>
+                  </select>
+                  <select>
+                    <option>本日</option>
+                    <option>直近7日</option>
+                    <option>30日</option>
+                  </select>
+                  <select>
+                    <option>全荷主</option>
+                    <option>FDB（富士食品）</option>
+                    <option>TKY（東京アパレル）</option>
+                  </select>
+                  <div class="stats"><b>8</b> 件</div>
+                  <button class="btn sm">CSV出力</button>
+                </div>
+
+                <div style="flex:1;overflow-y:auto;">
+                  <table class="list">
+                    <thead>
+                      <tr>
+                        <th>日時</th>
+                        <th>種別</th>
+                        <th>移動元</th>
+                        <th>移動先</th>
+                        <th>商品 / SKU</th>
+                        <th>ロット</th>
+                        <th class="right">数量</th>
+                        <th>移動理由</th>
+                        <th>担当者</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="mono" style="white-space:nowrap">15:42</td>
+                        <td><span class="pill accent">移動</span></td>
+                        <td class="mono">TKY-A-01-01-1</td>
+                        <td class="mono">TKY-A-02-01-1</td>
+                        <td>TKY-001 / Tシャツ（白・M）</td>
+                        <td class="mono">—</td>
+                        <td class="right num">50 枚</td>
+                        <td>棚替え</td>
+                        <td>田中</td>
+                      </tr>
+                      <tr>
+                        <td class="mono">14:20</td>
+                        <td><span class="pill">出庫</span></td>
+                        <td class="mono">FDB-C-02-01-1</td>
+                        <td class="mono">出庫ゾーン</td>
+                        <td>FDB-001 / みかんジュース 200ml</td>
+                        <td class="mono">FDB-L11-001</td>
+                        <td class="right num">240 本</td>
+                        <td>出荷</td>
+                        <td>佐藤</td>
+                      </tr>
+                      <tr>
+                        <td class="mono">12:05</td>
+                        <td><span class="pill warn">調整</span></td>
+                        <td class="mono">PRC-E-01-01-1</td>
+                        <td class="mono">—</td>
+                        <td>PRC-001 / センサーユニット</td>
+                        <td class="mono">—</td>
+                        <td class="right num" style="color:var(--c-alert)">−3 台</td>
+                        <td>棚卸差異</td>
+                        <td>鈴木</td>
+                      </tr>
+                      <tr>
+                        <td class="mono">10:33</td>
+                        <td><span class="pill accent">移動</span></td>
+                        <td class="mono">RECV-01</td>
+                        <td class="mono">TKY-A-01-02-1</td>
+                        <td>TKY-002 / Tシャツ（白・L）</td>
+                        <td class="mono">—</td>
+                        <td class="right num">120 枚</td>
+                        <td>棚入れ</td>
+                        <td>山田</td>
+                      </tr>
+                      <tr>
+                        <td class="mono">09:15</td>
+                        <td><span class="pill accent">移動</span></td>
+                        <td class="mono">INSP-01</td>
+                        <td class="mono">FDB-C-02-02-1</td>
+                        <td>FDB-002 / りんごジュース 350ml</td>
+                        <td class="mono">FDB-L12-003</td>
+                        <td class="right num">320 本</td>
+                        <td>棚入れ</td>
+                        <td>田中</td>
+                      </tr>
+                      <tr>
+                        <td class="mono">08:52</td>
+                        <td><span class="pill">出庫</span></td>
+                        <td class="mono">TKY-A-03-01-1</td>
+                        <td class="mono">出庫ゾーン</td>
+                        <td>TKY-001 / Tシャツ（白・M）</td>
+                        <td class="mono">—</td>
+                        <td class="right num">30 枚</td>
+                        <td>出荷</td>
+                        <td>佐藤</td>
+                      </tr>
+                      <tr style="opacity:.55">
+                        <td class="mono" style="white-space:nowrap">17:30<br><span style="font-size:10px;color:var(--c-text-sub)">昨日</span></td>
+                        <td><span class="pill accent">移動</span></td>
+                        <td class="mono">RECV-01</td>
+                        <td class="mono">PRC-E-01-01-1</td>
+                        <td>PRC-001 / センサーユニット</td>
+                        <td class="mono">—</td>
+                        <td class="right num">15 台</td>
+                        <td>棚入れ</td>
+                        <td>鈴木</td>
+                      </tr>
+                      <tr style="opacity:.55">
+                        <td class="mono" style="white-space:nowrap">09:04<br><span style="font-size:10px;color:var(--c-text-sub)">昨日</span></td>
+                        <td><span class="pill accent">移動</span></td>
+                        <td class="mono">FDB-C-01-01-1</td>
+                        <td class="mono">FDB-C-03-01-1</td>
+                        <td>FDB-001 / みかんジュース 200ml</td>
+                        <td class="mono">FDB-L10-002</td>
+                        <td class="right num">200 本</td>
+                        <td>在庫整理</td>
+                        <td>山田</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
