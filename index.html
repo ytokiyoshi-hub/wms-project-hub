@@ -1542,6 +1542,28 @@ const screenList = document.getElementById('screen-list');
 const deviceLabel = {pc:'PC',ht:'HT',mobile:'Mobile',portal:'Portal'};
 const deviceTagClass = {pc:'tag-pc',ht:'tag-ht',mobile:'tag-mobile',portal:'tag-portal'};
 
+// 画面数を動的に更新
+(function updateScreenCounts() {
+  const total = screens.length;
+  const byDevice = screens.reduce((acc, s) => { acc[s.device] = (acc[s.device]||0)+1; return acc; }, {});
+  // ナビバッジ
+  const navBadge = document.querySelector('[data-page="screens"] .badge');
+  if (navBadge) navBadge.textContent = total;
+  // KPIカード
+  const kpiVal = document.querySelector('.kpi .val');
+  if (kpiVal && kpiVal.closest('.kpi').querySelector('.lbl')?.textContent.includes('画面')) {
+    kpiVal.textContent = total;
+    const delta = kpiVal.nextElementSibling;
+    if (delta) delta.textContent = Object.entries(byDevice).map(([k,v])=>`${deviceLabel[k]||k} ${v}`).join(' / ');
+  }
+  // タブラベル
+  document.querySelectorAll('[data-screen-tab]').forEach(tab => {
+    const dev = tab.dataset.screenTab;
+    const cnt = dev === 'all' ? total : (byDevice[dev]||0);
+    tab.textContent = dev === 'all' ? `すべて (${cnt})` : `${deviceLabel[dev]||dev} (${cnt})`;
+  });
+})();
+
 function renderScreens(filter, search) {
   screenList.innerHTML = '';
   const filtered = screens.filter(s => {
