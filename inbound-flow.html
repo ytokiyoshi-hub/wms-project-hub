@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMS 入荷業務フロー 操作画面モック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#1a6c3a; --c-ok-lt:#e6f4ec;
+    --c-warn:#7a4a00; --c-warn-lt:#fff3cd;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .flow-arrow { max-width:1500px; margin:0 auto 12px; display:flex; align-items:center; gap:8px; color:#a0a4ad; font-size:12px; }
+  .flow-arrow .step { background:#353944; border:1px solid #4a4f5c; padding:6px 14px; color:#c8ccd4; font-size:12px; font-weight:500; }
+  .flow-arrow .arrow { color:#4a4f5c; font-size:18px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge { display:inline-block; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .section-divider .badge-new { background:#1a3a5c; color:#fff; }
+  .section-divider .badge-alert { background:#b8002e; color:#fff; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  /* HT端末フレーム */
+  .ht-wrap { display:flex; justify-content:center; padding:20px 0; }
+  .ht-device { width:280px; background:#1a1c22; border:3px solid #2a2d35; border-radius:18px 18px 22px 22px; padding:14px 10px 16px; box-shadow:0 16px 40px rgba(0,0,0,0.5); position:relative; }
+  .ht-device .brand { position:absolute; top:4px; left:12px; font-size:7px; color:#555; font-weight:600; }
+  .ht-device .model { position:absolute; top:4px; right:12px; font-size:7px; color:#555; font-family:var(--f-mono); }
+  .ht-screen { width:100%; aspect-ratio:480/800; background:var(--c-bg); border:1px solid #444; margin-bottom:10px; display:flex; flex-direction:column; overflow:hidden; }
+  .ht-statusbar { background:#1a1c22; color:#c8ccd4; height:14px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; font-size:8px; font-family:var(--f-mono); flex-shrink:0; }
+  .ht-header { background:var(--c-accent); color:#fff; height:24px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; flex-shrink:0; justify-content:space-between; }
+  .ht-header.alert-header { background:var(--c-alert); }
+  .ht-header.ok-header { background:var(--c-ok); }
+  .ht-header .scr-id { font-family:var(--f-mono); font-size:9px; opacity:0.7; }
+  .ht-body { flex:1; padding:8px; overflow:hidden; background:var(--c-base); display:flex; flex-direction:column; gap:6px; }
+  .ht-key-labels { background:#1a1c22; color:#fff; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; flex-shrink:0; border-top:1px solid #444; }
+  .ht-key-labels .key-lbl { padding:5px 3px; text-align:center; border-right:1px solid #444; font-size:8px; line-height:1.2; }
+  .ht-key-labels .key-lbl:last-child { border-right:none; }
+  .ht-key-labels .key-lbl.primary { background:var(--c-accent-dk); }
+  .ht-key-labels .key-lbl.alert-key { background:var(--c-alert); }
+  .ht-key-labels .key-lbl .fn { display:block; font-family:var(--f-mono); font-weight:700; font-size:9px; color:#ffd966; }
+  .ht-key-labels .key-lbl.disabled { opacity:0.3; }
+
+  .ht-keypad { background:#2a2d35; border:1px solid #444; padding:8px 6px; display:flex; flex-direction:column; gap:5px; }
+  .ht-keypad .row { display:flex; gap:4px; justify-content:center; }
+  .pkey { background:#1a1c22; color:#fff; border:1px solid #555; padding:3px 0; font-size:9px; font-family:var(--f-mono); font-weight:600; text-align:center; flex:1; border-radius:2px; }
+  .pkey.f1 { color:#ffd966; }
+  .pkey.scan { background:var(--c-alert); flex:2; padding:5px 0; }
+  .ht-dpad-row { display:flex; align-items:center; gap:6px; }
+  .ht-dpad { width:54px; height:54px; flex-shrink:0; background:#1a1c22; border:1px solid #444; border-radius:50%; position:relative; }
+  .ht-dpad::before { content:""; position:absolute; inset:6px; background: linear-gradient(0deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%), linear-gradient(90deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%); border-radius:50%; }
+  .ht-dpad .ok { position:absolute; inset:0; margin:auto; width:14px; height:14px; background:#555; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:6px; color:#fff; font-weight:600; }
+  .ht-num-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:3px; flex:1; }
+
+  .device-label { color:#fff; font-size:13px; font-weight:600; text-align:center; margin-top:8px; }
+  .device-label .id { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+  .device-label .desc-text { font-size:11px; color:#a0a4ad; font-weight:400; margin-top:4px; max-width:280px; line-height:1.5; }
+
+  /* ステップ進捗バー */
+  .step-progress { display:flex; gap:0; border:1px solid var(--c-line-dk); }
+  .step-progress .step { flex:1; padding:5px 3px; text-align:center; font-size:9px; color:var(--c-text-sub); border-right:1px solid var(--c-line-dk); background:var(--c-bg); }
+  .step-progress .step:last-child { border-right:none; }
+  .step-progress .step.done { background:var(--c-text-sub); color:#fff; }
+  .step-progress .step.current { background:var(--c-accent); color:#fff; font-weight:600; }
+  .step-progress .step .num { font-family:var(--f-mono); font-weight:700; margin-right:3px; }
+
+  /* 進捗バー */
+  .pbar { height:5px; background:var(--c-line); position:relative; }
+  .pbar .fill { height:100%; background:var(--c-accent); }
+  .pbar .fill.alert { background:var(--c-alert); }
+  .pbar .fill.ok { background:var(--c-ok); }
+
+  /* ロケーション大表示 */
+  .location-display { border:2px solid var(--c-accent); padding:8px; text-align:center; background:var(--c-accent-lt); }
+  .location-display .zone { font-size:9px; color:var(--c-text-sub); margin-bottom:2px; }
+  .location-display .loc-code { font-size:22px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent); letter-spacing:2px; }
+  .location-display .loc-detail { font-size:9px; color:var(--c-text-sub); margin-top:2px; }
+
+  /* 差異行 */
+  .diff-row { display:flex; border-bottom:1px solid var(--c-line); font-size:9px; }
+  .diff-row .col { padding:4px 5px; }
+  .diff-row.has-diff { background:var(--c-alert-lt); }
+  .diff-row.has-diff .diff-num { color:var(--c-alert); font-weight:700; font-family:var(--f-mono); }
+
+  /* スキャン待機表示 */
+  .scan-prompt { background:#1a1c22; color:#ffd966; text-align:center; padding:6px; font-size:9px; font-family:var(--f-mono); margin-top:auto; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">WMS 入荷業務フロー 操作画面</h1>
+<p class="subtitle">Phase 9-UI2 / 入荷予定一覧 → 検品入力 → 差異処理 → 棚入れ指示</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#SCR-401"><b>SCR-401</b>入荷予定一覧</a>
+  <a href="#SCR-402"><b>SCR-402</b>検品入力</a>
+  <a href="#SCR-403"><b>SCR-403</b>差異処理</a>
+  <a href="#SCR-404"><b>SCR-404</b>棚入れ指示</a>
+</div>
+
+<div class="flow-arrow">
+  <span class="step">SCR-401 入荷予定一覧</span>
+  <span class="arrow">→</span>
+  <span class="step">SCR-402 検品入力</span>
+  <span class="arrow">→</span>
+  <span class="step">SCR-403 差異処理</span>
+  <span class="arrow">→</span>
+  <span class="step">SCR-404 棚入れ指示</span>
+</div>
+
+<!-- ============================== -->
+<!-- SCR-401 入荷予定一覧           -->
+<!-- ============================== -->
+<div class="section-divider" id="SCR-401">
+  <span class="num">SCR-401</span>入荷予定一覧（ASN選択）
+  <span class="badge badge-new">STEP 1</span>
+</div>
+<div class="desc">
+  <b>役割</b>：本日入荷予定の ASN（事前出荷通知）一覧を表示。担当者がASNを選択して検品を開始する。<br>
+  <b>主なデータ</b>：ASN番号 / 荷主名 / 品目数 / 入荷予定数 / ステータス（未着手 / 検品中 / 検品済）
+</div>
+
+<div style="display:flex; gap:24px; justify-content:center; flex-wrap:wrap; max-width:1500px; margin:0 auto;">
+
+  <!-- 未着手ASNあり -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">DENSO</div><div class="model">BHT-1700</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WMS-HT v2.1</span><span>08:45 ████</span></div>
+        <div class="ht-header">
+          <span>入荷予定一覧</span>
+          <span class="scr-id">SCR-401</span>
+        </div>
+        <div class="ht-body">
+          <div style="font-size:9px; color:var(--c-text-sub);">2026-05-10 / 3件</div>
+
+          <!-- ASN 1: 選択中 -->
+          <div style="border:2px solid var(--c-accent); background:var(--c-accent-lt); padding:5px 7px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent);">ASN-260510-001</div>
+              <div style="font-size:9px; background:var(--c-accent); color:#fff; padding:1px 6px;">未着手</div>
+            </div>
+            <div style="font-size:10px; font-weight:600; margin-top:2px;">全国食品流通株式会社</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:1px;">5品目 / 320ケース / 全数検品</div>
+          </div>
+
+          <!-- ASN 2 -->
+          <div style="border:1px solid var(--c-line); background:var(--c-base); padding:5px 7px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-size:10px; font-weight:600; font-family:var(--f-mono);">ASN-260510-002</div>
+              <div style="font-size:9px; background:#6c7280; color:#fff; padding:1px 6px;">検品中</div>
+            </div>
+            <div style="font-size:10px; font-weight:600; margin-top:2px;">農林水産商事</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:1px;">3品目 / 1,250ケース</div>
+          </div>
+
+          <!-- ASN 3 -->
+          <div style="border:1px solid var(--c-line); background:var(--c-bg); padding:5px 7px; opacity:0.7;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-size:10px; font-weight:600; font-family:var(--f-mono);">ASN-260510-003</div>
+              <div style="font-size:9px; background:var(--c-ok); color:#fff; padding:1px 6px;">検品済</div>
+            </div>
+            <div style="font-size:10px; font-weight:600; margin-top:2px;">ODMメーカー</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:1px;">8品目 / 2,100個</div>
+          </div>
+
+          <div class="scan-prompt">▼ ASNラベルをスキャンまたはF3で選択</div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>メニュー</div>
+          <div class="key-lbl"><span class="fn">F2</span>絞込み</div>
+          <div class="key-lbl primary"><span class="fn">F3</span>検品開始</div>
+          <div class="key-lbl"><span class="fn">F4</span>更新</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+          <div class="pkey scan">SCAN</div>
+          <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-num-grid">
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+          </div>
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">SCR-401</span>入荷予定一覧
+      <div class="desc-text">ASNを選択またはラベルをスキャンして検品を開始</div>
+    </div>
+  </div>
+
+</div><!-- /flex -->
+
+
+<!-- ============================== -->
+<!-- SCR-402 検品入力画面           -->
+<!-- ============================== -->
+<div class="section-divider" id="SCR-402">
+  <span class="num">SCR-402</span>検品入力（バーコードスキャン）
+  <span class="badge badge-new">STEP 2</span>
+</div>
+<div class="desc">
+  <b>役割</b>：バーコードスキャン or 手入力で品目ごとに実入荷数を確認する。ロット番号・製造日・賞味期限を同時記録。<br>
+  <b>確定事項</b>：inspection_results に記録 / 全数・抜取・サインオンリーの各モード対応
+</div>
+
+<div style="display:flex; gap:24px; justify-content:center; flex-wrap:wrap; max-width:1500px; margin:0 auto;">
+
+  <!-- STEP1: 品目確認 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">DENSO</div><div class="model">BHT-1700</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WMS-HT v2.1</span><span>09:02 ████</span></div>
+        <div class="ht-header">
+          <span>検品入力</span>
+          <span class="scr-id">SCR-402-1</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step current"><span class="num">1</span>品目確認</div>
+            <div class="step"><span class="num">2</span>スキャン</div>
+            <div class="step"><span class="num">3</span>完了確認</div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub);">ASN-260510-001 / 全国食品流通</div>
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px; font-weight:600;">品目 1 / 5</div>
+
+          <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
+            <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent);">SKU-10045</div>
+            <div style="font-size:11px; font-weight:600; margin-top:2px;">だし醤油 1L × 24本</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:3px; display:flex; justify-content:space-between;">
+              <span>予定数</span>
+              <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-text);">300 ケース</span>
+            </div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:1px; display:flex; justify-content:space-between;">
+              <span>検品方式</span>
+              <span style="font-weight:600; color:var(--c-accent);">全数検品</span>
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub);">ロット入力（スキャンまたは手入力）</div>
+          <div style="border:1px solid var(--c-accent); padding:5px 8px; background:var(--c-base); font-size:11px; font-family:var(--f-mono); color:var(--c-accent-dk);">L260510-01_</div>
+
+          <div class="scan-prompt">▼ ロットバーコードをスキャン</div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>戻る</div>
+          <div class="key-lbl"><span class="fn">F2</span>手入力</div>
+          <div class="key-lbl primary"><span class="fn">F3</span>次へ</div>
+          <div class="key-lbl"><span class="fn">F4</span>スキップ</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+          <div class="pkey scan">SCAN</div>
+          <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-num-grid">
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+          </div>
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">SCR-402-1</span>検品 STEP1
+      <div class="desc-text">品目とロットを確認してスキャン開始</div>
+    </div>
+  </div>
+
+  <!-- STEP2: スキャン中 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">DENSO</div><div class="model">BHT-1700</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WMS-HT v2.1</span><span>09:28 ████</span></div>
+        <div class="ht-header">
+          <span>検品入力：スキャン中</span>
+          <span class="scr-id">SCR-402-2</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step done"><span class="num">1</span>品目確認</div>
+            <div class="step current"><span class="num">2</span>スキャン</div>
+            <div class="step"><span class="num">3</span>完了確認</div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub);">SKU-10045 / だし醤油 1L</div>
+
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:5px 8px;">
+            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+              <div style="font-size:9px; color:var(--c-text-sub);">スキャン済：</div>
+              <div style="font-size:15px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent);">247 <span style="font-size:10px; color:var(--c-text-sub); font-weight:400;">/ 300</span></div>
+            </div>
+            <div class="pbar" style="margin-top:4px;">
+              <div class="fill" style="width:82%;"></div>
+            </div>
+            <div style="font-size:8px; color:var(--c-text-sub); margin-top:2px; text-align:right;">残 53 ケース</div>
+          </div>
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 8px; font-size:9px;">
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--c-text-sub);">ロット</span><span style="font-family:var(--f-mono); font-weight:600;">L260510-01</span></div>
+            <div style="display:flex; justify-content:space-between; margin-top:2px;"><span style="color:var(--c-text-sub);">製造</span><span style="font-family:var(--f-mono);">2026-05-08</span></div>
+            <div style="display:flex; justify-content:space-between; margin-top:2px;"><span style="color:var(--c-text-sub);">賞味</span><span style="font-family:var(--f-mono);">2027-05-07</span></div>
+          </div>
+
+          <div style="font-size:9px; text-align:center; color:var(--c-ok); font-weight:600;">&#10003; 正常スキャン ×3</div>
+
+          <div class="scan-prompt">▼ バーコードをスキャン（続行）</div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>戻る</div>
+          <div class="key-lbl"><span class="fn">F2</span>NG入力</div>
+          <div class="key-lbl primary"><span class="fn">F3</span>次品目</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+          <div class="pkey scan">SCAN</div>
+          <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-num-grid">
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+          </div>
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">SCR-402-2</span>検品 STEP2
+      <div class="desc-text">スキャンして数量を積み上げ。完了でF3</div>
+    </div>
+  </div>
+
+  <!-- STEP3: 完了確認（差異あり） -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">DENSO</div><div class="model">BHT-1700</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WMS-HT v2.1</span><span>10:05 ████</span></div>
+        <div class="ht-header">
+          <span>検品：完了確認</span>
+          <span class="scr-id">SCR-402-3</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step done"><span class="num">1</span>品目確認</div>
+            <div class="step done"><span class="num">2</span>スキャン</div>
+            <div class="step current"><span class="num">3</span>完了確認</div>
+          </div>
+
+          <div style="border:1px solid var(--c-line); font-size:9px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; background:var(--c-bg); padding:3px 5px; font-size:8px; color:var(--c-text-sub); border-bottom:1px solid var(--c-line);">
+              <div>品目</div><div style="text-align:right;">予定</div><div style="text-align:right;">実績</div><div style="text-align:right;">差異</div>
+            </div>
+            <div class="diff-row">
+              <div class="col" style="flex:2; font-size:9px;">だし醤油 1L</div>
+              <div class="col" style="font-family:var(--f-mono); text-align:right;">300</div>
+              <div class="col" style="font-family:var(--f-mono); text-align:right;">300</div>
+              <div class="col" style="font-family:var(--f-mono); text-align:right; color:var(--c-ok);">±0</div>
+            </div>
+            <div class="diff-row has-diff">
+              <div class="col" style="flex:2; font-size:9px;">めんつゆ 500ml</div>
+              <div class="col" style="font-family:var(--f-mono); text-align:right;">200</div>
+              <div class="col" style="font-family:var(--f-mono); text-align:right;">180</div>
+              <div class="col diff-num" style="text-align:right;">-20</div>
+            </div>
+            <div class="diff-row">
+              <div class="col" style="flex:2; font-size:9px;">ポン酢 360ml</div>
+              <div class="col" style="font-family:var(--f-mono); text-align:right;">150</div>
+              <div class="col" style="font-family:var(--f-mono); text-align:right;">150</div>
+              <div class="col" style="font-family:var(--f-mono); text-align:right; color:var(--c-ok);">±0</div>
+            </div>
+          </div>
+
+          <div style="background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:5px 8px; font-size:9px;">
+            <div style="color:var(--c-alert); font-weight:600;">差異 1件検出</div>
+            <div style="margin-top:2px; color:var(--c-text-sub);">差異処理が必要です。F3で差異処理画面へ進んでください。</div>
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>戻る</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>—</div>
+          <div class="key-lbl alert-key"><span class="fn">F3</span>差異処理</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+          <div class="pkey scan">SCAN</div>
+          <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-num-grid">
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-alert);">ENT</div>
+          </div>
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">SCR-402-3</span>検品 STEP3
+      <div class="desc-text">差異があればF3で差異処理へ。なければ棚入れへ</div>
+    </div>
+  </div>
+
+</div><!-- /flex -->
+
+
+<!-- ============================== -->
+<!-- SCR-403 差異処理画面           -->
+<!-- ============================== -->
+<div class="section-divider" id="SCR-403">
+  <span class="num">SCR-403</span>差異処理（予定数 vs 実数の承認）
+  <span class="badge badge-alert">STEP 3 / 差異あり時のみ</span>
+</div>
+<div class="desc">
+  <b>役割</b>：検品で発生した差異（不足・超過・破損）を品目ごとに記録し、処理方法（受入 / 返品 / 調整）を選択して承認する。<br>
+  <b>確定事項</b>：inspection_discrepancies に記録 / 荷主へのアラート自動送信 / 上長承認フロー連携
+</div>
+
+<div style="display:flex; gap:24px; justify-content:center; flex-wrap:wrap; max-width:1500px; margin:0 auto;">
+
+  <!-- 差異一覧・処理選択 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">DENSO</div><div class="model">BHT-1700</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WMS-HT v2.1</span><span>10:07 ████</span></div>
+        <div class="ht-header alert-header">
+          <span>差異処理</span>
+          <span class="scr-id">SCR-403-1</span>
+        </div>
+        <div class="ht-body">
+          <div style="font-size:9px; color:var(--c-alert); font-weight:600; display:flex; align-items:center; gap:4px;">
+            <span>⚠</span><span>差異品目 1件</span>
+          </div>
+
+          <div style="border:2px solid var(--c-alert); background:var(--c-alert-lt); padding:6px 8px;">
+            <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-alert);">SKU-10098</div>
+            <div style="font-size:11px; font-weight:600; margin-top:1px;">めんつゆ 500ml</div>
+            <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:9px;">
+              <span style="color:var(--c-text-sub);">予定数</span>
+              <span style="font-family:var(--f-mono);">200 ケース</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:1px; font-size:9px;">
+              <span style="color:var(--c-text-sub);">実績数</span>
+              <span style="font-family:var(--f-mono); font-weight:700;">180 ケース</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:1px; font-size:10px; border-top:1px solid var(--c-alert); padding-top:3px; margin-top:3px;">
+              <span style="color:var(--c-alert); font-weight:600;">差異</span>
+              <span style="font-family:var(--f-mono); font-weight:700; color:var(--c-alert);">-20 ケース</span>
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub);">処理方法を選択：</div>
+          <div style="display:flex; flex-direction:column; gap:3px;">
+            <div style="border:2px solid var(--c-accent); background:var(--c-accent-lt); padding:4px 8px; font-size:10px; font-weight:600; color:var(--c-accent);">
+              ● 数量調整して受入（180ケースで入庫）
+            </div>
+            <div style="border:1px solid var(--c-line); padding:4px 8px; font-size:10px; color:var(--c-text-sub);">
+              ○ 後日補充待ち（20ケース保留）
+            </div>
+            <div style="border:1px solid var(--c-line); padding:4px 8px; font-size:10px; color:var(--c-text-sub);">
+              ○ 全量返品
+            </div>
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>戻る</div>
+          <div class="key-lbl"><span class="fn">F2</span>理由変更</div>
+          <div class="key-lbl primary"><span class="fn">F3</span>承認</div>
+          <div class="key-lbl"><span class="fn">F4</span>上長送付</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+          <div class="pkey scan">SCAN</div>
+          <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-num-grid">
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+          </div>
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">SCR-403-1</span>差異処理
+      <div class="desc-text">処理方法を選択してF3で承認。上長確認が必要な場合はF4</div>
+    </div>
+  </div>
+
+  <!-- 差異承認完了 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">DENSO</div><div class="model">BHT-1700</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WMS-HT v2.1</span><span>10:09 ████</span></div>
+        <div class="ht-header ok-header">
+          <span>差異処理：承認完了</span>
+          <span class="scr-id">SCR-403-2</span>
+        </div>
+        <div class="ht-body">
+          <div style="text-align:center; padding:10px 0;">
+            <div style="font-size:32px; color:var(--c-ok);">✓</div>
+            <div style="font-size:11px; font-weight:600; color:var(--c-ok); margin-top:4px;">差異処理完了</div>
+          </div>
+
+          <div style="border:1px solid var(--c-line); font-size:9px;">
+            <div style="display:flex; border-bottom:1px solid var(--c-line);">
+              <div style="width:64px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">処理方法</div>
+              <div style="padding:4px 6px; font-weight:600; color:var(--c-accent);">数量調整受入</div>
+            </div>
+            <div style="display:flex; border-bottom:1px solid var(--c-line);">
+              <div style="width:64px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">受入数量</div>
+              <div style="padding:4px 6px; font-family:var(--f-mono); font-weight:600;">180 ケース</div>
+            </div>
+            <div style="display:flex; border-bottom:1px solid var(--c-line);">
+              <div style="width:64px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">差異記録</div>
+              <div style="padding:4px 6px; font-family:var(--f-mono);">ID: DISC-2650</div>
+            </div>
+            <div style="display:flex;">
+              <div style="width:64px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">次のステップ</div>
+              <div style="padding:4px 6px; font-weight:600; color:var(--c-accent);">棚入れ指示</div>
+            </div>
+          </div>
+
+          <div class="scan-prompt" style="background:var(--c-ok);">▶ F3で棚入れ指示へ進む</div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>一覧に戻る</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>—</div>
+          <div class="key-lbl primary"><span class="fn">F3</span>棚入れへ</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+          <div class="pkey scan">SCAN</div>
+          <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-num-grid">
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-ok);">ENT</div>
+          </div>
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">SCR-403-2</span>差異承認完了
+      <div class="desc-text">差異が記録されました。F3で棚入れへ進む</div>
+    </div>
+  </div>
+
+</div><!-- /flex -->
+
+
+<!-- ============================== -->
+<!-- SCR-404 棚入れ指示画面         -->
+<!-- ============================== -->
+<div class="section-divider" id="SCR-404">
+  <span class="num">SCR-404</span>棚入れ指示（ロケーション誘導）
+  <span class="badge badge-new">STEP 4</span>
+</div>
+<div class="desc">
+  <b>役割</b>：検品完了品をどのロケーションに格納するかをHT画面で1品目ずつ指示する。ロケーションバーコードをスキャンして格納確認。<br>
+  <b>確定事項</b>：inventory_locations に格納記録 / ロケーション満空チェック / FIFO管理対応
+</div>
+
+<div style="display:flex; gap:24px; justify-content:center; flex-wrap:wrap; max-width:1500px; margin:0 auto;">
+
+  <!-- 棚入れ指示（品目ごと） -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">DENSO</div><div class="model">BHT-1700</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WMS-HT v2.1</span><span>10:14 ████</span></div>
+        <div class="ht-header">
+          <span>棚入れ指示</span>
+          <span class="scr-id">SCR-404-1</span>
+        </div>
+        <div class="ht-body">
+          <div style="font-size:9px; color:var(--c-text-sub);">品目 1 / 5 / ASN-260510-001</div>
+
+          <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px 8px;">
+            <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent);">SKU-10045</div>
+            <div style="font-size:11px; font-weight:600; margin-top:1px;">だし醤油 1L × 24本</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px; display:flex; justify-content:space-between;">
+              <span>格納数量</span>
+              <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-text);">300 ケース</span>
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub);">格納先ロケーション：</div>
+          <div class="location-display">
+            <div class="zone">Cゾーン / 食品エリア</div>
+            <div class="loc-code">C-05-B-03</div>
+            <div class="loc-detail">5番ラック / B列 / 3段目</div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub);">空スペース: <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-ok);">350ケース分 ✓</span></div>
+
+          <div class="scan-prompt">▼ ロケーションバーコードをスキャン</div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>戻る</div>
+          <div class="key-lbl"><span class="fn">F2</span>場所変更</div>
+          <div class="key-lbl primary"><span class="fn">F3</span>完了</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+          <div class="pkey scan">SCAN</div>
+          <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-num-grid">
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+          </div>
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">SCR-404-1</span>棚入れ指示
+      <div class="desc-text">指定ロケーションに格納してバーコードをスキャン</div>
+    </div>
+  </div>
+
+  <!-- 棚入れ完了 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">DENSO</div><div class="model">BHT-1700</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WMS-HT v2.1</span><span>10:48 ████</span></div>
+        <div class="ht-header ok-header">
+          <span>棚入れ：全件完了</span>
+          <span class="scr-id">SCR-404-2</span>
+        </div>
+        <div class="ht-body">
+          <div style="text-align:center; padding:8px 0;">
+            <div style="font-size:32px; color:var(--c-ok);">✓</div>
+            <div style="font-size:11px; font-weight:600; color:var(--c-ok); margin-top:4px;">棚入れ完了</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">ASN-260510-001</div>
+          </div>
+
+          <div style="border:1px solid var(--c-line); font-size:9px;">
+            <div style="display:flex; border-bottom:1px solid var(--c-line);">
+              <div style="width:60px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">品目</div>
+              <div style="padding:4px 6px; font-family:var(--f-mono);">5品目</div>
+            </div>
+            <div style="display:flex; border-bottom:1px solid var(--c-line);">
+              <div style="width:60px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">格納数</div>
+              <div style="padding:4px 6px; font-family:var(--f-mono); font-weight:600; color:var(--c-ok);">1,270 ケース</div>
+            </div>
+            <div style="display:flex; border-bottom:1px solid var(--c-line);">
+              <div style="width:60px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">差異処理</div>
+              <div style="padding:4px 6px; font-weight:600; color:var(--c-warn);">1件（-20）</div>
+            </div>
+            <div style="display:flex;">
+              <div style="width:60px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">完了時刻</div>
+              <div style="padding:4px 6px; font-family:var(--f-mono);">10:48</div>
+            </div>
+          </div>
+
+          <div class="scan-prompt" style="background:var(--c-accent);">▶ F3で一覧に戻る / F4で次のASNへ</div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl disabled"><span class="fn">F1</span>—</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>—</div>
+          <div class="key-lbl primary"><span class="fn">F3</span>一覧に戻る</div>
+          <div class="key-lbl"><span class="fn">F4</span>次のASN</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+          <div class="pkey scan">SCAN</div>
+          <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-num-grid">
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-ok);">ENT</div>
+          </div>
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">SCR-404-2</span>棚入れ完了
+      <div class="desc-text">全品目の格納が完了。F3で一覧、F4で次のASN</div>
+    </div>
+  </div>
+
+</div><!-- /flex -->
+
+<div style="max-width:1500px; margin:48px auto 0; background:#353944; border:1px solid #4a4f5c; padding:16px 20px; color:#c8ccd4; font-size:12px; line-height:1.8;">
+  <div style="color:#fff; font-weight:600; margin-bottom:8px;">設計メモ</div>
+  <div>・SCR-401→402→403→404 の4画面フローで入荷業務を完結</div>
+  <div>・差異なし時: SCR-402-3 からSCR-403をスキップして直接SCR-404へ</div>
+  <div>・ロケーションコード体系: [ゾーン]-[ラック番号]-[列]-[段] (例: C-05-B-03)</div>
+  <div>・ロケーション表示を画面中央大文字で強調（HT作業員が数メートル離れても確認できるサイズ感を想定）</div>
+  <div>・差異処理は上長承認フロー連携を F4 キーで実装予定</div>
+  <div>・Phase 9-UI2 / にーちゃん作成 / 2026-05-10</div>
+</div>
+
+</body>
+</html>

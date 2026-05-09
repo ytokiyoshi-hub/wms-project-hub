@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WMS | 在庫移動</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+      --accent: #1a3a5c; --text: #1e293b; --muted: #64748b;
+      --success: #059669; --warning: #d97706; --danger: #dc2626;
+      --info: #0284c7; --radius: 10px; --shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    .site-header { background: var(--accent); color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .site-header h1 { font-size: 15px; font-weight: 700; }
+    .header-nav { display: flex; gap: 4px; margin-left: auto; }
+    .header-nav a { color: rgba(255,255,255,.65); text-decoration: none; font-size: 12px; padding: 4px 10px; border-radius: 6px; }
+    .header-nav a:hover { background: rgba(255,255,255,.15); color: #fff; }
+    .header-nav a.active { background: rgba(255,255,255,.2); color: #fff; }
+
+    /* Layout */
+    .layout { display: flex; flex: 1; gap: 20px; padding: 20px; flex-wrap: wrap; }
+
+    /* Form Panel */
+    .form-panel { flex: 1; min-width: 360px; max-width: 600px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* History Panel */
+    .history-panel { flex: 1; min-width: 300px; }
+
+    /* Card */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .card-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+    .card-header h2 { font-size: 13px; font-weight: 700; color: var(--accent); }
+    .card-body { padding: 16px; }
+
+    /* Movement flow visual */
+    .move-flow { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .move-box { flex: 1; border: 2px dashed var(--border); border-radius: var(--radius); padding: 12px 14px; text-align: center; }
+    .move-box .move-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+    .move-box .move-val { font-size: 13px; font-weight: 700; color: var(--accent); font-family: monospace; }
+    .move-box.filled { border-color: var(--info); border-style: solid; background: #f0f9ff; }
+    .move-box.filled .move-val { color: var(--info); }
+    .move-arrow { font-size: 22px; color: var(--muted); flex-shrink: 0; }
+
+    /* Form fields */
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .04em; }
+    .field-required::after { content: " *"; color: var(--danger); }
+    .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-size: 13px; color: var(--text); background: var(--surface); outline: none; }
+    .field input:focus, .field select:focus { border-color: var(--info); box-shadow: 0 0 0 2px rgba(2,132,199,.12); }
+    .field-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* Current stock info */
+    .stock-info { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 10px 14px; margin-top: 6px; font-size: 12px; }
+    .stock-info .stock-row { display: flex; justify-content: space-between; align-items: center; }
+    .stock-info .stock-key { color: var(--muted); }
+    .stock-info .stock-val { font-weight: 700; color: var(--accent); }
+
+    /* Lot selector */
+    .lot-selector { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+    .lot-option { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+    .lot-option:hover { background: var(--bg); }
+    .lot-option.selected { border-color: var(--info); background: #f0f9ff; }
+    .lot-option input[type=radio] { flex-shrink: 0; }
+    .lot-option .lot-code { font-family: monospace; font-size: 11px; font-weight: 700; color: #0369a1; }
+    .lot-option .lot-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .lot-option .lot-qty { margin-left: auto; font-weight: 700; font-size: 13px; }
+
+    /* Qty input with stepper */
+    .qty-wrap { display: flex; align-items: center; gap: 8px; }
+    .qty-btn { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+    .qty-input { text-align: center; width: 80px; height: 32px; font-size: 16px; font-weight: 700; border: 1px solid var(--border); border-radius: 6px; }
+    .qty-max { font-size: 11px; color: var(--muted); }
+
+    /* Reason selector */
+    .reason-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
+    .reason-opt { padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; cursor: pointer; text-align: center; }
+    .reason-opt:hover { background: var(--bg); }
+    .reason-opt.selected { border-color: var(--accent); background: #eff6ff; color: var(--accent); font-weight: 700; }
+
+    /* Submit area */
+    .submit-area { display: flex; gap: 8px; padding: 14px 16px; border-top: 1px solid var(--border); align-items: center; }
+    .btn { padding: 8px 20px; border-radius: 6px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .btn-primary { background: var(--accent); color: #fff; flex: 1; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-danger { background: var(--danger); color: #fff; }
+
+    /* History list */
+    .history-list { max-height: 580px; overflow-y: auto; }
+    .history-item { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:hover { background: var(--bg); }
+    .history-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; background: #dbeafe; color: #1e40af; }
+    .history-icon.out { background: #fee2e2; color: #991b1b; }
+    .history-icon.adj { background: #fef3c7; color: #92400e; }
+    .history-content { flex: 1; min-width: 0; }
+    .history-title { font-size: 12px; font-weight: 700; }
+    .history-detail { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .history-time { font-size: 10px; color: var(--muted); white-space: nowrap; flex-shrink: 0; text-align: right; }
+    .badge { display: inline-flex; padding: 1px 7px; border-radius: 99px; font-size: 10px; font-weight: 700; }
+    .badge-move { background: #dbeafe; color: #1e40af; }
+    .badge-adj  { background: #fef3c7; color: #92400e; }
+    .badge-out  { background: #fee2e2; color: #991b1b; }
+    .code { font-family: monospace; font-size: 10px; background: #f1f5f9; padding: 1px 5px; border-radius: 3px; }
+
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+      .form-panel, .history-panel { min-width: 0; max-width: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>WMS | 在庫移動</h1>
+    <nav class="header-nav">
+      <a href="inventory-list.html">在庫一覧</a>
+      <a href="location-management.html">ロケーション</a>
+      <a href="stock-movement.html" class="active">在庫移動</a>
+      <a href="lot-serial-trace.html">ロット・シリアル照会</a>
+      <a href="index.html">← 戻る</a>
+    </nav>
+  </header>
+
+  <div class="layout">
+
+    <!-- Form Panel -->
+    <div class="form-panel">
+
+      <!-- 移動フロービジュアル -->
+      <div class="card">
+        <div class="card-header">
+          <h2>在庫移動指示入力</h2>
+        </div>
+        <div class="card-body">
+
+          <!-- 移動フロー表示 -->
+          <div class="move-flow">
+            <div class="move-box filled">
+              <div class="move-label">移動元</div>
+              <div class="move-val">FDB-C-02-01-1</div>
+              <div style="font-size:11px;color:#0369a1;margin-top:2px">FDB倉庫 C棟 2-1-1</div>
+            </div>
+            <div class="move-arrow">→</div>
+            <div class="move-box">
+              <div class="move-label">移動先</div>
+              <div class="move-val" style="color:var(--muted)">未選択</div>
+            </div>
+          </div>
+
+          <!-- 移動元ロケーション -->
+          <div class="field">
+            <label class="field-required">移動元ロケーション</label>
+            <input type="text" value="FDB-C-02-01-1" placeholder="例: TKY-A-01-01-1">
+            <div class="field-hint">バーコードスキャンまたは手入力</div>
+            <div class="stock-info">
+              <div class="stock-row"><span class="stock-key">ロケーション名</span><span class="stock-val">FDB倉庫 C棟 通路2 棚1 1段1列</span></div>
+              <div class="stock-row"><span class="stock-key">荷主</span><span class="stock-val">FDB（富士食品）</span></div>
+              <div class="stock-row"><span class="stock-key">タイプ</span><span class="stock-val">保管</span></div>
+            </div>
+          </div>
+
+          <!-- SKU選択 -->
+          <div class="field">
+            <label class="field-required">SKU / 商品</label>
+            <select>
+              <option value="" disabled>選択してください</option>
+              <option selected>FDB-001 — みかんジュース 200ml（4902234000001）</option>
+              <option>FDB-002 — りんごジュース 350ml（4902234000002）</option>
+            </select>
+          </div>
+
+          <!-- ロット選択 -->
+          <div class="field">
+            <label class="field-required">ロット選択</label>
+            <div class="lot-selector">
+              <div class="lot-option selected">
+                <input type="radio" name="lot" checked>
+                <div>
+                  <div class="lot-code">FDB-L11-001</div>
+                  <div class="lot-detail">期限: 2026-07-10</div>
+                </div>
+                <div class="lot-qty">480<span style="font-size:11px;font-weight:400;color:var(--muted)"> 本</span></div>
+              </div>
+              <div class="lot-option">
+                <input type="radio" name="lot">
+                <div>
+                  <div class="lot-code">FDB-L11-NOEXP</div>
+                  <div class="lot-detail">期限なし</div>
+                </div>
+                <div class="lot-qty">120<span style="font-size:11px;font-weight:400;color:var(--muted)"> 本</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 移動先ロケーション -->
+          <div class="field">
+            <label class="field-required">移動先ロケーション</label>
+            <input type="text" placeholder="例: FDB-C-02-02-1">
+            <div class="field-hint">バーコードスキャンまたは手入力</div>
+          </div>
+
+          <!-- 数量 -->
+          <div class="field">
+            <label class="field-required">移動数量</label>
+            <div class="qty-wrap">
+              <button class="qty-btn">−</button>
+              <input type="number" class="qty-input" value="100">
+              <button class="qty-btn">+</button>
+              <span class="qty-max">/ 480 本（最大）</span>
+            </div>
+          </div>
+
+          <!-- 移動理由 -->
+          <div class="field">
+            <label>移動理由</label>
+            <div class="reason-grid">
+              <div class="reason-opt selected">棚替え</div>
+              <div class="reason-opt">ピッキング補充</div>
+              <div class="reason-opt">在庫整理</div>
+              <div class="reason-opt">その他</div>
+            </div>
+          </div>
+
+          <!-- メモ -->
+          <div class="field">
+            <label>メモ（任意）</label>
+            <textarea rows="2" placeholder="作業メモを入力..."></textarea>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-area">
+          <button class="btn btn-outline">リセット</button>
+          <button class="btn btn-primary">在庫移動を実行</button>
+        </div>
+      </div>
+
+      <!-- 確認プレビュー -->
+      <div class="card">
+        <div class="card-header">
+          <h2>確認プレビュー</h2>
+        </div>
+        <div class="card-body" style="font-size:12px">
+          <table style="width:100%;border-collapse:collapse">
+            <tr>
+              <td style="padding:5px 0;color:var(--muted);width:120px">移動元</td>
+              <td style="padding:5px 0;font-family:monospace;font-weight:700;color:var(--accent)">FDB-C-02-01-1</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 0;color:var(--muted)">移動先</td>
+              <td style="padding:5px 0;color:var(--muted)">— 未選択 —</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 0;color:var(--muted)">商品</td>
+              <td style="padding:5px 0">FDB-001 / みかんジュース 200ml</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 0;color:var(--muted)">ロット</td>
+              <td style="padding:5px 0;font-family:monospace">FDB-L11-001</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 0;color:var(--muted)">移動数量</td>
+              <td style="padding:5px 0;font-weight:700;color:var(--accent);font-size:15px">100 <span style="font-size:12px;font-weight:400;color:var(--muted)">本</span></td>
+            </tr>
+            <tr>
+              <td style="padding:5px 0;color:var(--muted)">移動後在庫</td>
+              <td style="padding:5px 0">元: 480→380本 / 先: 0→100本</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Panel -->
+    <div class="history-panel">
+      <div class="card" style="height:100%">
+        <div class="card-header" style="justify-content:space-between">
+          <h2>移動履歴</h2>
+          <div style="display:flex;gap:6px">
+            <select style="border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--text)">
+              <option>全タイプ</option>
+              <option>移動</option>
+              <option>出庫</option>
+              <option>調整</option>
+            </select>
+            <select style="border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--text)">
+              <option>本日</option>
+              <option>直近7日</option>
+              <option>30日</option>
+            </select>
+          </div>
+        </div>
+        <div class="history-list">
+          <div class="history-item">
+            <div class="history-icon">→</div>
+            <div class="history-content">
+              <div class="history-title">在庫移動 <span class="badge badge-move">移動</span></div>
+              <div class="history-detail">
+                <span class="code">TKY-A-01-01-1</span> → <span class="code">TKY-A-02-01-1</span>
+              </div>
+              <div class="history-detail">TKY-001 / Tシャツ（白・M） × <b>50枚</b> / 棚替え</div>
+            </div>
+            <div class="history-time">15:42<br>田中</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon out">↑</div>
+            <div class="history-content">
+              <div class="history-title">出庫 <span class="badge badge-out">出庫</span></div>
+              <div class="history-detail">
+                <span class="code">FDB-C-02-01-1</span> → 出庫ゾーン
+              </div>
+              <div class="history-detail">FDB-001 / みかんジュース × <b>240本</b> / WO-20260510-008</div>
+            </div>
+            <div class="history-time">14:20<br>佐藤</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon adj">±</div>
+            <div class="history-content">
+              <div class="history-title">在庫調整 <span class="badge badge-adj">調整</span></div>
+              <div class="history-detail"><span class="code">PRC-E-01-01-1</span></div>
+              <div class="history-detail">PRC-001 / センサーユニット: 38台 → 35台（棚卸差異）</div>
+            </div>
+            <div class="history-time">12:05<br>鈴木</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon">→</div>
+            <div class="history-content">
+              <div class="history-title">在庫移動 <span class="badge badge-move">移動</span></div>
+              <div class="history-detail">
+                <span class="code">RECV-01</span> → <span class="code">TKY-A-01-02-1</span>
+              </div>
+              <div class="history-detail">TKY-002 / Tシャツ（白・L） × <b>120枚</b> / 棚入れ</div>
+            </div>
+            <div class="history-time">10:33<br>山田</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon">→</div>
+            <div class="history-content">
+              <div class="history-title">在庫移動 <span class="badge badge-move">移動</span></div>
+              <div class="history-detail">
+                <span class="code">INSP-01</span> → <span class="code">FDB-C-02-02-1</span>
+              </div>
+              <div class="history-detail">FDB-002 / りんごジュース 350ml × <b>320本</b> / ロットFDB-L12-003 / 棚入れ</div>
+            </div>
+            <div class="history-time">09:15<br>田中</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon out">↑</div>
+            <div class="history-content">
+              <div class="history-title">出庫 <span class="badge badge-out">出庫</span></div>
+              <div class="history-detail">
+                <span class="code">TKY-A-03-01-1</span> → 出庫ゾーン
+              </div>
+              <div class="history-detail">TKY-001 / Tシャツ（白・M） × <b>30枚</b> / WO-20260510-005</div>
+            </div>
+            <div class="history-time">08:52<br>佐藤</div>
+          </div>
+          <div class="history-item" style="opacity:.6">
+            <div class="history-icon">→</div>
+            <div class="history-content">
+              <div class="history-title">在庫移動 <span class="badge badge-move">移動</span> <span style="font-size:10px;color:var(--muted)">昨日</span></div>
+              <div class="history-detail"><span class="code">RECV-01</span> → <span class="code">PRC-E-01-01-1</span></div>
+              <div class="history-detail">PRC-001 / センサーユニット × <b>15台</b> / 棚入れ</div>
+            </div>
+            <div class="history-time">17:30<br>鈴木</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

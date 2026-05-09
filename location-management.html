@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WMS | ロケーション管理</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+      --accent: #1a3a5c; --text: #1e293b; --muted: #64748b;
+      --success: #059669; --warning: #d97706; --danger: #dc2626;
+      --info: #0284c7; --radius: 10px; --shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    .site-header { background: var(--accent); color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .site-header h1 { font-size: 15px; font-weight: 700; }
+    .header-nav { display: flex; gap: 4px; margin-left: auto; }
+    .header-nav a { color: rgba(255,255,255,.65); text-decoration: none; font-size: 12px; padding: 4px 10px; border-radius: 6px; transition: background .15s; }
+    .header-nav a:hover { background: rgba(255,255,255,.15); color: #fff; }
+    .header-nav a.active { background: rgba(255,255,255,.2); color: #fff; }
+
+    /* Layout */
+    .layout { display: flex; flex: 1; min-height: 0; height: calc(100vh - 50px); }
+
+    /* Sidebar */
+    .sidebar { width: 260px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
+    .sidebar-header { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+    .sidebar-header h2 { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .warehouse-section { padding: 10px 0; }
+    .warehouse-label { display: flex; align-items: center; justify-content: space-between; padding: 6px 16px; font-size: 12px; font-weight: 700; color: var(--accent); cursor: pointer; }
+    .warehouse-label:hover { background: var(--bg); }
+    .warehouse-label .toggle { font-size: 10px; color: var(--muted); }
+    .area-item { display: flex; align-items: center; gap: 8px; padding: 5px 16px 5px 28px; font-size: 12px; color: var(--text); cursor: pointer; border-left: 3px solid transparent; }
+    .area-item:hover { background: var(--bg); }
+    .area-item.active { background: #eff6ff; border-left-color: var(--info); color: #1e40af; font-weight: 600; }
+    .area-item .count { margin-left: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 99px; font-size: 10px; padding: 1px 7px; color: var(--muted); }
+    .area-item.active .count { background: #dbeafe; border-color: #bfdbfe; color: #1e40af; }
+    .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); margin-top: auto; }
+
+    /* Main */
+    .main { flex: 1; overflow: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* Section header */
+    .section-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .section-title { font-size: 15px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+    .section-title .breadcrumb { font-size: 12px; font-weight: 400; color: var(--muted); }
+    .section-actions { display: flex; gap: 6px; }
+
+    /* Stats row */
+    .stats-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+    .stat-chip .stat-num { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .stat-chip .stat-label { font-size: 11px; color: var(--muted); }
+
+    /* Table */
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .table-toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .filter-input { border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 12px; color: var(--text); background: var(--bg); outline: none; }
+    .filter-input:focus { border-color: var(--info); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { background: #f1f5f9; padding: 8px 12px; text-align: left; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .td-code { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--accent); }
+    .td-path { font-size: 11px; color: var(--muted); }
+    .td-capacity { text-align: center; }
+
+    /* Type badges */
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 700; }
+    .type-storage    { background: #dbeafe; color: #1e40af; }
+    .type-picking    { background: #d1fae5; color: #065f46; }
+    .type-staging    { background: #fef3c7; color: #92400e; }
+    .type-inspection { background: #f3e8ff; color: #6b21a8; }
+    .type-shipping   { background: #fee2e2; color: #991b1b; }
+    .status-active   { background: #d1fae5; color: #065f46; }
+    .status-frozen   { background: #dbeafe; color: #1e40af; }
+    .status-inactive { background: #f1f5f9; color: #94a3b8; }
+
+    /* Capacity bar */
+    .cap-bar { width: 80px; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; display: inline-block; vertical-align: middle; }
+    .cap-fill { height: 100%; border-radius: 99px; background: var(--success); }
+    .cap-fill.high { background: var(--warning); }
+    .cap-fill.full { background: var(--danger); }
+
+    /* Btn */
+    .btn { padding: 6px 14px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-sm { padding: 4px 10px; font-size: 11px; }
+    .btn-icon { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+
+    /* Edit modal hint */
+    .modal-hint { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--radius); padding: 12px 16px; font-size: 12px; color: #92400e; display: flex; align-items: center; gap: 8px; }
+
+    @media (max-width: 768px) {
+      .sidebar { width: 220px; }
+      .layout { flex-direction: column; height: auto; }
+      .sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>WMS | ロケーション管理</h1>
+    <nav class="header-nav">
+      <a href="inventory-list.html">在庫一覧</a>
+      <a href="location-management.html" class="active">ロケーション</a>
+      <a href="stock-movement.html">在庫移動</a>
+      <a href="lot-serial-trace.html">ロット・シリアル照会</a>
+      <a href="index.html">← 戻る</a>
+    </nav>
+  </header>
+
+  <div class="layout">
+
+    <!-- Sidebar: 倉庫・エリア階層 -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>倉庫 / エリア</h2>
+      </div>
+
+      <!-- TKY倉庫 -->
+      <div class="warehouse-section">
+        <div class="warehouse-label">
+          <span>TKY倉庫（東京）</span>
+          <span class="toggle">▾</span>
+        </div>
+        <div class="area-item active">
+          A棟（保管）
+          <span class="count">42</span>
+        </div>
+        <div class="area-item">
+          B棟（保管）
+          <span class="count">38</span>
+        </div>
+        <div class="area-item">
+          ピッキングエリア
+          <span class="count">12</span>
+        </div>
+        <div class="area-item">
+          入荷ステージング
+          <span class="count">4</span>
+        </div>
+        <div class="area-item">
+          検品エリア
+          <span class="count">3</span>
+        </div>
+      </div>
+
+      <!-- FDB倉庫 -->
+      <div class="warehouse-section" style="border-top: 1px solid var(--border)">
+        <div class="warehouse-label">
+          <span>FDB倉庫（食品）</span>
+          <span class="toggle">▾</span>
+        </div>
+        <div class="area-item">
+          C棟（常温保管）
+          <span class="count">55</span>
+        </div>
+        <div class="area-item">
+          D棟（冷蔵）
+          <span class="count">28</span>
+        </div>
+        <div class="area-item">
+          ピッキングエリア
+          <span class="count">8</span>
+        </div>
+      </div>
+
+      <!-- PRC倉庫 -->
+      <div class="warehouse-section" style="border-top: 1px solid var(--border)">
+        <div class="warehouse-label">
+          <span>PRC倉庫（精密機器）</span>
+          <span class="toggle">▾</span>
+        </div>
+        <div class="area-item">
+          E棟（精密保管）
+          <span class="count">24</span>
+        </div>
+        <div class="area-item">
+          ピッキングエリア
+          <span class="count">6</span>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-primary" style="width:100%;font-size:12px">+ 倉庫/エリア追加</button>
+      </div>
+    </aside>
+
+    <!-- Main: ロケーション一覧 -->
+    <main class="main">
+      <div class="section-header">
+        <div class="section-title">
+          TKY倉庫 A棟（保管）
+          <span class="breadcrumb">TKY倉庫 › A棟</span>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-outline btn-sm">CSV出力</button>
+          <button class="btn btn-primary btn-sm">+ ロケーション追加</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-chip">
+          <div class="stat-num">42</div>
+          <div class="stat-label">総ロケーション数</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-num" style="color:var(--success)">38</div>
+          <div class="stat-label">使用中</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-num" style="color:var(--muted)">3</div>
+          <div class="stat-label">空き</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-num" style="color:var(--info)">1</div>
+          <div class="stat-label">フリーズ</div>
+        </div>
+      </div>
+
+      <!-- 編集中バナー（モックUI） -->
+      <div class="modal-hint">
+        ⚠ ロケーションコードは変更不可（入庫データと紐付き）。メモ・タイプ・ステータスのみ編集可能。
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input type="text" class="filter-input" placeholder="ロケーションコードで検索..." style="flex:1;min-width:160px">
+          <select class="filter-input">
+            <option>全タイプ</option>
+            <option>保管</option>
+            <option>ピッキング</option>
+            <option>入荷</option>
+            <option>検品</option>
+          </select>
+          <select class="filter-input">
+            <option>全ステータス</option>
+            <option>active</option>
+            <option>frozen</option>
+          </select>
+          <label style="font-size:12px;color:var(--muted);white-space:nowrap">
+            <input type="checkbox"> 空きのみ
+          </label>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ロケーションコード</th>
+              <th>棟/エリア/棚/段/列</th>
+              <th>タイプ</th>
+              <th>荷主専用</th>
+              <th>使用率</th>
+              <th>在庫数</th>
+              <th>ステータス</th>
+              <th>メモ</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-code">TKY-A-01-01-1</td>
+              <td class="td-path">A棟 › 通路1 › 棚1 › 1段 › 1列</td>
+              <td><span class="badge type-storage">保管</span></td>
+              <td><span class="badge" style="background:#f1f5f9;color:#64748b">TKY専用</span></td>
+              <td class="td-capacity">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="cap-bar"><div class="cap-fill" style="width:65%"></div></div>
+                  <span style="font-size:11px">65%</span>
+                </div>
+              </td>
+              <td>250枚</td>
+              <td><span class="badge status-active">active</span></td>
+              <td style="font-size:11px;color:var(--muted)">—</td>
+              <td><button class="btn-icon">編集</button></td>
+            </tr>
+            <tr>
+              <td class="td-code">TKY-A-01-01-2</td>
+              <td class="td-path">A棟 › 通路1 › 棚1 › 1段 › 2列</td>
+              <td><span class="badge type-storage">保管</span></td>
+              <td><span class="badge" style="background:#f1f5f9;color:#64748b">TKY専用</span></td>
+              <td class="td-capacity">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="cap-bar"><div class="cap-fill" style="width:45%"></div></div>
+                  <span style="font-size:11px">45%</span>
+                </div>
+              </td>
+              <td>180枚</td>
+              <td><span class="badge status-active">active</span></td>
+              <td style="font-size:11px;color:var(--muted)">—</td>
+              <td><button class="btn-icon">編集</button></td>
+            </tr>
+            <tr>
+              <td class="td-code">TKY-A-01-02-1</td>
+              <td class="td-path">A棟 › 通路1 › 棚1 › 2段 › 1列</td>
+              <td><span class="badge type-storage">保管</span></td>
+              <td><span class="badge" style="background:#f1f5f9;color:#64748b">TKY専用</span></td>
+              <td class="td-capacity">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="cap-bar"><div class="cap-fill high" style="width:95%"></div></div>
+                  <span style="font-size:11px;color:var(--warning)">95%</span>
+                </div>
+              </td>
+              <td>8枚</td>
+              <td><span class="badge status-active">active</span></td>
+              <td style="font-size:11px;color:var(--warning)">在庫不足注意</td>
+              <td><button class="btn-icon">編集</button></td>
+            </tr>
+            <tr>
+              <td class="td-code">TKY-A-02-01-1</td>
+              <td class="td-path">A棟 › 通路2 › 棚1 › 1段 › 1列</td>
+              <td><span class="badge type-storage">保管</span></td>
+              <td><span class="badge" style="background:#f1f5f9;color:#64748b">共用</span></td>
+              <td class="td-capacity">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="cap-bar"><div class="cap-fill" style="width:0%"></div></div>
+                  <span style="font-size:11px;color:var(--muted)">空き</span>
+                </div>
+              </td>
+              <td>—</td>
+              <td><span class="badge status-active">active</span></td>
+              <td style="font-size:11px;color:var(--muted)">—</td>
+              <td><button class="btn-icon">編集</button></td>
+            </tr>
+            <tr>
+              <td class="td-code">TKY-A-03-01-1</td>
+              <td class="td-path">A棟 › 通路3 › 棚1 › 1段 › 1列</td>
+              <td><span class="badge type-picking">ピッキング</span></td>
+              <td><span class="badge" style="background:#f1f5f9;color:#64748b">共用</span></td>
+              <td class="td-capacity">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="cap-bar"><div class="cap-fill" style="width:30%"></div></div>
+                  <span style="font-size:11px">30%</span>
+                </div>
+              </td>
+              <td>45枚</td>
+              <td><span class="badge status-active">active</span></td>
+              <td style="font-size:11px;color:var(--muted)">フォークリフト優先通路</td>
+              <td><button class="btn-icon">編集</button></td>
+            </tr>
+            <tr>
+              <td class="td-code">TKY-A-04-01-1</td>
+              <td class="td-path">A棟 › 通路4 › 棚1 › 1段 › 1列</td>
+              <td><span class="badge type-storage">保管</span></td>
+              <td><span class="badge" style="background:#f1f5f9;color:#64748b">TKY専用</span></td>
+              <td class="td-capacity">—</td>
+              <td>—</td>
+              <td><span class="badge status-frozen">frozen</span></td>
+              <td style="font-size:11px;color:var(--info)">棚修繕中（5/15まで）</td>
+              <td><button class="btn-icon">編集</button></td>
+            </tr>
+            <tr>
+              <td class="td-code">RECV-01</td>
+              <td class="td-path">A棟 › 入荷ステージング</td>
+              <td><span class="badge type-staging">入荷</span></td>
+              <td><span class="badge" style="background:#f1f5f9;color:#64748b">共用</span></td>
+              <td class="td-capacity">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="cap-bar"><div class="cap-fill" style="width:20%"></div></div>
+                  <span style="font-size:11px">20%</span>
+                </div>
+              </td>
+              <td>42個</td>
+              <td><span class="badge status-active">active</span></td>
+              <td style="font-size:11px;color:var(--muted)">入荷検品待ち品置き場</td>
+              <td><button class="btn-icon">編集</button></td>
+            </tr>
+            <tr>
+              <td class="td-code">INSP-01</td>
+              <td class="td-path">A棟 › 検品エリア</td>
+              <td><span class="badge type-inspection">検品</span></td>
+              <td><span class="badge" style="background:#f1f5f9;color:#64748b">共用</span></td>
+              <td class="td-capacity">
+                <div style="display:flex;align-items:center;gap:6px">
+                  <div class="cap-bar"><div class="cap-fill" style="width:10%"></div></div>
+                  <span style="font-size:11px">10%</span>
+                </div>
+              </td>
+              <td>8個</td>
+              <td><span class="badge status-active">active</span></td>
+              <td style="font-size:11px;color:var(--muted)">—</td>
+              <td><button class="btn-icon">編集</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>

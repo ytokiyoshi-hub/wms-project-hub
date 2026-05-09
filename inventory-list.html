@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WMS | 在庫一覧</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+      --accent: #1a3a5c; --text: #1e293b; --muted: #64748b;
+      --success: #059669; --warning: #d97706; --danger: #dc2626;
+      --info: #0284c7; --radius: 10px; --shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    .site-header { background: var(--accent); color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .site-header h1 { font-size: 15px; font-weight: 700; }
+    .header-nav { display: flex; gap: 4px; margin-left: auto; }
+    .header-nav a { color: rgba(255,255,255,.65); text-decoration: none; font-size: 12px; padding: 4px 10px; border-radius: 6px; transition: background .15s; }
+    .header-nav a:hover { background: rgba(255,255,255,.15); color: #fff; }
+    .header-nav a.active { background: rgba(255,255,255,.2); color: #fff; }
+
+    /* Filter Bar */
+    .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .filter-group { display: flex; align-items: center; gap: 6px; }
+    .filter-group label { font-size: 11px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+    .filter-input { border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 12px; color: var(--text); background: var(--bg); outline: none; min-width: 120px; }
+    .filter-input:focus { border-color: var(--info); box-shadow: 0 0 0 2px rgba(2,132,199,.15); }
+    .btn { padding: 6px 14px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { background: var(--bg); }
+    .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+    /* Summary Cards */
+    .summary-bar { display: flex; gap: 12px; padding: 12px 20px; flex-wrap: wrap; }
+    .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; flex: 1; min-width: 140px; }
+    .summary-card .label { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+    .summary-card .value { font-size: 22px; font-weight: 700; color: var(--accent); }
+    .summary-card .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .summary-card.warn .value { color: var(--warning); }
+    .summary-card.danger .value { color: var(--danger); }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 0; padding: 0 20px; border-bottom: 1px solid var(--border); background: var(--surface); }
+    .tab { padding: 10px 16px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s; white-space: nowrap; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--info); border-bottom-color: var(--info); }
+
+    /* Main */
+    .main { flex: 1; padding: 16px 20px; overflow-x: auto; }
+
+    /* Table */
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .table-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .table-head-title { font-size: 12px; font-weight: 700; color: var(--muted); }
+    .table-actions { display: flex; gap: 6px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { background: #f1f5f9; padding: 8px 12px; text-align: left; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+    .td-sku { font-weight: 700; color: var(--accent); font-family: monospace; font-size: 11px; }
+    .td-name { line-height: 1.4; }
+    .td-name .sub { font-size: 11px; color: var(--muted); }
+    .td-loc { font-family: monospace; font-size: 11px; }
+    .td-qty { text-align: right; font-weight: 700; }
+    .td-qty .unit { font-weight: 400; color: var(--muted); margin-left: 2px; }
+    .td-actions { white-space: nowrap; display: flex; gap: 4px; }
+
+    /* Badges */
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 700; }
+    .badge-active   { background: #d1fae5; color: #065f46; }
+    .badge-frozen   { background: #dbeafe; color: #1e40af; }
+    .badge-shortage { background: #fee2e2; color: #991b1b; }
+    .badge-lot      { background: #fef3c7; color: #92400e; }
+    .badge-serial   { background: #f3e8ff; color: #6b21a8; }
+    .badge-owner    { background: #f1f5f9; color: #475569; border: 1px solid var(--border); }
+
+    /* Lot number */
+    .lot-num { font-family: monospace; font-size: 11px; color: #0369a1; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; }
+    .lot-expiry { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .lot-expiry.warn { color: var(--warning); font-weight: 600; }
+    .lot-expiry.expired { color: var(--danger); font-weight: 600; }
+
+    /* Pagination */
+    .pagination { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+    .page-btns { display: flex; gap: 4px; }
+    .page-btn { padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); cursor: pointer; font-size: 12px; }
+    .page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .page-btn:hover:not(.active) { background: var(--bg); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .summary-bar { padding: 10px 12px; }
+      .main { padding: 12px; }
+      .filter-bar { padding: 10px 12px; }
+      th, td { padding: 7px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>WMS | 在庫管理</h1>
+    <nav class="header-nav">
+      <a href="inventory-list.html" class="active">在庫一覧</a>
+      <a href="location-management.html">ロケーション</a>
+      <a href="stock-movement.html">在庫移動</a>
+      <a href="lot-serial-trace.html">ロット・シリアル照会</a>
+      <a href="index.html">← 戻る</a>
+    </nav>
+  </header>
+
+  <!-- Summary Cards -->
+  <div class="summary-bar">
+    <div class="summary-card">
+      <div class="label">総在庫SKU数</div>
+      <div class="value">148</div>
+      <div class="sub">3荷主 / 6倉庫</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">総在庫数量</div>
+      <div class="value">4,823</div>
+      <div class="sub">本日入荷 +142</div>
+    </div>
+    <div class="summary-card warn">
+      <div class="label">在庫不足アラート</div>
+      <div class="value">3</div>
+      <div class="sub">最低在庫数以下</div>
+    </div>
+    <div class="summary-card danger">
+      <div class="label">期限切れ近接</div>
+      <div class="value">7</div>
+      <div class="sub">30日以内に期限</div>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>荷主</label>
+      <select class="filter-input">
+        <option>全て</option>
+        <option>TKY（東京アパレル）</option>
+        <option>FDB（富士食品）</option>
+        <option>PRC（精密機器）</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>SKU / 商品名</label>
+      <input type="text" class="filter-input" placeholder="例: TKY-001" style="min-width:160px;">
+    </div>
+    <div class="filter-group">
+      <label>ロケーション</label>
+      <input type="text" class="filter-input" placeholder="例: TKY-A-01">
+    </div>
+    <div class="filter-group">
+      <label>ロット番号</label>
+      <input type="text" class="filter-input" placeholder="例: FDB-L11-001">
+    </div>
+    <div class="filter-group">
+      <label>ステータス</label>
+      <select class="filter-input">
+        <option>全て</option>
+        <option>通常</option>
+        <option>不足</option>
+        <option>フリーズ</option>
+      </select>
+    </div>
+    <button class="btn btn-primary">絞り込み</button>
+    <button class="btn btn-outline">クリア</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active">全在庫 (148)</div>
+    <div class="tab">ロット管理品 (62)</div>
+    <div class="tab">シリアル管理品 (14)</div>
+    <div class="tab">アラート (10)</div>
+  </div>
+
+  <!-- Table -->
+  <main class="main">
+    <div class="table-wrap">
+      <div class="table-head">
+        <span class="table-head-title">148件中 1〜20件を表示</span>
+        <div class="table-actions">
+          <button class="btn btn-outline btn-sm">CSV出力</button>
+          <button class="btn btn-primary btn-sm">+ 在庫調整</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th><input type="checkbox"></th>
+            <th>SKUコード</th>
+            <th>商品名</th>
+            <th>荷主</th>
+            <th>ロケーション</th>
+            <th>ロット番号 / 期限</th>
+            <th>管理</th>
+            <th style="text-align:right">数量</th>
+            <th>ステータス</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td class="td-sku">TKY-001</td>
+            <td class="td-name">Tシャツ（白・M）<br><span class="sub">4901234000001</span></td>
+            <td><span class="badge badge-owner">TKY</span></td>
+            <td class="td-loc">TKY-A-01-01-1<br><span style="font-size:10px;color:var(--muted)">A棟 1番通路 1段 1列</span></td>
+            <td>—</td>
+            <td>—</td>
+            <td class="td-qty">250 <span class="unit">枚</span></td>
+            <td><span class="badge badge-active">通常</span></td>
+            <td class="td-actions">
+              <button class="btn btn-outline btn-sm">移動</button>
+              <button class="btn btn-outline btn-sm">詳細</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td class="td-sku">TKY-002</td>
+            <td class="td-name">Tシャツ（白・L）<br><span class="sub">4901234000002</span></td>
+            <td><span class="badge badge-owner">TKY</span></td>
+            <td class="td-loc">TKY-A-01-01-2</td>
+            <td>—</td>
+            <td>—</td>
+            <td class="td-qty">180 <span class="unit">枚</span></td>
+            <td><span class="badge badge-active">通常</span></td>
+            <td class="td-actions">
+              <button class="btn btn-outline btn-sm">移動</button>
+              <button class="btn btn-outline btn-sm">詳細</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td class="td-sku">TKY-003</td>
+            <td class="td-name">パーカー（黒・M）<br><span class="sub">4901234000003</span></td>
+            <td><span class="badge badge-owner">TKY</span></td>
+            <td class="td-loc">TKY-A-01-02-1</td>
+            <td>—</td>
+            <td>—</td>
+            <td class="td-qty" style="color:var(--danger);font-weight:700">8 <span class="unit">枚</span></td>
+            <td><span class="badge badge-shortage">不足</span></td>
+            <td class="td-actions">
+              <button class="btn btn-outline btn-sm">移動</button>
+              <button class="btn btn-outline btn-sm">詳細</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td class="td-sku">FDB-001</td>
+            <td class="td-name">みかんジュース 200ml<br><span class="sub">4902234000001</span></td>
+            <td><span class="badge badge-owner">FDB</span></td>
+            <td class="td-loc">FDB-C-02-01-1</td>
+            <td>
+              <span class="lot-num">FDB-L11-001</span>
+              <div class="lot-expiry">期限: 2026-07-10</div>
+            </td>
+            <td><span class="badge badge-lot">ロット</span></td>
+            <td class="td-qty">480 <span class="unit">本</span></td>
+            <td><span class="badge badge-active">通常</span></td>
+            <td class="td-actions">
+              <button class="btn btn-outline btn-sm">移動</button>
+              <button class="btn btn-outline btn-sm">詳細</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td class="td-sku">FDB-001</td>
+            <td class="td-name">みかんジュース 200ml<br><span class="sub">4902234000001</span></td>
+            <td><span class="badge badge-owner">FDB</span></td>
+            <td class="td-loc">FDB-C-02-01-2</td>
+            <td>
+              <span class="lot-num">FDB-L11-EXPIRED</span>
+              <div class="lot-expiry expired">期限切れ: 2024-01-01</div>
+            </td>
+            <td><span class="badge badge-lot">ロット</span></td>
+            <td class="td-qty" style="color:var(--danger)">120 <span class="unit">本</span></td>
+            <td><span class="badge badge-shortage">期限切れ</span></td>
+            <td class="td-actions">
+              <button class="btn btn-outline btn-sm">移動</button>
+              <button class="btn btn-outline btn-sm">詳細</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td class="td-sku">FDB-002</td>
+            <td class="td-name">りんごジュース 350ml<br><span class="sub">4902234000002</span></td>
+            <td><span class="badge badge-owner">FDB</span></td>
+            <td class="td-loc">FDB-C-02-02-1</td>
+            <td>
+              <span class="lot-num">FDB-L12-003</span>
+              <div class="lot-expiry warn">期限: 2026-06-05 ⚠</div>
+            </td>
+            <td><span class="badge badge-lot">ロット</span></td>
+            <td class="td-qty">320 <span class="unit">本</span></td>
+            <td><span class="badge badge-active">通常</span></td>
+            <td class="td-actions">
+              <button class="btn btn-outline btn-sm">移動</button>
+              <button class="btn btn-outline btn-sm">詳細</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td class="td-sku">PRC-001</td>
+            <td class="td-name">センサーユニット AX-10<br><span class="sub">4903234000001</span></td>
+            <td><span class="badge badge-owner">PRC</span></td>
+            <td class="td-loc">PRC-E-01-01-1</td>
+            <td>
+              <span class="lot-num">PRC-L01-2026A</span>
+              <div class="lot-expiry">期限なし</div>
+            </td>
+            <td><span class="badge badge-serial">シリアル</span></td>
+            <td class="td-qty">35 <span class="unit">台</span></td>
+            <td><span class="badge badge-active">通常</span></td>
+            <td class="td-actions">
+              <button class="btn btn-outline btn-sm">移動</button>
+              <button class="btn btn-outline btn-sm">詳細</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td class="td-sku">PRC-002</td>
+            <td class="td-name">制御基板 BX-50<br><span class="sub">4903234000002</span></td>
+            <td><span class="badge badge-owner">PRC</span></td>
+            <td class="td-loc">PRC-E-01-02-1</td>
+            <td>
+              <span class="lot-num">PRC-L02-2026A</span>
+              <div class="lot-expiry">期限なし</div>
+            </td>
+            <td><span class="badge badge-serial">シリアル</span></td>
+            <td class="td-qty">12 <span class="unit">台</span></td>
+            <td><span class="badge badge-frozen">フリーズ</span></td>
+            <td class="td-actions">
+              <button class="btn btn-outline btn-sm" disabled style="opacity:.4">移動不可</button>
+              <button class="btn btn-outline btn-sm">詳細</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span>148件中 1〜8件表示</span>
+        <div class="page-btns">
+          <button class="page-btn" disabled>&lt;</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <span style="padding:4px 6px;font-size:12px">...</span>
+          <button class="page-btn">8</button>
+          <button class="page-btn">&gt;</button>
+        </div>
+        <select class="filter-input" style="min-width:80px">
+          <option>20件</option>
+          <option>50件</option>
+          <option>100件</option>
+        </select>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

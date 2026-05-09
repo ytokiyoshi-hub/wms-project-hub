@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WMS | ロット・シリアル照会</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+      --accent: #1a3a5c; --text: #1e293b; --muted: #64748b;
+      --success: #059669; --warning: #d97706; --danger: #dc2626;
+      --info: #0284c7; --radius: 10px; --shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    .site-header { background: var(--accent); color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .site-header h1 { font-size: 15px; font-weight: 700; }
+    .header-nav { display: flex; gap: 4px; margin-left: auto; }
+    .header-nav a { color: rgba(255,255,255,.65); text-decoration: none; font-size: 12px; padding: 4px 10px; border-radius: 6px; }
+    .header-nav a:hover { background: rgba(255,255,255,.15); color: #fff; }
+    .header-nav a.active { background: rgba(255,255,255,.2); color: #fff; }
+
+    /* Search area */
+    .search-area { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 20px; }
+    .search-bar { display: flex; gap: 8px; align-items: center; max-width: 700px; }
+    .search-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .search-tab { padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); cursor: pointer; background: var(--bg); color: var(--muted); }
+    .search-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .search-input { flex: 1; border: 2px solid var(--accent); border-radius: 8px; padding: 9px 14px; font-size: 14px; color: var(--text); outline: none; }
+    .search-input:focus { box-shadow: 0 0 0 3px rgba(26,58,92,.1); }
+    .btn { padding: 8px 18px; border-radius: 8px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+    .search-hint { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+    /* Layout */
+    .layout { display: flex; flex: 1; gap: 20px; padding: 20px; flex-wrap: wrap; align-items: flex-start; }
+    .result-panel { flex: 2; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    .detail-panel { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+
+    /* Card */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .card-header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .card-header h2 { font-size: 13px; font-weight: 700; color: var(--accent); }
+    .card-body { padding: 16px; }
+
+    /* Lot info summary */
+    .lot-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .lot-item { }
+    .lot-item .key { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 3px; }
+    .lot-item .val { font-size: 13px; font-weight: 700; color: var(--text); }
+    .lot-item .val.code { font-family: monospace; color: var(--accent); }
+    .lot-item .val.warn { color: var(--warning); }
+    .lot-item .val.expired { color: var(--danger); }
+    .lot-item .val.ok { color: var(--success); }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before { content: ''; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+    .tl-item { position: relative; margin-bottom: 20px; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot { position: absolute; left: -24px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; top: 2px; border: 2px solid var(--surface); }
+    .tl-dot.receiving  { background: #3b82f6; }
+    .tl-dot.inspection { background: #8b5cf6; }
+    .tl-dot.putaway    { background: var(--success); }
+    .tl-dot.move       { background: var(--info); }
+    .tl-dot.picking    { background: var(--warning); }
+    .tl-dot.shipping   { background: var(--danger); }
+    .tl-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .tl-title { font-size: 13px; font-weight: 700; }
+    .tl-time { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .tl-body { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.6; }
+    .tl-body .hl { color: var(--text); font-weight: 600; }
+    .tl-body .loc { font-family: monospace; font-size: 11px; background: #f1f5f9; padding: 1px 6px; border-radius: 4px; color: var(--accent); }
+    .tl-tag { display: inline-flex; padding: 1px 7px; border-radius: 99px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+    .tag-recv { background: #dbeafe; color: #1e40af; }
+    .tag-insp { background: #f3e8ff; color: #6b21a8; }
+    .tag-put  { background: #d1fae5; color: #065f46; }
+    .tag-move { background: #e0f2fe; color: #0369a1; }
+    .tag-pick { background: #fef3c7; color: #92400e; }
+    .tag-ship { background: #fee2e2; color: #991b1b; }
+
+    /* Serial table */
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { background: #f1f5f9; padding: 7px 10px; text-align: left; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--border); }
+    td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .ser-code { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--accent); }
+
+    /* Status badges */
+    .badge { display: inline-flex; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 700; }
+    .badge-stock   { background: #d1fae5; color: #065f46; }
+    .badge-shipped { background: #fee2e2; color: #991b1b; }
+    .badge-insp    { background: #f3e8ff; color: #6b21a8; }
+
+    /* Detail panel info */
+    .info-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { color: var(--muted); }
+    .info-val { font-weight: 600; text-align: right; }
+    .info-val.code { font-family: monospace; color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .detail-panel { width: 100%; }
+      .lot-summary { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>WMS | ロット・シリアル照会</h1>
+    <nav class="header-nav">
+      <a href="inventory-list.html">在庫一覧</a>
+      <a href="location-management.html">ロケーション</a>
+      <a href="stock-movement.html">在庫移動</a>
+      <a href="lot-serial-trace.html" class="active">ロット・シリアル照会</a>
+      <a href="index.html">← 戻る</a>
+    </nav>
+  </header>
+
+  <!-- Search -->
+  <div class="search-area">
+    <div class="search-tabs">
+      <div class="search-tab active">ロット番号</div>
+      <div class="search-tab">シリアル番号</div>
+      <div class="search-tab">JAN / SKUコード</div>
+    </div>
+    <div class="search-bar">
+      <input type="text" class="search-input" value="FDB-L11-001" placeholder="例: FDB-L11-001  /  SER-20260510  /  4902234000001">
+      <button class="btn btn-primary">照会</button>
+      <button class="btn btn-outline">クリア</button>
+    </div>
+    <div class="search-hint">バーコードスキャン可。シリアル管理品は「シリアル番号」タブから1件ずつ照会。</div>
+  </div>
+
+  <div class="layout">
+
+    <!-- Result Panel -->
+    <div class="result-panel">
+
+      <!-- ロット基本情報 -->
+      <div class="card">
+        <div class="card-header">
+          <h2>ロット情報</h2>
+          <span style="font-size:11px;color:var(--muted)">照会: 2026-05-10 15:48</span>
+        </div>
+        <div class="card-body">
+          <div class="lot-summary">
+            <div class="lot-item">
+              <div class="key">ロット番号</div>
+              <div class="val code">FDB-L11-001</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">荷主</div>
+              <div class="val">FDB（富士食品）</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">SKU</div>
+              <div class="val">FDB-001 / みかんジュース 200ml</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">JAN</div>
+              <div class="val code">4902234000001</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">賞味期限</div>
+              <div class="val ok">2026-07-10</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">残日数</div>
+              <div class="val ok">61日</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">入荷数</div>
+              <div class="val">720本</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">現在在庫</div>
+              <div class="val" style="color:var(--accent)">480本</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">出荷済み</div>
+              <div class="val">240本</div>
+            </div>
+            <div class="lot-item">
+              <div class="key">現在ロケーション</div>
+              <div class="val code">FDB-C-02-01-1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- トレーサビリティ タイムライン -->
+      <div class="card">
+        <div class="card-header">
+          <h2>トレーサビリティ タイムライン</h2>
+          <span style="font-size:11px;color:var(--muted)">6件のイベント</span>
+        </div>
+        <div class="card-body">
+          <div class="timeline">
+
+            <div class="tl-item">
+              <div class="tl-dot receiving"></div>
+              <div class="tl-header">
+                <div class="tl-title">入荷受付 <span class="tl-tag tag-recv">入荷</span></div>
+                <div class="tl-time">2026-05-08 09:12</div>
+              </div>
+              <div class="tl-body">
+                入荷伝票 <span class="hl">RECV-20260508-003</span> に対して <span class="hl">720本</span> を受付。<br>
+                入荷ロケーション: <span class="loc">RECV-01</span> に仮置き。<br>
+                担当者: 田中 / ロット番号バーコード確認済み。
+              </div>
+            </div>
+
+            <div class="tl-item">
+              <div class="tl-dot inspection"></div>
+              <div class="tl-header">
+                <div class="tl-title">検品完了 <span class="tl-tag tag-insp">検品</span></div>
+                <div class="tl-time">2026-05-08 10:35</div>
+              </div>
+              <div class="tl-body">
+                検品ロケーション: <span class="loc">INSP-01</span> で全数検品実施。<br>
+                結果: <span class="hl" style="color:var(--success)">異常なし（720本 合格）</span><br>
+                賞味期限 <span class="hl">2026-07-10</span> 目視確認済み。
+              </div>
+            </div>
+
+            <div class="tl-item">
+              <div class="tl-dot putaway"></div>
+              <div class="tl-header">
+                <div class="tl-title">棚入れ <span class="tl-tag tag-put">棚入れ</span></div>
+                <div class="tl-time">2026-05-08 11:20</div>
+              </div>
+              <div class="tl-body">
+                <span class="loc">INSP-01</span> → <span class="loc">FDB-C-02-01-1</span> に棚入れ。<br>
+                数量: <span class="hl">720本</span> / 担当者: 佐藤<br>
+                荷主指定棚（FDB専用エリア）に格納。
+              </div>
+            </div>
+
+            <div class="tl-item">
+              <div class="tl-dot picking"></div>
+              <div class="tl-header">
+                <div class="tl-title">ピッキング <span class="tl-tag tag-pick">ピッキング</span></div>
+                <div class="tl-time">2026-05-09 14:05</div>
+              </div>
+              <div class="tl-body">
+                出荷指示 <span class="hl">WO-20260509-012</span> に対してピッキング。<br>
+                ロケーション: <span class="loc">FDB-C-02-01-1</span> から <span class="hl">120本</span> 出庫。<br>
+                担当者: 山田 / HTバーコードスキャン確認済み。
+              </div>
+            </div>
+
+            <div class="tl-item">
+              <div class="tl-dot shipping"></div>
+              <div class="tl-header">
+                <div class="tl-title">出荷完了 <span class="tl-tag tag-ship">出荷</span></div>
+                <div class="tl-time">2026-05-09 15:30</div>
+              </div>
+              <div class="tl-body">
+                出荷先: <span class="hl">スーパーマルナカ 高松店</span><br>
+                伝票番号: <span class="hl">WO-20260509-012</span> / <span class="hl">120本</span> 出荷。<br>
+                配送業者: 西濃運輸 / 追跡番号: 1234-5678-9012
+              </div>
+            </div>
+
+            <div class="tl-item">
+              <div class="tl-dot picking"></div>
+              <div class="tl-header">
+                <div class="tl-title">ピッキング <span class="tl-tag tag-pick">ピッキング</span></div>
+                <div class="tl-time">2026-05-10 14:20</div>
+              </div>
+              <div class="tl-body">
+                出荷指示 <span class="hl">WO-20260510-008</span> に対してピッキング。<br>
+                ロケーション: <span class="loc">FDB-C-02-01-1</span> から <span class="hl">120本</span> 出庫。<br>
+                担当者: 佐藤 / 残在庫: <span class="hl">480本</span>（出荷待ち中）
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 同ロット シリアル一覧（シリアル管理品の場合に表示） -->
+      <div class="card">
+        <div class="card-header">
+          <h2>同ロット 在庫内訳</h2>
+          <span style="font-size:11px;color:var(--muted)">ロット FDB-L11-001 の全在庫</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ロケーション</th>
+              <th>数量</th>
+              <th>ステータス</th>
+              <th>最終更新</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family:monospace;font-size:11px;font-weight:700;color:var(--accent)">FDB-C-02-01-1</td>
+              <td><b>480本</b></td>
+              <td><span class="badge badge-stock">在庫中</span></td>
+              <td style="font-size:11px;color:var(--muted)">2026-05-10 14:20</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="padding:10px 16px;font-size:11px;color:var(--muted)">
+          出荷済み: 240本（WO-20260509-012: 120本 / WO-20260510-008: 120本）
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel">
+
+      <!-- 荷主情報 -->
+      <div class="card">
+        <div class="card-header">
+          <h2>荷主情報</h2>
+        </div>
+        <div class="card-body">
+          <div class="info-row"><span class="info-key">荷主ID</span><span class="info-val">2</span></div>
+          <div class="info-row"><span class="info-key">荷主名</span><span class="info-val">FDB（富士食品）</span></div>
+          <div class="info-row"><span class="info-key">担当者</span><span class="info-val">富士 太郎</span></div>
+          <div class="info-row"><span class="info-key">連絡先</span><span class="info-val" style="font-size:11px">0120-XXX-XXXX</span></div>
+        </div>
+      </div>
+
+      <!-- 関連ロット -->
+      <div class="card">
+        <div class="card-header">
+          <h2>同SKU 関連ロット</h2>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;background:#f0f9ff;border-radius:6px 6px 0 0">
+            <div style="font-family:monospace;font-weight:700;color:var(--info)">FDB-L11-001</div>
+            <div style="color:var(--muted);margin-top:2px">現在照会中 / 在庫 480本</div>
+          </div>
+          <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+            <div style="font-family:monospace;color:var(--danger)">FDB-L11-EXPIRED</div>
+            <div style="color:var(--danger);font-size:11px;margin-top:2px">期限切れ / 在庫 120本 要処理</div>
+          </div>
+          <div style="padding:10px 14px;font-size:12px;cursor:pointer" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+            <div style="font-family:monospace;color:var(--muted)">FDB-L11-NOEXP</div>
+            <div style="color:var(--muted);font-size:11px;margin-top:2px">期限なし / 在庫 120本</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- クイックアクション -->
+      <div class="card">
+        <div class="card-header">
+          <h2>クイックアクション</h2>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+          <button style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:12px;cursor:pointer;font-weight:600;color:var(--text)">在庫移動指示を作成</button>
+          <button style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:12px;cursor:pointer;font-weight:600;color:var(--text)">トレース結果をCSV出力</button>
+          <button style="width:100%;padding:8px;border:1px solid var(--warning);border-radius:6px;background:#fffbeb;font-size:12px;cursor:pointer;font-weight:600;color:var(--warning)">期限切れロット一覧へ</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
