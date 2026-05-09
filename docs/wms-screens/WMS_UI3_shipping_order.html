@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS UI3 出荷オーダー一覧</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-warn:#b85c00; --c-warn-lt:#fef3e6;
+    --c-ok:#2d7a3a; --c-ok-lt:#e8f5ea;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .ht-wrap { display:flex; justify-content:center; padding:20px 0; gap:60px; align-items:flex-start; flex-wrap:wrap; }
+  .ht-device { width:280px; background:#1a1c22; border:3px solid #2a2d35; border-radius:18px 18px 22px 22px; padding:14px 10px 16px; box-shadow:0 16px 40px rgba(0,0,0,0.5); position:relative; }
+  .ht-device .brand { position:absolute; top:4px; left:12px; font-size:7px; color:#555; font-weight:600; }
+  .ht-device .model { position:absolute; top:4px; right:12px; font-size:7px; color:#555; font-family:var(--f-mono); }
+  .ht-screen { width:100%; aspect-ratio:480/800; background:var(--c-bg); border:1px solid #444; margin-bottom:10px; display:flex; flex-direction:column; overflow:hidden; }
+  .ht-statusbar { background:#1a1c22; color:#c8ccd4; height:14px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; font-size:8px; font-family:var(--f-mono); flex-shrink:0; }
+  .ht-header { background:var(--c-accent); color:#fff; height:24px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; flex-shrink:0; justify-content:space-between; }
+  .ht-header .scr-id { font-family:var(--f-mono); font-size:9px; opacity:0.7; }
+  .ht-body { flex:1; padding:8px; overflow:hidden; background:var(--c-base); display:flex; flex-direction:column; gap:6px; }
+  .ht-key-labels { background:#1a1c22; color:#fff; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; flex-shrink:0; border-top:1px solid #444; }
+  .ht-key-labels .key-lbl { padding:5px 3px; text-align:center; border-right:1px solid #444; font-size:8px; line-height:1.2; }
+  .ht-key-labels .key-lbl:last-child { border-right:none; }
+  .ht-key-labels .key-lbl.primary { background:var(--c-accent-dk); }
+  .ht-key-labels .key-lbl .fn { display:block; font-family:var(--f-mono); font-weight:700; font-size:9px; color:#ffd966; }
+  .ht-key-labels .key-lbl.disabled { opacity:0.3; }
+
+  .ht-keypad { background:#2a2d35; border:1px solid #444; padding:8px 6px; display:flex; flex-direction:column; gap:5px; }
+  .ht-keypad .row { display:flex; gap:4px; justify-content:center; }
+  .pkey { background:#1a1c22; color:#fff; border:1px solid #555; padding:3px 0; font-size:9px; font-family:var(--f-mono); font-weight:600; text-align:center; flex:1; border-radius:2px; }
+  .pkey.f1 { color:#ffd966; }
+  .pkey.scan { background:var(--c-alert); flex:2; padding:5px 0; }
+  .ht-dpad-row { display:flex; align-items:center; gap:6px; }
+  .ht-dpad { width:54px; height:54px; flex-shrink:0; background:#1a1c22; border:1px solid #444; border-radius:50%; position:relative; }
+  .ht-dpad::before { content:""; position:absolute; inset:6px; background: linear-gradient(0deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%), linear-gradient(90deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%); border-radius:50%; }
+  .ht-dpad .ok { position:absolute; inset:0; margin:auto; width:14px; height:14px; background:#555; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:6px; color:#fff; font-weight:600; }
+  .ht-num-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:3px; flex:1; }
+
+  .device-label { color:#fff; font-size:13px; font-weight:600; text-align:center; margin-top:8px; }
+  .device-label .id { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+  .device-label .desc-text { font-size:11px; color:#a0a4ad; font-weight:400; margin-top:4px; max-width:280px; line-height:1.5; }
+
+  .multi-ht { max-width:1500px; margin:0 auto 36px; display:flex; gap:48px; flex-wrap:wrap; justify-content:center; }
+  .multi-ht .ht-unit { display:flex; flex-direction:column; align-items:center; }
+  .multi-ht .ht-unit .step-label { color:#c8ccd4; font-size:12px; font-weight:600; text-align:center; margin-bottom:8px; padding:6px 16px; background:#353944; border:1px solid #4a4f5c; }
+
+  /* タブ */
+  .tab-row { display:flex; border-bottom:2px solid var(--c-accent); flex-shrink:0; }
+  .tab-row .tab { flex:1; padding:5px 3px; text-align:center; font-size:9px; font-weight:600; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); }
+  .tab-row .tab:last-child { border-right:none; }
+  .tab-row .tab.active { background:var(--c-accent); color:#fff; }
+  .tab-row .tab .cnt { display:block; font-family:var(--f-mono); font-size:11px; font-weight:700; }
+
+  /* リスト行 */
+  .order-row { background:var(--c-base); border:1px solid var(--c-line); padding:6px 7px; display:flex; flex-direction:column; gap:2px; }
+  .order-row.selected { border-color:var(--c-accent); background:var(--c-accent-lt); }
+  .order-row.urgent { border-left:3px solid var(--c-alert); }
+  .order-no { font-family:var(--f-mono); font-size:11px; font-weight:700; color:var(--c-accent); }
+  .order-meta { display:flex; justify-content:space-between; font-size:9px; color:var(--c-text-sub); margin-top:1px; }
+  .pill-sm { display:inline-block; padding:0px 5px; font-size:8px; font-weight:600; border:1px solid; line-height:1.5; }
+  .pill-sm.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill-sm.warn { background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn); }
+  .pill-sm.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+  .pill-sm.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+</style>
+</head>
+<body>
+<h1 class="page-title">UI3 出荷オーダー一覧</h1>
+<p class="subtitle">出荷フロー HT画面 / スクリーン W-801</p>
+<div class="quick-nav"><span class="label">セット内ジャンプ：</span>
+  <a href="#tab-unpicked"><b>W-801a</b>未ピッキング</a>
+  <a href="#tab-picking"><b>W-801b</b>ピッキング中</a>
+  <a href="#tab-done"><b>W-801c</b>完了</a>
+  <a href="#detail"><b>W-801d</b>詳細・選択後</a>
+</div>
+
+<!-- ============================== -->
+<!-- W-801a 未ピッキングタブ -->
+<!-- ============================== -->
+<div class="section-divider" id="tab-unpicked">
+  <span class="num">W-801a</span>出荷オーダー一覧 ─ 未ピッキングタブ
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：作業員が自分の担当出荷オーダーをタブで絞り込み、対象を選択してピッキング開始する起点画面。<br>
+  <b>フロー</b>：ログイン後 → タブ選択 → オーダー選択（上下キー or スキャン）→ F1でピッキング開始<br>
+  <b>確定事項</b>：期限切れ近い案件は赤色ハイライト / 配送業者アイコンは略称表示
+</div>
+<div class="multi-ht">
+  <div class="ht-unit">
+    <div class="step-label">未ピッキング一覧</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:05 95%</span></div>
+        <div class="ht-header">
+          <span>出荷オーダー一覧</span>
+          <span class="scr-id">W-801</span>
+        </div>
+        <div class="ht-body" style="padding:0; gap:0;">
+
+          <!-- タブ -->
+          <div class="tab-row">
+            <div class="tab active">未ピッキング<span class="cnt">8</span></div>
+            <div class="tab">ピッキング中<span class="cnt">3</span></div>
+            <div class="tab">完了<span class="cnt">12</span></div>
+          </div>
+
+          <!-- 件数ヘッダー -->
+          <div style="background:var(--c-bg); padding:4px 8px; font-size:9px; color:var(--c-text-sub); border-bottom:1px solid var(--c-line); flex-shrink:0;">
+            本日 8件 ／ 今選択中：─
+          </div>
+
+          <!-- オーダーリスト -->
+          <div style="flex:1; overflow:hidden; display:flex; flex-direction:column; gap:3px; padding:5px 6px;">
+
+            <div class="order-row urgent selected">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="order-no">SO-20260510-001</span>
+                <span class="pill-sm alert">期限迫！</span>
+              </div>
+              <div class="order-meta">
+                <span>㈱アルファ商事</span>
+                <span style="font-family:var(--f-mono);">SKU×5</span>
+              </div>
+              <div class="order-meta">
+                <span>ヤマト / 翌日</span>
+                <span>期限 10:00</span>
+              </div>
+            </div>
+
+            <div class="order-row">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="order-no">SO-20260510-002</span>
+                <span class="pill-sm accent">通常</span>
+              </div>
+              <div class="order-meta">
+                <span>㈱ベータ物産</span>
+                <span style="font-family:var(--f-mono);">SKU×12</span>
+              </div>
+              <div class="order-meta">
+                <span>佐川 / 翌日</span>
+                <span>期限 15:00</span>
+              </div>
+            </div>
+
+            <div class="order-row">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="order-no">SO-20260510-003</span>
+                <span class="pill-sm warn">今日中</span>
+              </div>
+              <div class="order-meta">
+                <span>ガンマ流通㈱</span>
+                <span style="font-family:var(--f-mono);">SKU×3</span>
+              </div>
+              <div class="order-meta">
+                <span>JP / 翌日</span>
+                <span>期限 13:00</span>
+              </div>
+            </div>
+
+            <div style="font-size:9px; color:var(--c-text-mute); text-align:center; margin-top:2px;">他5件 ↓</div>
+
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>ピッキング開始</div>
+          <div class="key-lbl"><span class="fn">F2</span>絞込</div>
+          <div class="key-lbl"><span class="fn">F3</span>詳細</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-801a</span>未ピッキング一覧
+      <div class="desc-text">期限迫り案件は赤ハイライト。上下キーで選択→F1でピッキング開始。</div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- W-801b ピッキング中タブ -->
+  <!-- ============================== -->
+  <div class="ht-unit" id="tab-picking">
+    <div class="step-label">ピッキング中一覧</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:05 95%</span></div>
+        <div class="ht-header">
+          <span>出荷オーダー一覧</span>
+          <span class="scr-id">W-801</span>
+        </div>
+        <div class="ht-body" style="padding:0; gap:0;">
+
+          <div class="tab-row">
+            <div class="tab">未ピッキング<span class="cnt">8</span></div>
+            <div class="tab active">ピッキング中<span class="cnt">3</span></div>
+            <div class="tab">完了<span class="cnt">12</span></div>
+          </div>
+
+          <div style="background:var(--c-bg); padding:4px 8px; font-size:9px; color:var(--c-text-sub); border-bottom:1px solid var(--c-line); flex-shrink:0;">
+            担当中 3件
+          </div>
+
+          <div style="flex:1; overflow:hidden; display:flex; flex-direction:column; gap:3px; padding:5px 6px;">
+
+            <div class="order-row selected" style="border-color:var(--c-warn); background:var(--c-warn-lt);">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="order-no" style="color:var(--c-warn);">SO-20260510-007</span>
+                <span class="pill-sm warn">中断中</span>
+              </div>
+              <div class="order-meta">
+                <span>デルタ食品㈱</span>
+                <span style="font-family:var(--f-mono);">3 / 8行</span>
+              </div>
+              <div class="order-meta">
+                <span>ヤマト / 翌日</span>
+                <span>開始 08:30</span>
+              </div>
+            </div>
+
+            <div class="order-row">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="order-no">SO-20260510-009</span>
+                <span class="pill-sm accent">進行中</span>
+              </div>
+              <div class="order-meta">
+                <span>イプシロン薬局</span>
+                <span style="font-family:var(--f-mono);">7 / 10行</span>
+              </div>
+              <div class="order-meta">
+                <span>佐川 / 即日</span>
+                <span>開始 08:50</span>
+              </div>
+            </div>
+
+            <div class="order-row">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="order-no">SO-20260510-012</span>
+                <span class="pill-sm accent">進行中</span>
+              </div>
+              <div class="order-meta">
+                <span>ゼータ小売㈱</span>
+                <span style="font-family:var(--f-mono);">1 / 5行</span>
+              </div>
+              <div class="order-meta">
+                <span>JP / 翌日</span>
+                <span>開始 09:00</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>再開</div>
+          <div class="key-lbl"><span class="fn">F2</span>担当変更</div>
+          <div class="key-lbl"><span class="fn">F3</span>詳細</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-801b</span>ピッキング中
+      <div class="desc-text">中断中は警告色。F1で続きから再開。進捗（行完了数/総行数）を常時表示。</div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- W-801c 完了タブ -->
+  <!-- ============================== -->
+  <div class="ht-unit" id="tab-done">
+    <div class="step-label">完了一覧</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:05 95%</span></div>
+        <div class="ht-header">
+          <span>出荷オーダー一覧</span>
+          <span class="scr-id">W-801</span>
+        </div>
+        <div class="ht-body" style="padding:0; gap:0;">
+
+          <div class="tab-row">
+            <div class="tab">未ピッキング<span class="cnt">8</span></div>
+            <div class="tab">ピッキング中<span class="cnt">3</span></div>
+            <div class="tab active">完了<span class="cnt">12</span></div>
+          </div>
+
+          <div style="background:var(--c-bg); padding:4px 8px; font-size:9px; color:var(--c-text-sub); border-bottom:1px solid var(--c-line); flex-shrink:0;">
+            本日完了 12件
+          </div>
+
+          <div style="flex:1; overflow:hidden; display:flex; flex-direction:column; gap:3px; padding:5px 6px;">
+
+            <div class="order-row" style="border-left:3px solid var(--c-ok); opacity:0.85;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="order-no" style="color:var(--c-ok);">SO-20260510-004</span>
+                <span class="pill-sm ok">完了</span>
+              </div>
+              <div class="order-meta">
+                <span>㈱エータ産業</span>
+                <span style="font-family:var(--f-mono);">6行完了</span>
+              </div>
+              <div class="order-meta">
+                <span>ヤマト / 翌日</span>
+                <span>完了 08:22</span>
+              </div>
+            </div>
+
+            <div class="order-row" style="border-left:3px solid var(--c-ok); opacity:0.85;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="order-no" style="color:var(--c-ok);">SO-20260510-005</span>
+                <span class="pill-sm ok">完了</span>
+              </div>
+              <div class="order-meta">
+                <span>シータ流通㈱</span>
+                <span style="font-family:var(--f-mono);">4行完了</span>
+              </div>
+              <div class="order-meta">
+                <span>佐川 / 翌日</span>
+                <span>完了 08:45</span>
+              </div>
+            </div>
+
+            <div style="font-size:9px; color:var(--c-text-mute); text-align:center; margin-top:2px;">他10件 ↓</div>
+
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl"><span class="fn">F1</span>詳細</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-801c</span>完了済み一覧
+      <div class="desc-text">緑ボーダーで完了を明示。完了済みは再開不可（F1は詳細のみ）。</div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- W-801d 詳細・選択後 -->
+  <!-- ============================== -->
+  <div class="ht-unit" id="detail">
+    <div class="step-label">オーダー詳細</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:06 95%</span></div>
+        <div class="ht-header">
+          <span>オーダー詳細</span>
+          <span class="scr-id">W-801</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-accent); color:#fff; padding:8px; text-align:center;">
+            <div style="font-size:9px; opacity:0.8;">出荷No</div>
+            <div style="font-family:var(--f-mono); font-size:13px; font-weight:700; margin-top:2px;">SO-20260510-001</div>
+          </div>
+
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:6px 8px; font-size:10px; display:flex; flex-direction:column; gap:3px;">
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">荷主</span>
+              <span style="font-weight:600;">㈱アルファ商事</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">SKU数</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">5 SKU / 42点</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">配送業者</span>
+              <span style="font-weight:600;">ヤマト運輸</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">配送便</span>
+              <span style="font-weight:600;">翌日午前</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">出庫期限</span>
+              <span style="font-weight:600; color:var(--c-alert);">10:00（残45分）</span>
+            </div>
+          </div>
+
+          <div style="background:var(--c-alert-lt); border-left:3px solid var(--c-alert); padding:5px 7px; font-size:9px; color:var(--c-alert); font-weight:600;">
+            ⚠ 期限まで45分。優先してください
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:auto; padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-accent);">
+            F1：このオーダーのピッキングを開始
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>ピッキング開始</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-801d</span>詳細→開始確認
+      <div class="desc-text">F3詳細から遷移。内容確認後F1でピッキングリスト画面（W-802）へ。</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

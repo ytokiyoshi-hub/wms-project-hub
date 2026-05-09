@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS UI3 出荷確認・伝票発行</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#2d7a3a; --c-ok-lt:#e8f5ea;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .ht-device { width:280px; background:#1a1c22; border:3px solid #2a2d35; border-radius:18px 18px 22px 22px; padding:14px 10px 16px; box-shadow:0 16px 40px rgba(0,0,0,0.5); position:relative; }
+  .ht-device .brand { position:absolute; top:4px; left:12px; font-size:7px; color:#555; font-weight:600; }
+  .ht-device .model { position:absolute; top:4px; right:12px; font-size:7px; color:#555; font-family:var(--f-mono); }
+  .ht-screen { width:100%; aspect-ratio:480/800; background:var(--c-bg); border:1px solid #444; margin-bottom:10px; display:flex; flex-direction:column; overflow:hidden; }
+  .ht-statusbar { background:#1a1c22; color:#c8ccd4; height:14px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; font-size:8px; font-family:var(--f-mono); flex-shrink:0; }
+  .ht-header { background:var(--c-accent); color:#fff; height:24px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; flex-shrink:0; justify-content:space-between; }
+  .ht-header .scr-id { font-family:var(--f-mono); font-size:9px; opacity:0.7; }
+  .ht-body { flex:1; padding:8px; overflow:hidden; background:var(--c-base); display:flex; flex-direction:column; gap:6px; }
+  .ht-key-labels { background:#1a1c22; color:#fff; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; flex-shrink:0; border-top:1px solid #444; }
+  .ht-key-labels .key-lbl { padding:5px 3px; text-align:center; border-right:1px solid #444; font-size:8px; line-height:1.2; }
+  .ht-key-labels .key-lbl:last-child { border-right:none; }
+  .ht-key-labels .key-lbl.primary { background:var(--c-accent-dk); }
+  .ht-key-labels .key-lbl.alert { background:var(--c-alert); }
+  .ht-key-labels .key-lbl .fn { display:block; font-family:var(--f-mono); font-weight:700; font-size:9px; color:#ffd966; }
+  .ht-key-labels .key-lbl.disabled { opacity:0.3; }
+
+  .ht-keypad { background:#2a2d35; border:1px solid #444; padding:8px 6px; display:flex; flex-direction:column; gap:5px; }
+  .ht-keypad .row { display:flex; gap:4px; justify-content:center; }
+  .pkey { background:#1a1c22; color:#fff; border:1px solid #555; padding:3px 0; font-size:9px; font-family:var(--f-mono); font-weight:600; text-align:center; flex:1; border-radius:2px; }
+  .pkey.f1 { color:#ffd966; }
+  .pkey.scan { background:var(--c-alert); flex:2; padding:5px 0; }
+  .ht-dpad-row { display:flex; align-items:center; gap:6px; }
+  .ht-dpad { width:54px; height:54px; flex-shrink:0; background:#1a1c22; border:1px solid #444; border-radius:50%; position:relative; }
+  .ht-dpad::before { content:""; position:absolute; inset:6px; background: linear-gradient(0deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%), linear-gradient(90deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%); border-radius:50%; }
+  .ht-dpad .ok { position:absolute; inset:0; margin:auto; width:14px; height:14px; background:#555; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:6px; color:#fff; font-weight:600; }
+  .ht-num-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:3px; flex:1; }
+
+  .device-label { color:#fff; font-size:13px; font-weight:600; text-align:center; margin-top:8px; }
+  .device-label .id { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+  .device-label .desc-text { font-size:11px; color:#a0a4ad; font-weight:400; margin-top:4px; max-width:280px; line-height:1.5; }
+
+  .multi-ht { max-width:1500px; margin:0 auto 36px; display:flex; gap:48px; flex-wrap:wrap; justify-content:center; }
+  .multi-ht .ht-unit { display:flex; flex-direction:column; align-items:center; }
+  .multi-ht .ht-unit .step-label { color:#c8ccd4; font-size:12px; font-weight:600; text-align:center; margin-bottom:8px; padding:6px 16px; background:#353944; border:1px solid #4a4f5c; }
+
+  /* 出荷完了ボタン（大きく・誤操作防止） */
+  .big-confirm-btn { background:var(--c-ok); color:#fff; border:none; padding:14px 12px; font-size:14px; font-weight:700; text-align:center; width:100%; font-family:var(--f-base); cursor:pointer; }
+  .big-confirm-btn.disabled { background:var(--c-line-dk); color:var(--c-text-mute); }
+  .big-confirm-btn.danger { background:var(--c-alert); }
+
+  /* 印刷リンク */
+  .print-link { display:flex; align-items:center; justify-content:space-between; padding:6px 8px; border:1px solid var(--c-line); background:var(--c-base); font-size:10px; }
+  .print-link .icon { font-size:14px; }
+  .print-link .status-ok { color:var(--c-ok); font-size:9px; font-weight:600; }
+  .print-link .status-wait { color:var(--c-text-sub); font-size:9px; }
+</style>
+</head>
+<body>
+<h1 class="page-title">UI3 出荷確認・伝票発行（HT）</h1>
+<p class="subtitle">出荷フロー HT画面 / スクリーン W-804</p>
+<div class="quick-nav"><span class="label">セット内ジャンプ：</span>
+  <a href="#step1"><b>W-804a</b>内容確認</a>
+  <a href="#step2"><b>W-804b</b>伝票発行</a>
+  <a href="#step3"><b>W-804c</b>1タップ目確認</a>
+  <a href="#step4"><b>W-804d</b>出荷完了</a>
+</div>
+
+<!-- ============================== -->
+<!-- W-804a 内容確認 -->
+<!-- ============================== -->
+<div class="section-divider" id="step1">
+  <span class="num">W-804a</span>出荷確認 ─ 内容確認
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：梱包完了後の出荷内容を最終確認し、伝票を発行して出荷完了ボタンを押す最終工程。<br>
+  <b>フロー</b>：内容確認 → 納品書・送り状印刷 → 出荷完了（2タップ確認で誤操作防止）<br>
+  <b>確定事項</b>：出荷完了ボタンは大きく配置 / 2タップ確認で誤出荷防止 / 完了でPC画面に自動反映・配送業者連携
+</div>
+<div class="multi-ht">
+
+  <!-- STEP 1: 内容確認 -->
+  <div class="ht-unit" id="step1">
+    <div class="step-label">STEP 1 出荷内容の最終確認</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:53 88%</span></div>
+        <div class="ht-header">
+          <span>出荷確認</span>
+          <span class="scr-id">W-804</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-accent); color:#fff; padding:8px; text-align:center;">
+            <div style="font-size:9px; opacity:0.8;">出荷No</div>
+            <div style="font-family:var(--f-mono); font-size:13px; font-weight:700; margin-top:2px;">SO-20260510-001</div>
+          </div>
+
+          <!-- 出荷サマリー -->
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:6px 8px; font-size:10px; display:flex; flex-direction:column; gap:3px;">
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">荷主</span>
+              <span style="font-weight:600;">㈱アルファ商事</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">お届け先</span>
+              <span style="font-weight:600;">東京都渋谷区…</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">総点数</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">42点 / 5SKU</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">梱包個口</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">2箱</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">配送業者</span>
+              <span style="font-weight:600;">ヤマト運輸 / 翌日午前</span>
+            </div>
+          </div>
+
+          <!-- ステータスチェック -->
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 7px; border:1px solid var(--c-ok); background:var(--c-ok-lt); font-size:9px;">
+              <span>ピッキング</span>
+              <span style="color:var(--c-ok); font-weight:600;">✓ 完了</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 7px; border:1px solid var(--c-ok); background:var(--c-ok-lt); font-size:9px;">
+              <span>梱包</span>
+              <span style="color:var(--c-ok); font-weight:600;">✓ 完了 2箱</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 7px; border:1px solid var(--c-accent); background:var(--c-accent-lt); font-size:9px;">
+              <span>伝票発行</span>
+              <span style="color:var(--c-accent); font-weight:600;">F2で発行</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl disabled"><span class="fn">F1</span>−</div>
+          <div class="key-lbl primary"><span class="fn">F2</span>伝票発行へ</div>
+          <div class="key-lbl"><span class="fn">F3</span>明細</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-804a</span>①内容最終確認
+      <div class="desc-text">ピッキング・梱包完了を確認。全チェック後にF2で伝票発行へ。</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: 伝票発行 -->
+  <div class="ht-unit" id="step2">
+    <div class="step-label">STEP 2 伝票発行（印刷）</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:54 88%</span></div>
+        <div class="ht-header">
+          <span>伝票発行</span>
+          <span class="scr-id">W-804</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-accent); color:#fff; padding:6px 8px; text-align:center;">
+            <div style="font-size:9px; opacity:0.8;">SO-20260510-001 / ㈱アルファ商事</div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); padding:2px 0;">印刷リンク（共有プリンタ経由）</div>
+
+          <!-- 印刷リスト -->
+          <div style="display:flex; flex-direction:column; gap:3px;">
+
+            <div class="print-link">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="icon">🖨</span>
+                <div>
+                  <div style="font-weight:600; font-size:10px;">納品書</div>
+                  <div style="font-size:9px; color:var(--c-text-sub);">DN-20260510-001.pdf</div>
+                </div>
+              </div>
+              <span class="status-ok">✓ 印刷済</span>
+            </div>
+
+            <div class="print-link" style="border-color:var(--c-accent); background:var(--c-accent-lt);">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="icon">🖨</span>
+                <div>
+                  <div style="font-weight:600; font-size:10px; color:var(--c-accent);">送り状</div>
+                  <div style="font-size:9px; color:var(--c-accent);">YMTO-LBL-0521.pdf</div>
+                </div>
+              </div>
+              <span style="color:var(--c-accent); font-size:9px; font-weight:600;">F1印刷→</span>
+            </div>
+
+            <div class="print-link" style="opacity:0.5;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="icon">🖨</span>
+                <div>
+                  <div style="font-weight:600; font-size:10px;">品質証明書</div>
+                  <div style="font-size:9px; color:var(--c-text-sub);">（オプション）</div>
+                </div>
+              </div>
+              <span class="status-wait">─</span>
+            </div>
+
+          </div>
+
+          <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:9px; color:var(--c-accent);">
+            送り状を印刷→箱に貼付→F2で出荷確認へ
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>送り状印刷</div>
+          <div class="key-lbl"><span class="fn">F2</span>出荷確認へ</div>
+          <div class="key-lbl"><span class="fn">F3</span>再印刷</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-804b</span>②伝票発行
+      <div class="desc-text">F1で送り状を共有プリンタに送信→貼付後F2で出荷確認へ。</div>
+    </div>
+  </div>
+
+  <!-- STEP 3: 出荷完了 1タップ目（誤操作防止） -->
+  <div class="ht-unit" id="step3">
+    <div class="step-label">STEP 3 出荷完了ボタン（1タップ目）</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:57 87%</span></div>
+        <div class="ht-header">
+          <span>出荷完了 確認①</span>
+          <span class="scr-id">W-804</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-accent); color:#fff; padding:6px 8px; text-align:center;">
+            <div style="font-size:9px; opacity:0.8;">SO-20260510-001 / ㈱アルファ商事</div>
+          </div>
+
+          <!-- チェックサマリー -->
+          <div style="display:flex; flex-direction:column; gap:2px; font-size:9px;">
+            <div style="padding:3px 7px; border:1px solid var(--c-ok); background:var(--c-ok-lt); display:flex; justify-content:space-between;">
+              <span>納品書</span><span style="color:var(--c-ok); font-weight:600;">✓ 印刷済</span>
+            </div>
+            <div style="padding:3px 7px; border:1px solid var(--c-ok); background:var(--c-ok-lt); display:flex; justify-content:space-between;">
+              <span>送り状（BOX-001）</span><span style="color:var(--c-ok); font-weight:600;">✓ 貼付済</span>
+            </div>
+            <div style="padding:3px 7px; border:1px solid var(--c-ok); background:var(--c-ok-lt); display:flex; justify-content:space-between;">
+              <span>送り状（BOX-002）</span><span style="color:var(--c-ok); font-weight:600;">✓ 貼付済</span>
+            </div>
+          </div>
+
+          <!-- 出荷完了ボタン 1タップ目 -->
+          <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:8px; text-align:center; margin-top:4px;">
+            <div style="font-size:9px; color:var(--c-alert); font-weight:600; margin-bottom:6px;">⚠ 出荷完了後は取り消しできません</div>
+            <div class="big-confirm-btn" style="font-size:13px; background:var(--c-ok); padding:12px;">
+              出荷完了（1/2）
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-mute); text-align:center; padding:3px 0;">
+            もう一度押して確定（2タップ確認）
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>出荷完了→</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>キャンセル</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-804c</span>③出荷完了 1タップ目
+      <div class="desc-text">全チェック確認後にF1。誤操作防止のため2タップ確認。1タップ目では確定しない。</div>
+    </div>
+  </div>
+
+  <!-- STEP 4: 出荷完了確定（2タップ目） -->
+  <div class="ht-unit" id="step4">
+    <div class="step-label">STEP 4 出荷完了（2タップ目・確定）</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:57 87%</span></div>
+        <div class="ht-header" style="background:var(--c-ok);">
+          <span>出荷完了！</span>
+          <span class="scr-id">W-804</span>
+        </div>
+        <div class="ht-body">
+
+          <!-- 完了サマリー -->
+          <div style="background:var(--c-ok-lt); border:2px solid var(--c-ok); padding:12px; text-align:center;">
+            <div style="font-size:22px; color:var(--c-ok); font-weight:700;">✓ 出荷完了</div>
+            <div style="font-size:10px; color:var(--c-ok); margin-top:4px; font-family:var(--f-mono);">SO-20260510-001</div>
+          </div>
+
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:7px; font-size:10px; display:flex; flex-direction:column; gap:3px;">
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">荷主</span>
+              <span style="font-weight:600;">㈱アルファ商事</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">出荷点数</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">42点 / 2箱</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">配送業者</span>
+              <span style="font-weight:600;">ヤマト運輸</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">完了時刻</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">09:57</span>
+            </div>
+          </div>
+
+          <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:9px; color:var(--c-accent);">
+            PC画面・配送業者連携に自動反映済み
+          </div>
+
+          <div style="background:var(--c-ok-lt); border-left:3px solid var(--c-ok); padding:5px 7px; font-size:9px; color:var(--c-ok); font-weight:600; margin-top:auto;">
+            出荷オーダー一覧（W-801）に戻ります
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>次のオーダーへ</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl"><span class="fn">F3</span>明細印刷</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-804d</span>④出荷完了確定
+      <div class="desc-text">2タップ目でシステムに確定。緑ヘッダーで完了を明示。F1で次のオーダーへ。</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
