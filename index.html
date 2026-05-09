@@ -516,7 +516,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
       <div class="nav-item" data-page="screens">
         <span class="icon">◰</span>
         <span>画面モック</span>
-        <span class="badge">75</span>
+        <span class="badge" id="screen-count-badge">63</span>
       </div>
       <a class="nav-item" href="screens/index.html" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
         <span class="icon">▷</span>
@@ -611,8 +611,8 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
           <div class="kpi">
             <div class="lbl">画面モック</div>
-            <div class="val">75</div>
-            <div class="delta">PC 58 / HT 5 / Mobile 3 / Portal 9</div>
+            <div class="val" id="screen-count-kpi">63</div>
+            <div class="delta" id="screen-count-delta">PC 45 / HT 6 / Mobile 3 / Portal 9</div>
           </div>
         </div>
 
@@ -798,9 +798,9 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         <input type="text" class="search-input" placeholder="画面ID・名称で検索（W-XXX, HT-XXX...）" id="screen-search">
 
         <div class="tabs">
-          <div class="tab active" data-screen-tab="all">すべて (75)</div>
-          <div class="tab" data-screen-tab="pc">PC (63)</div>
-          <div class="tab" data-screen-tab="ht">HT (5)</div>
+          <div class="tab active" data-screen-tab="all">すべて (63)</div>
+          <div class="tab" data-screen-tab="pc">PC (45)</div>
+          <div class="tab" data-screen-tab="ht">HT (6)</div>
           <div class="tab" data-screen-tab="mobile">スマホ (3)</div>
           <div class="tab" data-screen-tab="portal">ポータル (9)</div>
         </div>
@@ -1547,21 +1547,15 @@ const screenList = document.getElementById('screen-list');
 const deviceLabel = {pc:'PC',ht:'HT',mobile:'Mobile',portal:'Portal'};
 const deviceTagClass = {pc:'tag-pc',ht:'tag-ht',mobile:'tag-mobile',portal:'tag-portal'};
 
-// 画面数を動的に更新
+// 画面数を動的に更新（screens配列が変われば自動反映）
 (function updateScreenCounts() {
   const total = screens.length;
   const byDevice = screens.reduce((acc, s) => { acc[s.device] = (acc[s.device]||0)+1; return acc; }, {});
-  // ナビバッジ
-  const navBadge = document.querySelector('[data-page="screens"] .badge');
-  if (navBadge) navBadge.textContent = total;
-  // KPIカード
-  const kpiVal = document.querySelector('.kpi .val');
-  if (kpiVal && kpiVal.closest('.kpi').querySelector('.lbl')?.textContent.includes('画面')) {
-    kpiVal.textContent = total;
-    const delta = kpiVal.nextElementSibling;
-    if (delta) delta.textContent = Object.entries(byDevice).map(([k,v])=>`${deviceLabel[k]||k} ${v}`).join(' / ');
-  }
-  // タブラベル
+  const el = id => document.getElementById(id);
+  if (el('screen-count-badge')) el('screen-count-badge').textContent = total;
+  if (el('screen-count-kpi')) el('screen-count-kpi').textContent = total;
+  if (el('screen-count-delta')) el('screen-count-delta').textContent =
+    Object.entries(byDevice).map(([k,v]) => `${deviceLabel[k]||k} ${v}`).join(' / ');
   document.querySelectorAll('[data-screen-tab]').forEach(tab => {
     const dev = tab.dataset.screenTab;
     const cnt = dev === 'all' ? total : (byDevice[dev]||0);
