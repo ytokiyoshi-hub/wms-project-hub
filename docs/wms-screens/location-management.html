@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS ロケーション管理 PC画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-warn:#b85c00; --c-warn-lt:#fef3e6;
+    --c-ok:#2d7a3a; --c-ok-lt:#e8f5ea;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  /* PC Frame */
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .pc-device { width:1100px; background:#fff; border-radius:8px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; border-radius:0 0 8px 8px; }
+
+  /* WMS Left Nav Sidebar */
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  /* Main area */
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+
+  /* Content: tree + table split layout */
+  .content { flex:1; display:flex; overflow:hidden; }
+
+  /* Area tree panel */
+  .tree-panel { width:224px; flex-shrink:0; background:var(--c-base); border-right:1px solid var(--c-line); display:flex; flex-direction:column; overflow:hidden; }
+  .tree-panel .tree-header { padding:10px 14px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .tree-panel .tree-header h3 { font-size:11px; font-weight:600; color:var(--c-text-sub); text-transform:uppercase; letter-spacing:0.08em; }
+  .tree-panel .tree-body { flex:1; overflow-y:auto; padding:6px 0; }
+  .tree-panel .tree-footer { padding:10px 12px; border-top:1px solid var(--c-line); }
+
+  .node-row { display:flex; align-items:center; gap:5px; padding:6px 12px; font-size:12px; color:var(--c-text); cursor:pointer; }
+  .node-row:hover { background:var(--c-bg); }
+  .node-row.active { background:var(--c-accent-lt); color:var(--c-accent); font-weight:600; border-left:3px solid var(--c-accent); padding-left:9px; }
+  .node-row .toggle { font-size:9px; color:var(--c-text-mute); width:10px; text-align:center; flex-shrink:0; }
+  .node-row .name { flex:1; }
+  .node-row .count { font-size:10px; font-family:var(--f-mono); color:var(--c-text-mute); background:var(--c-bg); border:1px solid var(--c-line); padding:0 5px; }
+  .node-row.active .count { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  .node-l1 { font-weight:600; color:var(--c-accent); }
+  .node-l1 .node-row { padding-left:12px; font-size:12px; color:var(--c-accent); font-weight:600; }
+  .node-l2 .node-row { padding-left:24px; }
+  .node-l3 .node-row { padding-left:36px; font-size:11px; color:var(--c-text-sub); }
+  .node-sep { height:1px; background:var(--c-line); margin:6px 12px; }
+
+  /* Table area */
+  .table-area { flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:12px; background:var(--c-bg); }
+
+  /* Stats chips */
+  .stats-row { display:flex; gap:10px; }
+  .stat-chip { background:var(--c-base); border:1px solid var(--c-line); padding:9px 14px; display:flex; align-items:center; gap:10px; }
+  .stat-chip .num { font-size:20px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent); }
+  .stat-chip .lbl { font-size:11px; color:var(--c-text-sub); }
+
+  /* Note box */
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:8px 12px; font-size:12px; color:var(--c-text); line-height:1.7; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:1px; }
+
+  /* Filter bar */
+  .filter-bar { background:var(--c-base); border:1px solid var(--c-line); padding:10px 14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .filter-bar input, .filter-bar select { border:1px solid var(--c-line-dk); padding:5px 9px; font-size:12px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .filter-bar input { flex:1; min-width:150px; }
+
+  /* Components */
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+
+  /* Table */
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); white-space:nowrap; }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list .center { text-align:center; }
+
+  /* Pills */
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.type-storage { background:#dbeafe; border-color:#bfdbfe; color:#1e40af; }
+  .pill.type-picking { background:var(--c-ok-lt); border-color:#a7d7b1; color:#1a5c28; }
+  .pill.type-staging { background:var(--c-warn-lt); border-color:#f5c87c; color:#7a3b00; }
+  .pill.type-inspect { background:#f3e8ff; border-color:#d8b4fe; color:#6b21a8; }
+  .pill.status-active   { background:var(--c-ok-lt); border-color:#a7d7b1; color:#1a5c28; }
+  .pill.status-frozen   { background:#dbeafe; border-color:#bfdbfe; color:#1e40af; }
+  .pill.status-inactive { background:var(--c-bg); border-color:var(--c-line-dk); color:var(--c-text-mute); }
+  .pill.dedicated { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  /* Usage bar */
+  .usage-wrap { display:flex; align-items:center; gap:6px; }
+  .usage-bar { width:70px; height:6px; background:var(--c-line); flex-shrink:0; overflow:hidden; }
+  .usage-fill { height:100%; background:var(--c-ok); }
+  .usage-fill.warn { background:var(--c-warn); }
+  .usage-fill.full { background:var(--c-alert); }
+  .usage-pct { font-size:11px; font-family:var(--f-mono); color:var(--c-text-sub); }
+  .usage-pct.warn { color:var(--c-warn); font-weight:600; }
+  .usage-pct.full { color:var(--c-alert); font-weight:600; }
+  .usage-pct.empty { color:var(--c-text-mute); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">ロケーション管理 PC画面</h1>
+<p class="subtitle">倉庫・エリア・棚番ツリー / 棚番テーブル・使用率一覧</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#W-301"><b>W-301</b>ロケーション一覧</a>
+</div>
+
+<div class="section-divider" id="W-301"><span class="num">W-301</span>ロケーション管理</div>
+<div class="desc">
+  <b>役割</b>：倉庫・エリア・棚番の階層ツリーからエリアを選択し、配下のロケーション一覧・使用率・ステータスを管理する。<br>
+  <b>用途</b>：ロケーション新規追加・フリーズ・メモ更新。使用率確認・在庫配置の最適化検討。<b>ロケーションコードは変更不可</b>（入庫データと紐付き）。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/locations</div>
+  </div>
+  <div class="pc-device">
+    <div class="screen">
+
+      <!-- WMS Left Nav -->
+      <aside class="sidebar">
+        <div class="logo">WMS<small>東京DC（WH001）</small></div>
+        <nav>
+          <div class="group">マスタ</div>
+          <a href="#">商品マスタ</a>
+          <a href="#">荷主管理</a>
+          <a href="#" class="active">ロケーション管理</a>
+          <a href="#">ロケーションタイプ</a>
+          <a href="#">ユーザー管理</a>
+          <div class="group">在庫</div>
+          <a href="#">在庫一覧</a>
+          <a href="#">在庫移動</a>
+          <a href="#">棚卸</a>
+          <div class="group">入出荷</div>
+          <a href="#">入荷管理</a>
+          <a href="#">出荷管理</a>
+        </nav>
+        <div class="sb-footer">v3.1.0</div>
+      </aside>
+
+      <!-- Main -->
+      <div class="main">
+        <div class="topbar">
+          <div class="crumb">マスタ　/　<b>ロケーション管理</b></div>
+          <div class="actions">
+            <div class="owner-switcher">倉庫：<b>東京DC</b> ▼</div>
+            <div class="user"><div class="avatar">山</div>山田</div>
+          </div>
+        </div>
+
+        <div class="content">
+
+          <!-- Area Tree Panel -->
+          <aside class="tree-panel">
+            <div class="tree-header">
+              <h3>倉庫 / エリア</h3>
+            </div>
+            <div class="tree-body">
+
+              <!-- TKY倉庫 -->
+              <div class="node-l1">
+                <div class="node-row">
+                  <span class="toggle">▾</span>
+                  <span class="name">TKY倉庫（東京）</span>
+                </div>
+              </div>
+              <div class="node-l2">
+                <div class="node-row active">
+                  <span class="toggle">▾</span>
+                  <span class="name">A棟（保管）</span>
+                  <span class="count">42</span>
+                </div>
+              </div>
+              <div class="node-l3">
+                <div class="node-row">
+                  <span class="toggle">—</span>
+                  <span class="name">通路1</span>
+                  <span class="count">12</span>
+                </div>
+              </div>
+              <div class="node-l3">
+                <div class="node-row">
+                  <span class="toggle">—</span>
+                  <span class="name">通路2</span>
+                  <span class="count">15</span>
+                </div>
+              </div>
+              <div class="node-l3">
+                <div class="node-row">
+                  <span class="toggle">—</span>
+                  <span class="name">通路3〜8</span>
+                  <span class="count">15</span>
+                </div>
+              </div>
+              <div class="node-l2">
+                <div class="node-row">
+                  <span class="toggle">▸</span>
+                  <span class="name">B棟（保管）</span>
+                  <span class="count">38</span>
+                </div>
+              </div>
+              <div class="node-l2">
+                <div class="node-row">
+                  <span class="toggle">▸</span>
+                  <span class="name">ピッキングエリア</span>
+                  <span class="count">12</span>
+                </div>
+              </div>
+              <div class="node-l2">
+                <div class="node-row">
+                  <span class="toggle">—</span>
+                  <span class="name">入荷ステージング</span>
+                  <span class="count">4</span>
+                </div>
+              </div>
+              <div class="node-l2">
+                <div class="node-row">
+                  <span class="toggle">—</span>
+                  <span class="name">検品エリア</span>
+                  <span class="count">3</span>
+                </div>
+              </div>
+
+              <div class="node-sep"></div>
+
+              <!-- FDB倉庫 -->
+              <div class="node-l1">
+                <div class="node-row">
+                  <span class="toggle">▸</span>
+                  <span class="name">FDB倉庫（食品）</span>
+                </div>
+              </div>
+
+              <div class="node-sep"></div>
+
+              <!-- PRC倉庫 -->
+              <div class="node-l1">
+                <div class="node-row">
+                  <span class="toggle">▸</span>
+                  <span class="name">PRC倉庫（精密機器）</span>
+                </div>
+              </div>
+
+            </div>
+            <div class="tree-footer">
+              <button class="btn sm primary" style="width:100%">+ 倉庫/エリア追加</button>
+            </div>
+          </aside>
+
+          <!-- Table Area -->
+          <div class="table-area">
+
+            <!-- Stats -->
+            <div class="stats-row">
+              <div class="stat-chip">
+                <div class="num">42</div>
+                <div class="lbl">ロケーション数</div>
+              </div>
+              <div class="stat-chip">
+                <div class="num" style="color:var(--c-ok)">38</div>
+                <div class="lbl">使用中</div>
+              </div>
+              <div class="stat-chip">
+                <div class="num" style="color:var(--c-text-mute)">3</div>
+                <div class="lbl">空き</div>
+              </div>
+              <div class="stat-chip">
+                <div class="num" style="color:#1e40af">1</div>
+                <div class="lbl">フリーズ</div>
+              </div>
+            </div>
+
+            <!-- Note -->
+            <div class="note-box">
+              <div class="label">編集制約</div>
+              ロケーションコードは変更不可（入庫データと紐付き）。タイプ・ステータス・メモのみ変更可能。
+            </div>
+
+            <!-- Filter -->
+            <div class="filter-bar">
+              <input type="text" placeholder="ロケーションコードで検索...">
+              <select>
+                <option>全タイプ</option>
+                <option>保管</option>
+                <option>ピッキング</option>
+                <option>入荷</option>
+                <option>検品</option>
+              </select>
+              <select>
+                <option>全ステータス</option>
+                <option>active</option>
+                <option>frozen</option>
+              </select>
+              <label style="font-size:12px;color:var(--c-text-sub);white-space:nowrap;display:flex;align-items:center;gap:4px;">
+                <input type="checkbox"> 空きのみ
+              </label>
+              <div style="margin-left:auto;display:flex;gap:6px;">
+                <button class="btn sm">CSV出力</button>
+                <button class="btn sm primary">+ ロケーション追加</button>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card">
+              <div class="card-header">
+                TKY倉庫 A棟（保管）
+                <span class="meta">42件 / フィルタ未適用</span>
+              </div>
+              <table class="list">
+                <thead>
+                  <tr>
+                    <th>ロケーションコード</th>
+                    <th>棟 / エリア / 棚 / 段 / 列</th>
+                    <th>タイプ</th>
+                    <th>荷主</th>
+                    <th>使用率</th>
+                    <th class="center">在庫数</th>
+                    <th>ステータス</th>
+                    <th>メモ</th>
+                    <th class="center">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="num">TKY-A-01-01-1</td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">A棟 › 通路1 › 棚1 › 1段 › 1列</td>
+                    <td><span class="pill type-storage">保管</span></td>
+                    <td><span class="pill dedicated">TKY専用</span></td>
+                    <td>
+                      <div class="usage-wrap">
+                        <div class="usage-bar"><div class="usage-fill" style="width:65%"></div></div>
+                        <span class="usage-pct">65%</span>
+                      </div>
+                    </td>
+                    <td class="center num">250枚</td>
+                    <td><span class="pill status-active">active</span></td>
+                    <td style="font-size:11px;color:var(--c-text-mute)">—</td>
+                    <td class="center"><button class="btn sm">編集</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">TKY-A-01-01-2</td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">A棟 › 通路1 › 棚1 › 1段 › 2列</td>
+                    <td><span class="pill type-storage">保管</span></td>
+                    <td><span class="pill dedicated">TKY専用</span></td>
+                    <td>
+                      <div class="usage-wrap">
+                        <div class="usage-bar"><div class="usage-fill" style="width:45%"></div></div>
+                        <span class="usage-pct">45%</span>
+                      </div>
+                    </td>
+                    <td class="center num">180枚</td>
+                    <td><span class="pill status-active">active</span></td>
+                    <td style="font-size:11px;color:var(--c-text-mute)">—</td>
+                    <td class="center"><button class="btn sm">編集</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">TKY-A-01-02-1</td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">A棟 › 通路1 › 棚1 › 2段 › 1列</td>
+                    <td><span class="pill type-storage">保管</span></td>
+                    <td><span class="pill dedicated">TKY専用</span></td>
+                    <td>
+                      <div class="usage-wrap">
+                        <div class="usage-bar"><div class="usage-fill warn" style="width:95%"></div></div>
+                        <span class="usage-pct warn">95%</span>
+                      </div>
+                    </td>
+                    <td class="center num">8枚</td>
+                    <td><span class="pill status-active">active</span></td>
+                    <td style="font-size:11px;color:var(--c-warn)">在庫不足注意</td>
+                    <td class="center"><button class="btn sm">編集</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">TKY-A-02-01-1</td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">A棟 › 通路2 › 棚1 › 1段 › 1列</td>
+                    <td><span class="pill type-storage">保管</span></td>
+                    <td><span class="pill">共用</span></td>
+                    <td>
+                      <div class="usage-wrap">
+                        <div class="usage-bar"><div class="usage-fill" style="width:0%"></div></div>
+                        <span class="usage-pct empty">空き</span>
+                      </div>
+                    </td>
+                    <td class="center num">—</td>
+                    <td><span class="pill status-active">active</span></td>
+                    <td style="font-size:11px;color:var(--c-text-mute)">—</td>
+                    <td class="center"><button class="btn sm">編集</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">TKY-A-03-01-1</td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">A棟 › 通路3 › 棚1 › 1段 › 1列</td>
+                    <td><span class="pill type-picking">ピッキング</span></td>
+                    <td><span class="pill">共用</span></td>
+                    <td>
+                      <div class="usage-wrap">
+                        <div class="usage-bar"><div class="usage-fill" style="width:30%"></div></div>
+                        <span class="usage-pct">30%</span>
+                      </div>
+                    </td>
+                    <td class="center num">45枚</td>
+                    <td><span class="pill status-active">active</span></td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">フォークリフト優先通路</td>
+                    <td class="center"><button class="btn sm">編集</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">TKY-A-04-01-1</td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">A棟 › 通路4 › 棚1 › 1段 › 1列</td>
+                    <td><span class="pill type-storage">保管</span></td>
+                    <td><span class="pill dedicated">TKY専用</span></td>
+                    <td><span style="font-size:11px;color:var(--c-text-mute)">—</span></td>
+                    <td class="center num">—</td>
+                    <td><span class="pill status-frozen">frozen</span></td>
+                    <td style="font-size:11px;color:#1e40af">棚修繕中（5/15まで）</td>
+                    <td class="center"><button class="btn sm">編集</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">RECV-01</td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">A棟 › 入荷ステージング</td>
+                    <td><span class="pill type-staging">入荷</span></td>
+                    <td><span class="pill">共用</span></td>
+                    <td>
+                      <div class="usage-wrap">
+                        <div class="usage-bar"><div class="usage-fill" style="width:20%"></div></div>
+                        <span class="usage-pct">20%</span>
+                      </div>
+                    </td>
+                    <td class="center num">42個</td>
+                    <td><span class="pill status-active">active</span></td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">入荷検品待ち品置き場</td>
+                    <td class="center"><button class="btn sm">編集</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">INSP-01</td>
+                    <td style="font-size:11px;color:var(--c-text-sub)">A棟 › 検品エリア</td>
+                    <td><span class="pill type-inspect">検品</span></td>
+                    <td><span class="pill">共用</span></td>
+                    <td>
+                      <div class="usage-wrap">
+                        <div class="usage-bar"><div class="usage-fill" style="width:10%"></div></div>
+                        <span class="usage-pct">10%</span>
+                      </div>
+                    </td>
+                    <td class="center num">8個</td>
+                    <td><span class="pill status-active">active</span></td>
+                    <td style="font-size:11px;color:var(--c-text-mute)">—</td>
+                    <td class="center"><button class="btn sm">編集</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div><!-- /table-area -->
+        </div><!-- /content -->
+      </div><!-- /main -->
+    </div><!-- /screen -->
+  </div><!-- /pc-device -->
+</div><!-- /pc-frame -->
+
+</body>
+</html>
