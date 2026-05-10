@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS UI9 ピッキング指示（HT バーコードスキャン）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#2d7a3a; --c-ok-lt:#e8f5ea;
+    --c-warn:#7a5c00; --c-warn-lt:#fdf5cc;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1700px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1700px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1700px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  /* HT端末 */
+  .ht-device { width:280px; background:#1a1c22; border:3px solid #2a2d35; border-radius:18px 18px 22px 22px; padding:14px 10px 16px; box-shadow:0 16px 40px rgba(0,0,0,0.5); position:relative; }
+  .ht-device .brand { position:absolute; top:4px; left:12px; font-size:7px; color:#555; font-weight:600; }
+  .ht-device .model { position:absolute; top:4px; right:12px; font-size:7px; color:#555; font-family:var(--f-mono); }
+  .ht-screen { width:100%; aspect-ratio:480/800; background:var(--c-bg); border:1px solid #444; margin-bottom:10px; display:flex; flex-direction:column; overflow:hidden; }
+  .ht-statusbar { background:#1a1c22; color:#c8ccd4; height:14px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; font-size:8px; font-family:var(--f-mono); flex-shrink:0; }
+  .ht-header { background:var(--c-accent); color:#fff; height:24px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; flex-shrink:0; justify-content:space-between; }
+  .ht-header .scr-id { font-family:var(--f-mono); font-size:9px; opacity:0.7; }
+  .ht-body { flex:1; padding:8px; overflow:hidden; background:var(--c-base); display:flex; flex-direction:column; gap:6px; }
+  .ht-key-labels { background:#1a1c22; color:#fff; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; flex-shrink:0; border-top:1px solid #444; }
+  .ht-key-labels .key-lbl { padding:5px 3px; text-align:center; border-right:1px solid #444; font-size:8px; line-height:1.2; }
+  .ht-key-labels .key-lbl:last-child { border-right:none; }
+  .ht-key-labels .key-lbl.primary { background:var(--c-accent-dk); }
+  .ht-key-labels .key-lbl.danger { background:var(--c-alert); }
+  .ht-key-labels .key-lbl .fn { display:block; font-family:var(--f-mono); font-weight:700; font-size:9px; color:#ffd966; }
+  .ht-key-labels .key-lbl.disabled { opacity:0.3; }
+
+  .ht-keypad { background:#2a2d35; border:1px solid #444; padding:8px 6px; display:flex; flex-direction:column; gap:5px; }
+  .ht-keypad .row { display:flex; gap:4px; justify-content:center; }
+  .pkey { background:#1a1c22; color:#fff; border:1px solid #555; padding:3px 0; font-size:9px; font-family:var(--f-mono); font-weight:600; text-align:center; flex:1; border-radius:2px; }
+  .pkey.f1 { color:#ffd966; }
+  .pkey.scan { background:var(--c-alert); flex:2; padding:5px 0; font-size:10px; }
+  .pkey.scan-ok { background:var(--c-ok); flex:2; padding:5px 0; font-size:10px; }
+  .ht-dpad-row { display:flex; align-items:center; gap:6px; }
+  .ht-dpad { width:54px; height:54px; flex-shrink:0; background:#1a1c22; border:1px solid #444; border-radius:50%; position:relative; }
+  .ht-dpad::before { content:""; position:absolute; inset:6px; background: linear-gradient(0deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%), linear-gradient(90deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%); border-radius:50%; }
+  .ht-dpad .ok { position:absolute; inset:0; margin:auto; width:14px; height:14px; background:#555; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:6px; color:#fff; font-weight:600; }
+  .ht-num-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:3px; flex:1; }
+
+  .device-label { color:#fff; font-size:13px; font-weight:600; text-align:center; margin-top:8px; }
+  .device-label .id { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+  .device-label .desc-text { font-size:11px; color:#a0a4ad; font-weight:400; margin-top:4px; max-width:280px; line-height:1.5; }
+
+  .multi-ht { max-width:1700px; margin:0 auto 36px; display:flex; gap:40px; flex-wrap:wrap; justify-content:center; }
+  .multi-ht .ht-unit { display:flex; flex-direction:column; align-items:center; }
+  .multi-ht .ht-unit .step-label { color:#c8ccd4; font-size:12px; font-weight:600; text-align:center; margin-bottom:8px; padding:6px 16px; background:#353944; border:1px solid #4a4f5c; }
+
+  /* スキャン待ちアニメーション枠 */
+  .scan-waiting { border:2px dashed var(--c-accent); padding:8px; text-align:center; position:relative; }
+  .scan-waiting::before { content:""; position:absolute; top:-1px; left:-1px; right:-1px; bottom:-1px; border:1px solid transparent; }
+  .scan-icon { font-size:22px; display:block; margin-bottom:4px; }
+
+  /* カウント表示 */
+  .scan-count-box { background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px 8px; display:flex; align-items:center; justify-content:space-between; }
+  .scan-count-box .count-num { font-family:var(--f-mono); font-size:22px; font-weight:700; color:var(--c-accent); }
+  .scan-count-box .count-target { font-family:var(--f-mono); font-size:11px; color:var(--c-text-sub); }
+
+  /* ロット表示 */
+  .lot-box { background:var(--c-bg); border:1px solid var(--c-line-dk); padding:5px 8px; }
+  .lot-box .lot-label { font-size:8px; color:var(--c-text-mute); text-transform:uppercase; letter-spacing:0.08em; }
+  .lot-box .lot-val { font-family:var(--f-mono); font-size:11px; font-weight:600; color:var(--c-text); margin-top:1px; }
+  .lot-box .lot-exp { font-size:9px; color:var(--c-ok); margin-top:2px; }
+  .lot-box .lot-exp.warn { color:var(--c-warn); }
+
+  /* 進捗バー */
+  .pbar { height:6px; background:var(--c-line); }
+  .pbar .fill { height:100%; background:var(--c-accent); }
+  .pbar .fill.ok { background:var(--c-ok); }
+</style>
+</head>
+<body>
+<h1 class="page-title">UI9 ピッキング指示（HT バーコードスキャン対応）</h1>
+<p class="subtitle">Phase 9-UI9 / HT画面 W-809 / ロット・シリアルスキャン対応</p>
+<div class="quick-nav"><span class="label">画面ジャンプ：</span>
+  <a href="#step1"><b>W-809a</b>棚ラベルスキャン</a>
+  <a href="#step2"><b>W-809b</b>SKUスキャン待ち</a>
+  <a href="#step3"><b>W-809c</b>ロット番号スキャン</a>
+  <a href="#step4"><b>W-809d</b>スキャン継続カウント</a>
+  <a href="#step5"><b>W-809e</b>数量到達→完了確認</a>
+  <a href="#step6"><b>W-809f</b>全行完了</a>
+  <a href="#err1"><b>ERR-1</b>SKU不一致</a>
+  <a href="#err2"><b>ERR-2</b>ロット期限エラー</a>
+</div>
+
+<!-- ============================== -->
+<!-- STEP 1: 棚ラベルスキャン（ロケ到着確認） -->
+<!-- ============================== -->
+<div class="section-divider" id="step1">
+  <span class="num">W-809a</span>棚ラベルスキャン（ロケ到着確認）
+</div>
+<div class="desc">
+  <b>役割</b>：ピッキング開始時、まず棚ラベルをスキャンしてロケーションを照合する。移動先を間違えた場合は即エラー。<br>
+  <b>設計根拠</b>：SKU・ロットスキャン前にロケを確定することで誤ピック（別棚取り）を排除。
+</div>
+<div class="multi-ht">
+  <div class="ht-unit">
+    <div class="step-label">STEP 1 ロケ到着→棚スキャン</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:10 94%</span></div>
+        <div class="ht-header">
+          <span>ロケスキャン</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+            <span style="color:var(--c-text-sub);">WV-2605-012</span>
+            <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">3 / 8</span>
+          </div>
+
+          <!-- ロケ大表示 -->
+          <div style="background:var(--c-accent); color:#fff; padding:12px 8px; text-align:center;">
+            <div style="font-size:9px; opacity:0.8; margin-bottom:4px;">移動先ロケ</div>
+            <div style="font-family:var(--f-mono); font-size:26px; font-weight:700; letter-spacing:3px; line-height:1.1;">C-3-02-04</div>
+            <div style="font-size:8px; opacity:0.7; margin-top:4px;">1F冷凍エリア / 棚C / 列3 / 段2 / 間口4</div>
+          </div>
+
+          <!-- スキャン待ち -->
+          <div class="scan-waiting">
+            <span class="scan-icon">▦</span>
+            <div style="font-size:10px; font-weight:600; color:var(--c-accent);">棚ラベルをスキャン</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:3px;">SCANキーを押してから読取</div>
+          </div>
+
+          <!-- 次ロケ予告 -->
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px; font-size:9px;">
+            <span style="color:var(--c-text-sub);">次のロケ：</span>
+            <span style="font-family:var(--f-mono); font-weight:600;">D-1-04-02</span>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-mute); margin-top:auto; text-align:center; padding:3px 0;">
+            到着後 棚ラベルをSCAN → ロケ照合
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl disabled"><span class="fn">F1</span>−</div>
+          <div class="key-lbl"><span class="fn">F2</span>ルート確認</div>
+          <div class="key-lbl"><span class="fn">F3</span>スキップ</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-809a</span>①棚スキャン
+      <div class="desc-text">ロケ番号を確認→移動→棚ラベルをSCANキーで照合。不一致は即エラー。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STEP 2: SKUスキャン待ち -->
+<!-- ============================== -->
+<div class="section-divider" id="step2">
+  <span class="num">W-809b</span>SKUスキャン待ち
+</div>
+<div class="desc">
+  <b>役割</b>：ロケ照合後、商品バーコード（SKU）をスキャンして対象品を確認する。<br>
+  <b>設計根拠</b>：1品ずつスキャンによるカウントアップ方式。指示数量に達するまでスキャンを繰り返す。
+</div>
+<div class="multi-ht">
+  <div class="ht-unit">
+    <div class="step-label">STEP 2 SKUスキャン待ち（1本目）</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:13 93%</span></div>
+        <div class="ht-header">
+          <span>SKUスキャン</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+            <span style="font-family:var(--f-mono); color:var(--c-accent);">C-3-02-04</span>
+            <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">3 / 8</span>
+          </div>
+
+          <!-- SKU表示 -->
+          <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:7px;">
+            <div style="font-size:8px; color:var(--c-text-sub);">ピック対象 SKU</div>
+            <div style="font-family:var(--f-mono); font-size:12px; font-weight:700; color:var(--c-accent); margin-top:2px;">SKU-30087</div>
+            <div style="font-size:13px; font-weight:600; margin-top:2px;">冷凍エビ 500g</div>
+          </div>
+
+          <!-- スキャン指示数量 -->
+          <div class="scan-count-box">
+            <div>
+              <div style="font-size:8px; color:var(--c-text-sub);">スキャン済</div>
+              <div class="count-num">0</div>
+            </div>
+            <div style="font-size:20px; color:var(--c-line-dk);">/</div>
+            <div>
+              <div style="font-size:8px; color:var(--c-text-sub);">指示数量</div>
+              <div class="count-num">6</div>
+            </div>
+            <div style="font-size:9px; color:var(--c-text-sub); align-self:flex-end; padding-bottom:2px;">袋</div>
+          </div>
+
+          <!-- スキャン待ち枠 -->
+          <div class="scan-waiting">
+            <span class="scan-icon">▦</span>
+            <div style="font-size:10px; font-weight:600; color:var(--c-accent);">商品バーコードをスキャン</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:3px;">1袋ずつスキャンしてください</div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-mute); margin-top:auto; text-align:center;">
+            スキャンするたびカウントが増えます
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl disabled"><span class="fn">F1</span>−</div>
+          <div class="key-lbl"><span class="fn">F2</span>部分ピック</div>
+          <div class="key-lbl"><span class="fn">F3</span>欠品報告</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-809b</span>②SKUスキャン待ち
+      <div class="desc-text">商品バーコードを1袋ずつスキャン。指示数量まで繰り返す。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STEP 3: ロット番号スキャン（FEFO） -->
+<!-- ============================== -->
+<div class="section-divider" id="step3">
+  <span class="num">W-809c</span>ロット番号スキャン（FEFO照合）
+</div>
+<div class="desc">
+  <b>役割</b>：SKU照合後、賞味期限管理品はロットバーコードも照合しFEFO（先入先出）を保証する。<br>
+  <b>設計根拠</b>：FEFO対象品は指定ロット以外のスキャンを拒否。期限が先のロットからピックすることを強制。
+</div>
+<div class="multi-ht">
+
+  <!-- ロットスキャン待ち -->
+  <div class="ht-unit">
+    <div class="step-label">STEP 3a ロットスキャン待ち</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:14 93%</span></div>
+        <div class="ht-header">
+          <span>ロットスキャン</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+            <span style="font-family:var(--f-mono); color:var(--c-accent);">C-3-02-04</span>
+            <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">3 / 8</span>
+          </div>
+
+          <!-- SKU照合OK -->
+          <div style="background:var(--c-ok-lt); border:1px solid var(--c-ok); padding:5px 7px; display:flex; align-items:center; gap:5px;">
+            <span style="color:var(--c-ok); font-size:14px; font-weight:700;">✓</span>
+            <div>
+              <div style="font-size:9px; color:var(--c-ok); font-weight:600;">SKU照合 OK</div>
+              <div style="font-family:var(--f-mono); font-size:10px;">SKU-30087 冷凍エビ 500g</div>
+            </div>
+          </div>
+
+          <!-- 指定ロット -->
+          <div class="lot-box" style="border-color:var(--c-accent); border-width:2px;">
+            <div class="lot-label">FEFO 指定ロット</div>
+            <div class="lot-val">LOT-2026-A1-0312</div>
+            <div class="lot-exp">賞味期限：2026/03/12（最短）</div>
+          </div>
+
+          <!-- スキャン待ち -->
+          <div class="scan-waiting">
+            <span class="scan-icon">▦</span>
+            <div style="font-size:10px; font-weight:600; color:var(--c-accent);">ロットバーコードをスキャン</div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-top:3px;">梱包ラベルのロット番号を読取</div>
+          </div>
+
+          <!-- スキャン済カウント -->
+          <div class="scan-count-box">
+            <div><div style="font-size:8px; color:var(--c-text-sub);">スキャン済</div><div class="count-num">1</div></div>
+            <div style="font-size:20px; color:var(--c-line-dk);">/</div>
+            <div><div style="font-size:8px; color:var(--c-text-sub);">指示数量</div><div class="count-num">6</div></div>
+            <div style="font-size:9px; color:var(--c-text-sub); align-self:flex-end; padding-bottom:2px;">袋</div>
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl disabled"><span class="fn">F1</span>−</div>
+          <div class="key-lbl"><span class="fn">F2</span>ロット変更</div>
+          <div class="key-lbl"><span class="fn">F3</span>欠品報告</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-809c</span>③ロットスキャン待ち
+      <div class="desc-text">FEFO指定ロットのバーコードをスキャン。別ロットは拒否。</div>
+    </div>
+  </div>
+
+  <!-- ロットスキャンOK -->
+  <div class="ht-unit">
+    <div class="step-label">STEP 3b ロット照合 OK</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:14 93%</span></div>
+        <div class="ht-header">
+          <span>ロット照合</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+            <span style="font-family:var(--f-mono); color:var(--c-accent);">C-3-02-04</span>
+            <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">3 / 8</span>
+          </div>
+
+          <!-- ロット照合OK -->
+          <div style="background:var(--c-ok-lt); border:2px solid var(--c-ok); padding:10px; text-align:center;">
+            <div style="font-size:18px; color:var(--c-ok); font-weight:700;">✓ ロット照合 OK</div>
+            <div class="lot-box" style="margin-top:6px; text-align:left; background:var(--c-base);">
+              <div class="lot-label">確認済みロット</div>
+              <div class="lot-val">LOT-2026-A1-0312</div>
+              <div class="lot-exp">賞味期限：2026/03/12</div>
+            </div>
+          </div>
+
+          <!-- カウントアップ表示 -->
+          <div class="scan-count-box">
+            <div><div style="font-size:8px; color:var(--c-text-sub);">スキャン済</div><div class="count-num" style="color:var(--c-ok);">1</div></div>
+            <div style="font-size:20px; color:var(--c-line-dk);">/</div>
+            <div><div style="font-size:8px; color:var(--c-text-sub);">指示数量</div><div class="count-num">6</div></div>
+            <div style="font-size:9px; color:var(--c-text-sub); align-self:flex-end; padding-bottom:2px;">袋</div>
+          </div>
+
+          <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:10px; color:var(--c-accent); font-weight:600;">
+            → 次の袋をスキャン（残り5袋）
+          </div>
+
+          <!-- 進捗 -->
+          <div style="margin-top:auto;">
+            <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:3px;">ウェーブ進捗</div>
+            <div class="pbar"><div class="fill" style="width:37.5%;"></div></div>
+            <div style="font-size:10px; font-family:var(--f-mono); text-align:right; margin-top:2px;">3 / 8 行</div>
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl disabled"><span class="fn">F1</span>−</div>
+          <div class="key-lbl"><span class="fn">F2</span>部分ピック</div>
+          <div class="key-lbl"><span class="fn">F3</span>欠品報告</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan-ok">SCAN ✓</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-809c'</span>③ロット照合OK
+      <div class="desc-text">ロット一致→カウントが1増える。次の袋を続けてスキャン。</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================== -->
+<!-- STEP 4: スキャン継続カウント（中間状態） -->
+<!-- ============================== -->
+<div class="section-divider" id="step4">
+  <span class="num">W-809d</span>スキャン継続カウント（中間状態）
+</div>
+<div class="desc">
+  <b>役割</b>：2袋目以降のスキャン継続。カウントが増えるたびに進捗バーが動く。<br>
+  <b>設計根拠</b>：数量が多い場合でも「あと何個」が視覚的に分かるUX。
+</div>
+<div class="multi-ht">
+  <div class="ht-unit">
+    <div class="step-label">STEP 4 スキャン継続（4/6袋）</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:16 92%</span></div>
+        <div class="ht-header">
+          <span>SKUスキャン</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+            <span style="font-family:var(--f-mono); color:var(--c-accent);">C-3-02-04</span>
+            <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">3 / 8</span>
+          </div>
+
+          <!-- SKU & ロット確認済 -->
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:5px 7px; font-size:9px;">
+            <div style="display:flex; gap:4px; align-items:center;">
+              <span style="color:var(--c-ok); font-weight:700;">✓</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">SKU-30087</span>
+              <span style="color:var(--c-text-sub);">冷凍エビ 500g</span>
+            </div>
+            <div style="display:flex; gap:4px; align-items:center; margin-top:2px;">
+              <span style="color:var(--c-ok); font-weight:700;">✓</span>
+              <span style="font-family:var(--f-mono); font-size:10px;">LOT-2026-A1-0312</span>
+              <span style="font-size:9px; color:var(--c-text-sub);">2026/03/12</span>
+            </div>
+          </div>
+
+          <!-- カウント（大きく） -->
+          <div class="scan-count-box" style="justify-content:center; gap:10px; padding:10px;">
+            <div style="text-align:center;">
+              <div style="font-size:8px; color:var(--c-text-sub);">スキャン済</div>
+              <div style="font-family:var(--f-mono); font-size:36px; font-weight:700; color:var(--c-ok); line-height:1.1;">4</div>
+            </div>
+            <div style="font-size:28px; color:var(--c-line-dk); font-weight:300;">/</div>
+            <div style="text-align:center;">
+              <div style="font-size:8px; color:var(--c-text-sub);">指示数量</div>
+              <div style="font-family:var(--f-mono); font-size:36px; font-weight:700; color:var(--c-accent); line-height:1.1;">6</div>
+            </div>
+            <div style="font-size:11px; color:var(--c-text-sub); align-self:flex-end; padding-bottom:4px;">袋</div>
+          </div>
+
+          <!-- ミニ進捗バー（ピック内） -->
+          <div>
+            <div class="pbar"><div class="fill ok" style="width:66.7%;"></div></div>
+            <div style="font-size:9px; color:var(--c-text-sub); text-align:right; margin-top:2px;">あと 2袋</div>
+          </div>
+
+          <div class="scan-waiting" style="padding:5px 8px;">
+            <div style="font-size:10px; font-weight:600; color:var(--c-accent);">次の袋をスキャン</div>
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl disabled"><span class="fn">F1</span>−</div>
+          <div class="key-lbl"><span class="fn">F2</span>部分ピック</div>
+          <div class="key-lbl"><span class="fn">F3</span>欠品報告</div>
+          <div class="key-lbl"><span class="fn">F4</span>取消</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-809d</span>④スキャン継続
+      <div class="desc-text">4/6袋完了。カウント大表示と「あとN袋」でテンポを維持。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STEP 5: 数量到達→完了確認 -->
+<!-- ============================== -->
+<div class="section-divider" id="step5">
+  <span class="num">W-809e</span>数量到達 → 完了確認
+</div>
+<div class="desc">
+  <b>役割</b>：指示数量に達したらピック完了を確認。F1で次のロケへ進む。<br>
+  <b>設計根拠</b>：誤って1個多くスキャンしてしまう事故を防ぐため、完了確認画面を挟む。
+</div>
+<div class="multi-ht">
+  <div class="ht-unit">
+    <div class="step-label">STEP 5 数量到達→F1で次へ</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:18 92%</span></div>
+        <div class="ht-header" style="background:var(--c-ok);">
+          <span>ピック完了！</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+            <span style="font-family:var(--f-mono); color:var(--c-accent);">C-3-02-04</span>
+            <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">3 / 8</span>
+          </div>
+
+          <!-- 完了表示 -->
+          <div style="background:var(--c-ok-lt); border:2px solid var(--c-ok); padding:12px; text-align:center;">
+            <div style="font-size:26px; color:var(--c-ok); font-weight:700;">✓ 6 / 6</div>
+            <div style="font-size:10px; color:var(--c-ok); margin-top:2px;">全数スキャン完了</div>
+          </div>
+
+          <!-- ピックサマリ -->
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:7px; font-size:10px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+              <span style="color:var(--c-text-sub);">SKU</span>
+              <span style="font-family:var(--f-mono); font-weight:600;">SKU-30087</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+              <span style="color:var(--c-text-sub);">ロット</span>
+              <span style="font-family:var(--f-mono);">LOT-2026-A1-0312</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">ピック数</span>
+              <span style="font-family:var(--f-mono); font-weight:700; color:var(--c-ok);">6袋</span>
+            </div>
+          </div>
+
+          <!-- 全体進捗 -->
+          <div>
+            <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:3px;">ウェーブ進捗</div>
+            <div class="pbar"><div class="fill ok" style="width:37.5%;"></div></div>
+            <div style="font-size:10px; font-family:var(--f-mono); text-align:right; margin-top:2px;">3 / 8 行完了</div>
+          </div>
+
+          <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:6px 8px; font-size:10px; color:var(--c-accent); font-weight:600; text-align:center;">
+            F1キーで次のロケへ進む
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>次のロケへ</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl"><span class="fn">F3</span>進捗確認</div>
+          <div class="key-lbl"><span class="fn">F4</span>訂正</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-809e</span>⑤数量到達完了
+      <div class="desc-text">全数スキャン完了を確認後、F1で次ロケへ遷移。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STEP 6: 全行完了 -->
+<!-- ============================== -->
+<div class="section-divider" id="step6">
+  <span class="num">W-809f</span>全行完了 → ウェーブ完了
+</div>
+<div class="desc">
+  <b>役割</b>：ウェーブの全行をピック完了後の完了画面。梱包エリアへの誘導を行う。
+</div>
+<div class="multi-ht">
+  <div class="ht-unit">
+    <div class="step-label">STEP 6 ウェーブ全行完了</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:28 90%</span></div>
+        <div class="ht-header" style="background:var(--c-ok);">
+          <span>ウェーブ完了！</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-ok-lt); border:2px solid var(--c-ok); padding:14px; text-align:center;">
+            <div style="font-size:26px; color:var(--c-ok); font-weight:700;">✓ 全8行完了</div>
+            <div style="font-size:10px; color:var(--c-ok); margin-top:2px;">WV-2605-012</div>
+          </div>
+
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:8px; font-size:10px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="color:var(--c-text-sub);">ピック行数</span>
+              <span style="font-family:var(--f-mono); font-weight:700;">8 行</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="color:var(--c-text-sub);">スキャン総数</span>
+              <span style="font-family:var(--f-mono); font-weight:700;">31 スキャン</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--c-text-sub);">所要時間</span>
+              <span style="font-family:var(--f-mono); font-weight:700;">18分</span>
+            </div>
+          </div>
+
+          <div style="background:var(--c-accent); color:#fff; padding:8px; text-align:center;">
+            <div style="font-size:9px; opacity:0.8; margin-bottom:2px;">次の工程</div>
+            <div style="font-size:13px; font-weight:600;">梱包エリアへ移動</div>
+            <div style="font-family:var(--f-mono); font-size:10px; margin-top:2px; opacity:0.8;">PACK-ZONE-B</div>
+          </div>
+
+          <div class="pbar"><div class="fill ok" style="width:100%;"></div></div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>次のウェーブ</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl"><span class="fn">F3</span>完了レポート</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">W-809f</span>⑥ウェーブ完了
+      <div class="desc-text">全行完了。次の梱包エリアへの誘導と次ウェーブ受取。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- ERROR 1: SKU不一致 -->
+<!-- ============================== -->
+<div class="section-divider" id="err1">
+  <span class="num">ERR-1</span>エラー：SKU不一致
+</div>
+<div class="desc">
+  <b>役割</b>：指示と異なる商品バーコードをスキャンした場合の即時エラー停止。<br>
+  <b>設計根拠</b>：誤品出荷はWMSの最も重大な障害。エラー時は解除操作なしで次に進めないよう強制ブロック。
+</div>
+<div class="multi-ht">
+  <div class="ht-unit">
+    <div class="step-label">ERROR SKU不一致（スキャンミス）</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:14 93%</span></div>
+        <div class="ht-header" style="background:var(--c-alert);">
+          <span>！ SKU不一致エラー</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+            <span style="font-family:var(--f-mono); color:var(--c-accent);">C-3-02-04</span>
+            <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">3 / 8</span>
+          </div>
+
+          <!-- エラー表示 -->
+          <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:10px; text-align:center;">
+            <div style="font-size:20px; color:var(--c-alert); font-weight:700;">✕ スキャン不一致</div>
+            <div style="font-size:9px; color:var(--c-alert); margin-top:3px;">商品が異なります</div>
+          </div>
+
+          <!-- 比較表示 -->
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:7px; font-size:10px;">
+            <div style="margin-bottom:6px;">
+              <div style="font-size:8px; color:var(--c-text-sub); margin-bottom:2px;">指示（正しい商品）</div>
+              <div style="background:var(--c-ok-lt); border:1px solid var(--c-ok); padding:4px 6px;">
+                <div style="font-family:var(--f-mono); font-size:11px; font-weight:600; color:var(--c-ok);">SKU-30087</div>
+                <div style="font-size:11px;">冷凍エビ 500g</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:8px; color:var(--c-text-sub); margin-bottom:2px;">スキャンした商品</div>
+              <div style="background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:4px 6px;">
+                <div style="font-family:var(--f-mono); font-size:11px; font-weight:600; color:var(--c-alert);">SKU-30091</div>
+                <div style="font-size:11px;">冷凍イカ 500g</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--c-alert-lt); border-left:3px solid var(--c-alert); padding:5px 7px; font-size:9px; color:var(--c-alert);">
+            ！ 正しい商品を取り出してスキャンし直してください
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl danger"><span class="fn">F1</span>再スキャン</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl"><span class="fn">F3</span>上司に連絡</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">ERR-1</span>SKU不一致
+      <div class="desc-text">正・誤SKUを並べて表示。再スキャンのみで解除可能。次へは進めない。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- ERROR 2: ロット期限エラー -->
+<!-- ============================== -->
+<div class="section-divider" id="err2">
+  <span class="num">ERR-2</span>エラー：ロット期限違反（FEFO逸脱）
+</div>
+<div class="desc">
+  <b>役割</b>：指定ロット以外のバーコードをスキャンした場合のエラー（FEFO強制対応）。<br>
+  <b>設計根拠</b>：食品・冷凍品は賞味期限管理が法的義務。新しいロットを先に出す行為を物理的にブロックする。
+</div>
+<div class="multi-ht">
+  <div class="ht-unit">
+    <div class="step-label">ERROR ロット期限違反（FEFO逸脱）</div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:15 93%</span></div>
+        <div class="ht-header" style="background:var(--c-alert);">
+          <span>！ ロット違反エラー</span>
+          <span class="scr-id">W-809</span>
+        </div>
+        <div class="ht-body">
+
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+            <span style="font-family:var(--f-mono); color:var(--c-accent);">C-3-02-04</span>
+            <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">3 / 8</span>
+          </div>
+
+          <!-- エラー表示 -->
+          <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:8px; text-align:center;">
+            <div style="font-size:16px; color:var(--c-alert); font-weight:700;">✕ FEFOロット違反</div>
+            <div style="font-size:9px; color:var(--c-alert); margin-top:3px;">賞味期限が新しいロットは出荷不可</div>
+          </div>
+
+          <!-- 比較 -->
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:7px; font-size:10px;">
+            <div style="margin-bottom:6px;">
+              <div style="font-size:8px; color:var(--c-text-sub); margin-bottom:2px;">指示ロット（賞味期限 最短）</div>
+              <div style="background:var(--c-ok-lt); border:1px solid var(--c-ok); padding:4px 6px;">
+                <div style="font-family:var(--f-mono); font-size:10px; font-weight:600; color:var(--c-ok);">LOT-2026-A1-0312</div>
+                <div style="font-size:9px; color:var(--c-ok);">賞味期限：2026/03/12 ← これを使う</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:8px; color:var(--c-text-sub); margin-bottom:2px;">スキャンしたロット（賞味期限 新しい）</div>
+              <div style="background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:4px 6px;">
+                <div style="font-family:var(--f-mono); font-size:10px; font-weight:600; color:var(--c-alert);">LOT-2026-B3-0630</div>
+                <div style="font-size:9px; color:var(--c-alert);">賞味期限：2026/06/30 ← FEFO違反</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--c-alert-lt); border-left:3px solid var(--c-alert); padding:5px 7px; font-size:9px; color:var(--c-alert);">
+            ！ 指定ロットのバーコードを再スキャンしてください
+          </div>
+
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl danger"><span class="fn">F1</span>再スキャン</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl"><span class="fn">F3</span>上司に連絡</div>
+          <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row">
+          <div class="pkey scan">SCAN</div>
+        </div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">8</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">ERR-2</span>FEFO違反
+      <div class="desc-text">指定ロットと異なる（賞味期限が新しい）ロットのスキャンをブロック。</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
