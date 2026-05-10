@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMS 棚卸し・在庫調整操作画面（PC）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list tbody tr.selected { background:var(--c-accent-lt); }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-alert-lt); border-left-color:var(--c-alert); }
+  .note-box.warn .label { color:var(--c-alert); }
+
+  .text-mono { font-family:var(--f-mono); }
+  .text-bold { font-weight:600; }
+
+  /* 進捗バー */
+  .pbar { height:6px; background:var(--c-line); position:relative; }
+  .pbar .fill { height:100%; background:var(--c-accent); }
+  .pbar .fill.alert { background:var(--c-alert); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">棚卸し・在庫調整操作画面（PC）</h1>
+<p class="subtitle">棚卸し計画一覧 / 棚卸し実施（差異確認） / 在庫調整</p>
+
+<div class="quick-nav">
+  <span class="label">Quick Nav:</span>
+  <a href="#w701"><b>W-701</b>棚卸し計画一覧</a>
+  <a href="#w702"><b>W-702</b>棚卸し実施</a>
+  <a href="#w703"><b>W-703</b>在庫調整</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- W-701: 棚卸し計画一覧 -->
+<!-- ============================================================ -->
+<div class="section-divider" id="w701">
+  <span class="num">W-701</span>棚卸し計画一覧
+</div>
+<div class="desc">
+  <b>W-701 棚卸し計画一覧</b> — 棚卸しセッション（循環棚卸・一斉棚卸）の一覧・進捗管理。実施中は対象ロケーションへの出荷指示を自動凍結。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/inventory-count/sessions</div>
+  </div>
+  <div class="screen">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        WMS
+        <small>倉庫管理システム</small>
+      </div>
+      <nav>
+        <div class="group">棚卸し</div>
+        <a href="#" class="active">棚卸し計画一覧</a>
+        <a href="#">棚卸し実施</a>
+        <a href="#">差異確認</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫調整</a>
+        <a href="#">在庫一覧</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷指示一覧</a>
+        <a href="#">ピッキング</a>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定</a>
+        <a href="#">検品・格納</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品マスタ</a>
+        <a href="#">ロケーションマスタ</a>
+      </nav>
+      <div class="sb-footer">v3.1.0 — WMS</div>
+    </div>
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">棚卸し &rsaquo; <b>棚卸し計画一覧</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主: <b>マルキ食品</b> ▾</div>
+          <div class="user">
+            <div class="avatar">田</div>
+            管理者 田中
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box warn" style="margin-bottom:14px;">
+          <div class="label">⚠ 出荷停止中ロケーションあり</div>
+          棚卸し実施中のロケーションは出荷指示が一時停止されています。対象ロケ: 1F-A01〜A10 (マルキ食品)
+        </div>
+
+        <div class="tabs">
+          <div class="tab active">進行中（2）</div>
+          <div class="tab">計画中（3）</div>
+          <div class="tab">完了（15）</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            棚卸しセッション一覧
+            <div class="meta">進行中: 2件</div>
+          </div>
+          <table class="list">
+            <thead>
+              <tr>
+                <th>セッションID</th>
+                <th>荷主</th>
+                <th>棚卸し方式</th>
+                <th>対象範囲</th>
+                <th class="right">凍結ロケ数</th>
+                <th style="min-width:140px;">進捗</th>
+                <th>開始日時</th>
+                <th>状態</th>
+                <th class="center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="num text-bold">CNT-2605-001</td>
+                <td>マルキ食品</td>
+                <td>循環棚卸</td>
+                <td>1F-Aゾーン</td>
+                <td class="right num">12</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div class="pbar" style="flex:1;"><div class="fill" style="width:66.6%;"></div></div>
+                    <span style="font-size:11px;color:var(--c-text-sub);white-space:nowrap;">8/12</span>
+                  </div>
+                </td>
+                <td class="num" style="font-size:12px;">2026/05/08 10:00</td>
+                <td><span class="pill accent">進行中</span></td>
+                <td class="center"><button class="btn sm primary">実施画面</button></td>
+              </tr>
+              <tr>
+                <td class="num text-bold">CNT-2605-002</td>
+                <td>アルファ商事</td>
+                <td>一斉棚卸</td>
+                <td>全ロケ</td>
+                <td class="right num">145</td>
+                <td>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div class="pbar" style="flex:1;"><div class="fill" style="width:28.9%;"></div></div>
+                    <span style="font-size:11px;color:var(--c-text-sub);white-space:nowrap;">42/145</span>
+                  </div>
+                </td>
+                <td class="num" style="font-size:12px;">2026/05/08 08:00</td>
+                <td><span class="pill accent">進行中</span></td>
+                <td class="center"><button class="btn sm primary">実施画面</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+          <button class="btn primary">棚卸し新規開始</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- W-702: 棚卸し実施（差異確認） -->
+<!-- ============================================================ -->
+<div class="section-divider" id="w702">
+  <span class="num">W-702</span>棚卸し実施（差異確認）
+</div>
+<div class="desc">
+  <b>W-702 棚卸し実施</b> — セッション CNT-2605-001 の実施画面。ロケーション別に帳簿数量と実数量を照合し、差異が発生したSKUを確認・再カウント依頼。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/inventory-count/CNT-2605-001</div>
+  </div>
+  <div class="screen">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        WMS
+        <small>倉庫管理システム</small>
+      </div>
+      <nav>
+        <div class="group">棚卸し</div>
+        <a href="#">棚卸し計画一覧</a>
+        <a href="#" class="active">棚卸し実施</a>
+        <a href="#">差異確認</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫調整</a>
+        <a href="#">在庫一覧</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷指示一覧</a>
+        <a href="#">ピッキング</a>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定</a>
+        <a href="#">検品・格納</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品マスタ</a>
+        <a href="#">ロケーションマスタ</a>
+      </nav>
+      <div class="sb-footer">v3.1.0 — WMS</div>
+    </div>
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">棚卸し &rsaquo; 棚卸し計画一覧 &rsaquo; <b>CNT-2605-001 実施</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主: <b>マルキ食品</b> ▾</div>
+          <div class="user">
+            <div class="avatar">田</div>
+            管理者 田中
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:16px; height:100%;">
+
+          <!-- Left: 差異一覧 -->
+          <div style="display:flex; flex-direction:column; gap:0;">
+            <div class="card" style="flex:1; display:flex; flex-direction:column;">
+              <div class="card-header">
+                差異一覧（CNT-2605-001）
+                <div class="meta">対象: 1F-Aゾーン</div>
+              </div>
+              <div style="padding:14px 16px 0;">
+                <div class="tabs">
+                  <div class="tab active">差異あり（4）</div>
+                  <div class="tab">全件（12）</div>
+                  <div class="tab">再カウント待ち（2）</div>
+                </div>
+              </div>
+              <table class="list" style="flex:1;">
+                <thead>
+                  <tr>
+                    <th>ロケ</th>
+                    <th>SKU / 商品名</th>
+                    <th class="right">帳簿数量</th>
+                    <th class="right">実数量</th>
+                    <th class="right">差異数量</th>
+                    <th class="right">差異額</th>
+                    <th>状態</th>
+                    <th class="center">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="num">A01-01-01</td>
+                    <td>
+                      <div style="font-size:11px; color:var(--c-text-sub);">SKU-0012</div>
+                      マルキパスタ500g
+                    </td>
+                    <td class="right num">100</td>
+                    <td class="right num">98</td>
+                    <td class="right num" style="color:var(--c-alert);">-2</td>
+                    <td class="right num" style="color:var(--c-alert);">-480円</td>
+                    <td><span class="pill alert">差異あり</span></td>
+                    <td class="center"><button class="btn sm">再カウント</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">A01-01-02</td>
+                    <td>
+                      <div style="font-size:11px; color:var(--c-text-sub);">SKU-0018</div>
+                      マルキソース200g
+                    </td>
+                    <td class="right num">50</td>
+                    <td class="right num">53</td>
+                    <td class="right num" style="color:var(--c-accent);">+3</td>
+                    <td class="right num" style="color:var(--c-accent);">+720円</td>
+                    <td><span class="pill alert">差異あり</span></td>
+                    <td class="center"><button class="btn sm">再カウント</button></td>
+                  </tr>
+                  <tr>
+                    <td class="num">A01-02-01</td>
+                    <td>
+                      <div style="font-size:11px; color:var(--c-text-sub);">SKU-0025</div>
+                      マルキスープ400g
+                    </td>
+                    <td class="right num">30</td>
+                    <td class="right num">30</td>
+                    <td class="right num">0</td>
+                    <td class="right" style="color:var(--c-text-mute);">—</td>
+                    <td><span class="pill">一致</span></td>
+                    <td class="center" style="color:var(--c-text-mute); font-size:11px;">—</td>
+                  </tr>
+                  <tr>
+                    <td class="num">A02-01-01</td>
+                    <td>
+                      <div style="font-size:11px; color:var(--c-text-sub);">SKU-0031</div>
+                      マルキドレッシング
+                    </td>
+                    <td class="right num">80</td>
+                    <td class="right num">75</td>
+                    <td class="right num" style="color:var(--c-alert);">-5</td>
+                    <td class="right num" style="color:var(--c-alert);">-1,250円</td>
+                    <td><span class="pill alert">差異あり</span></td>
+                    <td class="center"><button class="btn sm">再カウント</button></td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5" class="right" style="font-size:12px;">合計差異額</td>
+                    <td class="right num" style="color:var(--c-alert); font-size:12px;">±2,450円</td>
+                    <td colspan="2"></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right: セッション情報 -->
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <div class="card">
+              <div class="card-header">セッション情報</div>
+              <div class="card-body">
+                <table style="width:100%; font-size:12px; border-collapse:collapse;">
+                  <tr>
+                    <td style="padding:6px 0; color:var(--c-text-sub); font-size:11px; width:110px;">対象範囲</td>
+                    <td style="padding:6px 0; font-weight:500;">1F-Aゾーン（12ロケ）</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0; color:var(--c-text-sub); font-size:11px;">進捗</td>
+                    <td style="padding:6px 0;">
+                      <div style="display:flex; align-items:center; gap:10px;">
+                        <div class="pbar" style="flex:1;"><div class="fill" style="width:66.6%;"></div></div>
+                        <span style="font-size:12px; font-family:var(--f-mono); font-weight:600; white-space:nowrap;">8/12 ロケ完了</span>
+                      </div>
+                      <div style="font-size:11px; color:var(--c-text-sub); margin-top:3px;">67%</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0; color:var(--c-text-sub); font-size:11px;">棚卸し方式</td>
+                    <td style="padding:6px 0;">循環棚卸</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0; color:var(--c-text-sub); font-size:11px;">担当者</td>
+                    <td style="padding:6px 0;">田中・佐藤</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0; color:var(--c-text-sub); font-size:11px;">開始日時</td>
+                    <td style="padding:6px 0; font-family:var(--f-mono); font-size:12px;">2026/05/08 10:00</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="note-box" style="margin-bottom:0;">
+              <div class="label">承認について</div>
+              差異確定には管理者承認が必要です。確定後、在庫調整画面に自動遷移します。
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <button class="btn primary" style="width:100%; padding:10px 14px; font-size:13px;">差異確定・在庫補正へ</button>
+              <button class="btn" style="width:100%; padding:8px 14px; font-size:12px;">棚卸し中断</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- W-703: 在庫調整 -->
+<!-- ============================================================ -->
+<div class="section-divider" id="w703">
+  <span class="num">W-703</span>在庫調整
+</div>
+<div class="desc">
+  <b>W-703 在庫調整</b> — 棚卸し差異確定・数量誤入力修正・破損廃棄などによる在庫数量の調整。確定後は inventory_movements に監査証跡として記録される。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/inventory/adjustment</div>
+  </div>
+  <div class="screen">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        WMS
+        <small>倉庫管理システム</small>
+      </div>
+      <nav>
+        <div class="group">棚卸し</div>
+        <a href="#">棚卸し計画一覧</a>
+        <a href="#">棚卸し実施</a>
+        <a href="#">差異確認</a>
+        <div class="group">在庫</div>
+        <a href="#" class="active">在庫調整</a>
+        <a href="#">在庫一覧</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷指示一覧</a>
+        <a href="#">ピッキング</a>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定</a>
+        <a href="#">検品・格納</a>
+        <div class="group">マスタ</div>
+        <a href="#">商品マスタ</a>
+        <a href="#">ロケーションマスタ</a>
+      </nav>
+      <div class="sb-footer">v3.1.0 — WMS</div>
+    </div>
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">在庫 &rsaquo; <b>在庫調整</b></div>
+        <div class="actions">
+          <div class="user">
+            <div class="avatar">田</div>
+            管理者 田中
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- Section 1: 調整理由と対象 -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header">調整理由と対象</div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field">
+                <label>調整理由<span class="required">*</span></label>
+                <select>
+                  <option selected>棚卸し差異確定</option>
+                  <option>数量誤入力修正</option>
+                  <option>破損廃棄</option>
+                  <option>その他</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>承認者<span class="required">*</span></label>
+                <input type="text" value="管理者 田中" />
+              </div>
+              <div class="field" style="grid-column: span 2;">
+                <label>調整メモ</label>
+                <textarea rows="2" style="resize:vertical;">CNT-2605-001 棚卸し差異確定による在庫補正（2026/05/08）</textarea>
+                <div class="hint">任意。監査証跡として inventory_movements に記録されます。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: 調整明細 -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            調整明細
+            <div class="meta">3件</div>
+          </div>
+          <table class="list">
+            <thead>
+              <tr>
+                <th>ロケ</th>
+                <th>SKU / 商品名</th>
+                <th class="right">現在数量</th>
+                <th class="right">調整後数量</th>
+                <th class="right">差異</th>
+                <th class="right">差異額</th>
+                <th class="center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="num">A01-01-01</td>
+                <td>
+                  <div style="font-size:11px; color:var(--c-text-sub);">SKU-0012</div>
+                  マルキパスタ500g
+                </td>
+                <td class="right num">100</td>
+                <td class="right num">98</td>
+                <td class="right num" style="color:var(--c-alert);">-2</td>
+                <td class="right num" style="color:var(--c-alert);">-480円</td>
+                <td class="center"><button class="btn sm danger">削除</button></td>
+              </tr>
+              <tr>
+                <td class="num">A01-01-02</td>
+                <td>
+                  <div style="font-size:11px; color:var(--c-text-sub);">SKU-0018</div>
+                  マルキソース200g
+                </td>
+                <td class="right num">50</td>
+                <td class="right num">53</td>
+                <td class="right num" style="color:var(--c-accent);">+3</td>
+                <td class="right num" style="color:var(--c-accent);">+720円</td>
+                <td class="center"><button class="btn sm danger">削除</button></td>
+              </tr>
+              <tr>
+                <td class="num">A02-01-01</td>
+                <td>
+                  <div style="font-size:11px; color:var(--c-text-sub);">SKU-0031</div>
+                  マルキドレッシング
+                </td>
+                <td class="right num">80</td>
+                <td class="right num">75</td>
+                <td class="right num" style="color:var(--c-alert);">-5</td>
+                <td class="right num" style="color:var(--c-alert);">-1,250円</td>
+                <td class="center"><button class="btn sm danger">削除</button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2" style="font-size:12px;">調整件数 3件</td>
+                <td class="right" colspan="2" style="font-size:12px;">合計差異</td>
+                <td class="right num" style="color:var(--c-alert); font-size:12px;">-4</td>
+                <td class="right num" style="color:var(--c-alert); font-size:12px;">-1,010円</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+          <div style="padding:12px 16px; border-top:1px solid var(--c-line);">
+            <button class="btn sm">+ 調整明細を追加</button>
+          </div>
+        </div>
+
+        <!-- Warning note-box -->
+        <div class="note-box warn" style="margin-bottom:16px;">
+          <div class="label">⚠ 取り消し不可</div>
+          在庫調整は取り消しできません。確定後は inventory_movements に記録され、監査証跡として保存されます。
+        </div>
+
+        <!-- Button row -->
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button class="btn">キャンセル</button>
+          <button class="btn primary">確認画面へ</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
