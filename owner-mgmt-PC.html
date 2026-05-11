@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMS 荷主管理 PC画面モック（管理者用）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#1a6c3a; --c-ok-lt:#e6f4ec;
+    --c-warn:#7a4a00; --c-warn-lt:#fff3cd;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge { display:inline-block; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .section-divider .badge-new { background:#1a3a5c; color:#fff; }
+  .section-divider .badge-admin { background:#7a4a00; color:#fff; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; display:inline-block; border-radius:50%; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar .logo .admin-badge { display:inline-block; background:#7a4a00; color:#fff; font-size:9px; padding:1px 6px; margin-top:4px; font-weight:600; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:12px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:#7a4a00; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; }
+  .topbar .admin-label { font-size:11px; color:#7a4a00; font-weight:600; border:1px solid #7a4a00; padding:2px 8px; background:var(--c-warn-lt); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); margin-bottom:16px; }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.warn { background:#7a4a00; color:#fff; border-color:#7a4a00; }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+  .pill.warn { background:var(--c-warn-lt); border-color:#7a4a00; color:#7a4a00; }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list tbody tr.active-row { background:#e8f0fb; }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .row { display:flex; gap:10px; align-items:flex-end; }
+  .search-bar input, .search-bar select { border:1px solid var(--c-line-dk); padding:6px 10px; font-size:12px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .search-bar label { font-size:11px; color:var(--c-text-sub); display:block; margin-bottom:3px; }
+  .search-bar .stats { font-size:12px; color:var(--c-text-sub); margin-left:auto; align-self:center; }
+
+  .kv-row { display:flex; gap:6px; align-items:baseline; margin-bottom:4px; font-size:12px; }
+  .kv-row .k { color:var(--c-text-sub); min-width:90px; flex-shrink:0; font-size:11px; }
+  .kv-row .v { color:var(--c-text); font-weight:500; }
+
+  .active-banner { background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:10px 14px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; font-size:13px; }
+  .active-banner .label { color:var(--c-accent); font-size:11px; font-weight:600; margin-bottom:2px; }
+  .active-banner .owner-name { font-weight:600; color:var(--c-text); }
+
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .req { color:var(--c-alert); margin-left:3px; }
+  .field input, .field select { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:12px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field .hint { font-size:10px; color:var(--c-text-mute); }
+  .field.full { grid-column:1/-1; }
+
+  .modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.35); display:flex; align-items:flex-start; justify-content:center; padding-top:60px; z-index:10; }
+  .modal { background:var(--c-base); width:580px; border:1px solid var(--c-line-dk); }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:14px; font-weight:600; }
+  .modal-body { padding:20px 18px; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; }
+
+  .stat-row { display:flex; gap:12px; margin-bottom:16px; }
+  .stat-box { flex:1; background:var(--c-base); border:1px solid var(--c-line); padding:14px 16px; }
+  .stat-box .label { font-size:11px; color:var(--c-text-sub); margin-bottom:4px; }
+  .stat-box .value { font-size:24px; font-weight:600; font-family:var(--f-mono); color:var(--c-text); }
+  .stat-box .sub { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+
+  .rls-tag { display:inline-block; font-size:10px; padding:1px 6px; background:#e6f4ec; border:1px solid #1a6c3a; color:#1a6c3a; font-weight:600; font-family:var(--f-mono); }
+</style>
+</head>
+<body>
+<h1 class="page-title">荷主管理 PC画面モック（管理者用）</h1>
+<p class="subtitle">Phase 9-UI7 / 荷主一覧・切替・登録・RLS管理（管理者専用）</p>
+
+<div class="quick-nav"><span class="label">画面ジャンプ：</span>
+  <a href="#W-301"><b>W-301</b>荷主一覧</a>
+  <a href="#W-302"><b>W-302</b>荷主追加フォーム</a>
+  <a href="#W-303"><b>W-303</b>荷主詳細・編集</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- W-301: 荷主一覧 -->
+<!-- ============================================================ -->
+<div class="section-divider" id="W-301">
+  <span class="num">W-301</span>荷主一覧（管理者）
+  <span class="badge badge-new">NEW</span>
+  <span class="badge badge-admin">ADMIN ONLY</span>
+</div>
+<div class="desc">
+  <b>役割</b>：倉庫に登録されている全荷主を一覧・管理する管理者専用画面。荷主の追加・編集・無効化・切替操作が可能。<br>
+  <b>RLS</b>：管理者（role=admin）のみアクセス可。一般倉庫スタッフは切替後の荷主データのみ参照できる。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/admin/owners</div>
+  </div>
+  <div class="screen" style="position:relative;">
+    <!-- サイドバー -->
+    <div class="sidebar">
+      <div class="logo">
+        WMS
+        <small>倉庫管理システム</small>
+        <div class="admin-badge">ADMIN MODE</div>
+      </div>
+      <nav>
+        <div class="group">業務操作</div>
+        <a href="#">入荷・検品</a>
+        <a href="#">出荷・出庫</a>
+        <a href="#">在庫管理</a>
+        <a href="#">返品処理</a>
+        <div class="group">管理者設定</div>
+        <a href="#" class="active">荷主管理</a>
+        <a href="#">倉庫・ロケーション</a>
+        <a href="#">ユーザー管理</a>
+        <a href="#">マスタ管理</a>
+        <div class="group">レポート</div>
+        <a href="#">操作ログ</a>
+        <a href="#">在庫レポート</a>
+      </nav>
+      <div class="sb-footer">管理者: 田中 義雄<br>最終ログイン: 09:02</div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">管理者設定 &rsaquo; <b>荷主管理</b></div>
+        <div class="actions">
+          <span class="admin-label">管理者モード</span>
+          <div class="user">
+            <div class="avatar">田</div>
+            田中 義雄
+          </div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- 現在アクティブな荷主バナー -->
+        <div class="active-banner">
+          <div>
+            <div class="label">現在アクティブな荷主（全スタッフの参照対象）</div>
+            <div class="owner-name">マルキ食品株式会社 <span class="rls-tag">OWN-001</span></div>
+          </div>
+          <button class="btn warn sm">荷主を切替</button>
+        </div>
+
+        <!-- 統計カード -->
+        <div class="stat-row">
+          <div class="stat-box">
+            <div class="label">登録荷主数</div>
+            <div class="value">8</div>
+            <div class="sub">アクティブ 6 / 停止中 2</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">現在アクティブ荷主</div>
+            <div class="value" style="font-size:16px; padding-top:4px;">マルキ食品</div>
+            <div class="sub">切替日時: 2026-05-10 08:30</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">今月の作業件数（全荷主合計）</div>
+            <div class="value">1,284</div>
+            <div class="sub">入荷 312 / 出荷 801 / 返品 171</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">SKU総数（全荷主）</div>
+            <div class="value">2,057</div>
+            <div class="sub">最多: マルキ食品 843件</div>
+          </div>
+        </div>
+
+        <!-- 検索バー -->
+        <div class="search-bar">
+          <div class="row">
+            <div>
+              <label>荷主名・コードで検索</label>
+              <input type="text" placeholder="例: マルキ / OWN-" style="width:260px;">
+            </div>
+            <div>
+              <label>ステータス</label>
+              <select style="width:120px;">
+                <option>全て</option>
+                <option selected>アクティブ</option>
+                <option>停止中</option>
+              </select>
+            </div>
+            <button class="btn primary" style="margin-bottom:0; align-self:flex-end;">検索</button>
+            <span class="stats">6件 表示中</span>
+            <button class="btn" style="margin-left:auto; align-self:flex-end;">+ 荷主を追加</button>
+          </div>
+        </div>
+
+        <!-- 荷主一覧テーブル -->
+        <div class="card">
+          <div class="card-header">
+            荷主一覧
+            <span class="meta">※ 「切替」で全スタッフの参照対象が変更されます</span>
+          </div>
+          <table class="list">
+            <thead>
+              <tr>
+                <th>荷主コード</th>
+                <th>会社名</th>
+                <th>担当者</th>
+                <th>SKU数</th>
+                <th>ロケ数</th>
+                <th>ステータス</th>
+                <th>登録日</th>
+                <th class="center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="active-row">
+                <td class="num">OWN-001</td>
+                <td><b>マルキ食品株式会社</b> <span class="rls-tag">現在アクティブ</span></td>
+                <td>山田 太郎</td>
+                <td class="num right">843</td>
+                <td class="num right">124</td>
+                <td><span class="pill ok">アクティブ</span></td>
+                <td class="num">2025-04-01</td>
+                <td class="center">
+                  <button class="btn sm" style="color:var(--c-text-sub);">切替中</button>
+                  <button class="btn sm">編集</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">OWN-002</td>
+                <td>サクラ物流株式会社</td>
+                <td>鈴木 花子</td>
+                <td class="num right">412</td>
+                <td class="num right">67</td>
+                <td><span class="pill ok">アクティブ</span></td>
+                <td class="num">2025-06-15</td>
+                <td class="center">
+                  <button class="btn primary sm">切替</button>
+                  <button class="btn sm">編集</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">OWN-003</td>
+                <td>東京アパレル工業</td>
+                <td>佐藤 次郎</td>
+                <td class="num right">294</td>
+                <td class="num right">38</td>
+                <td><span class="pill ok">アクティブ</span></td>
+                <td class="num">2025-08-20</td>
+                <td class="center">
+                  <button class="btn primary sm">切替</button>
+                  <button class="btn sm">編集</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">OWN-004</td>
+                <td>ミライ電機販売</td>
+                <td>高橋 三郎</td>
+                <td class="num right">178</td>
+                <td class="num right">21</td>
+                <td><span class="pill ok">アクティブ</span></td>
+                <td class="num">2025-10-01</td>
+                <td class="center">
+                  <button class="btn primary sm">切替</button>
+                  <button class="btn sm">編集</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">OWN-005</td>
+                <td>グリーン農産物直販</td>
+                <td>伊藤 四郎</td>
+                <td class="num right">215</td>
+                <td class="num right">44</td>
+                <td><span class="pill ok">アクティブ</span></td>
+                <td class="num">2026-01-10</td>
+                <td class="center">
+                  <button class="btn primary sm">切替</button>
+                  <button class="btn sm">編集</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">OWN-006</td>
+                <td>ブルーオーシャン雑貨</td>
+                <td>渡辺 五郎</td>
+                <td class="num right">115</td>
+                <td class="num right">18</td>
+                <td><span class="pill ok">アクティブ</span></td>
+                <td class="num">2026-03-05</td>
+                <td class="center">
+                  <button class="btn primary sm">切替</button>
+                  <button class="btn sm">編集</button>
+                </td>
+              </tr>
+              <tr style="opacity:0.6;">
+                <td class="num">OWN-007</td>
+                <td>旧：ナカムラ商事</td>
+                <td>中村 六郎</td>
+                <td class="num right">0</td>
+                <td class="num right">0</td>
+                <td><span class="pill alert">停止中</span></td>
+                <td class="num">2025-02-01</td>
+                <td class="center">
+                  <button class="btn sm" disabled style="opacity:0.4;">切替不可</button>
+                  <button class="btn sm">詳細</button>
+                </td>
+              </tr>
+              <tr style="opacity:0.6;">
+                <td class="num">OWN-008</td>
+                <td>旧：ヤマダ通商</td>
+                <td>山田 七郎</td>
+                <td class="num right">0</td>
+                <td class="num right">0</td>
+                <td><span class="pill alert">停止中</span></td>
+                <td class="num">2025-03-20</td>
+                <td class="center">
+                  <button class="btn sm" disabled style="opacity:0.4;">切替不可</button>
+                  <button class="btn sm">詳細</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- RLS説明 -->
+        <div style="background:var(--c-warn-lt); border:1px solid #7a4a00; padding:10px 14px; font-size:12px; color:#7a4a00; line-height:1.7; margin-bottom:14px;">
+          <b>⚠ RLS（行レベルセキュリティ）について：</b><br>
+          荷主を切替えると、全スタッフの画面で表示されるデータがアクティブ荷主のものに限定されます。<br>
+          停止中の荷主データは管理者のみ参照可能です。切替操作は操作ログに記録されます。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- W-302: 荷主追加フォーム（モーダル） -->
+<!-- ============================================================ -->
+<div class="section-divider" id="W-302">
+  <span class="num">W-302</span>荷主追加フォーム
+  <span class="badge badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：新しい荷主を登録するモーダルフォーム。必須項目入力後にRLSポリシーが自動適用される。<br>
+  <b>バーコード</b>：荷主コードはシステム自動採番。HT用バーコードも同時生成される。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/admin/owners — 荷主追加</div>
+  </div>
+  <div class="screen" style="position:relative; height:820px;">
+    <div class="sidebar">
+      <div class="logo">WMS<small>倉庫管理システム</small><div class="admin-badge">ADMIN MODE</div></div>
+      <nav>
+        <div class="group">管理者設定</div>
+        <a href="#" class="active">荷主管理</a>
+        <a href="#">倉庫・ロケーション</a>
+        <a href="#">ユーザー管理</a>
+      </nav>
+    </div>
+    <div class="main" style="filter:blur(1px);">
+      <div class="topbar"><div class="crumb">管理者設定 &rsaquo; <b>荷主管理</b></div></div>
+      <div class="content"><div class="card" style="height:600px;"></div></div>
+    </div>
+    <!-- モーダル -->
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          荷主を新規追加
+          <span style="font-size:13px; color:var(--c-text-sub); font-weight:400;">荷主コードはシステムが自動採番します</span>
+        </div>
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="field">
+              <label>会社名（正式名称）<span class="req">*</span></label>
+              <input type="text" value="株式会社 新倉庫テナント">
+            </div>
+            <div class="field">
+              <label>表示名（略称）<span class="req">*</span></label>
+              <input type="text" value="新テナント">
+            </div>
+            <div class="field">
+              <label>担当者名<span class="req">*</span></label>
+              <input type="text" value="佐々木 一郎">
+            </div>
+            <div class="field">
+              <label>担当者メール<span class="req">*</span></label>
+              <input type="email" value="sasaki@new-tenant.co.jp">
+            </div>
+            <div class="field">
+              <label>担当者電話</label>
+              <input type="tel" value="03-xxxx-xxxx">
+            </div>
+            <div class="field">
+              <label>契約開始日<span class="req">*</span></label>
+              <input type="date" value="2026-06-01">
+            </div>
+            <div class="field full">
+              <label>備考</label>
+              <input type="text" placeholder="例: 冷蔵対応エリア A-1〜A-10 割当">
+              <div class="hint">内部メモ用。荷主には表示されません。</div>
+            </div>
+            <div class="field full">
+              <label>HT用バーコード生成</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <div style="background:var(--c-bg); border:1px solid var(--c-line-dk); padding:8px 16px; font-family:var(--f-mono); font-size:14px; letter-spacing:0.15em;">|||||||||||</div>
+                <div>
+                  <div style="font-size:12px; color:var(--c-text-sub);">自動生成（保存時に確定）</div>
+                  <div class="hint">HTバーコードスキャンで荷主切替に使用</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px; font-size:11px; color:var(--c-ok); background:var(--c-ok-lt); border:1px solid var(--c-ok); padding:8px 12px; display:flex; gap:8px; align-items:center;">
+            <span>✓</span>
+            保存後、RLSポリシーが自動適用されます。スタッフは荷主切替後にこの荷主のデータを参照できます。
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn">キャンセル</button>
+          <button class="btn primary">保存して登録</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- W-303: 荷主詳細・編集 -->
+<!-- ============================================================ -->
+<div class="section-divider" id="W-303">
+  <span class="num">W-303</span>荷主詳細・編集
+  <span class="badge badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：既存荷主の詳細確認・情報編集・停止操作。SKU数・ロケーション数・月次作業量のサマリーも表示。<br>
+  <b>停止操作</b>：在庫がゼロ・進行中作業ゼロの場合のみ停止可能。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/admin/owners/OWN-002</div>
+  </div>
+  <div class="screen">
+    <div class="sidebar">
+      <div class="logo">WMS<small>倉庫管理システム</small><div class="admin-badge">ADMIN MODE</div></div>
+      <nav>
+        <div class="group">管理者設定</div>
+        <a href="#" class="active">荷主管理</a>
+        <a href="#">倉庫・ロケーション</a>
+        <a href="#">ユーザー管理</a>
+      </nav>
+      <div class="sb-footer">管理者: 田中 義雄</div>
+    </div>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">管理者設定 &rsaquo; 荷主管理 &rsaquo; <b>サクラ物流株式会社</b></div>
+        <div class="actions">
+          <span class="admin-label">管理者モード</span>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- 基本情報カード -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div class="card">
+            <div class="card-header">
+              基本情報
+              <button class="btn sm">編集</button>
+            </div>
+            <div class="card-body">
+              <div class="kv-row"><span class="k">荷主コード</span><span class="v num" style="font-family:var(--f-mono);">OWN-002</span></div>
+              <div class="kv-row"><span class="k">会社名</span><span class="v">サクラ物流株式会社</span></div>
+              <div class="kv-row"><span class="k">表示名</span><span class="v">サクラ物流</span></div>
+              <div class="kv-row"><span class="k">担当者</span><span class="v">鈴木 花子</span></div>
+              <div class="kv-row"><span class="k">メール</span><span class="v" style="font-size:11px;">hanako@sakura-logistics.co.jp</span></div>
+              <div class="kv-row"><span class="k">電話</span><span class="v">03-1234-5678</span></div>
+              <div class="kv-row"><span class="k">契約開始</span><span class="v">2025-06-15</span></div>
+              <div class="kv-row"><span class="k">ステータス</span><span class="v"><span class="pill ok">アクティブ</span></span></div>
+              <div class="kv-row" style="margin-top:10px; padding-top:10px; border-top:1px solid var(--c-line);">
+                <span class="k">HTバーコード</span>
+                <span class="v">
+                  <span style="font-family:var(--f-mono); font-size:16px; letter-spacing:0.1em;">||||  ||||| |</span>
+                  <span class="rls-tag" style="margin-left:6px;">OWN-002</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">利用状況サマリー</div>
+            <div class="card-body">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+                <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:10px 12px; text-align:center;">
+                  <div style="font-size:10px; color:var(--c-text-sub);">SKU数</div>
+                  <div style="font-size:22px; font-weight:600; font-family:var(--f-mono);">412</div>
+                </div>
+                <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:10px 12px; text-align:center;">
+                  <div style="font-size:10px; color:var(--c-text-sub);">割当ロケ数</div>
+                  <div style="font-size:22px; font-weight:600; font-family:var(--f-mono);">67</div>
+                </div>
+                <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:10px 12px; text-align:center;">
+                  <div style="font-size:10px; color:var(--c-text-sub);">今月 入荷件数</div>
+                  <div style="font-size:22px; font-weight:600; font-family:var(--f-mono);">48</div>
+                </div>
+                <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:10px 12px; text-align:center;">
+                  <div style="font-size:10px; color:var(--c-text-sub);">今月 出荷件数</div>
+                  <div style="font-size:22px; font-weight:600; font-family:var(--f-mono);">203</div>
+                </div>
+              </div>
+              <div class="kv-row"><span class="k">最終切替日時</span><span class="v">2026-05-09 14:22</span></div>
+              <div class="kv-row"><span class="k">累計切替回数</span><span class="v">37 回</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作エリア -->
+        <div class="card">
+          <div class="card-header">
+            荷主操作
+            <span class="meta">操作は全て操作ログに記録されます</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button class="btn primary">この荷主に切替</button>
+              <button class="btn">バーコード印刷</button>
+              <button class="btn">操作ログを見る</button>
+              <button class="btn danger sm" style="margin-left:auto;" disabled>荷主を停止</button>
+            </div>
+            <div style="margin-top:10px; font-size:11px; color:var(--c-text-mute);">
+              ※ 停止は在庫残数=0かつ進行中作業=0の場合のみ実行可能。現在 在庫412件あるため停止不可。
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

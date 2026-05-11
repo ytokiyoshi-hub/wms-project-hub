@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 荷主切替 HT画面モック</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#1a6c3a; --c-ok-lt:#e6f4ec;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+
+  /* HT端末スタイル */
+  .ht-wrap { display:flex; justify-content:center; padding:20px 0; gap:32px; flex-wrap:wrap; }
+  .ht-device { width:280px; background:#1a1c22; border:3px solid #2a2d35; border-radius:18px 18px 22px 22px; padding:14px 10px 16px; box-shadow:0 16px 40px rgba(0,0,0,0.5); position:relative; }
+  .ht-device .brand { position:absolute; top:4px; left:12px; font-size:7px; color:#555; font-weight:600; }
+  .ht-device .model { position:absolute; top:4px; right:12px; font-size:7px; color:#555; font-family:var(--f-mono); }
+  .ht-screen { width:100%; aspect-ratio:480/800; background:var(--c-bg); border:1px solid #444; margin-bottom:10px; display:flex; flex-direction:column; overflow:hidden; }
+  .ht-statusbar { background:#1a1c22; color:#c8ccd4; height:14px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; font-size:8px; font-family:var(--f-mono); flex-shrink:0; }
+  .ht-header { background:var(--c-accent); color:#fff; height:24px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; flex-shrink:0; justify-content:space-between; }
+  .ht-header.ok-mode { background:var(--c-ok); }
+  .ht-header.alert-mode { background:var(--c-alert); }
+  .ht-header .scr-id { font-family:var(--f-mono); font-size:9px; opacity:0.7; }
+  .ht-body { flex:1; padding:8px; overflow:hidden; background:var(--c-base); display:flex; flex-direction:column; gap:6px; }
+  .ht-key-labels { background:#1a1c22; color:#fff; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; flex-shrink:0; border-top:1px solid #444; }
+  .ht-key-labels .key-lbl { padding:5px 3px; text-align:center; border-right:1px solid #444; font-size:8px; line-height:1.2; }
+  .ht-key-labels .key-lbl:last-child { border-right:none; }
+  .ht-key-labels .key-lbl.primary { background:var(--c-accent-dk); }
+  .ht-key-labels .key-lbl .fn { display:block; font-family:var(--f-mono); font-weight:700; font-size:9px; color:#ffd966; }
+  .ht-key-labels .key-lbl.disabled { opacity:0.3; }
+
+  .ht-keypad { background:#2a2d35; border:1px solid #444; padding:8px 6px; display:flex; flex-direction:column; gap:5px; }
+  .ht-keypad .row { display:flex; gap:4px; justify-content:center; }
+  .pkey { background:#1a1c22; color:#fff; border:1px solid #555; padding:3px 0; font-size:9px; font-family:var(--f-mono); font-weight:600; text-align:center; flex:1; border-radius:2px; }
+  .pkey.f1 { color:#ffd966; }
+  .pkey.scan { background:var(--c-alert); flex:2; padding:5px 0; }
+  .ht-dpad-row { display:flex; align-items:center; gap:6px; }
+  .ht-dpad { width:54px; height:54px; flex-shrink:0; background:#1a1c22; border:1px solid #444; border-radius:50%; position:relative; }
+  .ht-dpad::before { content:""; position:absolute; inset:6px; background: linear-gradient(0deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%), linear-gradient(90deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%); border-radius:50%; }
+  .ht-dpad .ok { position:absolute; inset:0; margin:auto; width:14px; height:14px; background:#555; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:6px; color:#fff; font-weight:600; }
+  .ht-num-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:3px; flex:1; }
+
+  .device-label { color:#fff; font-size:13px; font-weight:600; text-align:center; margin-top:8px; }
+  .device-label .id { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+  .device-label .desc-text { font-size:11px; color:#a0a4ad; font-weight:400; margin-top:4px; max-width:280px; line-height:1.5; }
+
+  /* ステップ進捗バー */
+  .step-progress { display:flex; gap:0; border:1px solid var(--c-line-dk); }
+  .step-progress .step { flex:1; padding:5px 4px; text-align:center; font-size:10px; color:var(--c-text-sub); border-right:1px solid var(--c-line-dk); background:var(--c-bg); }
+  .step-progress .step:last-child { border-right:none; }
+  .step-progress .step.done { background:var(--c-text-sub); color:#fff; }
+  .step-progress .step.current { background:var(--c-accent); color:#fff; font-weight:600; }
+  .step-progress .step.success { background:var(--c-ok); color:#fff; font-weight:600; }
+  .step-progress .step .num { font-family:var(--f-mono); font-weight:700; margin-right:3px; }
+
+  /* 現在荷主インジケーター */
+  .current-owner-bar { background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px 7px; }
+  .current-owner-bar .label { font-size:8px; color:var(--c-accent); font-weight:600; }
+  .current-owner-bar .name { font-size:11px; font-weight:700; color:var(--c-text); }
+  .current-owner-bar .code { font-size:9px; font-family:var(--f-mono); color:var(--c-text-sub); }
+
+  .arrow-down { text-align:center; font-size:16px; color:var(--c-line-dk); margin:2px 0; }
+
+  /* 完了画面 */
+  .complete-block { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:6px; }
+  .complete-icon { width:48px; height:48px; background:var(--c-ok); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px; }
+  .complete-title { font-size:13px; font-weight:700; color:var(--c-ok); text-align:center; }
+  .complete-detail { font-size:10px; color:var(--c-text-sub); text-align:center; line-height:1.6; }
+
+  /* エラー画面 */
+  .error-block { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:6px; }
+  .error-icon { width:48px; height:48px; background:var(--c-alert); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px; }
+  .error-title { font-size:13px; font-weight:700; color:var(--c-alert); text-align:center; }
+  .error-detail { font-size:10px; color:var(--c-text-sub); text-align:center; line-height:1.6; }
+</style>
+</head>
+<body>
+<h1 class="page-title">荷主切替 HT画面モック</h1>
+<p class="subtitle">Phase 9-UI7 / バーコードスキャンで荷主切替（HT端末用）</p>
+
+<div class="quick-nav"><span class="label">画面ジャンプ：</span>
+  <a href="#HT-1101"><b>HT-1101</b>荷主バーコードスキャン</a>
+  <a href="#HT-1102"><b>HT-1102</b>切替確認</a>
+  <a href="#HT-1103"><b>HT-1103</b>切替完了</a>
+  <a href="#HT-1104"><b>HT-1104</b>エラー（未登録/停止中）</a>
+</div>
+
+<!-- ============================================================ -->
+<!-- HT-1101: 荷主バーコードスキャン -->
+<!-- ============================================================ -->
+<div class="section-divider" id="HT-1101">
+  <span class="num">HT-1101</span>荷主バーコードスキャン
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：荷主切替メニューのトップ画面。荷主ラベル（バーコード付き）をスキャンして切替先を指定する。<br>
+  <b>運用</b>：荷主切替が必要な時に倉庫スタッフが操作。管理者から渡された荷主バーコードシートをスキャン。
+</div>
+
+<div class="ht-wrap">
+  <!-- STEP 1: スキャン待機 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>10:05 82%</span></div>
+        <div class="ht-header">
+          <span>荷主切替</span>
+          <span class="scr-id">HT-1101</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step current"><span class="num">1</span>スキャン</div>
+            <div class="step"><span class="num">2</span>確認</div>
+            <div class="step"><span class="num">3</span>完了</div>
+          </div>
+
+          <!-- 現在の荷主表示 -->
+          <div class="current-owner-bar">
+            <div class="label">現在の荷主</div>
+            <div class="name">マルキ食品</div>
+            <div class="code">OWN-001</div>
+          </div>
+
+          <div class="arrow-down">↓ 切替</div>
+
+          <!-- スキャン指示 -->
+          <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:8px 8px; text-align:center;">
+            <div style="font-size:10px; color:var(--c-accent); font-weight:700; margin-bottom:4px;">★ 荷主バーコードをスキャン</div>
+            <div style="font-size:9px; color:var(--c-text-sub);">管理者から渡された<br>荷主バーコードシートを読み取ってください</div>
+          </div>
+
+          <!-- 入力待機エリア -->
+          <div style="border:2px dashed var(--c-line-dk); background:var(--c-bg); padding:10px; min-height:40px; display:flex; align-items:center; justify-content:center;">
+            <span style="font-size:10px; color:var(--c-text-mute); font-family:var(--f-mono);">バーコード待機中...</span>
+          </div>
+
+          <!-- ヒント -->
+          <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto; padding:4px 0; line-height:1.6;">
+            F1 で荷主コード手入力<br>
+            F4 でメニューに戻る
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>手入力</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row"><div class="pkey scan">SCAN</div></div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-1101</span>スキャン待機
+      <div class="desc-text">荷主バーコードシートをスキャンするか、F1 で荷主コードを手入力。</div>
+    </div>
+  </div>
+
+  <!-- F1 手入力モード -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>10:06 82%</span></div>
+        <div class="ht-header">
+          <span>荷主切替</span>
+          <span class="scr-id">HT-1101 手入力</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step current"><span class="num">1</span>スキャン</div>
+            <div class="step"><span class="num">2</span>確認</div>
+            <div class="step"><span class="num">3</span>完了</div>
+          </div>
+
+          <div class="current-owner-bar">
+            <div class="label">現在の荷主</div>
+            <div class="name">マルキ食品</div>
+            <div class="code">OWN-001</div>
+          </div>
+
+          <div class="arrow-down">↓ 切替</div>
+
+          <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">荷主コードを入力（F1手入力モード）</div>
+
+          <!-- 入力フィールド -->
+          <div style="border:2px solid var(--c-accent); background:var(--c-base); padding:6px 8px; display:flex; align-items:center; gap:6px;">
+            <span style="font-size:10px; color:var(--c-text-sub); font-family:var(--f-mono); flex-shrink:0;">OWN-</span>
+            <span style="font-size:13px; font-family:var(--f-mono); font-weight:700; color:var(--c-accent);">002▌</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:3px; margin-top:4px;">
+            <div style="display:flex; align-items:center; border:1px solid var(--c-line); padding:6px 8px; background:var(--c-bg);">
+              <div>
+                <div style="font-size:10px; font-weight:600;">OWN-002</div>
+                <div style="font-size:9px; color:var(--c-text-sub);">サクラ物流株式会社</div>
+              </div>
+              <span class="pill ok" style="margin-left:auto; font-size:9px;">アクティブ</span>
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">
+            ENT で確認へ / F4 でキャンセル
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">ENT</span>次へ</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>取消</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row"><div class="pkey scan">SCAN</div></div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-1101</span>手入力モード
+      <div class="desc-text">荷主コードを数字部分だけ入力。候補が下に表示され ENT で確認へ進む。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- HT-1102: 切替確認 -->
+<!-- ============================================================ -->
+<div class="section-divider" id="HT-1102">
+  <span class="num">HT-1102</span>切替確認
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：スキャン結果を表示して切替先を確認する。誤スキャンを防ぐための確認ステップ。<br>
+  <b>注意</b>：切替は全スタッフの参照データに影響するため必ず確認を求める。
+</div>
+
+<div class="ht-wrap">
+  <!-- STEP 2: 確認画面 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>10:06 82%</span></div>
+        <div class="ht-header">
+          <span>荷主切替 確認</span>
+          <span class="scr-id">HT-1102</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step done"><span class="num">1</span>スキャン</div>
+            <div class="step current"><span class="num">2</span>確認</div>
+            <div class="step"><span class="num">3</span>完了</div>
+          </div>
+
+          <!-- 現在 -->
+          <div class="current-owner-bar">
+            <div class="label">現在の荷主</div>
+            <div class="name">マルキ食品</div>
+            <div class="code">OWN-001</div>
+          </div>
+
+          <div class="arrow-down">↓ 以下に切替</div>
+
+          <!-- 切替先 -->
+          <div style="background:var(--c-ok-lt); border:2px solid var(--c-ok); padding:7px 8px;">
+            <div style="font-size:9px; font-weight:700; color:var(--c-ok); margin-bottom:3px;">切替先</div>
+            <div style="font-size:13px; font-weight:700; color:var(--c-text);">サクラ物流株式会社</div>
+            <div style="font-size:10px; font-family:var(--f-mono); color:var(--c-text-sub); margin-top:2px;">OWN-002</div>
+            <div style="display:flex; gap:6px; margin-top:5px; font-size:9px;">
+              <span>SKU: 412件</span>
+              <span>ロケ: 67件</span>
+              <span class="pill ok" style="font-size:9px; padding:0 5px;">アクティブ</span>
+            </div>
+          </div>
+
+          <!-- 警告 -->
+          <div style="background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:5px 7px; font-size:9px; color:var(--c-alert); line-height:1.5;">
+            ⚠ 切替後、全スタッフの画面が<br>サクラ物流のデータに切り替わります
+          </div>
+
+          <div style="font-size:10px; color:var(--c-text-sub); text-align:center; font-weight:600; margin-top:auto;">
+            F1 で切替実行 / F4 でキャンセル
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>切替実行</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>取消</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row"><div class="pkey scan">SCAN</div></div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-1102</span>切替確認
+      <div class="desc-text">切替先荷主の情報を確認。F1 で実行・F4 でキャンセル。全スタッフに影響するため要確認。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- HT-1103: 切替完了 -->
+<!-- ============================================================ -->
+<div class="section-divider" id="HT-1103">
+  <span class="num">HT-1103</span>切替完了
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：荷主切替が正常に完了した状態。操作ログに記録され、全スタッフの参照対象が切替わる。<br>
+  <b>次の操作</b>：5秒後にメインメニューへ自動遷移。またはF4で即時メニューへ戻る。
+</div>
+
+<div class="ht-wrap">
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>10:07 82%</span></div>
+        <div class="ht-header ok-mode">
+          <span>荷主切替 完了</span>
+          <span class="scr-id">HT-1103</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step done"><span class="num">1</span>スキャン</div>
+            <div class="step done"><span class="num">2</span>確認</div>
+            <div class="step success"><span class="num">3</span>完了</div>
+          </div>
+
+          <div class="complete-block">
+            <div class="complete-icon">✓</div>
+            <div class="complete-title">荷主切替 完了</div>
+            <div style="background:var(--c-ok-lt); border:1px solid var(--c-ok); padding:8px 12px; text-align:center; margin:4px 0;">
+              <div style="font-size:9px; color:var(--c-ok); font-weight:600; margin-bottom:3px;">現在の荷主</div>
+              <div style="font-size:14px; font-weight:700; color:var(--c-text);">サクラ物流株式会社</div>
+              <div style="font-size:10px; font-family:var(--f-mono); color:var(--c-text-sub);">OWN-002</div>
+            </div>
+            <div class="complete-detail">
+              切替時刻: 2026-05-10 10:07:32<br>
+              操作者: 田中 義雄<br>
+              全スタッフの画面に反映済み
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">
+            5秒後にメインメニューへ戻ります<br>
+            F4 で今すぐ戻る
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl disabled"><span class="fn">F1</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl primary"><span class="fn">F4</span>メニュー</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row"><div class="pkey scan">SCAN</div></div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-1103</span>切替完了
+      <div class="desc-text">切替成功。操作ログ記録済み。5秒後に自動でメインメニューへ戻る。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- HT-1104: エラー（未登録/停止中） -->
+<!-- ============================================================ -->
+<div class="section-divider" id="HT-1104">
+  <span class="num">HT-1104</span>エラー（未登録 / 停止中荷主）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：スキャンした荷主コードが存在しない・停止中の場合のエラー画面。再スキャンを促す。<br>
+  <b>対応</b>：管理者へ連絡するか、正しいバーコードシートで再試行。
+</div>
+
+<div class="ht-wrap">
+  <!-- エラー：未登録 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>10:08 82%</span></div>
+        <div class="ht-header alert-mode">
+          <span>荷主切替 エラー</span>
+          <span class="scr-id">HT-1104</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step done"><span class="num">1</span>スキャン</div>
+            <div class="step"><span class="num">2</span>確認</div>
+            <div class="step"><span class="num">3</span>完了</div>
+          </div>
+
+          <div class="error-block">
+            <div class="error-icon">✕</div>
+            <div class="error-title">荷主が見つかりません</div>
+            <div style="background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:7px 10px; text-align:center; width:100%;">
+              <div style="font-size:9px; color:var(--c-alert); font-weight:600;">スキャン結果</div>
+              <div style="font-size:12px; font-family:var(--f-mono); font-weight:700; color:var(--c-text); margin-top:2px;">OWN-099</div>
+              <div style="font-size:9px; color:var(--c-alert); margin-top:3px;">登録なし</div>
+            </div>
+            <div class="error-detail">
+              このコードはシステムに<br>登録されていません。<br><br>
+              正しいバーコードシートを<br>使用してください。
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">
+            F1 で再スキャン / F4 でメニューへ戻る<br>
+            管理者にお問い合わせください
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>再スキャン</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row"><div class="pkey scan">SCAN</div></div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-1104a</span>エラー（未登録）
+      <div class="desc-text">スキャンコードが DB に存在しない場合。再スキャン or 管理者へ連絡。</div>
+    </div>
+  </div>
+
+  <!-- エラー：停止中 -->
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>10:08 82%</span></div>
+        <div class="ht-header alert-mode">
+          <span>荷主切替 エラー</span>
+          <span class="scr-id">HT-1104</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step done"><span class="num">1</span>スキャン</div>
+            <div class="step"><span class="num">2</span>確認</div>
+            <div class="step"><span class="num">3</span>完了</div>
+          </div>
+
+          <div class="error-block">
+            <div class="error-icon">✕</div>
+            <div class="error-title">この荷主は停止中です</div>
+            <div style="background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:7px 10px; text-align:center; width:100%;">
+              <div style="font-size:9px; color:var(--c-alert); font-weight:600;">スキャン結果</div>
+              <div style="font-size:12px; font-family:var(--f-mono); font-weight:700; color:var(--c-text); margin-top:2px;">OWN-007</div>
+              <div style="font-size:10px; color:var(--c-text-sub); margin-top:2px;">旧：ナカムラ商事</div>
+              <div style="font-size:9px; color:var(--c-alert); margin-top:3px;">停止中（切替不可）</div>
+            </div>
+            <div class="error-detail">
+              この荷主は停止中のため<br>切替できません。<br><br>
+              管理者に有効な荷主への<br>切替を依頼してください。
+            </div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">
+            F1 で再スキャン / F4 でメニューへ戻る
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>再スキャン</div>
+          <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+          <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+          <div class="key-lbl"><span class="fn">F4</span>戻る</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row"><div class="pkey scan">SCAN</div></div>
+        <div class="row">
+          <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+        </div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-1104b</span>エラー（停止中）
+      <div class="desc-text">荷主が停止ステータスの場合。切替は管理者のみ可能。</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
