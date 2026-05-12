@@ -1,9 +1,9 @@
 # Phase 9-QA3: 入荷〜棚入れ E2E 検証シナリオ詳細化
 
 作成日：2026-05-10  
-更新日：2026-05-11（#866 再実行・DB実データ照合・LOT/SERIAL ステップ追記）  
+更新日：2026-05-13（#867 Phase 9-DB5 対応・picking_priority 列追加・PRC PICK ロケ追記）  
 作成者：にーちゃん（id=7）  
-対応タスク：#820 Phase 9-QA3 / #866 Phase 9-QA3（再実行・DB照合強化版）  
+対応タスク：#820 Phase 9-QA3 / #866 Phase 9-QA3（再実行・DB照合強化版）/ #867 Phase 9-DB5 対応  
 ベース：docs/wms-test-scenarios.md（Phase 9-QA1 SC-INB-01〜05）
 
 ---
@@ -19,6 +19,11 @@ staging 環境で手順書として実際に動かせる形式に整備する。
 - PRC SKU は `lot_required=true かつ serial_required=true` → SC-INB-04 に LOT+SERIAL 登録ステップを追加
 - 全荷主の実ロケーションコード・容量（capacity）を実データから確認・反映
 
+#867 更新（2026-05-13）：Phase 9-DB5 による locations テーブル変更に対応
+- `picking_priority` 列の追加を全ロケーション確認 SQL に反映
+- PRC に `location_type='picking'` の新ロケーション（PRC-PICK-*）が追加 → ロケーション一覧更新
+- 空きロケーション候補 SQL の ORDER BY を `picking_priority ASC` に更新（棚入れ優先度が正確に反映される）
+
 ---
 
 ## ⚠️ スキーマ対応状況（2026-05-11 時点）
@@ -27,7 +32,7 @@ staging 環境で手順書として実際に動かせる形式に整備する。
 |---------|------|------|
 | `owners` | ✅ Deploy済み | 荷主マスタ・検品/棚入れ/差異処理方式フラグ |
 | `skus` | ✅ Deploy済み | 商品マスタ・lot/serial 要否 |
-| `locations` | ✅ Deploy済み | ロケーション管理 |
+| `locations` | ✅ Deploy済み（Phase 9-DB5 で `picking_priority` 列追加・PICK ロケ種別追加） | ロケーション管理 |
 | `lots` | ✅ Deploy済み | ロット管理（lot_number, mfg_date, expiry_date） |
 | `serials` | ✅ Deploy済み | シリアル管理（serial_number, current_inventory_id） |
 | `inventory` | ✅ Deploy済み | 在庫（棚入れ完了後の最終確認対象） |
@@ -123,53 +128,61 @@ FROM skus WHERE owner_id = 3 ORDER BY id;
 ### ロケーション確認（TKY）
 
 ```sql
-SELECT id, code, area, abc_class, capacity, current_volume, status
-FROM locations WHERE owner_id = 1 ORDER BY abc_class, code LIMIT 10;
+SELECT id, code, area, abc_class, picking_priority, capacity, current_volume, status
+FROM locations WHERE owner_id = 1 ORDER BY picking_priority, code LIMIT 10;
 ```
 
-**実 DB 確認済み：**
+**実 DB 確認済み（2026-05-13 / Phase 9-DB5 後）：**
 
-| code | area | abc_class | capacity | current_volume | status |
-|------|------|-----------|---------|---------------|--------|
-| TKY-A-01-01-1 | A | A | 200 | 0 | active |
-| TKY-A-01-01-2 | A | A | 200 | 0 | active |
-| TKY-A-01-01-3 | A | A | 200 | 0 | active |
-| TKY-A-02-01-1 | A | B | 200 | 0 | active |
-| TKY-B-01-01-1 | B | B | 200 | 0 | active |
-| TKY-B-02-01-1 | B | C | 200 | 0 | active |
+| code | area | abc_class | picking_priority | capacity | current_volume | status |
+|------|------|-----------|-----------------|---------|---------------|--------|
+| TKY-A-01-01-1 | A | A | 10 | 200 | 0 | active |
+| TKY-A-01-01-2 | A | A | 10 | 200 | 0 | active |
+| TKY-A-01-01-3 | A | A | 10 | 200 | 0 | active |
+| TKY-A-02-01-1 | A | B | 30 | 200 | 0 | active |
+| TKY-B-01-01-1 | B | B | 40 | 200 | 0 | active |
+| TKY-B-02-01-1 | B | C | 60 | 200 | 0 | active |
 
 ### ロケーション確認（FDB）
 
 ```sql
-SELECT id, code, area, abc_class, capacity, current_volume, status
-FROM locations WHERE owner_id = 2 ORDER BY abc_class, code LIMIT 10;
+SELECT id, code, area, abc_class, picking_priority, capacity, current_volume, status
+FROM locations WHERE owner_id = 2 ORDER BY picking_priority, code LIMIT 10;
 ```
 
-**実 DB 確認済み（FDB は COOL/DRY エリア・capacity=150）：**
+**実 DB 確認済み（FDB は COOL/DRY エリア・capacity=150 / Phase 9-DB5 後）：**
 
-| code | area | abc_class | capacity | current_volume | status |
-|------|------|-----------|---------|---------------|--------|
-| FDB-COOL-01-01-1 | COOL | A | 150 | 0 | active |
-| FDB-COOL-01-01-2 | COOL | A | 150 | 0 | active |
-| FDB-COOL-01-02-1 | COOL | A | 150 | 0 | active |
-| FDB-COOL-02-01-1 | COOL | B | 150 | 0 | active |
-| FDB-DRY-01-01-1 | DRY | B | 150 | 0 | active |
-| FDB-DRY-02-01-1 | DRY | C | 150 | 0 | active |
+| code | area | abc_class | picking_priority | capacity | current_volume | status |
+|------|------|-----------|-----------------|---------|---------------|--------|
+| FDB-COOL-01-01-1 | COOL | A | 10 | 150 | 0 | active |
+| FDB-COOL-01-01-2 | COOL | A | 10 | 150 | 0 | active |
+| FDB-COOL-01-02-1 | COOL | A | 10 | 150 | 0 | active |
+| FDB-COOL-02-01-1 | COOL | B | 30 | 150 | 0 | active |
+| FDB-DRY-01-01-1 | DRY | B | 30 | 150 | 0 | active |
+| FDB-DRY-02-01-1 | DRY | C | 60 | 150 | 0 | active |
 
 ### ロケーション確認（PRC）
 
 ```sql
-SELECT id, code, area, abc_class, capacity, current_volume, status
-FROM locations WHERE owner_id = 3 ORDER BY abc_class, code LIMIT 10;
+SELECT id, code, area, abc_class, picking_priority, location_type, capacity, current_volume, status
+FROM locations WHERE owner_id = 3 ORDER BY picking_priority, code;
 ```
 
-**実 DB 確認済み（PRC は PART エリア・capacity=100・固定ロケ）：**
+**実 DB 確認済み（PRC は PART/PICK エリア・capacity=100・固定ロケ / Phase 9-DB5 後）：**
 
-| code | area | abc_class | capacity | current_volume | status |
-|------|------|-----------|---------|---------------|--------|
-| PRC-PART-01-01-1 | PART | A | 100 | 0 | active |
-| PRC-PART-01-01-2 | PART | A | 100 | 0 | active |
-| PRC-PART-01-02-1 | PART | A | 100 | 0 | active |
+| code | area | abc_class | picking_priority | location_type | capacity | current_volume | status |
+|------|------|-----------|-----------------|--------------|---------|---------------|--------|
+| PRC-PICK-01-01-1 | PICK | A | **5** | **picking** | 100 | 0 | active |
+| PRC-PICK-01-01-2 | PICK | A | **5** | **picking** | 100 | 0 | active |
+| PRC-PART-01-01-1 | PART | A | 10 | storage | 100 | 0 | active |
+| PRC-PART-01-01-2 | PART | A | 10 | storage | 100 | 0 | active |
+| PRC-PART-01-02-1 | PART | A | 10 | storage | 100 | 0 | active |
+| PRC-PART-01-02-2 | PART | A | 10 | storage | 100 | 0 | active |
+| PRC-PICK-02-01-1 | PICK | B | 20 | picking | 100 | 0 | active |
+| PRC-PICK-02-01-2 | PICK | B | 20 | picking | 100 | 0 | active |
+| PRC-PART-02-01-1 | PART | B | 30 | storage | 100 | 0 | active |
+
+⚠️ **Phase 9-DB5 で PICK ロケーション追加**：`PRC-PICK-*` は `picking_priority=5`（storage の 10 より高優先）のため、棚入れ指示時は PICK ロケが最優先候補として表示される。固定ロケ（fixed）方式の PRC ではシステム提案を手動で上書き可能。
 
 ### 在庫ゼロ確認（テスト前のクリーン状態）
 
@@ -286,13 +299,13 @@ SELECT id, status FROM work_orders WHERE external_ref = 'ASN-QA3-001';
 SELECT putaway_strategy FROM owners WHERE id = 1;
 -- → 'free'
 
--- 空きロケーション一覧（current_volume=0, abc_class=A 優先）
-SELECT id, code, area, abc_class, capacity, current_volume
+-- 空きロケーション一覧（picking_priority 順・Phase 9-DB5 対応）
+SELECT id, code, area, abc_class, picking_priority, capacity, current_volume
 FROM locations
 WHERE owner_id = 1 AND current_volume = 0 AND status = 'active'
-ORDER BY abc_class ASC, code ASC
+ORDER BY picking_priority ASC, code ASC
 LIMIT 5;
--- TKY-A-01-01-1（capacity=200）が最上位候補として表示される想定
+-- TKY-A-01-01-1（abc_class=A, picking_priority=10, capacity=200）が最上位候補として表示される想定
 ```
 
 **操作手順：**
@@ -658,10 +671,11 @@ FROM lots WHERE owner_id = 2 AND lot_number = 'LOT-FDB-QA3-003';
 ### Step 0: PRC ロケーション・SKU 確認
 
 ```sql
--- PRC の固定ロケーション一覧（putaway_strategy=fixed）
-SELECT id, code, area, abc_class, capacity, current_volume, status
-FROM locations WHERE owner_id = 3 ORDER BY code;
--- PRC-PART-01-01-1（abc_class=A, capacity=100）が主要棚入れ先
+-- PRC の固定ロケーション一覧（putaway_strategy=fixed / Phase 9-DB5 対応）
+SELECT id, code, area, abc_class, picking_priority, location_type, capacity, current_volume, status
+FROM locations WHERE owner_id = 3 ORDER BY picking_priority, code;
+-- PRC-PICK-01-01-1（picking_priority=5, location_type='picking'）が最優先候補
+-- PRC-PART-01-01-1（picking_priority=10, location_type='storage'）が次点
 
 -- PRC-001 の SKU 確認（lot+serial 両方必須）
 SELECT id, sku_code, jan, name, lot_required, serial_required
@@ -973,4 +987,5 @@ FROM putaway_orders WHERE work_order_id = <wo_id>;
 ---
 
 *このドキュメントはにーちゃん（id=7）が Phase 9-QA3（#820）として作成し、#866 にて実 DB データ照合・LOT/SERIAL ステップ追記を行った。*  
+*#867 にて Phase 9-DB5（locations テーブル完全版・picking_priority 列・PICK ロケ種別）に対応した全 SQL を更新した。*  
 *Stage2 テーブル deploy 後に「Stage2 Deploy 後の追加確認 SQL」セクションを必ず実施すること。*
