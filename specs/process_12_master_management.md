@@ -1,0 +1,556 @@
+# 工程12：マスタ管理機能開発 論点叩き台
+
+> 起票：2026-05-09 / Phase 9-β さーちゃん
+> 対象テーブル：owners / skus / user_owners / billing_rules
+> 推定工数：10日（PHASE9_IMPLEMENTATION_PLAN.md より）
+
+---
+
+## 0. 前提
+
+工程12 は 工程1〜11 の**基盤となるマスタデータの CRUD 管理画面**を実装する工程。
+全業務テーブルが `owner_id` を持つ設計（DB-4 論理分離+RLS）の前提で論点を整理する。
+
+---
+
+## 1. owners（荷主マスタ）
+
+### 現行スキーマ（phase9_stage1_foundation.sql）
+
+```sql
+CREATE TABLE owners (
+  id BIGSERIAL PRIMARY KEY,
+  code TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  theme_color TEXT,
+  allocation_strategy TEXT NOT NULL DEFAULT 'fifo' CHECK (...),
+  picking_strategy TEXT NOT NULL DEFAULT 'single' CHECK (...),
+  lot_strategy TEXT NOT NULL DEFAULT 'inbound_batch' CHECK (...),
+  inspection_strategy TEXT NOT NULL DEFAULT 'full' CHECK (...),
+  discrepancy_strategy TEXT NOT NULL DEFAULT 'hold' CHECK (...),
+  putaway_strategy TEXT NOT NULL DEFAULT 'free' CHECK (...),
+  return_strategy TEXT NOT NULL DEFAULT 'wms_separate' CHECK (...),
+  barcode_required_fields TEXT NOT NULL DEFAULT 'jan',
+  cost_management_enabled BOOLEAN NOT NULL DEFAULT false,
+  billing_period_type TEXT NOT NULL DEFAULT '3-period' CHECK (...),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
+
+### 論点一覧
+
+#### O-1: 論理削除 vs 物理削除
+
+| 選択肢 | 内容 | トレードオフ |
+|--------|------|------------|
+| A | 物理削除（ON DELETE RESTRICT） | 依存テーブルがある限り削除不可。過去データ参照は可 |
+| **B（推奨）** | 論理削除（`is_active BOOLEAN` フラグ） | 廃業・解約荷主を「非表示」にしつつ過去帳票・在庫履歴を保全 |
+| C | 論理削除（`deleted_at TIMESTAMPTZ`） | B より詳細だが RLS と組み合わせるとクエリが複雑化 |
+
+> **さーちゃん推奨：B**。`is_active = false` の荷主は一覧画面から非表示、管理者のみ閲覧可のポリシーを別途追加。RLS への影響が最小。
+
+---
+
+#### O-2: code の変更可否
+
+現状 `UNIQUE` 制約あり。既存在庫・请求履歴が存在する場合の変更は全テーブルの参照が壊れる（`owner_id` ではなく code を参照してるコードが存在する可能性）。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | code 変更禁止（UI で非活性） |
+| **B（推奨）** | code 変更可能だが、在庫・取引が存在する場合は警告ダイアログを出す（DB 制約なし・アプリ制御） |
+
+> **さーちゃん推奨：B**。DB 制約では制御できないのでアプリ側で在庫ゼロ + 取引ゼロ確認後のみ変更許可。
+
+---
+
+#### O-3: strategy フラグ変更時の整合性
+
+`lot_strategy` / `picking_strategy` / `allocation_strategy` を在庫保有中に変更すると業務矛盾が起きる可能性。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | DB 制約なし。運用ルールで制御 |
+| **B（推奨）** | アプリ側で「在庫ゼロ確認」後のみ変更可（警告ダイアログ） |
+| C | 変更ログを `owner_strategy_history` テーブルに積む |
+
+> **さーちゃん推奨：B + C**。特に `billing_period_type` の変更は請求計算に直撃するため、変更ログは必須（CA-1 と整合）。
+
+---
+
+#### O-4: barcode_required_fields の型
+
+現状 `TEXT NOT NULL DEFAULT 'jan'`。実運用では "jan,serial,lot" のようにカンマ区切りで複数指定。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | TEXT のまま（アプリで split） |
+| **B（推奨）** | `TEXT[] NOT NULL DEFAULT '{jan}'` に変更。PostgreSQL 配列型で厳密に管理 |
+
+> **さーちゃん推奨：B**。バリデーション・GIN インデックスが使えるようになる。移行コスト低い（まだ本番データなし）。
+
+---
+
+#### O-5: updated_at トリガー
+
+`updated_at` は現状 `DEFAULT now()` のみで INSERT 時の初期値は正しいが、UPDATE 後に自動更新されない。
+
+> **必須修正**：`set_updated_at()` トリガーを owners / skus に追加する。
+
+---
+
+#### O-6: RLS に admin（倉庫全体管理者）ポリシーが未定義
+
+現状の `owners_assigned_read` ポリシーは「所属する荷主のみ閲覧」。倉庫管理者（全荷主横断）の操作をどう制御するか。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | Service Role キーで RLS バイパス（管理画面は全部 Service Role） |
+| **B（推奨）** | `user_owners` に `role = 'wms_admin'` を追加し、全 owner_id 許可のポリシーを追加 |
+
+> **さーちゃん推奨：B**。A は Service Role キーをフロントに渡す設計になり漏洩リスクが高い。
+
+---
+
+### owners マスタ追加カラム候補（まとめ）
+
+```sql
+ALTER TABLE owners ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE owners ALTER COLUMN barcode_required_fields TYPE TEXT[];
+ALTER TABLE owners ALTER COLUMN barcode_required_fields SET DEFAULT '{jan}';
+
+-- updated_at トリガー
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER owners_updated_at
+  BEFORE UPDATE ON owners
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+```
+
+---
+
+## 2. skus（商品/SKUマスタ）
+
+### 現行スキーマ
+
+```sql
+CREATE TABLE skus (
+  id BIGSERIAL PRIMARY KEY,
+  owner_id BIGINT NOT NULL REFERENCES owners(id) ON DELETE RESTRICT,
+  sku_code TEXT NOT NULL,
+  jan TEXT,
+  name TEXT NOT NULL,
+  serial_required BOOLEAN NOT NULL DEFAULT false,
+  lot_required BOOLEAN NOT NULL DEFAULT false,
+  abc_class TEXT CHECK (abc_class IN ('A', 'B', 'C')),
+  created_at / updated_at ...
+  UNIQUE (owner_id, sku_code)
+);
+CREATE UNIQUE INDEX idx_skus_owner_jan ON skus(owner_id, jan) WHERE jan IS NOT NULL;
+```
+
+### 論点一覧
+
+#### S-1: JAN コードのバリデーション
+
+現状 `TEXT` 型・制約なし。JAN は 8 桁または 13 桁の数字。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | DB 制約なし（アプリで validate） |
+| **B（推奨）** | `CHECK (jan ~ '^[0-9]{8}$' OR jan ~ '^[0-9]{13}$')` で DB チェック追加 |
+
+> **さーちゃん推奨：B**。入力ミスを DB で防ぐ。ただし内部コード・荷主独自コードを JAN フィールドに入れるケースもあるため、時吉さんに実運用確認が必要。
+
+---
+
+#### S-2: 廃番 SKU の扱い（論理削除）
+
+在庫が残っている SKU は `ON DELETE RESTRICT` で物理削除できない。廃番フラグが必要。
+
+> **必須追加**：`is_active BOOLEAN NOT NULL DEFAULT true`
+
+---
+
+#### S-3: lot_required / serial_required 変更時の整合性
+
+在庫がある状態でフラグを変更すると、既存の lots/serials レコードと矛盾が起きる。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | 制約なし（運用ルール） |
+| **B（推奨）** | 在庫ゼロ確認後のみ変更可（アプリ制御） |
+
+---
+
+#### S-4: SKU 一括インポート（CSV）
+
+荷主追加時に数百〜数千件を一括登録する需要がある。UPSERT 設計が必要。
+
+```sql
+INSERT INTO skus (owner_id, sku_code, jan, name, ...)
+VALUES (...)
+ON CONFLICT (owner_id, sku_code)
+DO UPDATE SET jan = EXCLUDED.jan, name = EXCLUDED.name, updated_at = now();
+```
+
+> **論点**：インポート時の既存データ上書きを許可するか。上書き禁止（INSERT ONLY）か、差分のみ更新するかを仕様決定する必要あり。
+
+---
+
+#### S-5: abc_class の初期値と分析タイミング
+
+現状 `NULL` 許容（未分類）。WMS 稼働後に ABC 分析を走らせて更新する前提。
+
+> **論点**：ABC 分析バッチをいつ・どのタイミングで走らせるか（日次・週次・手動）。バッチ完了までは `abc_class = NULL` → BF-2（引当ロジック）でどう扱うか。**Phase 9-β の対象外（BF-2 工程で決定）**。
+
+---
+
+#### S-6: updated_at トリガー
+
+owners と同様に必須。
+
+---
+
+## 3. user_owners（ユーザーマスタ）
+
+### 現行スキーマ
+
+```sql
+CREATE TABLE user_owners (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID NOT NULL,              -- auth.users.id（FK 制約なし）
+  owner_id BIGINT NOT NULL REFERENCES owners(id) ON DELETE CASCADE,
+  role TEXT NOT NULL CHECK (role IN ('admin', 'operator', 'viewer', 'shipper')),
+  granted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  granted_by UUID,
+  UNIQUE (user_id, owner_id)
+);
+```
+
+### 論点一覧
+
+#### U-1: 倉庫全体管理者ロールの追加
+
+現状のロールは `admin / operator / viewer / shipper` で全荷主横断の倉庫管理者がない。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | wms_admin ロールを user_owners に追加し、全 owner_id アクセスの RLS ポリシーを追加 |
+| **B（推奨）** | `wms_admin` をロールに追加 + `owner_id = NULL` で全荷主アクセスを表現（スキーマ変更必要） |
+| C | 別テーブル `wms_admins(user_id)` を作成 |
+
+> **さーちゃん推奨：A**。`owner_id NOT NULL` 制約を保ちながら wms_admin の場合のみ全 owner アクセスを RLS で許可する設計が最もシンプル。ただし全荷主横断の RLS ポリシーは `USING (true)` になるため注意。
+
+---
+
+#### U-2: auth.users との参照整合性
+
+`user_id UUID` は `auth.users.id` を参照しているが外部キー制約がない（cross-schema 制限）。
+Supabase Auth でユーザーを削除した場合、`user_owners` に孤立レコードが残る。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | そのまま（孤立許容・auth 側で削除前に user_owners を手動 DELETE） |
+| **B（推奨）** | Supabase Auth の `on_auth_user_deleted` Webhook / Trigger で自動 CASCADE |
+
+> **さーちゃん推奨：B**。Supabase の `auth.users` には DB Trigger を貼れる（`AFTER DELETE ON auth.users`）。実装は Phase 9 の AU-1 工程で確認。
+
+---
+
+#### U-3: 招待フロー
+
+新ユーザーを追加するとき、まず Auth でユーザーを作成してから `user_owners` に INSERT する。
+
+**フロー案：**
+```
+管理者がメールアドレスを入力
+→ Supabase Auth admin.inviteUserByEmail() 呼び出し（Edge Function 経由）
+→ ユーザーが招待メールを承認
+→ `auth.users` に登録完了
+→ `user_owners` に INSERT（admin が役割・荷主を設定）
+```
+
+> **論点**：招待と権限付与を同時に行うか、段階的に行うか。段階的の場合、承認後に管理者が手動で `user_owners` を INSERT する運用か。
+
+---
+
+#### U-4: ロール変更の監査ログ
+
+誰が誰のロールを変更したかの記録。`granted_by` カラムはあるが、変更履歴がない。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | 監査ログなし |
+| **B（推奨）** | `user_owners_log(id, user_owner_id, old_role, new_role, changed_by, changed_at)` テーブルを別途作成 |
+
+> **さーちゃん推奨：B**。権限変更の証跡は3PL 業務で必要になるケースあり（荷主との契約上）。
+
+---
+
+#### U-5: RLS の管理者向けポリシー欠如
+
+現状 `user_owners_self_read`（自分の行のみ閲覧）しかない。
+管理者が他ユーザーの権限を管理するには別ポリシーが必要。
+
+```sql
+CREATE POLICY user_owners_admin_manage ON user_owners
+  FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM user_owners AS uo
+      WHERE uo.user_id = auth.uid()
+        AND uo.owner_id = user_owners.owner_id
+        AND uo.role = 'admin'
+    )
+  );
+```
+
+---
+
+## 4. billing_rules（請求ルールマスタ）
+
+### 現行スキーマ
+
+```sql
+CREATE TABLE billing_rules (
+  id BIGSERIAL PRIMARY KEY,
+  owner_id BIGINT NOT NULL REFERENCES owners(id) ON DELETE CASCADE,
+  rule_type TEXT NOT NULL,         -- CHECK 制約なし
+  period_type TEXT NOT NULL CHECK (period_type IN ('3-period', '2-period', 'daily', 'monthly', 'tsubo')),
+  unit TEXT NOT NULL CHECK (unit IN ('case', 'piece', 'tsubo', 'sqm')),
+  unit_price NUMERIC NOT NULL,
+  valid_from DATE NOT NULL,
+  valid_to DATE,                   -- NULL = 無期限
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
+
+### 論点一覧
+
+#### B-1: rule_type の enum 化
+
+現状 `TEXT NOT NULL` で CHECK 制約なし。業界標準の種別を定義する必要あり。
+
+| 種別 | 説明 |
+|------|------|
+| `storage` | 保管料（在庫×期末×単価） |
+| `inbound` | 入庫料（入荷件数×単価） |
+| `outbound` | 出庫料（出荷件数×単価） |
+| `off_period` | 期間外料（早朝・深夜・土日） |
+| `handling` | 雑工料（その他） |
+
+> **必須追加**：`CHECK (rule_type IN ('storage', 'inbound', 'outbound', 'off_period', 'handling'))` または `CREATE TYPE billing_rule_type AS ENUM (...)` で定義。
+
+---
+
+#### B-2: 有効期間の重複チェック
+
+同一 `(owner_id, rule_type, unit)` で期間が重複しているルールが存在すると請求計算が壊れる。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | DB 制約なし（アプリで排他チェック） |
+| **B（推奨）** | EXCLUDE 制約（PostgreSQL 拡張 btree_gist）で重複を DB レベルで防ぐ |
+
+```sql
+-- btree_gist 拡張が必要
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
+ALTER TABLE billing_rules ADD CONSTRAINT billing_rules_no_overlap
+EXCLUDE USING gist (
+  owner_id WITH =,
+  rule_type WITH =,
+  unit WITH =,
+  daterange(valid_from, valid_to, '[)') WITH &&
+);
+```
+
+> **さーちゃん推奨：B**。重複は請求バグの根本原因になるため DB で担保する。
+
+---
+
+#### B-3: 削除時の監査保全
+
+`ON DELETE CASCADE` になっているため、荷主削除で請求ルールも消える。
+請求済みレコード（将来の `billing_history`）がある場合、証跡を失う。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | CASCADE のまま（荷主削除はありえない運用で許容） |
+| **B（推奨）** | `ON DELETE RESTRICT` に変更。荷主を削除する前に管理者が請求ルールを手動削除する運用 |
+| C | 論理削除のみで物理削除禁止 |
+
+> **さーちゃん推奨：B**。荷主削除は稀なオペレーションなので RESTRICT で十分。CASCADE は 事故リスクが高い。
+
+---
+
+#### B-4: 過去ルールの変更禁止
+
+`billing_history`（月次バッチで生成する請求書）に紐づく過去ルールは変更・削除すべきでない。
+
+| 選択肢 | 内容 |
+|--------|------|
+| A | 制約なし |
+| **B（推奨）** | `valid_from < CURRENT_DATE` のルールは UPDATE/DELETE を禁止するトリガーで保護 |
+
+```sql
+CREATE OR REPLACE FUNCTION protect_past_billing_rules()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF OLD.valid_from < CURRENT_DATE THEN
+    RAISE EXCEPTION '過去の請求ルールは変更できません（valid_from: %）', OLD.valid_from;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER billing_rules_protect_past
+  BEFORE UPDATE OR DELETE ON billing_rules
+  FOR EACH ROW EXECUTE FUNCTION protect_past_billing_rules();
+```
+
+---
+
+#### B-5: unit の拡張候補
+
+現状 `unit IN ('case', 'piece', 'tsubo', 'sqm')`。業界では以下も使われる。
+
+| 追加候補 | 利用ケース |
+|---------|----------|
+| `pallet` | パレット単位保管料 |
+| `kg` | 重量物 |
+| `hour` | 時間当たり作業料 |
+
+> **論点**：Phase 9 開始時に時吉さんが扱う荷主の請求単位を確認して追加するか判断。今は現状維持を推奨。
+
+---
+
+#### B-6: billing_rules にない updated_at
+
+monitoring のために `updated_at` が必要。INSERT のみで変更不可（B-4）なら不要とも言えるが、トリガーで保護するまでは自由に変更できてしまう。
+
+> **論点**：`updated_at` を追加するか。または `created_at` のみで管理（変更禁止を徹底）か。
+
+---
+
+## 5. 共通論点
+
+### C-1: updated_at 自動更新トリガー
+
+`owners` / `skus` に対して `set_updated_at()` トリガーを追加。`billing_rules` は変更禁止のため不要。`user_owners` は `granted_at` が実質的な更新日時。
+
+> **必須実装**（さーちゃんで実施可）。
+
+---
+
+### C-2: 変更履歴テーブルの設計
+
+| テーブル | 必要度 | 理由 |
+|---------|--------|------|
+| `owners_history` | 中 | strategy フラグ変更の影響追跡 |
+| `skus_history` | 低 | 廃番フラグ変更程度 |
+| `billing_rules` | 高 | 請求エビデンス・監査対応 |
+| `user_owners_log` | 高 | 権限変更の証跡 |
+
+> **さーちゃん推奨**：Phase 9 では `billing_rules` と `user_owners_log` を優先実装。`owners_history` は Phase 9.5 以降。
+
+---
+
+### C-3: RLS の管理者ポリシー整備
+
+現状 billing_rules の RLS は `admin / operator` が全操作可能。owners への書き込み（新荷主追加・フラグ変更）は現状 RLS ポリシーが存在しない（SELECTのみ）。
+
+> **必須追加**：`owners` テーブルへの INSERT / UPDATE / DELETE ポリシーを wms_admin ロール向けに追加。
+
+---
+
+## 6. 実装優先度まとめ
+
+| 論点 | 優先度 | 影響 | さーちゃん推奨 |
+|------|--------|------|--------------|
+| C-1: updated_at トリガー | **高** | 全マスタ | 即実施 |
+| B-1: rule_type CHECK 制約 | **高** | billing_rules | 即実施 |
+| B-3: CASCADE → RESTRICT | **高** | billing_rules | 即実施 |
+| O-1: owners 論理削除 | **高** | owners | is_active 追加 |
+| S-2: skus 廃番フラグ | **高** | skus | is_active 追加 |
+| U-5: 管理者 RLS ポリシー | **高** | user_owners | 即実施 |
+| B-4: 過去ルール変更禁止 | **中** | billing_rules | トリガー実装 |
+| U-2: auth.users CASCADE | **中** | user_owners | Trigger 実装 |
+| O-4: barcode_required_fields 型 | **中** | owners | TEXT → TEXT[] |
+| B-2: 有効期間重複防止 | **中** | billing_rules | EXCLUDE 制約 |
+| C-2: 変更履歴テーブル | **中** | billing / user_owners | 別タスク起票 |
+| B-1: rule_type enum 追加候補 | **低** | billing_rules | 運用開始後に拡張 |
+
+---
+
+## 7. DB 変更が必要な論点まとめ（マイグレーション候補）
+
+```sql
+-- 1. updated_at トリガー関数（共通）
+CREATE OR REPLACE FUNCTION set_updated_at() RETURNS TRIGGER AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$ LANGUAGE plpgsql;
+
+-- 2. owners: is_active, barcode_required_fields 型変更, updated_at トリガー
+ALTER TABLE owners ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
+-- barcode_required_fields TEXT → TEXT[] は型変換 migration 必要
+CREATE TRIGGER owners_updated_at BEFORE UPDATE ON owners
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- 3. skus: is_active, JAN バリデーション, updated_at トリガー
+ALTER TABLE skus ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
+-- ALTER TABLE skus ADD CONSTRAINT skus_jan_format CHECK (jan ~ '^[0-9]{8}$' OR jan ~ '^[0-9]{13}$');
+CREATE TRIGGER skus_updated_at BEFORE UPDATE ON skus
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- 4. user_owners: wms_admin ロール追加
+ALTER TABLE user_owners DROP CONSTRAINT user_owners_role_check;
+ALTER TABLE user_owners ADD CONSTRAINT user_owners_role_check
+  CHECK (role IN ('admin', 'operator', 'viewer', 'shipper', 'wms_admin'));
+
+-- 5. billing_rules: rule_type CHECK, CASCADE → RESTRICT, 過去ルール保護トリガー
+ALTER TABLE billing_rules ADD CONSTRAINT billing_rules_rule_type_check
+  CHECK (rule_type IN ('storage', 'inbound', 'outbound', 'off_period', 'handling'));
+-- ON DELETE RESTRICT は既存 FK を DROP して再作成が必要
+
+-- 6. RLS: owners 書き込み + user_owners 管理者ポリシー追加
+CREATE POLICY owners_wms_admin_write ON owners FOR ALL
+  USING (
+    EXISTS (SELECT 1 FROM user_owners WHERE user_id = auth.uid() AND role = 'wms_admin')
+  );
+```
+
+---
+
+## 8. 時吉さんへの確認事項（要判断）
+
+| # | 論点 | 確認内容 | まーちゃん経由 |
+|---|------|---------|--------------|
+| 1 | O-2 | owner.code 変更は運用上ありうるか | 時吉さん判断 |
+| 2 | S-1 | JAN コードは必ず 8 桁 or 13 桁の数字か（荷主独自コードとの混用あり？） | 時吉さん判断 |
+| 3 | S-4 | CSV 一括インポート時の既存 SKU 上書きを許可するか | 時吉さん判断 |
+| 4 | U-3 | ユーザー招待フローは段階的（招待→承認→権限付与）か、一括か | 時吉さん判断 |
+| 5 | B-5 | `pallet / kg / hour` など unit の追加候補は必要か | 時吉さん判断 |
+
+---
+
+## 9. 次タスク候補（起票先：まーちゃん → こーちゃん/さーちゃん）
+
+| タスク | 担当 | 工数 |
+|--------|------|------|
+| Phase 9-γ: owners/skus is_active + updated_at トリガー migration | さーちゃん | 1日 |
+| Phase 9-δ: billing_rules rule_type CHECK + CASCADE→RESTRICT + 過去保護 migration | さーちゃん | 1日 |
+| Phase 9-ε: user_owners wms_admin ロール + RLS ポリシー整備 | さーちゃん | 1日 |
+| Phase 9-ζ: 管理画面 UI（owners CRUD）| こーちゃん | 3日 |
+| Phase 9-η: 管理画面 UI（skus CRUD + CSV インポート）| こーちゃん | 3日 |
+| Phase 9-θ: 管理画面 UI（user_owners 招待・ロール管理）| こーちゃん | 2日 |
+| Phase 9-ι: 管理画面 UI（billing_rules CRUD）| こーちゃん | 2日 |
+
+---
+
+*最終更新：2026-05-09 / Phase 9-β さーちゃん（工程12 マスタ管理論点叩き台）*
