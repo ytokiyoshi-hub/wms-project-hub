@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 在庫一覧・在庫照会 PC画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+:root {
+  --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+  --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+  --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+  --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+  --c-warn:#d97706; --c-warn-lt:#fef3c7;
+  --c-ok:#059669; --c-ok-lt:#d1fae5;
+  --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+}
+html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+.quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+.quick-nav .label { color:#c8ccd4; font-weight:500; }
+.quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+.quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+.quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+.section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+.section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+.desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+.desc b { color:#fff; font-weight:500; }
+
+.pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+.pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+.pc-frame .browser-bar .dots { display:flex; gap:5px; }
+.pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+.pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+.screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+.sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+.sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+.sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+.sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+.sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+.sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+.sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+.sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+.sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+.topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+.topbar .crumb b { color:var(--c-text); font-weight:600; }
+.topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+.topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+.topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+.topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+.topbar .owner-switcher b { color:var(--c-accent); }
+.content { flex:1; padding:16px 20px; overflow-y:auto; background:var(--c-bg); }
+
+.card { background:var(--c-base); border:1px solid var(--c-line); }
+.card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+.card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+.card-body { padding:14px 16px; }
+
+.btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+.btn:hover { background:var(--c-bg); }
+.btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+.btn.primary:hover { background:var(--c-accent-dk); }
+.btn.sm { padding:3px 10px; font-size:11px; }
+.btn.xs { padding:2px 8px; font-size:10px; }
+
+.pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+.pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+.pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+.pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+.pill.warn { background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn); }
+
+table.list { width:100%; border-collapse:collapse; font-size:12px; }
+table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:7px 10px; text-align:left; vertical-align:middle; white-space:nowrap; }
+table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+table.list .right { text-align:right; }
+table.list .center { text-align:center; }
+table.list .num { font-family:var(--f-mono); font-weight:500; }
+table.list tr.alert-row td { background:var(--c-alert-lt); }
+table.list tr.warn-row td { background:var(--c-warn-lt); }
+table.list tfoot td { background:var(--c-bg); font-weight:600; font-size:12px; }
+
+.field { display:flex; flex-direction:column; gap:4px; }
+.field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+.field input, .field select { border:1px solid var(--c-line-dk); padding:6px 10px; font-size:12px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+.field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+.form-row { display:grid; gap:12px; }
+.form-row.cols2 { grid-template-columns:repeat(2, 1fr); }
+.form-row.cols3 { grid-template-columns:repeat(3, 1fr); }
+.form-row.cols4 { grid-template-columns:repeat(4, 1fr); }
+.form-row.cols5 { grid-template-columns:repeat(5, 1fr); }
+
+.search-panel { background:var(--c-base); border:1px solid var(--c-line); padding:14px 16px; margin-bottom:12px; }
+.search-panel .panel-title { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+.search-actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+.search-actions .result-stats { font-size:12px; color:var(--c-text-sub); }
+.search-actions .result-stats b { color:var(--c-text); font-weight:600; }
+
+.kpi-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:12px; }
+.kpi-card { background:var(--c-base); border:1px solid var(--c-line); padding:12px 14px; }
+.kpi-card .kpi-label { font-size:10px; color:var(--c-text-sub); font-weight:600; letter-spacing:0.05em; margin-bottom:4px; }
+.kpi-card .kpi-value { font-size:22px; font-weight:700; color:var(--c-accent); font-family:var(--f-mono); line-height:1; }
+.kpi-card .kpi-sub { font-size:10px; color:var(--c-text-mute); margin-top:4px; }
+.kpi-card.alert .kpi-value { color:var(--c-alert); }
+.kpi-card.warn .kpi-value { color:var(--c-warn); }
+.kpi-card.ok .kpi-value { color:var(--c-ok); }
+
+.table-toolbar { display:flex; align-items:center; gap:8px; padding:10px 12px; background:var(--c-bg); border-bottom:1px solid var(--c-line); font-size:12px; }
+.table-toolbar .selected-info { color:var(--c-accent); font-weight:600; }
+.table-toolbar .spacer { flex:1; }
+
+.pagination { display:flex; align-items:center; gap:4px; padding:10px 12px; background:var(--c-base); border-top:1px solid var(--c-line); font-size:12px; }
+.pagination .page-info { color:var(--c-text-sub); flex:1; }
+.pager-btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:3px 10px; font-size:11px; font-family:var(--f-base); cursor:pointer; }
+.pager-btn.active { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+.pager-btn:hover:not(.active) { background:var(--c-bg); }
+
+.status-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; }
+.status-dot.good { background:var(--c-ok); }
+.status-dot.hold { background:var(--c-warn); }
+.status-dot.defect { background:var(--c-alert); }
+.status-dot.inspect { background:#6c7280; }
+
+.note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:8px 12px; font-size:11px; color:var(--c-text); line-height:1.6; margin-bottom:12px; }
+.note-box.warn { background:var(--c-warn-lt); border-left-color:var(--c-warn); }
+
+/* 在庫照会用：詳細サイドパネル */
+.split-layout { display:flex; gap:0; flex:1; overflow:hidden; }
+.split-list { flex:1; overflow-y:auto; border-right:2px solid var(--c-line); }
+.split-detail { width:380px; flex-shrink:0; overflow-y:auto; background:var(--c-base); }
+.detail-header { padding:12px 16px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; gap:10px; }
+.detail-header h3 { font-size:14px; font-weight:600; flex:1; }
+.detail-section { padding:14px 16px; border-bottom:1px solid var(--c-line); }
+.detail-section h4 { font-size:11px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; letter-spacing:0.05em; }
+.dl-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; }
+.dl-item .dl-label { font-size:10px; color:var(--c-text-mute); }
+.dl-item .dl-value { font-size:13px; font-weight:600; margin-top:1px; }
+.dl-item .dl-value.mono { font-family:var(--f-mono); }
+
+/* 期限警告バー */
+.expiry-bar { display:flex; align-items:center; gap:6px; font-size:11px; }
+.expiry-bar .bar-track { flex:1; height:6px; background:var(--c-line); }
+.expiry-bar .bar-fill { height:100%; }
+.expiry-bar .bar-fill.ok { background:var(--c-ok); }
+.expiry-bar .bar-fill.warn { background:var(--c-warn); }
+.expiry-bar .bar-fill.danger { background:var(--c-alert); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">在庫一覧・在庫照会 PC画面</h1>
+<p class="subtitle">W-201 在庫一覧 / W-202 在庫照会（詳細検索＋サイドパネル）</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#W-201"><b>W-201</b>在庫一覧</a>
+  <a href="#W-202"><b>W-202</b>在庫照会（詳細検索）</a>
+</div>
+
+<!-- ============================== -->
+<!-- W-201 在庫一覧 -->
+<!-- ============================== -->
+
+<div class="section-divider" id="W-201"><span class="num">W-201</span>在庫一覧</div>
+<div class="desc">
+  <b>役割</b>：ロケーション×SKU×ロット×数量の在庫を一覧表示。ステータス・SKU・ロット・ロケーションで絞り込み可能。<br>
+  <b>対象ユーザー</b>：倉庫スタッフ・管理者・荷主担当者。<br>
+  <b>主な操作</b>：絞り込み検索 / CSV出力 / 在庫詳細へ遷移 / 一括ステータス変更。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/inventory</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">在庫</div>
+        <a href="#" class="active">在庫一覧</a>
+        <a href="#">在庫照会</a>
+        <a href="#">ステータス変更</a>
+        <a href="#">ロット出荷止め</a>
+        <a href="#">在庫調整</a>
+        <a href="#">棚卸</a>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定</a>
+        <a href="#">入荷検品</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷指示</a>
+        <a href="#">ピッキング</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">在庫　/　<b>在庫一覧</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>マルキ食品</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- KPIカード -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">総在庫 SKU数</div>
+            <div class="kpi-value">142</div>
+            <div class="kpi-sub">使用ロケーション 83 / 120</div>
+          </div>
+          <div class="kpi-card ok">
+            <div class="kpi-label">フリー在庫ロット数</div>
+            <div class="kpi-value">389</div>
+            <div class="kpi-sub">引当済み 47ロット</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-label">期限90日以内</div>
+            <div class="kpi-value">12</div>
+            <div class="kpi-sub">うち30日以内 3件</div>
+          </div>
+          <div class="kpi-card alert">
+            <div class="kpi-label">ステータス異常</div>
+            <div class="kpi-value">5</div>
+            <div class="kpi-sub">HOLD 3 / DEFECT 2</div>
+          </div>
+        </div>
+
+        <!-- 検索パネル -->
+        <div class="search-panel">
+          <div class="panel-title">絞り込み条件</div>
+          <div class="form-row cols5">
+            <div class="field">
+              <label>ロケーション</label>
+              <input value="A-08" placeholder="例: A-08">
+            </div>
+            <div class="field">
+              <label>SKU / 商品コード</label>
+              <input value="" placeholder="例: S-00321">
+            </div>
+            <div class="field">
+              <label>商品名（部分一致）</label>
+              <input value="" placeholder="シャンプー">
+            </div>
+            <div class="field">
+              <label>ロット番号</label>
+              <input value="" placeholder="LOT-26B">
+            </div>
+            <div class="field">
+              <label>ステータス</label>
+              <select>
+                <option>すべて</option>
+                <option>GOOD（良品）</option>
+                <option>HOLD（保留）</option>
+                <option>DEFECT（不良）</option>
+                <option>INSPECTION（検品中）</option>
+              </select>
+            </div>
+          </div>
+          <div class="search-actions">
+            <button class="btn primary sm">検索</button>
+            <button class="btn sm">リセット</button>
+            <span class="result-stats">絞り込み結果　<b>43件</b>　(全436件中)</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn sm">印刷</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 一覧テーブル -->
+        <div class="card">
+          <div class="table-toolbar">
+            <input type="checkbox" style="width:14px; height:14px;">
+            <span style="color:var(--c-text-sub); font-size:11px;">全選択</span>
+            <button class="btn xs" style="margin-left:8px;">一括ステータス変更</button>
+            <button class="btn xs">一括CSV</button>
+            <span class="spacer"></span>
+            <span style="color:var(--c-text-sub); font-size:11px;">表示: 1〜20 / 43件</span>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:30px;"></th>
+                  <th>ロケーション ▲</th>
+                  <th>SKU</th>
+                  <th>商品名</th>
+                  <th>ロット番号</th>
+                  <th>製造日</th>
+                  <th>期限日</th>
+                  <th>ステータス</th>
+                  <th class="right">在庫数</th>
+                  <th class="right">引当数</th>
+                  <th class="right">フリー在庫</th>
+                  <th class="right">単位</th>
+                  <th class="center" style="width:80px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" style="width:13px; height:13px;"></td>
+                  <td class="num">A-01-01-1</td>
+                  <td class="num">S-00210</td>
+                  <td>洗剤500ml<br><span style="font-size:10px; color:var(--c-text-sub);">マルキ食品</span></td>
+                  <td class="num">LOT-26C</td>
+                  <td class="num">2026/03/01</td>
+                  <td class="num">2028/03/01</td>
+                  <td><span class="status-dot good"></span><span class="pill ok" style="font-size:10px;">GOOD</span></td>
+                  <td class="right num">240</td>
+                  <td class="right num">60</td>
+                  <td class="right num">180</td>
+                  <td class="right" style="color:var(--c-text-sub);">PCS</td>
+                  <td class="center"><button class="btn xs">詳細</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="width:13px; height:13px;"></td>
+                  <td class="num">A-02-03-1</td>
+                  <td class="num">S-00321</td>
+                  <td>シャンプー300ml<br><span style="font-size:10px; color:var(--c-text-sub);">マルキ食品</span></td>
+                  <td class="num">LOT-26B</td>
+                  <td class="num">2026/04/01</td>
+                  <td class="num">2027/03/31</td>
+                  <td><span class="status-dot good"></span><span class="pill ok" style="font-size:10px;">GOOD</span></td>
+                  <td class="right num">120</td>
+                  <td class="right num">0</td>
+                  <td class="right num">120</td>
+                  <td class="right" style="color:var(--c-text-sub);">PCS</td>
+                  <td class="center"><button class="btn xs">詳細</button></td>
+                </tr>
+                <tr class="warn-row">
+                  <td><input type="checkbox" style="width:13px; height:13px;"></td>
+                  <td class="num">A-04-02-2</td>
+                  <td class="num">S-00311</td>
+                  <td>コンディショナー300ml<br><span style="font-size:10px; color:var(--c-text-sub);">マルキ食品</span></td>
+                  <td class="num">LOT-25Z</td>
+                  <td class="num">2025/12/01</td>
+                  <td class="num">2026/06/15</td>
+                  <td><span class="status-dot hold"></span><span class="pill warn" style="font-size:10px;">HOLD</span></td>
+                  <td class="right num">36</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right" style="color:var(--c-text-sub);">PCS</td>
+                  <td class="center"><button class="btn xs">詳細</button></td>
+                </tr>
+                <tr class="alert-row">
+                  <td><input type="checkbox" style="width:13px; height:13px;"></td>
+                  <td class="num">A-05-01-1</td>
+                  <td class="num">S-00323</td>
+                  <td>ボディソープ500ml<br><span style="font-size:10px; color:var(--c-text-sub);">マルキ食品</span></td>
+                  <td class="num">LOT-26A</td>
+                  <td class="num">2026/01/15</td>
+                  <td class="num">2027/01/15</td>
+                  <td><span class="status-dot defect"></span><span class="pill alert" style="font-size:10px;">DEFECT</span></td>
+                  <td class="right num">48</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right" style="color:var(--c-text-sub);">PCS</td>
+                  <td class="center"><button class="btn xs">詳細</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="width:13px; height:13px;"></td>
+                  <td class="num">A-06-04-1</td>
+                  <td class="num">S-00410</td>
+                  <td>洗顔料120g<br><span style="font-size:10px; color:var(--c-text-sub);">マルキ食品</span></td>
+                  <td class="num">LOT-26D</td>
+                  <td class="num">2026/04/10</td>
+                  <td class="num">2028/04/10</td>
+                  <td><span class="status-dot good"></span><span class="pill ok" style="font-size:10px;">GOOD</span></td>
+                  <td class="right num">360</td>
+                  <td class="right num">120</td>
+                  <td class="right num">240</td>
+                  <td class="right" style="color:var(--c-text-sub);">PCS</td>
+                  <td class="center"><button class="btn xs">詳細</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="width:13px; height:13px;"></td>
+                  <td class="num">A-07-01-2</td>
+                  <td class="num">S-00215</td>
+                  <td>食器用洗剤250ml<br><span style="font-size:10px; color:var(--c-text-sub);">マルキ食品</span></td>
+                  <td class="num">LOT-26E</td>
+                  <td class="num">2026/04/20</td>
+                  <td class="num">2027/10/20</td>
+                  <td><span class="status-dot inspect"></span><span class="pill" style="font-size:10px;">INSPECTION</span></td>
+                  <td class="right num">200</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right" style="color:var(--c-text-sub);">PCS</td>
+                  <td class="center"><button class="btn xs">詳細</button></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="width:13px; height:13px;"></td>
+                  <td class="num">A-08-02-1</td>
+                  <td class="num">S-00321</td>
+                  <td>シャンプー300ml<br><span style="font-size:10px; color:var(--c-text-sub);">マルキ食品</span></td>
+                  <td class="num">LOT-26A</td>
+                  <td class="num">2026/02/01</td>
+                  <td class="num">2027/01/31</td>
+                  <td><span class="status-dot good"></span><span class="pill ok" style="font-size:10px;">GOOD</span></td>
+                  <td class="right num">80</td>
+                  <td class="right num">80</td>
+                  <td class="right num">0</td>
+                  <td class="right" style="color:var(--c-text-sub);">PCS</td>
+                  <td class="center"><button class="btn xs">詳細</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="8" style="font-size:11px; color:var(--c-text-sub);">合計（絞り込み43件）</td>
+                  <td class="right num">5,842</td>
+                  <td class="right num">1,024</td>
+                  <td class="right num">4,818</td>
+                  <td colspan="2"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="pagination">
+            <span class="page-info">1〜20件 / 43件</span>
+            <button class="pager-btn">«</button>
+            <button class="pager-btn active">1</button>
+            <button class="pager-btn">2</button>
+            <button class="pager-btn">3</button>
+            <button class="pager-btn">»</button>
+            <select style="border:1px solid var(--c-line-dk); padding:3px 8px; font-size:11px; margin-left:10px;">
+              <option>20件/ページ</option>
+              <option>50件/ページ</option>
+              <option>100件/ページ</option>
+            </select>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /screen -->
+</div><!-- /pc-frame W-201 -->
+
+
+<!-- ============================== -->
+<!-- W-202 在庫照会（詳細検索＋サイドパネル） -->
+<!-- ============================== -->
+
+<div class="section-divider" id="W-202"><span class="num">W-202</span>在庫照会（詳細検索＋サイドパネル）</div>
+<div class="desc">
+  <b>役割</b>：SKU・ロット番号・ロケーション範囲・期限日範囲・ステータスで高度な絞り込みが可能な在庫照会。右パネルに選択ロットの詳細を表示。<br>
+  <b>対象ユーザー</b>：荷主担当者・品質管理担当者・在庫管理リーダー。<br>
+  <b>主な操作</b>：詳細絞り込み検索 / ロット選択→右パネルで詳細確認 / ロット出荷止め申請へ遷移 / CSV出力。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/inventory/search?sku=S-00321</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+        <a href="#" class="active">在庫照会</a>
+        <a href="#">ステータス変更</a>
+        <a href="#">ロット出荷止め</a>
+        <a href="#">在庫調整</a>
+        <a href="#">棚卸</a>
+        <div class="group">入荷</div>
+        <a href="#">入荷予定</a>
+        <a href="#">入荷検品</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷指示</a>
+        <a href="#">ピッキング</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">在庫　/　<b>在庫照会</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>マルキ食品</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; flex:1; overflow:hidden;">
+
+        <!-- 詳細検索パネル -->
+        <div style="padding:12px 16px; background:var(--c-base); border-bottom:1px solid var(--c-line); flex-shrink:0;">
+          <div style="display:grid; grid-template-columns:repeat(4,1fr) repeat(2,1fr); gap:10px 14px;">
+            <div class="field">
+              <label>SKU / 商品コード</label>
+              <input value="S-00321" placeholder="例: S-00321">
+            </div>
+            <div class="field">
+              <label>商品名（部分一致）</label>
+              <input value="シャンプー" placeholder="">
+            </div>
+            <div class="field">
+              <label>ロット番号</label>
+              <input value="" placeholder="LOT-26A">
+            </div>
+            <div class="field">
+              <label>ステータス</label>
+              <select>
+                <option>すべて</option>
+                <option selected>GOOD（良品）</option>
+                <option>HOLD（保留）</option>
+                <option>DEFECT（不良）</option>
+                <option>INSPECTION（検品中）</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>ロケーション（from）</label>
+              <input value="" placeholder="A-01-01">
+            </div>
+            <div class="field">
+              <label>ロケーション（to）</label>
+              <input value="" placeholder="A-10-04">
+            </div>
+            <div class="field">
+              <label>期限日（from）</label>
+              <input type="date" value="2026-05-16">
+            </div>
+            <div class="field">
+              <label>期限日（to）</label>
+              <input type="date" value="">
+            </div>
+            <div class="field">
+              <label>フリー在庫</label>
+              <select>
+                <option selected>すべて</option>
+                <option>1以上のみ</option>
+                <option>0（引当済み）</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>期限警告</label>
+              <select>
+                <option selected>すべて</option>
+                <option>90日以内</option>
+                <option>30日以内</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column:span 2; display:flex; align-items:flex-end; gap:8px;">
+              <button class="btn primary sm">検索</button>
+              <button class="btn sm">リセット</button>
+              <span style="font-size:11px; color:var(--c-text-sub); margin-left:4px;">結果 <b>3件</b>（全436件中）</span>
+              <div style="margin-left:auto; display:flex; gap:6px;">
+                <button class="btn sm">CSV出力</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- スプリットレイアウト：左=一覧 / 右=詳細パネル -->
+        <div class="split-layout">
+
+          <!-- 左：検索結果一覧 -->
+          <div class="split-list">
+            <table class="list" style="font-size:11px;">
+              <thead>
+                <tr>
+                  <th>ロケーション</th>
+                  <th>SKU</th>
+                  <th>商品名</th>
+                  <th>ロット番号</th>
+                  <th>期限日</th>
+                  <th>ステータス</th>
+                  <th class="right">在庫数</th>
+                  <th class="right">引当数</th>
+                  <th class="right">フリー</th>
+                  <th>単位</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent);">
+                  <td class="num">A-02-03-1</td>
+                  <td class="num">S-00321</td>
+                  <td>シャンプー300ml</td>
+                  <td class="num">LOT-26B</td>
+                  <td class="num">2027/03/31</td>
+                  <td><span class="pill ok" style="font-size:10px;">GOOD</span></td>
+                  <td class="right num">120</td>
+                  <td class="right num">0</td>
+                  <td class="right num">120</td>
+                  <td style="color:var(--c-text-sub);">PCS</td>
+                </tr>
+                <tr>
+                  <td class="num">A-08-02-1</td>
+                  <td class="num">S-00321</td>
+                  <td>シャンプー300ml</td>
+                  <td class="num">LOT-26A</td>
+                  <td class="num">2027/01/31</td>
+                  <td><span class="pill ok" style="font-size:10px;">GOOD</span></td>
+                  <td class="right num">80</td>
+                  <td class="right num">80</td>
+                  <td class="right num">0</td>
+                  <td style="color:var(--c-text-sub);">PCS</td>
+                </tr>
+                <tr>
+                  <td class="num">B-03-01-1</td>
+                  <td class="num">S-00321</td>
+                  <td>シャンプー300ml</td>
+                  <td class="num">LOT-26C</td>
+                  <td class="num">2027/05/31</td>
+                  <td><span class="pill ok" style="font-size:10px;">GOOD</span></td>
+                  <td class="right num">200</td>
+                  <td class="right num">40</td>
+                  <td class="right num">160</td>
+                  <td style="color:var(--c-text-sub);">PCS</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="6" style="font-size:11px; color:var(--c-text-sub);">合計 3件</td>
+                  <td class="right num">400</td>
+                  <td class="right num">120</td>
+                  <td class="right num">280</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <!-- 右：詳細サイドパネル（LOT-26B 選択中） -->
+          <div class="split-detail">
+            <div class="detail-header">
+              <h3>ロット詳細</h3>
+              <span class="pill accent">LOT-26B</span>
+            </div>
+
+            <div class="detail-section">
+              <h4>在庫基本情報</h4>
+              <div class="dl-grid">
+                <div class="dl-item">
+                  <div class="dl-label">SKU</div>
+                  <div class="dl-value mono">S-00321</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">商品名</div>
+                  <div class="dl-value">シャンプー300ml</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">ロット番号</div>
+                  <div class="dl-value mono">LOT-26B</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">ステータス</div>
+                  <div class="dl-value"><span class="pill ok" style="font-size:10px;">GOOD</span></div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">ロケーション</div>
+                  <div class="dl-value mono">A-02-03-1</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">荷主</div>
+                  <div class="dl-value">マルキ食品</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>数量内訳</h4>
+              <div class="dl-grid">
+                <div class="dl-item">
+                  <div class="dl-label">在庫数（実数）</div>
+                  <div class="dl-value mono" style="font-size:16px; color:var(--c-accent);">120 PCS</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">引当済み</div>
+                  <div class="dl-value mono">0 PCS</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">フリー在庫</div>
+                  <div class="dl-value mono" style="color:var(--c-ok);">120 PCS</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">ケース数換算</div>
+                  <div class="dl-value mono">10 CS</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>期限情報</h4>
+              <div class="dl-grid">
+                <div class="dl-item">
+                  <div class="dl-label">製造日</div>
+                  <div class="dl-value mono">2026/04/01</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">賞味期限</div>
+                  <div class="dl-value mono">2027/03/31</div>
+                </div>
+              </div>
+              <div style="margin-top:10px;">
+                <div style="font-size:10px; color:var(--c-text-sub); margin-bottom:4px;">期限まで 319日</div>
+                <div class="expiry-bar">
+                  <span style="font-size:10px; color:var(--c-text-sub);">0%</span>
+                  <div class="bar-track"><div class="bar-fill ok" style="width:24%;"></div></div>
+                  <span style="font-size:10px; color:var(--c-ok);">良好</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>入荷情報</h4>
+              <div class="dl-grid">
+                <div class="dl-item">
+                  <div class="dl-label">入荷日</div>
+                  <div class="dl-value mono">2026/04/15</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">入荷番号</div>
+                  <div class="dl-value mono">RCV-2604-0042</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">検品担当</div>
+                  <div class="dl-value">佐藤</div>
+                </div>
+                <div class="dl-item">
+                  <div class="dl-label">入荷数量</div>
+                  <div class="dl-value mono">120 PCS</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h4>操作</h4>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <button class="btn sm" style="text-align:left;">ステータス変更</button>
+                <button class="btn sm" style="text-align:left;">在庫調整（増減）</button>
+                <button class="btn sm" style="text-align:left;">ロット出荷止め申請</button>
+                <button class="btn sm" style="text-align:left;">移動（ロケーション変更）</button>
+                <button class="btn sm" style="text-align:left;">履歴を見る</button>
+              </div>
+            </div>
+
+          </div><!-- /split-detail -->
+
+        </div><!-- /split-layout -->
+
+      </div><!-- /flex column -->
+
+    </div><!-- /main -->
+  </div><!-- /screen -->
+</div><!-- /pc-frame W-202 -->
+
+</body>
+</html>
