@@ -35,11 +35,24 @@
 | 項目 | 内容 |
 |------|------|
 | 機能 | 棚卸対象（荷主×期間×範囲）を選んで「凍結」する |
-| 副作用 | 対象範囲のロケを `locations.status = 'frozen'` に / 該当荷主の出荷指示を一時停止 |
+| 副作用 | 対象範囲のロケを `locations.status = 'frozen'` に / **凍結中の入出庫要求はエラー返却**（棚卸し完了後に再実施が必要）/ 該当荷主の出荷指示を一時停止 |
 | 出力 | `inventory_count_sessions` テーブルへの INSERT |
 | 致命傷ライン | DB-4 / DB-5 |
 | 9割突っ走り部分 | 開始ダイアログ UI |
 | 完璧に詰める部分 | 凍結漏れ防止・出荷指示の一時停止判断・荷主への通知 |
+
+> **QA-4 確定（3号ヒアリング 2026-05-16）：** 一斉棚卸は対象ロケへの入出庫を凍結し、凍結中の実行要求はエラー返却とする（選択肢B相当）。循環棚卸は別機能として設計し、凍結なしで通常入出庫と並行運用可とする（F-1101-B 参照）。
+
+### F-1101-B：循環棚卸セッション（QA-4 確定・別機能として設計）
+
+| 項目 | 内容 |
+|------|------|
+| 機能 | 365日かけて少しずつロケを数える循環型棚卸 |
+| 凍結 | **凍結なし** ─ 通常入出庫と並行運用可 |
+| 差異管理 | カウント時点の在庫スナップショットを `inventory_count_records` に記録し、後で帳簿値と比較 |
+| 致命傷ライン | DB-5（ロケ単位カウント）|
+| 9割突っ走り部分 | ロケ選択ローテーション ロジック |
+| 完璧に詰める部分 | 並行入出庫による差異の解釈（カウント中に入出庫が発生した場合の補正） |
 
 ### F-1102：HT 棚卸カウント
 
@@ -85,16 +98,41 @@ WHERE d.session_id = ?;
 | 9割突っ走り部分 | 再カウント指示画面 |
 | 完璧に詰める部分 | 3回カウントしても差異が出る場合の業務エスカレーション（管理者承認・原因究明） |
 
-### F-1105：差異反映（在庫補正）
+### F-1105：差異反映（在庫補正）─ inventory_adjustments として独立実装
 
 | 項目 | 内容 |
 |------|------|
-| 機能 | 確定した差異を在庫に反映する |
-| 承認フロー | 管理者承認必須（AU-1） |
-| 出力 | `inventory.quantity` 更新 / `inventory_movements` に履歴（type='adjustment'） |
+| 機能 | 確定した差異を在庫に反映する。**独立機能 `inventory_adjustments` として設計**（棚卸しセッションだけでなく日常的な在庫調整にも使用可能） |
+| 承認フロー | **荷主承認フロー**：申請（倉庫スタッフ）→ 荷主承認 → 倉庫実行（AU-1 との整合） |
+| 理由バリデーション | **理由（`adjustment_reason`）記載を必須**とする（コード分類は不要・備考欄形式で自由記述） |
+| 出力 | `inventory_adjustments` テーブルに記録 / `inventory.quantity` 更新 / `inventory_movements` に履歴（type='adjustment'） |
 | 致命傷ライン | DB-1 / AU-1 |
 | 9割突っ走り部分 | 承認画面 UI |
 | 完璧に詰める部分 | 監査証跡（誰が・いつ・何を補正したか）・荷主への報告書面 |
+
+> **QA-9 確定（3号ヒアリング 2026-05-16）：** 棚卸し差異対応は調整理由コードなし（備考欄のみ）を基本とするが、在庫調整機能として荷主承認と理由明記を必須要件として追加する。独立機能 `inventory_adjustments` として設計。
+
+```sql
+-- 在庫調整テーブル（QA-9 確定設計）
+CREATE TABLE inventory_adjustments (
+  id                        BIGSERIAL PRIMARY KEY,
+  inventory_count_diff_id   BIGINT REFERENCES inventory_count_diffs(id),  -- 棚卸し由来の場合
+  inventory_id              BIGINT NOT NULL REFERENCES inventory(id),
+  owner_id                  UUID NOT NULL REFERENCES owners(id),
+  qty_before                NUMERIC NOT NULL,
+  qty_after                 NUMERIC NOT NULL,
+  adjustment_reason         TEXT NOT NULL,   -- 理由必須バリデーション（自由記述）
+  status                    TEXT NOT NULL DEFAULT 'pending'
+                              CHECK (status IN ('pending', 'approved', 'rejected', 'executed')),
+  requested_by              UUID NOT NULL REFERENCES users(id),  -- 申請者（倉庫スタッフ）
+  approved_by               UUID REFERENCES users(id),           -- 承認者（荷主）
+  executed_by               UUID REFERENCES users(id),           -- 実行者（倉庫スタッフ）
+  requested_at              TIMESTAMPTZ DEFAULT NOW(),
+  approved_at               TIMESTAMPTZ,
+  executed_at               TIMESTAMPTZ,
+  notes                     TEXT
+);
+```
 
 ### F-1106：棚卸履歴・帳票連動
 
@@ -136,12 +174,24 @@ WHERE d.session_id = ?;
 
 ---
 
+## 確定済み設計判断サマリー（3号ヒアリング 2026-05-16）
+
+| 論点 | 確定内容 | 対応機能 |
+|------|---------|---------|
+| QA-4：一斉棚卸中の入出庫制御 | 対象ロケを凍結・凍結中実行要求はエラー返却 | F-1101 |
+| QA-4：循環棚卸の扱い | 別機能として設計・凍結なし・通常入出庫と並行運用 | F-1101-B |
+| QA-9：棚卸差異対応 | 独立機能 `inventory_adjustments` として設計 | F-1105 |
+| QA-9：差異調整の承認フロー | 申請（倉庫スタッフ）→ 荷主承認 → 倉庫実行 | F-1105 |
+| QA-9：調整理由 | 調整理由コード分類なし・備考欄への自由記述を必須 | F-1105 |
+
+---
+
 ## 次工程への申し送り
 
 - F-1102（HT カウント）は **キーエンス HT 連携の最大の出番**。LK-2（HT バーコード仕様）の決定が前提
-- F-1105（差異反映）の承認フローは AU-1（権限）の決定後に詳細化
+- F-1105（差異反映）の承認フローは `inventory_adjustments` テーブル設計で具体化済み（QA-9 確定）
 - F-1106 の棚卸表は工程13 F-1303 と統合実装（レポートエンジン共通化）
 
 ---
 
-*最終更新: 2026-05-08 / Phase 7-J まーちゃん（工程11 棚卸 6機能の論点叩き台）*
+*最終更新: 2026-05-16 / Phase 9-REFLECT2-C さーちゃん（QA-4・QA-9 確定内容を反映）*
