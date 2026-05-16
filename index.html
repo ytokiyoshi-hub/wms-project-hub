@@ -574,7 +574,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
       </div>
     </nav>
     <div class="sb-footer">
-      <div class="ver">v3.1.0 / 仕様策定中</div>
+      <div class="ver">v3.2.0 / Phase 9 実装完了</div>
       <div>マルキ食品ベースシナリオ</div>
     </div>
   </aside>
@@ -630,17 +630,17 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
             <div class="marker"></div>
             <div class="body">
               <div class="title">フェーズ2：工程レビュー</div>
-              <div class="desc">工程1・12・14完了。残工程は Phase 9 実装と並行で進行中</div>
+              <div class="desc">工程1・12・14完了。QA-1〜QA-16 全16論点確定・specs反映済み。先行ロック6件確定（Q10-1/3/5・Q12-1・Q15-1/3）。残工程は次フェーズで順次実施</div>
             </div>
-            <div class="pct">25%</div>
+            <div class="pct">40%</div>
           </div>
           <div class="phase progress">
             <div class="marker"></div>
             <div class="body">
               <div class="title">フェーズ3：ドキュメント最新化（v4.0）</div>
-              <div class="desc">致命傷ライン18項目確定済み（2026-05-14）。specs/MORNING_DECISION_SHEET.md 等に反映</div>
+              <div class="desc">致命傷ライン18項目確定済み（2026-05-14）。QA-1〜QA-16 全16論点specs反映完了。非ロック15論点の整合チェック完了（#914）</div>
             </div>
-            <div class="pct">30%</div>
+            <div class="pct">55%</div>
           </div>
           <div class="phase done">
             <div class="marker"></div>
@@ -650,13 +650,13 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
             </div>
             <div class="pct">100%</div>
           </div>
-          <div class="phase progress">
+          <div class="phase done">
             <div class="marker"></div>
             <div class="body">
               <div class="title">フェーズ5：実装開発（Phase 9）</div>
-              <div class="desc">Stage 1・2 全完了（DB×5・AU×2）・Stage 3 BF-4完了/BF-2・3仕様完了・Stage 4 CA-1・LK-1完了。14項目中10件実装完了・4件部分実装（2026-05-16）</div>
+              <div class="desc">Stage 1〜4 全14項目実装完了。#898 QA7統合検証（引当・請求・原価・RLS分離）全機能PASS。RLSポリシー・関数search_path・security_definer_viewセキュリティ修正完了（2026-05-16）</div>
             </div>
-            <div class="pct">65%</div>
+            <div class="pct">100%</div>
           </div>
         </div>
 
@@ -754,7 +754,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         <div class="card" style="margin-bottom:24px;">
           <div class="card-h">
             <span>Stage 別実装進捗</span>
-            <span class="meta">✅ 10件 完了 / 🟡 4件 部分実装 / ❌ 0件 未着手（memo #213 + 直近完了タスク反映）</span>
+            <span class="meta">✅ 14件 全完了 / QA7統合検証PASS (#898) / セキュリティ修正完了 (#899/#906)</span>
           </div>
           <div class="card-b" style="padding:0;">
             <table class="tbl">
@@ -769,13 +769,34 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                 <tr><td class="id">Stage 2</td><td class="id">DB-1</td><td>inventory 4軸 + owners.fragments</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#877</td></tr>
                 <tr><td class="id">Stage 2</td><td class="id">DB-2</td><td>lots.lot_attributes 追加</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#878</td></tr>
                 <tr><td class="id">Stage 2</td><td class="id">DB-3</td><td>serials.serial_required 確認</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#878</td></tr>
-                <tr><td class="id">Stage 3</td><td class="id">BF-2</td><td>引当ロジック（FIFO/LIFO/ロケ優先）</td><td><span class="pill pill-warning">🟡 仕様完了・実装未</span></td><td class="num">#873</td></tr>
-                <tr><td class="id">Stage 3</td><td class="id">BF-3</td><td>ピッキング方式（ウェーブ生成）</td><td><span class="pill pill-warning">🟡 仕様完了・実装未</span></td><td class="num">#880</td></tr>
+                <tr><td class="id">Stage 3</td><td class="id">BF-2</td><td>引当ロジック（FIFO/LIFO/ロケ優先）</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#873 / #889</td></tr>
+                <tr><td class="id">Stage 3</td><td class="id">BF-3</td><td>ピッキング方式（ウェーブ生成）</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#880 / #891</td></tr>
                 <tr><td class="id">Stage 3</td><td class="id">BF-4</td><td>返品・誤出荷ステータス管理</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#882</td></tr>
                 <tr><td class="id">Stage 4</td><td class="id">CA-1</td><td>billing_rules + 月次バッチ請求書</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#883</td></tr>
-                <tr><td class="id">Stage 4</td><td class="id">CA-2</td><td>原価評価 移動平均</td><td><span class="pill pill-warning">🟡 部分実装</span></td><td class="num">—</td></tr>
+                <tr><td class="id">Stage 4</td><td class="id">CA-2</td><td>原価評価 移動平均</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#888</td></tr>
                 <tr><td class="id">Stage 4</td><td class="id">LK-1</td><td>外部連携 connectors テーブル</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#881</td></tr>
-                <tr><td class="id">Stage 4</td><td class="id">LK-2</td><td>HT バーコード判定ロジック</td><td><span class="pill pill-warning">🟡 部分実装</span></td><td class="num">—</td></tr>
+                <tr><td class="id">Stage 4</td><td class="id">LK-2</td><td>HT バーコード判定ロジック</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#890 / #895</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-title">セキュリティ修正完了（2026-05-16）</div>
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-h">
+            <span>RLS・セキュリティ修正ステータス</span>
+            <span class="meta">✅ 全件解消済み</span>
+          </div>
+          <div class="card-b" style="padding:0;">
+            <table class="tbl">
+              <thead>
+                <tr><th>修正内容</th><th>状態</th><th>根拠タスク</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>RLSポリシー欠落修正（DB-4荷主分離違反・7テーブル）</td><td><span class="pill pill-success">✅ 解消</span></td><td class="num">#899</td></tr>
+                <tr><td>RLS関数 search_path 固定（security_definer 関数）</td><td><span class="pill pill-success">✅ 解消</span></td><td class="num">#899</td></tr>
+                <tr><td>validate_barcode_scan anon 実行可 WARN 解消</td><td><span class="pill pill-success">✅ 解消</span></td><td class="num">#906</td></tr>
+                <tr><td>Phase 9-QA7 RLS荷主分離テスト全件PASS</td><td><span class="pill pill-success">✅ 確認済</span></td><td class="num">#898</td></tr>
               </tbody>
             </table>
           </div>
@@ -1353,7 +1374,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
         </div>
 
-        <div class="section-title" style="margin-top:24px;">致命傷ライン 15項目（工程レビュー時の必須確認事項）</div>
+        <div class="section-title" style="margin-top:24px;">致命傷ライン 18項目（2026-05-14 全確定・推奨採用済み）</div>
         <div class="card">
           <div class="card-b">
             <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px; font-size:13px; line-height:1.8;">
