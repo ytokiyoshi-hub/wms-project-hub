@@ -1516,7 +1516,7 @@ navItems.forEach(item => {
     if (anchor) {
       const target = document.getElementById(anchor);
       if (target) {
-        setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+        target.scrollIntoView({ block: 'start' });
         return;
       }
     }
