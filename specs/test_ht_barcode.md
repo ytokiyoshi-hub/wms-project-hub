@@ -79,7 +79,7 @@ ORDER BY code;
 
 ```sql
 -- TKY の SKU 確認
-SELECT id, sku_code, jan FROM skus WHERE owner_id = (SELECT id FROM owners WHERE code='TKY') LIMIT 3;
+SELECT id, sku_code, jan_code FROM skus WHERE owner_id = (SELECT id FROM owners WHERE code='TKY') LIMIT 3;
 
 -- 入荷 work_order 作成
 INSERT INTO work_orders (owner_id, order_type, status, priority, external_ref, notes, scheduled_date)
@@ -136,7 +136,7 @@ ORDER BY i.created_at DESC LIMIT 3;
 
 ```sql
 -- FDB の SKU 確認
-SELECT id, sku_code, jan, lot_required FROM skus
+SELECT id, sku_code, jan_code, lot_required FROM skus
 WHERE owner_id = (SELECT id FROM owners WHERE code='FDB') LIMIT 3;
 
 -- 入荷 work_order 作成
@@ -202,7 +202,7 @@ ORDER BY i.created_at DESC LIMIT 3;
 
 ```sql
 -- PRC の SKU 確認（serial_required=true であること）
-SELECT id, sku_code, jan, serial_required, lot_required FROM skus
+SELECT id, sku_code, jan_code, serial_required, lot_required FROM skus
 WHERE owner_id = (SELECT id FROM owners WHERE code='PRC') LIMIT 3;
 
 -- 入荷 work_order 作成
