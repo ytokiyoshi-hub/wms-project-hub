@@ -550,22 +550,22 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
       </div>
 
       <div class="group-label">致命傷ライン</div>
-      <a class="nav-item" href="https://github.com/ytokiyoshi-hub/wms-project-hub/blob/main/specs/process_03_db_design.md" target="_blank" rel="noopener">
+      <div class="nav-item" data-page="process-review" data-anchor="kt-db">
         <span class="icon">🗄</span>
         <span>DB設計（DB-1〜DB-5）</span>
-      </a>
-      <a class="nav-item" href="https://github.com/ytokiyoshi-hub/wms-project-hub/blob/main/specs/process_02_system_design.md" target="_blank" rel="noopener">
+      </div>
+      <div class="nav-item" data-page="process-review" data-anchor="kt-sys">
         <span class="icon">⚙</span>
         <span>システム設計（BF/CA/AU/LK）</span>
-      </a>
-      <a class="nav-item" href="https://github.com/ytokiyoshi-hub/wms-project-hub/blob/main/specs/process_02_inbound.md" target="_blank" rel="noopener">
+      </div>
+      <div class="nav-item" data-page="process-review" data-anchor="kt-inbound">
         <span class="icon">📦</span>
         <span>入荷（Q1〜Q5）</span>
-      </a>
-      <a class="nav-item" href="https://github.com/ytokiyoshi-hub/wms-project-hub/blob/main/specs/er_diagram_core.md" target="_blank" rel="noopener">
+      </div>
+      <div class="nav-item" data-page="process-review" data-anchor="kt-er">
         <span class="icon">📐</span>
         <span>ER図コア</span>
-      </a>
+      </div>
 
       <div class="group-label">開発</div>
       <div class="nav-item" data-page="claudecode">
@@ -1250,7 +1250,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         <div class="section-title">朝の時吉さん判断項目（Step 1：致命傷15項目 / 目安10分）</div>
         <div class="morning-check-grid" style="margin-bottom:24px;">
 
-          <div class="morning-spec-card">
+          <div class="morning-spec-card" id="kt-db">
             <div class="msc-head">
               <span class="msc-title">🗄 DB設計（5項目）</span>
               <a class="msc-open" href="https://github.com/ytokiyoshi-hub/wms-project-hub/blob/main/specs/process_03_db_design.md" target="_blank" rel="noopener">開く →</a>
@@ -1266,7 +1266,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
             </div>
           </div>
 
-          <div class="morning-spec-card">
+          <div class="morning-spec-card" id="kt-sys">
             <div class="msc-head">
               <span class="msc-title">⚙ システム設計（10項目）</span>
               <a class="msc-open" href="https://github.com/ytokiyoshi-hub/wms-project-hub/blob/main/specs/process_02_system_design.md" target="_blank" rel="noopener">開く →</a>
@@ -1287,7 +1287,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
             </div>
           </div>
 
-          <div class="morning-spec-card">
+          <div class="morning-spec-card" id="kt-inbound">
             <div class="msc-head">
               <span class="msc-title">📦 入荷（Q1〜Q5）</span>
               <a class="msc-open" href="https://github.com/ytokiyoshi-hub/wms-project-hub/blob/main/specs/process_02_inbound.md" target="_blank" rel="noopener">開く →</a>
@@ -1303,7 +1303,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
             </div>
           </div>
 
-          <div class="morning-spec-card">
+          <div class="morning-spec-card" id="kt-er">
             <div class="msc-head">
               <span class="msc-title">📐 ER図コア</span>
               <a class="msc-open" href="https://github.com/ytokiyoshi-hub/wms-project-hub/blob/main/specs/er_diagram_core.md" target="_blank" rel="noopener">開く →</a>
@@ -1512,6 +1512,14 @@ navItems.forEach(item => {
     pages.forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
     crumb.textContent = pageNames[page];
+    const anchor = item.dataset.anchor;
+    if (anchor) {
+      const target = document.getElementById(anchor);
+      if (target) {
+        setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+        return;
+      }
+    }
     document.querySelector('.content').scrollTop = 0;
   });
 });
