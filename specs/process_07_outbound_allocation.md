@@ -345,6 +345,19 @@ replenishment_trigger_master で該当ルール検索
 - 補充担当者とピッキング担当者が並行作業することでリードタイム短縮
 - 補充失敗時のロールバック処理は `deallocate_inventory` で対応
 
+> ⚠️ **Phase 9 本番 TODO（R-4③）：補充済み前提引当オプションを明示フラグとして追加**
+>
+> wms-impl 2号プロトタイプでは `owners.replenish_pick_concurrent` フラグがスキーマ定義レベルに留まり、
+> 荷主マスタ管理画面の専用 UI 選択肢および `allocate_inventory` 関数への API パラメータとしての明示フラグが未実装。
+> 本番実装時に以下を追加すること：
+>
+> - 荷主マスタ管理画面（工程12）に「補充済み前提引当を許可する」トグル（ON/OFF）を追加
+> - `allocate_inventory` 関数のパラメータに `allow_replenish_concurrent BOOLEAN DEFAULT false` を追加
+> - フラグが `false`（デフォルト）の場合、補充完了を待ってから再引当する通常フローを適用
+>
+> 参照：HEARING_SHEET QA-6（補充発火タイミング確定）/ kurokun_memo#274（Phase B verify 判明事項）
+
 ---
 
 *最終更新: 2026-05-16 / Phase 9-REFLECT2-B にーちゃん（id=7）*
+*Phase 9 本番 TODO 追記: 2026-05-17 / Phase 9-TODO-REC さーちゃん（#936）*
