@@ -131,6 +131,85 @@
 
 ---
 
+## DB スキーマ（Phase 9-LK1 実装分）
+
+### connectors テーブル
+
+荷主別の外部連携設定を管理する。認証実値は Supabase Secrets に格納し、`auth_secret_ref` でキー名のみ参照する。
+
+| カラム | 型 | 説明 |
+|--------|----|------|
+| `id` | BIGSERIAL PK | 自動採番 |
+| `owner_id` | BIGINT FK→owners | 荷主（ON DELETE CASCADE） |
+| `name` | TEXT NOT NULL | 連携設定名（表示用） |
+| `connection_type` | TEXT | `api_inbound` / `api_outbound` / `csv_inbound` / `csv_outbound` / `webhook` |
+| `format` | TEXT | `json`（デフォ）/ `csv` / `xml` |
+| `endpoint_url` | TEXT | API/Webhook 送信先 URL（受信エンドポイントは Edge Function URL） |
+| `auth_type` | TEXT | `none` / `bearer_token` / `jwt` / `ip_allowlist` |
+| `auth_secret_ref` | TEXT | Supabase Secret 変数名（`CONNECTOR_TOKEN_<id>` 形式推奨） |
+| `csv_encoding` | TEXT | `utf-8`（デフォ）/ `sjis` |
+| `csv_delimiter` | TEXT | `,`（デフォ）/ TAB / `\|` |
+| `is_active` | BOOLEAN | 連携有効フラグ（デフォ true） |
+| `created_at` / `updated_at` | TIMESTAMPTZ | タイムスタンプ |
+
+**RLS:** `admin` / `operator` ロールのみ自社荷主レコードにアクセス可。
+
+---
+
+## CSV/API 受信エンドポイント仕様（F-1401 / F-1403 詳細）
+
+### 共通設計方針
+
+1. **荷主識別**: `connectors.id` を URL パスまたは Bearer Token で識別。Edge Function は `connectors` を参照して荷主を特定し、RLS スコープで DB 書き込みを行う。
+2. **冪等性**: リクエスト単位で `idempotency_key`（任意ヘッダー `X-Idempotency-Key`）を受け付け、重複受信を防ぐ。
+3. **認証フロー**: `connectors.auth_type` に従い Edge Function 内で検証。実トークンは `Deno.env.get(auth_secret_ref)` で参照。
+
+### API 受信エンドポイント（F-1401）
+
+```
+POST /functions/v1/connector-receive/{connector_id}
+Authorization: Bearer <token>
+Content-Type: application/json
+X-Idempotency-Key: <uuid>  (任意)
+```
+
+**リクエスト body（入荷予定の例）:**
+```json
+{
+  "type": "inbound_plan",
+  "payload": {
+    "external_ref": "PO-2026-001",
+    "sku_code": "SKU-ABC",
+    "quantity": 100,
+    "scheduled_date": "2026-06-01"
+  }
+}
+```
+
+**レスポンス:**
+- `200 OK` + `{ "accepted": true, "record_id": <id> }` — 正常受信
+- `400 Bad Request` — バリデーションエラー（body に `errors` を含む）
+- `401 Unauthorized` — 認証失敗
+- `409 Conflict` — `idempotency_key` の重複検知
+
+### CSV 受信エンドポイント（F-1403）
+
+```
+POST /functions/v1/connector-csv/{connector_id}
+Authorization: Bearer <token>
+Content-Type: text/csv; charset=utf-8
+X-CSV-Type: inbound_plan | outbound_order | inventory | master
+```
+
+- `csv_encoding` / `csv_delimiter` は `connectors` テーブルから自動取得。
+- ヘッダー行必須。カラム順は `connector_id` に紐付く将来の `connector_csv_formats` テーブルで管理（Phase 後期）。
+- 1リクエストあたり最大 10,000 行。超過時は `400` で拒否。
+
+**レスポンス:**
+- `200 OK` + `{ "accepted": <行数>, "skipped": <行数>, "errors": [] }`
+
+---
+
 ## 次工程への申し送り
 
 - キーエンス HT 連携は **キーエンス担当との早期接触**が必要。Phase 8 の最初に着手
