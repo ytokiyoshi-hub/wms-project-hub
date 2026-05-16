@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 調整理由コードマスタ（W-MA1）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#00695c; --c-ok-lt:#e0f2f1;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:12px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .modal-overlay { display:none; position:absolute; inset:0; background:rgba(26,31,41,0.55); z-index:100; align-items:flex-start; justify-content:center; padding:24px 20px; overflow-y:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:600px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-body { padding:18px; max-height:560px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+  .cb-row { display:flex; align-items:center; gap:8px; font-size:13px; }
+  .cb-row input[type=checkbox] { width:16px; height:16px; cursor:pointer; }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-MA1 調整理由コードマスタ</h1>
+<p class="subtitle">棚卸し差異・返品・廃棄などの調整理由コードを定義（A-9 対応）</p>
+
+<div class="section-divider"><span class="num">W-MA1</span>調整理由コードマスタ</div>
+<div class="desc">
+  <b>役割</b>：棚卸し差異確定・在庫廃棄・返品戻入などの在庫調整を行う際、操作理由を分類するためのコードマスタ。<br>
+  <b>請求影響フラグ</b>：「affects_billing=true」の理由コードは荷主への請求対象差異として、月次請求書の内訳に含める（A-9 連動）。<br>
+  <b>初期コード</b>：9件（紛失・破損・期限切れ・数え誤り・盗難・誤入庫・誤出庫・廃棄処理・その他）を標準搭載。追加・編集可能。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/adjustment-reasons</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#">方面</a>
+        <a href="#">カレンダー</a>
+        <div class="group">運用設定</div>
+        <a href="#" class="active">調整理由コード</a>
+        <a href="#">ユーザー・ロール</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　運用設定　/　<b>調整理由コード</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box">
+          <div class="label">A-9 調整理由コードマスタ</div>
+          棚卸し差異・廃棄・返品処理で在庫を増減する際に必ず理由コードを選択。「請求影響あり」は荷主への月次請求書に差異内訳として記載される。
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>コード・名称</label><input type="text" placeholder="ADJ001、紛失 等"></div>
+            <div class="field"><label>カテゴリ</label>
+              <select>
+                <option>すべて</option>
+                <option>棚卸し差異</option>
+                <option>返品</option>
+                <option>廃棄</option>
+              </select>
+            </div>
+            <div class="field"><label>請求影響</label>
+              <select>
+                <option>すべて</option>
+                <option>あり</option>
+                <option>なし</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">全　<b>9件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn primary sm" onclick="openModal()">＋ 理由コード追加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>調整理由コード一覧</span><span class="meta">コード順</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:110px;">コード</th>
+                  <th>名称</th>
+                  <th style="width:130px;">カテゴリ</th>
+                  <th class="center" style="width:110px;">請求影響</th>
+                  <th>備考</th>
+                  <th class="center" style="width:70px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">ADJ001</td>
+                  <td>紛失</td>
+                  <td><span class="pill">棚卸し差異</span></td>
+                  <td class="center"><span class="pill alert">請求影響あり</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">保険・荷主報告対象</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ADJ002</td>
+                  <td>破損</td>
+                  <td><span class="pill">棚卸し差異</span></td>
+                  <td class="center"><span class="pill alert">請求影響あり</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">破損品は廃棄処理と連動</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ADJ003</td>
+                  <td>期限切れ</td>
+                  <td><span class="pill">廃棄</span></td>
+                  <td class="center"><span class="pill accent">請求影響なし</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">賞味期限・使用期限超過</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ADJ004</td>
+                  <td>数え誤り</td>
+                  <td><span class="pill">棚卸し差異</span></td>
+                  <td class="center"><span class="pill accent">請求影響なし</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">計数ミスによる差異</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ADJ005</td>
+                  <td>盗難</td>
+                  <td><span class="pill">棚卸し差異</span></td>
+                  <td class="center"><span class="pill alert">請求影響あり</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">警察届出番号を備考欄に記録</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ADJ006</td>
+                  <td>誤入庫</td>
+                  <td><span class="pill">棚卸し差異</span></td>
+                  <td class="center"><span class="pill accent">請求影響なし</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">他荷主品の誤ロケ収納等</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ADJ007</td>
+                  <td>誤出庫</td>
+                  <td><span class="pill">棚卸し差異</span></td>
+                  <td class="center"><span class="pill alert">請求影響あり</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">誤出荷による在庫減</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ADJ008</td>
+                  <td>廃棄処理</td>
+                  <td><span class="pill">廃棄</span></td>
+                  <td class="center"><span class="pill accent">請求影響なし</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">定期廃棄・不良品廃棄</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">ADJ009</td>
+                  <td>その他</td>
+                  <td><span class="pill">棚卸し差異</span></td>
+                  <td class="center"><span class="pill accent">請求影響なし</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">上記分類外の差異</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- モーダル -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 id="modal-title">調整理由コード 新規追加</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-section">
+            <div class="form-row">
+              <div class="field"><label>理由コード<span class="required">*</span></label><input type="text" placeholder="例：ADJ010" style="font-family:var(--f-mono);"><span class="hint">英字3文字＋3桁数字（ADJ___）</span></div>
+              <div class="field"><label>名称<span class="required">*</span></label><input type="text" placeholder="例：サンプル差異"></div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>カテゴリ<span class="required">*</span></label>
+                <select>
+                  <option>棚卸し差異</option>
+                  <option>返品</option>
+                  <option>廃棄</option>
+                </select>
+                <span class="hint">在庫調整の発生区分</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>請求影響</label>
+                <label class="cb-row" style="font-weight:400; color:var(--c-text);">
+                  <input type="checkbox"> 請求影響あり（保険請求・荷主への差異報告対象とする）
+                </label>
+                <span class="hint">チェック時：月次請求書の差異内訳に計上される（A-9）</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field" style="grid-column:span 2;"><label>備考</label><input type="text" placeholder="運用上の注意事項など"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">キャンセル</button>
+          <button class="btn primary">登録</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+</script>
+</body>
+</html>

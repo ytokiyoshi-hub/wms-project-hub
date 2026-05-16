@@ -545,8 +545,19 @@
                 <label>単価<span class="required">*</span></label>
                 <div style="display:flex; gap:4px; align-items:center;">
                   <input value="80" type="number" style="width:80px;">
-                  <span style="font-size:11px; color:var(--c-text-sub);">円/パレット/期</span>
+                  <select style="font-size:12px; padding:6px 8px; border:1px solid var(--c-line-dk); background:var(--c-base); font-family:var(--f-base); color:var(--c-text);">
+                    <option>円/パレット/期</option>
+                    <option>円/パレット</option>
+                    <option>円/ケース/期</option>
+                    <option>円/ケース</option>
+                    <option>円/坪/月</option>
+                    <option>円/件</option>
+                    <option>円/枚</option>
+                    <option>円/kg</option>
+                    <option>円/時間</option>
+                  </select>
                 </div>
+                <span class="hint">B-8: 単位は選択式（9選択肢）</span>
               </div>
             </div>
 

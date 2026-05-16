@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS ユーザー・ロールマスタ（W-MA4）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); margin-bottom:14px; }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:12px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .modal-overlay { display:none; position:absolute; inset:0; background:rgba(26,31,41,0.55); z-index:100; align-items:flex-start; justify-content:center; padding:24px 20px; overflow-y:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:680px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-body { padding:18px; max-height:560px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+  .role-admin  { display:inline-block; padding:2px 10px; font-size:11px; font-weight:600; border-radius:2px; background:#c8e6c9; color:#1b5e20; }
+  .role-leader { display:inline-block; padding:2px 10px; font-size:11px; font-weight:600; border-radius:2px; background:#fff9c4; color:#f57f17; }
+  .role-worker { display:inline-block; padding:2px 10px; font-size:11px; font-weight:600; border-radius:2px; background:#e3f2fd; color:#0d47a1; }
+  .role-owner  { display:inline-block; padding:2px 10px; font-size:11px; font-weight:600; border-radius:2px; background:#f3e5f5; color:#4a148c; }
+  .perm-ok { color:#2e7d32; font-weight:600; }
+  .perm-view { color:#f57f17; }
+  .perm-no { color:#bbb; }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-MA4 ユーザー・ロールマスタ</h1>
+<p class="subtitle">システムユーザーの登録とロール別権限定義（B-7 / A-16 / T系前提）</p>
+
+<div class="section-divider"><span class="num">W-MA4</span>ユーザー・ロールマスタ</div>
+<div class="desc">
+  <b>役割</b>：WMSを操作するユーザーのログインID・氏名・ロールを管理する。ロール定義（管理者/リーダー/作業者/荷主）に基づいて画面表示と操作権限を制御する（B-7）。<br>
+  <b>T系前提</b>：従業員マスタ（T-1）・シフト管理（T-2）・時給閲覧権限（T-3）・差異承認（T-4）はこのユーザーマスタが整備されて初めて機能する。<br>
+  <b>A-16 時給閲覧</b>：管理者ロールは全員の時給を閲覧可能。作業者ロールは自分の時給のみ閲覧可能。リーダーは閲覧のみ（編集不可）。荷主ロールは時給情報へのアクセス不可。
+</div>
+
+<div class="section-divider"><span class="num">①</span>ロール権限定義</div>
+<div class="desc">
+  ロールごとの操作権限マトリクス。このマスタで定義した権限に基づき、各画面の表示・操作が制御される。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/users</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#">方面</a>
+        <a href="#">カレンダー</a>
+        <div class="group">配送人員・車両</div>
+        <a href="#">ドライバー</a>
+        <a href="#">車両</a>
+        <div class="group">運用設定</div>
+        <a href="#">調整理由コード</a>
+        <a href="#" class="active">ユーザー・ロール</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　運用設定　/　<b>ユーザー・ロール</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box">
+          <div class="label">B-7 ユーザー・ロールマスタ（A-16 / T-1〜T-4 前提）</div>
+          管理者ロールのみがこのマスタを編集可能。荷主ロールのユーザーは荷主コードと紐づけ、自社データのみ参照できる（荷主ポータル権限）。
+        </div>
+
+        <!-- ロール定義表 -->
+        <div class="card">
+          <div class="card-header"><span>ロール権限定義</span><span class="meta">変更不可（システム固定）</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:110px;">ロール</th>
+                  <th>概要</th>
+                  <th class="center" style="width:110px;">時給閲覧（A-16）</th>
+                  <th class="center" style="width:110px;">入荷差異承認（T-4）</th>
+                  <th class="center" style="width:100px;">在庫調整</th>
+                  <th class="center" style="width:100px;">ユーザー管理</th>
+                  <th class="center" style="width:110px;">荷主データ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="role-admin">管理者</span></td>
+                  <td style="font-size:12px;">全機能・全データへのフルアクセス。システム設定・ユーザー管理も可。</td>
+                  <td class="center perm-ok">✅ 全員</td>
+                  <td class="center perm-ok">✅</td>
+                  <td class="center perm-ok">✅</td>
+                  <td class="center perm-ok">✅</td>
+                  <td class="center perm-ok">✅ 全荷主</td>
+                </tr>
+                <tr>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td style="font-size:12px;">現場管理。入荷・出荷・棚卸しの確定操作が可能。シフト管理も担当。</td>
+                  <td class="center perm-view">👁 閲覧のみ</td>
+                  <td class="center perm-ok">✅</td>
+                  <td class="center perm-ok">✅</td>
+                  <td class="center perm-no">❌</td>
+                  <td class="center perm-ok">✅ 担当荷主</td>
+                </tr>
+                <tr>
+                  <td><span class="role-worker">作業者</span></td>
+                  <td style="font-size:12px;">ハンディ端末操作（検品・格納・ピッキング・棚卸しカウント）。</td>
+                  <td class="center perm-view">👁 自分のみ</td>
+                  <td class="center perm-no">❌</td>
+                  <td class="center perm-no">❌</td>
+                  <td class="center perm-no">❌</td>
+                  <td class="center perm-no">❌</td>
+                </tr>
+                <tr>
+                  <td><span class="role-owner">荷主</span></td>
+                  <td style="font-size:12px;">荷主ポータル専用。自社在庫・出荷状況の参照のみ（書込不可）。</td>
+                  <td class="center perm-no">❌</td>
+                  <td class="center perm-no">❌</td>
+                  <td class="center perm-no">❌</td>
+                  <td class="center perm-no">❌</td>
+                  <td class="center perm-view">👁 自社のみ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ユーザー一覧 -->
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>ログインID・氏名</label><input type="text" placeholder="yamada、山田 等"></div>
+            <div class="field"><label>ロール</label>
+              <select>
+                <option>すべて</option>
+                <option>管理者</option>
+                <option>リーダー</option>
+                <option>作業者</option>
+                <option>荷主</option>
+              </select>
+            </div>
+            <div class="field"><label>状態</label>
+              <select><option>すべて</option><option selected>有効</option><option>無効</option></select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b>6件</b>　/　全14件</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn primary sm" onclick="openModal()">＋ ユーザー追加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>ユーザー一覧</span><span class="meta">ログインID順</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:140px;">ログインID</th>
+                  <th>氏名</th>
+                  <th style="width:100px;">ロール</th>
+                  <th style="width:160px;">荷主（荷主ロール時）</th>
+                  <th class="center" style="width:70px;">状態</th>
+                  <th>備考</th>
+                  <th class="center" style="width:70px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">admin</td>
+                  <td>山田 太郎</td>
+                  <td><span class="role-admin">管理者</span></td>
+                  <td style="color:var(--c-text-mute); font-size:11px;">—</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">倉庫管理者</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">leader_sato</td>
+                  <td>佐藤 一郎</td>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td style="color:var(--c-text-mute); font-size:11px;">—</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">入庫チームリーダー</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">worker_tanaka</td>
+                  <td>田中 花子</td>
+                  <td><span class="role-worker">作業者</span></td>
+                  <td style="color:var(--c-text-mute); font-size:11px;">—</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">ピッキング担当</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">worker_suzuki</td>
+                  <td>鈴木 次郎</td>
+                  <td><span class="role-worker">作業者</span></td>
+                  <td style="color:var(--c-text-mute); font-size:11px;">—</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">入庫・格納担当</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">owner_maruki</td>
+                  <td>大石 健</td>
+                  <td><span class="role-owner">荷主</span></td>
+                  <td style="font-size:11px;"><span class="num">MK001</span> マルキ食品</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">在庫照会担当</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">owner_fresh</td>
+                  <td>中村 由美</td>
+                  <td><span class="role-owner">荷主</span></td>
+                  <td style="font-size:11px;"><span class="num">FK002</span> フレッシュ青果</td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td style="font-size:11px; color:var(--c-text-sub);">荷主ポータル利用</td>
+                  <td class="center"><button class="btn sm" onclick="openModal()">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- モーダル -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 id="modal-title">ユーザー 新規追加</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-section">
+            <h3>アカウント情報</h3>
+            <div class="form-row">
+              <div class="field"><label>ログインID<span class="required">*</span></label><input type="text" placeholder="英数字・_(アンダーバー)のみ" style="font-family:var(--f-mono);"><span class="hint">後から変更不可</span></div>
+              <div class="field" style="grid-column:span 2;"><label>氏名<span class="required">*</span></label><input type="text" placeholder="例：山田 太郎"></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>ロール・権限</h3>
+            <div class="form-row">
+              <div class="field">
+                <label>ロール<span class="required">*</span></label>
+                <select id="role-select" onchange="onRoleChange()">
+                  <option value="admin">管理者</option>
+                  <option value="leader">リーダー</option>
+                  <option value="worker" selected>作業者</option>
+                  <option value="owner">荷主</option>
+                </select>
+                <span class="hint">ロールを変更すると権限が即時変更されます</span>
+              </div>
+            </div>
+            <div class="form-row" id="owner-row" style="display:none;">
+              <div class="field">
+                <label>対象荷主<span class="required">*</span></label>
+                <select>
+                  <option value="">-- 選択 --</option>
+                  <option>MK001 マルキ食品</option>
+                  <option>FK002 フレッシュ青果</option>
+                  <option>TN003 東西食品</option>
+                </select>
+                <span class="hint">荷主ロールは1荷主のみ紐づけ可能</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>状態</label><select><option>有効</option><option>無効</option></select><span class="hint">「無効」にするとログイン不可</span></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <h3>備考</h3>
+            <div class="field"><input type="text" placeholder="担当業務・所属チーム等"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">キャンセル</button>
+          <button class="btn primary">登録</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+function onRoleChange() {
+  const role = document.getElementById('role-select').value;
+  document.getElementById('owner-row').style.display = role === 'owner' ? '' : 'none';
+}
+</script>
+</body>
+</html>
