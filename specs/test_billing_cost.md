@@ -28,14 +28,14 @@
 CREATE TABLE billing_rules (
   id           BIGSERIAL PRIMARY KEY,
   owner_id     BIGINT NOT NULL REFERENCES owners(id) ON DELETE CASCADE,
-  rule_type    TEXT NOT NULL,          -- '保管料' / '入庫料' / '出庫料' / '期間外料' / 'その他'
+  charge_type  TEXT NOT NULL,          -- '保管料' / '入庫料' / '出庫料' / '期間外料' / 'その他'
   period_type  TEXT NOT NULL           -- '3-period' / '2-period' / 'daily' / 'monthly' / 'tsubo'
     CHECK (period_type IN ('3-period','2-period','daily','monthly','tsubo')),
   unit         TEXT NOT NULL           -- 'case' / 'piece' / 'tsubo' / 'sqm'
     CHECK (unit IN ('case','piece','tsubo','sqm')),
   unit_price   NUMERIC NOT NULL,
-  valid_from   DATE NOT NULL,
-  valid_to     DATE,
+  effective_from DATE NOT NULL,
+  effective_to   DATE,
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ```
@@ -71,7 +71,7 @@ CREATE TABLE inventory (
 | id | code | name | billing_period_type |
 |----|------|------|---------------------|
 | 1 | TKY | 東京通販株式会社 | 3-period |
-| 2 | FDB | 富士食品工業株式会社 | 2-period |
+| 2 | FDB | 富士食品工業株式会社 | monthly |
 | 3 | PRC | 精和プレシジョン株式会社 | monthly |
 
 ---
@@ -104,7 +104,7 @@ WHERE table_name = 'inventory' AND column_name = 'unit_cost';
 
 **前提データ**:
 ```sql
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from)
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from)
 VALUES (1, '保管料', '3-period', 'case', 50.00, '2026-04-01');
 -- 東京通販（owner_id=1）: 1ケースあたり50円/期
 ```
@@ -114,22 +114,22 @@ VALUES (1, '保管料', '3-period', 'case', 50.00, '2026-04-01');
 -- 期末在庫（第1期末：4/10）スナップショット想定 = 200ケース
 -- 請求計算クエリ
 SELECT
-  br.rule_type,
+  br.charge_type,
   br.period_type,
   200 AS qty,          -- 期末在庫数
   br.unit_price,
   200 * br.unit_price  AS billing_amount
 FROM billing_rules br
 WHERE br.owner_id = 1
-  AND br.rule_type = '保管料'
+  AND br.charge_type = '保管料'
   AND br.period_type = '3-period'
-  AND br.valid_from <= '2026-04-10'
-  AND (br.valid_to IS NULL OR br.valid_to >= '2026-04-10');
+  AND br.effective_from <= '2026-04-10'
+  AND (br.effective_to IS NULL OR br.effective_to >= '2026-04-10');
 ```
 
 **期待値**:
 
-| rule_type | period_type | qty | unit_price | billing_amount |
+| charge_type | period_type | qty | unit_price | billing_amount |
 |-----------|-------------|-----|-----------|----------------|
 | 保管料 | 3-period | 200 | 50.00 | 10000.00 |
 
@@ -137,33 +137,32 @@ WHERE br.owner_id = 1
 
 ---
 
-### CA-1-02: 保管料（2期制・ケース単位）正常計算
+### CA-1-02: 保管料（月額・ケース単位）正常計算
 
-**目的**：2期制（前半15日/後半16日〜月末）の保管料計算が正しいこと。
+**目的**：月額課金（monthly）の保管料が `在庫数 × unit_price` で正しく計算されること。
 
 **前提データ**:
 ```sql
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from)
-VALUES (2, '保管料', '2-period', 'case', 80.00, '2026-04-01');
--- 富士食品（owner_id=2）: 1ケースあたり80円/期
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from)
+VALUES (2, '保管料', 'monthly', 'case', 80.00, '2026-04-01');
+-- 富士食品（owner_id=2）: 1ケースあたり80円/月
 ```
 
 **テスト手順**:
 ```sql
--- 第1期末（4/15）: 在庫150ケース
--- 第2期末（4/30）: 在庫120ケース
--- 月間保管料 = (150 + 120) × 80
+-- 4月末在庫 = 150ケース
+-- 月額保管料 = 150 × 80 = 12000円
 SELECT
-  (150 + 120) AS total_qty,
-  80.00 AS unit_price,
-  (150 + 120) * 80.00 AS monthly_billing
+  150 AS end_qty,
+  br.unit_price,
+  150 * br.unit_price AS monthly_billing
 FROM billing_rules br
-WHERE br.owner_id = 2 AND br.rule_type = '保管料' AND br.period_type = '2-period'
-  AND br.valid_from <= '2026-04-01'
-  AND (br.valid_to IS NULL OR br.valid_to >= '2026-04-30');
+WHERE br.owner_id = 2 AND br.charge_type = '保管料' AND br.period_type = 'monthly'
+  AND br.effective_from <= '2026-04-01'
+  AND (br.effective_to IS NULL OR br.effective_to >= '2026-04-30');
 ```
 
-**期待値**：`monthly_billing = 21600.00`
+**期待値**：`monthly_billing = 12000.00`
 
 ---
 
@@ -173,7 +172,7 @@ WHERE br.owner_id = 2 AND br.rule_type = '保管料' AND br.period_type = '2-per
 
 **前提データ**:
 ```sql
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from)
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from)
 VALUES (1, '保管料', 'daily', 'case', 10.00, '2026-05-01');
 -- 東京通販（owner_id=1）: 1ケース1日あたり10円
 ```
@@ -199,7 +198,7 @@ SELECT
 
 **前提データ**:
 ```sql
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from)
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from)
 VALUES (3, '保管料', 'tsubo', 'tsubo', 3000.00, '2026-04-01');
 -- 精和プレシジョン（owner_id=3）: 1坪あたり3,000円/月
 ```
@@ -213,9 +212,9 @@ SELECT
   br.unit_price,
   30 * br.unit_price AS billing_amount
 FROM billing_rules br
-WHERE br.owner_id = 3 AND br.rule_type = '保管料' AND br.period_type = 'tsubo'
-  AND br.valid_from <= '2026-04-01'
-  AND (br.valid_to IS NULL OR br.valid_to >= '2026-04-30');
+WHERE br.owner_id = 3 AND br.charge_type = '保管料' AND br.period_type = 'tsubo'
+  AND br.effective_from <= '2026-04-01'
+  AND (br.effective_to IS NULL OR br.effective_to >= '2026-04-30');
 ```
 
 **期待値**：`billing_amount = 90000.00`
@@ -228,7 +227,7 @@ WHERE br.owner_id = 3 AND br.rule_type = '保管料' AND br.period_type = 'tsubo
 
 **前提データ**:
 ```sql
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from)
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from)
 VALUES (1, '入庫料', '3-period', 'case', 30.00, '2026-04-01');
 -- 東京通販（owner_id=1）: 1ケースあたり30円
 ```
@@ -242,9 +241,9 @@ SELECT
   br.unit_price,
   300 * br.unit_price AS billing_amount
 FROM billing_rules br
-WHERE br.owner_id = 1 AND br.rule_type = '入庫料'
-  AND br.valid_from <= '2026-04-01'
-  AND (br.valid_to IS NULL OR br.valid_to >= '2026-04-30');
+WHERE br.owner_id = 1 AND br.charge_type = '入庫料'
+  AND br.effective_from <= '2026-04-01'
+  AND (br.effective_to IS NULL OR br.effective_to >= '2026-04-30');
 ```
 
 **期待値**：`billing_amount = 9000.00`
@@ -257,7 +256,7 @@ WHERE br.owner_id = 1 AND br.rule_type = '入庫料'
 
 **前提データ**:
 ```sql
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from)
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from)
 VALUES (1, '出庫料', '3-period', 'case', 25.00, '2026-04-01');
 -- 東京通販（owner_id=1）: 1ケースあたり25円
 ```
@@ -271,16 +270,16 @@ SELECT
   br.unit_price,
   250 * br.unit_price AS billing_amount
 FROM billing_rules br
-WHERE br.owner_id = 1 AND br.rule_type = '出庫料'
-  AND br.valid_from <= '2026-04-01'
-  AND (br.valid_to IS NULL OR br.valid_to >= '2026-04-30');
+WHERE br.owner_id = 1 AND br.charge_type = '出庫料'
+  AND br.effective_from <= '2026-04-01'
+  AND (br.effective_to IS NULL OR br.effective_to >= '2026-04-30');
 ```
 
 **期待値**：`billing_amount = 6250.00`
 
 ---
 
-### CA-1-07: 複数 rule_type 合算（月次請求書合計）
+### CA-1-07: 複数 charge_type 合算（月次請求書合計）
 
 **目的**：保管料・入庫料・出庫料を合算した月次請求金額が正しく計算されること。
 
@@ -288,21 +287,21 @@ WHERE br.owner_id = 1 AND br.rule_type = '出庫料'
 
 **テスト手順**:
 ```sql
--- 各 rule_type の件数・単価を集計
+-- 各 charge_type の件数・単価を集計
 WITH monthly_fees AS (
-  SELECT br.rule_type, br.unit_price
+  SELECT br.charge_type, br.unit_price
   FROM billing_rules br
   WHERE br.owner_id = 1
-    AND br.valid_from <= '2026-04-01'
-    AND (br.valid_to IS NULL OR br.valid_to >= '2026-04-30')
+    AND br.effective_from <= '2026-04-01'
+    AND (br.effective_to IS NULL OR br.effective_to >= '2026-04-30')
 )
 SELECT
-  SUM(CASE WHEN rule_type = '保管料' THEN 200 * unit_price ELSE 0 END) AS storage_fee,
-  SUM(CASE WHEN rule_type = '入庫料' THEN 300 * unit_price ELSE 0 END) AS inbound_fee,
-  SUM(CASE WHEN rule_type = '出庫料' THEN 250 * unit_price ELSE 0 END) AS outbound_fee,
-  SUM(CASE WHEN rule_type = '保管料' THEN 200 * unit_price ELSE 0 END)
-  + SUM(CASE WHEN rule_type = '入庫料' THEN 300 * unit_price ELSE 0 END)
-  + SUM(CASE WHEN rule_type = '出庫料' THEN 250 * unit_price ELSE 0 END) AS total
+  SUM(CASE WHEN charge_type = '保管料' THEN 200 * unit_price ELSE 0 END) AS storage_fee,
+  SUM(CASE WHEN charge_type = '入庫料' THEN 300 * unit_price ELSE 0 END) AS inbound_fee,
+  SUM(CASE WHEN charge_type = '出庫料' THEN 250 * unit_price ELSE 0 END) AS outbound_fee,
+  SUM(CASE WHEN charge_type = '保管料' THEN 200 * unit_price ELSE 0 END)
+  + SUM(CASE WHEN charge_type = '入庫料' THEN 300 * unit_price ELSE 0 END)
+  + SUM(CASE WHEN charge_type = '出庫料' THEN 250 * unit_price ELSE 0 END) AS total
 FROM monthly_fees;
 ```
 
@@ -314,13 +313,13 @@ FROM monthly_fees;
 
 ---
 
-### CA-1-08: 有効期間境界値（valid_from / valid_to）
+### CA-1-08: 有効期間境界値（effective_from / effective_to）
 
 **目的**：ルールの有効期間外（期間前・期間後）は適用されないこと。
 
 **前提データ**:
 ```sql
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from, valid_to)
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from, effective_to)
 VALUES (1, 'その他', 'monthly', 'case', 100.00, '2026-04-01', '2026-04-30');
 -- 2026/4月のみ有効なルール
 ```
@@ -330,25 +329,25 @@ VALUES (1, 'その他', 'monthly', 'case', 100.00, '2026-04-01', '2026-04-30');
 -- パターン1: 有効期間内（4/15）→ 1件ヒットすること
 SELECT COUNT(*) AS hit_count
 FROM billing_rules
-WHERE owner_id = 1 AND rule_type = 'その他'
-  AND valid_from <= '2026-04-15'
-  AND (valid_to IS NULL OR valid_to >= '2026-04-15');
+WHERE owner_id = 1 AND charge_type = 'その他'
+  AND effective_from <= '2026-04-15'
+  AND (effective_to IS NULL OR effective_to >= '2026-04-15');
 -- 期待値: hit_count = 1
 
 -- パターン2: 有効期間前（3/31）→ 0件（適用なし）
 SELECT COUNT(*) AS hit_count
 FROM billing_rules
-WHERE owner_id = 1 AND rule_type = 'その他'
-  AND valid_from <= '2026-03-31'
-  AND (valid_to IS NULL OR valid_to >= '2026-03-31');
+WHERE owner_id = 1 AND charge_type = 'その他'
+  AND effective_from <= '2026-03-31'
+  AND (effective_to IS NULL OR effective_to >= '2026-03-31');
 -- 期待値: hit_count = 0
 
 -- パターン3: 有効期間後（5/1）→ 0件（適用なし）
 SELECT COUNT(*) AS hit_count
 FROM billing_rules
-WHERE owner_id = 1 AND rule_type = 'その他'
-  AND valid_from <= '2026-05-01'
-  AND (valid_to IS NULL OR valid_to >= '2026-05-01');
+WHERE owner_id = 1 AND charge_type = 'その他'
+  AND effective_from <= '2026-05-01'
+  AND (effective_to IS NULL OR effective_to >= '2026-05-01');
 -- 期待値: hit_count = 0
 ```
 
@@ -394,12 +393,12 @@ GROUP BY owner_id;
 **前提データ**:
 ```sql
 -- 旧ルール（〜4/30）
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from, valid_to)
-VALUES (2, '保管料', '2-period', 'case', 80.00, '2026-01-01', '2026-04-30');
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from, effective_to)
+VALUES (2, '保管料', 'monthly', 'case', 80.00, '2026-01-01', '2026-04-30');
 
 -- 新ルール（5/1〜）
-INSERT INTO billing_rules (owner_id, rule_type, period_type, unit, unit_price, valid_from)
-VALUES (2, '保管料', '2-period', 'case', 90.00, '2026-05-01');
+INSERT INTO billing_rules (owner_id, charge_type, period_type, unit, unit_price, effective_from)
+VALUES (2, '保管料', 'monthly', 'case', 90.00, '2026-05-01');
 ```
 
 **テスト手順**:
@@ -407,31 +406,31 @@ VALUES (2, '保管料', '2-period', 'case', 90.00, '2026-05-01');
 -- 切替前（4/30）: 旧ルール(80円)が1件のみヒット
 SELECT unit_price
 FROM billing_rules
-WHERE owner_id = 2 AND rule_type = '保管料'
-  AND valid_from <= '2026-04-30'
-  AND (valid_to IS NULL OR valid_to >= '2026-04-30');
+WHERE owner_id = 2 AND charge_type = '保管料'
+  AND effective_from <= '2026-04-30'
+  AND (effective_to IS NULL OR effective_to >= '2026-04-30');
 -- 期待値: unit_price = 80.00 (1行)
 
 -- 切替後（5/1）: 新ルール(90円)が1件のみヒット
 SELECT unit_price
 FROM billing_rules
-WHERE owner_id = 2 AND rule_type = '保管料'
-  AND valid_from <= '2026-05-01'
-  AND (valid_to IS NULL OR valid_to >= '2026-05-01');
+WHERE owner_id = 2 AND charge_type = '保管料'
+  AND effective_from <= '2026-05-01'
+  AND (effective_to IS NULL OR effective_to >= '2026-05-01');
 -- 期待値: unit_price = 90.00 (1行)
 
--- オーバーラップ確認（同一 owner / rule_type で有効期間が重複していないこと）
+-- オーバーラップ確認（同一 owner / charge_type で有効期間が重複していないこと）
 SELECT
-  a.id AS rule_a, a.unit_price AS price_a, a.valid_from AS from_a, a.valid_to AS to_a,
-  b.id AS rule_b, b.unit_price AS price_b, b.valid_from AS from_b, b.valid_to AS to_b
+  a.id AS rule_a, a.unit_price AS price_a, a.effective_from AS from_a, a.effective_to AS to_a,
+  b.id AS rule_b, b.unit_price AS price_b, b.effective_from AS from_b, b.effective_to AS to_b
 FROM billing_rules a
 JOIN billing_rules b
   ON a.owner_id = b.owner_id
-  AND a.rule_type = b.rule_type
+  AND a.charge_type = b.charge_type
   AND a.id < b.id
-  AND a.valid_from <= COALESCE(b.valid_to, '9999-12-31')
-  AND b.valid_from <= COALESCE(a.valid_to, '9999-12-31')
-WHERE a.owner_id = 2 AND a.rule_type = '保管料';
+  AND a.effective_from <= COALESCE(b.effective_to, '9999-12-31')
+  AND b.effective_from <= COALESCE(a.effective_to, '9999-12-31')
+WHERE a.owner_id = 2 AND a.charge_type = '保管料';
 -- 期待値: 0行（オーバーラップなし）
 ```
 
@@ -683,7 +682,7 @@ FROM mock_multi_location;
 
 ## 実装時の注意事項
 
-1. **billing_rules のオーバーラップ防止**：同一 `owner_id + rule_type` で有効期間が重複するルールを INSERT/UPDATE しようとした場合はアプリ側でバリデーションが必要（DB制約のみでは防げない）。
+1. **billing_rules のオーバーラップ防止**：同一 `owner_id + charge_type` で有効期間が重複するルールを INSERT/UPDATE しようとした場合はアプリ側でバリデーションが必要（DB制約のみでは防げない）。
 
 2. **unit_cost の精度**：移動平均は ROUND(..., 4) で4桁まで保持し、表示時に2桁に丸める。小数誤差が積み重なるため、評価額合計では SUM(qty * unit_cost) で計算すること（unit_cost を先に丸めてから掛け算しない）。
 
