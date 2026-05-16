@@ -262,4 +262,89 @@ Step 5: 充足判定
 
 ---
 
-*最終更新: 2026-05-16 / Phase 9-BF2 さーちゃん（id=5）*
+## 9. QA確定事項（Phase 9-REFLECT2-B）
+
+> 3号ヒアリング QA-1〜16 の確定内容をここに反映（2026-05-16）
+
+### QA-3: 配送振分ロジック（確定）
+
+配送先の振分は以下の優先順位で判定する。
+
+| 優先順位 | 判定ソース | 説明 |
+|---------|-----------|------|
+| 1位 | 取引先マスタ `region_code` | 取引先ごとに固定の方面コードが登録されている場合は最優先で使用 |
+| 2位 | 郵便番号7桁 → 方面マップ | `region_code` が未設定の場合、郵便番号7桁でマップ検索して方面を決定 |
+
+#### 方面マップの管理ルール
+
+- 方面マップテーブル（`delivery_region_map`）は**年1回更新**
+- 更新タイミング：毎年4月（運送会社エリア改定に合わせる）
+- 更新は管理者権限で直接テーブル更新（画面は Phase 12 マスタ管理で実装）
+- 郵便番号7桁で完全一致→なければ上3桁（市区町村）で広域マッチ
+
+#### 取引先マスタへの追加カラム
+
+```sql
+-- owners または shipment_partners テーブル（設計確定後に反映）
+ALTER TABLE shipment_partners ADD COLUMN region_code TEXT;
+-- region_code が NULL の場合は postal_code 7桁で方面マップ検索にフォールバック
+```
+
+---
+
+### QA-6: 補充発火タイミング・強制補充フロー（確定）
+
+#### 補充発火タイミングは選択制
+
+`replenishment_trigger_master`（補充ルールテーブル）で荷主ごとに設定する。
+
+| 発火タイミング | 説明 |
+|--------------|------|
+| `manual` | 手動指示のみ（担当者が明示的に補充指示を出す） |
+| `time` | 時間トリガー（例：毎日7:00にバラ在庫チェック→閾値以下なら補充指示） |
+| `process` | 工程順トリガー（引当処理を実行した時点でバラ在庫不足を検出したら自動発火）|
+
+#### 補充ルールテーブル構造
+
+| カラム | 型 | 説明 |
+|--------|-----|------|
+| id | BIGSERIAL | PK |
+| owner_id | BIGINT | FK→owners |
+| sku_id | BIGINT | FK→skus（NULL=全SKU共通） |
+| trigger_type | TEXT | `manual` / `time` / `process` |
+| trigger_time | TIME | trigger_type='time' の場合の発火時刻 |
+| min_qty | NUMERIC | 補充発火閾値（バラ在庫がこの数量以下で発火） |
+| replenish_qty | NUMERIC | 補充量（発火時にこの数量を補充指示する） |
+| source_location | TEXT | 補充元ロケーション指定（NULL=自動選択） |
+| active | BOOLEAN | DEFAULT true |
+
+#### デフォルト：引当時バラ在庫不足→強制補充→再引当フロー
+
+`trigger_type = 'process'` がデフォルト。引当処理（`allocate_inventory`）内で以下フローを実行する：
+
+```
+Step 3（在庫取得）で available=0 または quantity不足 を検出
+  ↓
+replenishment_trigger_master で該当ルール検索
+  ↓
+ルールあり → 補充指示（replenishment_orders）INSERT
+  ↓
+補充完了待ち（非同期：補充担当者がHTで補充作業）
+  ↓
+補充完了後、再引当（allocate_inventory 再実行）
+  ↓
+引当完了
+```
+
+#### 補充+ピッキング同時出力モード（オプション）
+
+「補充済み前提の引当完了オプション」として実装。補充が完了している前提で引当を確定し、ピッキング指示と補充指示を同時出力する。
+
+- `owners.replenish_pick_concurrent = true` の場合に有効
+- 補充が未完了でもピッキング指示が先行発行される
+- 補充担当者とピッキング担当者が並行作業することでリードタイム短縮
+- 補充失敗時のロールバック処理は `deallocate_inventory` で対応
+
+---
+
+*最終更新: 2026-05-16 / Phase 9-REFLECT2-B にーちゃん（id=7）*
