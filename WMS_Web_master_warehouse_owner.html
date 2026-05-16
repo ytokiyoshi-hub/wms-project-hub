@@ -668,7 +668,8 @@
                 <tr>
                   <th style="width:90px;">倉庫コード</th>
                   <th>倉庫名</th>
-                  <th>運営会社</th>
+                  <th style="width:100px;">運営区分</th>
+                  <th>運営会社・委託先</th>
                   <th>住所</th>
                   <th>電話</th>
                   <th class="center" style="width:80px;">操作</th>
@@ -678,6 +679,7 @@
                 <tr>
                   <td class="num">WH001</td>
                   <td>東京DC</td>
+                  <td><span class="pill accent">自社</span></td>
                   <td>XX物流株式会社</td>
                   <td>東京都江東区青海1-1-1</td>
                   <td class="num">03-XXXX-XXXX</td>
@@ -686,6 +688,7 @@
                 <tr>
                   <td class="num">WH002</td>
                   <td>大阪DC</td>
+                  <td><span class="pill accent">自社</span></td>
                   <td>XX物流株式会社</td>
                   <td>大阪府大阪市住之江区南港北2-1-10</td>
                   <td class="num">06-XXXX-XXXX</td>
@@ -694,9 +697,28 @@
                 <tr>
                   <td class="num">WH003</td>
                   <td>名古屋DC</td>
+                  <td><span class="pill accent">自社</span></td>
                   <td>XX物流株式会社</td>
                   <td>愛知県名古屋市港区本宮町1-2-3</td>
                   <td class="num">052-XXXX-XXXX</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">YU001</td>
+                  <td>湯島外部倉庫</td>
+                  <td><span class="pill">外部委託</span></td>
+                  <td>湯島倉庫株式会社</td>
+                  <td>東京都文京区湯島3-1-1</td>
+                  <td class="num">03-YYYY-YYYY</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">TK001</td>
+                  <td>東神奈川外部倉庫</td>
+                  <td><span class="pill">外部委託</span></td>
+                  <td>東神奈川ロジスティクス株式会社</td>
+                  <td>神奈川県横浜市神奈川区青木町3-5</td>
+                  <td class="num">045-ZZZZ-ZZZZ</td>
                   <td class="center"><button class="btn sm">編集</button></td>
                 </tr>
               </tbody>
@@ -769,8 +791,30 @@
                   <input value="東京DC">
                 </div>
                 <div class="field">
+                  <label>運営区分<span class="required">*</span></label>
+                  <select>
+                    <option selected>自社（WH___）</option>
+                    <option>外部委託（YU___）</option>
+                    <option>外部委託（TK___）</option>
+                    <option>外部委託（その他）</option>
+                  </select>
+                  <div class="hint">自社倉庫: WH___ / 外部委託: YU___ TK___ 等</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
                   <label>運営会社<span class="required">*</span></label>
                   <input value="XX物流株式会社">
+                </div>
+                <div class="field">
+                  <label>委託先名</label>
+                  <input value="" placeholder="外部委託の場合のみ入力">
+                  <div class="hint">外部委託の場合、実際の運営事業者名を記入</div>
+                </div>
+                <div class="field">
+                  <label>支払単価（円/パレット/月）</label>
+                  <input type="number" value="" placeholder="例：3500">
+                  <div class="hint">外部委託の場合の保管料支払単価</div>
                 </div>
               </div>
               <div class="form-row">
