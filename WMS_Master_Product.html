@@ -144,7 +144,7 @@
 
         <div class="search-bar">
           <div class="form-row">
-            <div class="field"><label>商品コード／荷主商品コード</label><input type="text" placeholder="S-00321、全枝番横断（R-2）"></div>
+            <div class="field"><label>商品コード／荷主商品コード</label><input type="text" placeholder="例：S-00321"></div>
             <div class="field"><label>商品名</label><input type="text" placeholder="部分一致"></div>
             <div class="field"><label>温度帯</label>
               <select><option>すべて</option><option>常温</option><option>冷蔵</option><option>冷凍</option></select>
@@ -152,6 +152,10 @@
             <div class="field"><label>状態</label>
               <select><option>すべて</option><option selected>有効</option><option>無効</option></select>
             </div>
+          </div>
+          <div class="check-row" style="margin-top:6px;">
+            <input type="checkbox" id="cross-branch" checked>
+            <label for="cross-branch" style="font-size:12px; color:var(--c-text-sub);">全枝番横断検索（R-2）：基本番号で検索すると全枝番（-02, -03…）を含めて表示</label>
           </div>
           <div class="actions">
             <span class="stats">表示中　<b>5件</b>　/　全142件</span>
@@ -169,6 +173,7 @@
             <thead>
               <tr>
                 <th style="width:110px;">商品コード</th>
+                <th class="center" style="width:55px;">枝番</th>
                 <th>商品名</th>
                 <th class="center" style="width:70px;">温度帯</th>
                 <th class="center" style="width:70px;">賞味期限</th>
@@ -177,12 +182,13 @@
                 <th class="right" style="width:80px;">ボール入数</th>
                 <th class="center" style="width:70px;">バラ管理</th>
                 <th class="center" style="width:70px;">状態</th>
-                <th class="center" style="width:60px;">操作</th>
+                <th class="center" style="width:90px;">操作</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="num">S-00321</td>
+                <td class="center"><span class="pill" style="font-family:var(--f-mono);">-01</span></td>
                 <td>マルキしょうゆ 1L×12</td>
                 <td class="center"><span class="pill">常温</span></td>
                 <td class="center">○</td>
@@ -191,10 +197,14 @@
                 <td class="right num">2</td>
                 <td class="center"><span class="pill accent">○</span></td>
                 <td class="center"><span class="pill accent">有効</span></td>
-                <td class="center"><button class="btn sm" onclick="openEditModal('S-00321')">編集</button></td>
+                <td class="center" style="display:flex;gap:4px;justify-content:center;">
+                  <button class="btn sm" onclick="openEditModal('S-00321')">編集</button>
+                  <button class="btn sm" style="background:var(--c-accent-lt);color:var(--c-accent);border-color:var(--c-accent);" onclick="openVersionHistory('S-00321')">版履歴</button>
+                </td>
               </tr>
               <tr>
                 <td class="num">S-00322</td>
+                <td class="center"><span class="pill" style="font-family:var(--f-mono);">-01</span></td>
                 <td>マルキみりん 500ml×20</td>
                 <td class="center"><span class="pill">常温</span></td>
                 <td class="center">○</td>
@@ -203,10 +213,14 @@
                 <td class="right num">4</td>
                 <td class="center"><span class="pill accent">○</span></td>
                 <td class="center"><span class="pill accent">有効</span></td>
-                <td class="center"><button class="btn sm" onclick="openEditModal('S-00322')">編集</button></td>
+                <td class="center" style="display:flex;gap:4px;justify-content:center;">
+                  <button class="btn sm" onclick="openEditModal('S-00322')">編集</button>
+                  <button class="btn sm" style="background:var(--c-accent-lt);color:var(--c-accent);border-color:var(--c-accent);" onclick="openVersionHistory('S-00322')">版履歴</button>
+                </td>
               </tr>
-              <tr>
+              <tr style="background:#fffbf0;">
                 <td class="num">S-00321-02</td>
+                <td class="center"><span class="pill accent" style="font-family:var(--f-mono);">-02</span></td>
                 <td>マルキしょうゆ 1L×12（ラベル改版）</td>
                 <td class="center"><span class="pill">常温</span></td>
                 <td class="center">○</td>
@@ -215,10 +229,14 @@
                 <td class="right num">2</td>
                 <td class="center"><span class="pill accent">○</span></td>
                 <td class="center"><span class="pill accent">有効</span></td>
-                <td class="center"><button class="btn sm" onclick="openEditModal('S-00321-02')">編集</button></td>
+                <td class="center" style="display:flex;gap:4px;justify-content:center;">
+                  <button class="btn sm" onclick="openEditModal('S-00321-02')">編集</button>
+                  <button class="btn sm" style="background:var(--c-accent-lt);color:var(--c-accent);border-color:var(--c-accent);" onclick="openVersionHistory('S-00321-02')">版履歴</button>
+                </td>
               </tr>
               <tr>
                 <td class="num">S-00501</td>
+                <td class="center"><span class="pill" style="font-family:var(--f-mono);">-01</span></td>
                 <td>冷凍餃子 300g×10</td>
                 <td class="center"><span class="pill frozen">冷凍</span></td>
                 <td class="center">○</td>
@@ -227,10 +245,14 @@
                 <td class="right num">2</td>
                 <td class="center">-</td>
                 <td class="center"><span class="pill accent">有効</span></td>
-                <td class="center"><button class="btn sm" onclick="openEditModal('S-00501')">編集</button></td>
+                <td class="center" style="display:flex;gap:4px;justify-content:center;">
+                  <button class="btn sm" onclick="openEditModal('S-00501')">編集</button>
+                  <button class="btn sm" style="background:var(--c-accent-lt);color:var(--c-accent);border-color:var(--c-accent);" onclick="openVersionHistory('S-00501')">版履歴</button>
+                </td>
               </tr>
               <tr>
                 <td class="num">S-00601</td>
+                <td class="center"><span class="pill" style="font-family:var(--f-mono);">-01</span></td>
                 <td>チルドプリン 6P×8</td>
                 <td class="center"><span class="pill cold">冷蔵</span></td>
                 <td class="center">○</td>
@@ -239,7 +261,10 @@
                 <td class="right num">1</td>
                 <td class="center"><span class="pill accent">○</span></td>
                 <td class="center"><span class="pill accent">有効</span></td>
-                <td class="center"><button class="btn sm" onclick="openEditModal('S-00601')">編集</button></td>
+                <td class="center" style="display:flex;gap:4px;justify-content:center;">
+                  <button class="btn sm" onclick="openEditModal('S-00601')">編集</button>
+                  <button class="btn sm" style="background:var(--c-accent-lt);color:var(--c-accent);border-color:var(--c-accent);" onclick="openVersionHistory('S-00601')">版履歴</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -419,6 +444,76 @@
     el.classList.add('active');
     document.getElementById('tab-'+id).classList.add('active');
   }
+
+  /* ── 版履歴モーダル（R-4 リネームせず保持） ── */
+  const VERSION_DB = {
+    'S-00321': [
+      { code:'S-00321',    branch:'-01', name:'マルキしょうゆ 1L×12',           registeredAt:'2024-04-01', note:'初版',       status:'有効' },
+      { code:'S-00321-02', branch:'-02', name:'マルキしょうゆ 1L×12（ラベル改版）', registeredAt:'2025-09-15', note:'ラベル変更', status:'有効' },
+    ],
+    'S-00321-02': 'S-00321',
+    'S-00322': [
+      { code:'S-00322', branch:'-01', name:'マルキみりん 500ml×20', registeredAt:'2024-04-01', note:'初版', status:'有効' },
+    ],
+    'S-00501': [
+      { code:'S-00501', branch:'-01', name:'冷凍餃子 300g×10', registeredAt:'2024-06-10', note:'初版', status:'有効' },
+    ],
+    'S-00601': [
+      { code:'S-00601', branch:'-01', name:'チルドプリン 6P×8', registeredAt:'2024-08-20', note:'初版', status:'有効' },
+    ],
+  };
+
+  function openVersionHistory(code) {
+    let versions = VERSION_DB[code];
+    if (typeof versions === 'string') versions = VERSION_DB[versions];
+    if (!versions) { alert('版履歴データなし: '+code); return; }
+    const baseCode = versions[0].code.replace(/-\d{2}$/, '');
+    document.getElementById('vh-title').textContent = '版履歴：' + baseCode;
+    document.getElementById('vh-body').innerHTML = `
+      <p style="font-size:12px;color:var(--c-text-sub);margin-bottom:12px;">
+        基本番号 <strong>${baseCode}</strong> の全枝番を表示。リネームせず保持（R-4）。
+      </p>
+      <table class="list">
+        <thead><tr>
+          <th style="width:130px;">商品コード</th>
+          <th class="center" style="width:55px;">枝番</th>
+          <th>商品名</th>
+          <th class="center" style="width:100px;">登録日</th>
+          <th>変更事由</th>
+          <th class="center" style="width:55px;">状態</th>
+        </tr></thead>
+        <tbody>
+          ${versions.map((v, i) => `
+            <tr ${i===versions.length-1 ? 'style="background:var(--c-accent-lt);"' : ''}>
+              <td class="num">${v.code}</td>
+              <td class="center"><span class="pill${i===versions.length-1?' accent':''}" style="font-family:var(--f-mono);">${v.branch}</span></td>
+              <td>${v.name}</td>
+              <td class="center" style="font-size:11px;">${v.registeredAt}</td>
+              <td style="font-size:12px;">${v.note}</td>
+              <td class="center"><span class="pill${v.status==='有効'?' accent':''}">${v.status}</span></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:var(--c-text-mute);margin-top:10px;">
+        ※ ハイライト行が最新版。旧版は削除せず在庫・取引履歴の参照用に保持される。
+      </p>`;
+    document.getElementById('vh-overlay').classList.add('open');
+  }
+  function closeVersionHistory() { document.getElementById('vh-overlay').classList.remove('open'); }
 </script>
+
+<!-- 版履歴モーダル -->
+<div class="modal-overlay" id="vh-overlay" onclick="if(event.target===this)closeVersionHistory()" style="position:fixed;">
+  <div class="modal-box" style="max-width:820px;">
+    <div class="modal-header">
+      <h2 id="vh-title">版履歴</h2>
+      <button class="close-btn" onclick="closeVersionHistory()">✕</button>
+    </div>
+    <div class="modal-body" id="vh-body" style="max-height:480px;"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeVersionHistory()">閉じる</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
