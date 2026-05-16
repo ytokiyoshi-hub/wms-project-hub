@@ -648,6 +648,46 @@ CREATE POLICY owners_wms_admin_write ON owners FOR ALL
 
 ---
 
+### QA-9（再確定）：調整理由コードはマスタ管理・選択式
+
+**確定：方式B（選択式コード）2026-05-17 再確定**
+
+在庫調整の理由入力は「調整理由コード（選択式）」を採用する。
+
+- `adjustment_reason_codes` テーブルを新規作成・工程12 マスタ管理画面で運用
+- デフォルト項目（破損／紛失／数え誤り／盗難 等）を事前登録
+- マスタ画面で荷主管理者が追加・変更可能（`is_active` で非表示も可）
+- 荷主共通コード（`owner_id = NULL`）と荷主固有コード（`owner_id` 指定）の両方をサポート
+- コード選択に加えて補足欄（フリーテキスト・任意）を `inventory_adjustments.supplement_note` に格納
+
+```sql
+CREATE TABLE adjustment_reason_codes (
+  id          BIGSERIAL PRIMARY KEY,
+  owner_id    BIGINT REFERENCES owners(id),      -- NULL の場合は全荷主共通
+  code        TEXT NOT NULL,                      -- 例: 'damage', 'loss', 'miscount'
+  label       TEXT NOT NULL,                      -- 表示名：破損／紛失／数え誤り 等
+  is_active   BOOLEAN NOT NULL DEFAULT true,
+  sort_order  INT NOT NULL DEFAULT 0,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (owner_id, code)
+);
+
+-- デフォルトデータ（owner_id = NULL = 全荷主共通）
+INSERT INTO adjustment_reason_codes (owner_id, code, label, sort_order) VALUES
+  (NULL, 'damage',    '破損',       1),
+  (NULL, 'loss',      '紛失',       2),
+  (NULL, 'miscount',  '数え誤り',   3),
+  (NULL, 'theft',     '盗難',       4),
+  (NULL, 'expiry',    '期限切れ',   5),
+  (NULL, 'error_in',  '誤入庫',     6),
+  (NULL, 'error_out', '誤出庫',     7),
+  (NULL, 'other',     'その他',     99);
+```
+
+※ 経緯：3号ヒアリング（2026-05-16）では方式A（コードなし・備考欄のみ）で確定。実装フェーズ（2026-05-17）で時吉さんが方式B（選択式コード）に再確定。wms-impl 2号プロトは方式B で実装済み。
+
+---
+
 ### QA-16：時給情報等のロール別表示は権限マスターで設定可能
 
 **確定：権限マスターで設定**
@@ -664,4 +704,5 @@ CREATE POLICY owners_wms_admin_write ON owners FOR ALL
 *最終更新：2026-05-09 / Phase 9-β さーちゃん（工程12 マスタ管理論点叩き台）*  
 *プレースホルダ追加：2026-05-16 / Phase 9-DOC-PREP さーちゃん（#913）*  
 *Q12-1 確定反映：2026-05-16 / Phase 9-REFLECT-Q12 さーちゃん（#916）*  
+*QA-9 方式B 再確定反映：2026-05-17 / Phase 9-V-FIX-R5 さーちゃん（#931）*  
 *QA確定事項追記：2026-05-16 / Phase 9-REFLECT2-D にーちゃん（#925）*

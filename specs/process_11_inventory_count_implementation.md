@@ -104,13 +104,14 @@ WHERE d.session_id = ?;
 |------|------|
 | 機能 | 確定した差異を在庫に反映する。**独立機能 `inventory_adjustments` として設計**（棚卸しセッションだけでなく日常的な在庫調整にも使用可能） |
 | 承認フロー | **荷主承認フロー**：申請（倉庫スタッフ）→ 荷主承認 → 倉庫実行（AU-1 との整合） |
-| 理由バリデーション | **理由（`adjustment_reason`）記載を必須**とする（コード分類は不要・備考欄形式で自由記述） |
+| 理由バリデーション | **調整理由コード（`adjustment_reason_code_id`）の選択を必須**とする。コードは `adjustment_reason_codes` マスタから選択（デフォルト：破損／紛失／数え誤り／盗難 等）。補足欄（`supplement_note` フリーテキスト）をオプションで併設。（QA-9 再確定 2026-05-17） |
 | 出力 | `inventory_adjustments` テーブルに記録 / `inventory.quantity` 更新 / `inventory_movements` に履歴（type='adjustment'） |
 | 致命傷ライン | DB-1 / AU-1 |
 | 9割突っ走り部分 | 承認画面 UI |
 | 完璧に詰める部分 | 監査証跡（誰が・いつ・何を補正したか）・荷主への報告書面 |
 
-> **QA-9 確定（3号ヒアリング 2026-05-16）：** 棚卸し差異対応は調整理由コードなし（備考欄のみ）を基本とするが、在庫調整機能として荷主承認と理由明記を必須要件として追加する。独立機能 `inventory_adjustments` として設計。
+> **QA-9 再確定（2026-05-17）：** 在庫調整の理由入力は「調整理由コード（選択式）」を採用する。コードは `adjustment_reason_codes` マスタで管理し、デフォルト項目（破損／紛失／数え誤り／盗難 等）を事前登録。マスタ画面で追加・変更可能。コード選択に加えて補足欄（フリーテキスト）を併設。荷主承認と理由コード選択を必須とする。独立機能 `inventory_adjustments` として設計。
+> ※ 経緯：3号ヒアリング（2026-05-16）では方式A（コードなし・備考欄のみ）で確定。実装フェーズ（2026-05-17）で時吉さんが方式B（選択式コード）に再確定。
 
 ```sql
 -- 在庫調整テーブル（QA-9 確定設計）
@@ -121,7 +122,8 @@ CREATE TABLE inventory_adjustments (
   owner_id                  UUID NOT NULL REFERENCES owners(id),
   qty_before                NUMERIC NOT NULL,
   qty_after                 NUMERIC NOT NULL,
-  adjustment_reason         TEXT NOT NULL,   -- 理由必須バリデーション（自由記述）
+  adjustment_reason_code_id BIGINT NOT NULL REFERENCES adjustment_reason_codes(id),  -- 理由コード選択必須（QA-9 方式B）
+  supplement_note           TEXT,                                                      -- 補足欄（フリーテキスト・任意）
   status                    TEXT NOT NULL DEFAULT 'pending'
                               CHECK (status IN ('pending', 'approved', 'rejected', 'executed')),
   requested_by              UUID NOT NULL REFERENCES users(id),  -- 申請者（倉庫スタッフ）
@@ -182,7 +184,7 @@ CREATE TABLE inventory_adjustments (
 | QA-4：循環棚卸の扱い | 別機能として設計・凍結なし・通常入出庫と並行運用 | F-1101-B |
 | QA-9：棚卸差異対応 | 独立機能 `inventory_adjustments` として設計 | F-1105 |
 | QA-9：差異調整の承認フロー | 申請（倉庫スタッフ）→ 荷主承認 → 倉庫実行 | F-1105 |
-| QA-9：調整理由 | 調整理由コード分類なし・備考欄への自由記述を必須 | F-1105 |
+| QA-9：調整理由（再確定 2026-05-17） | 調整理由コード（選択式）を必須・`adjustment_reason_codes` マスタ管理・補足欄（フリーテキスト）併設 | F-1105 |
 
 ---
 
@@ -194,4 +196,4 @@ CREATE TABLE inventory_adjustments (
 
 ---
 
-*最終更新: 2026-05-16 / Phase 9-REFLECT2-C さーちゃん（QA-4・QA-9 確定内容を反映）*
+*最終更新: 2026-05-17 / Phase 9-V-FIX-R5 さーちゃん（QA-9 方式B 再確定・調整理由コード選択式に変更）*
