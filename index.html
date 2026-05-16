@@ -583,7 +583,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
   <main class="main">
     <div class="topbar">
       <div class="crumb"><b id="crumb-current">ダッシュボード</b></div>
-      <div class="last-updated">最終更新：2026/05/07</div>
+      <div class="last-updated">最終更新：2026/05/16</div>
     </div>
 
     <div class="content">
@@ -654,9 +654,9 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
             <div class="marker"></div>
             <div class="body">
               <div class="title">フェーズ5：実装開発（Phase 9）</div>
-              <div class="desc">Stage 1 完了（DB-4/AU-1/AU-2）・Stage 2〜4 進行中。残営業日78日に対し実装38日想定で余裕あり</div>
+              <div class="desc">Stage 1・2 全完了（DB×5・AU×2）・Stage 3 BF-4完了/BF-2・3仕様完了・Stage 4 CA-1・LK-1完了。14項目中10件実装完了・4件部分実装（2026-05-16）</div>
             </div>
-            <div class="pct">35%</div>
+            <div class="pct">65%</div>
           </div>
         </div>
 
@@ -748,7 +748,38 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
       <!-- ============ 進捗詳細 ============ -->
       <div class="page" id="page-progress">
         <div class="page-title">進捗詳細</div>
-        <div class="page-subtitle">マスタ管理工程の詳細進捗とドキュメント反映状況</div>
+        <div class="page-subtitle">Phase 9 実装状況と工程レビュー詳細進捗</div>
+
+        <div class="section-title">Phase 9 実装状況（2026-05-16 時点・14項目）</div>
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-h">
+            <span>Stage 別実装進捗</span>
+            <span class="meta">✅ 10件 完了 / 🟡 4件 部分実装 / ❌ 0件 未着手（memo #213 + 直近完了タスク反映）</span>
+          </div>
+          <div class="card-b" style="padding:0;">
+            <table class="tbl">
+              <thead>
+                <tr><th>Stage</th><th>ID</th><th>項目</th><th>状態</th><th>根拠タスク</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="id">Stage 1</td><td class="id">DB-4</td><td>荷主切替 owner_id RLS</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#370 / #828</td></tr>
+                <tr><td class="id">Stage 1</td><td class="id">AU-1</td><td>users / user_owners + RLS</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#818</td></tr>
+                <tr><td class="id">Stage 1</td><td class="id">AU-2</td><td>skus テーブル補完（jan_code・unit）</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#875</td></tr>
+                <tr><td class="id">Stage 2</td><td class="id">DB-5</td><td>warehouses テーブル + locations FK</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#876</td></tr>
+                <tr><td class="id">Stage 2</td><td class="id">DB-1</td><td>inventory 4軸 + owners.fragments</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#877</td></tr>
+                <tr><td class="id">Stage 2</td><td class="id">DB-2</td><td>lots.lot_attributes 追加</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#878</td></tr>
+                <tr><td class="id">Stage 2</td><td class="id">DB-3</td><td>serials.serial_required 確認</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#878</td></tr>
+                <tr><td class="id">Stage 3</td><td class="id">BF-2</td><td>引当ロジック（FIFO/LIFO/ロケ優先）</td><td><span class="pill pill-warning">🟡 仕様完了・実装未</span></td><td class="num">#873</td></tr>
+                <tr><td class="id">Stage 3</td><td class="id">BF-3</td><td>ピッキング方式（ウェーブ生成）</td><td><span class="pill pill-warning">🟡 仕様完了・実装未</span></td><td class="num">#880</td></tr>
+                <tr><td class="id">Stage 3</td><td class="id">BF-4</td><td>返品・誤出荷ステータス管理</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#882</td></tr>
+                <tr><td class="id">Stage 4</td><td class="id">CA-1</td><td>billing_rules + 月次バッチ請求書</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#883</td></tr>
+                <tr><td class="id">Stage 4</td><td class="id">CA-2</td><td>原価評価 移動平均</td><td><span class="pill pill-warning">🟡 部分実装</span></td><td class="num">—</td></tr>
+                <tr><td class="id">Stage 4</td><td class="id">LK-1</td><td>外部連携 connectors テーブル</td><td><span class="pill pill-success">✅ 完了</span></td><td class="num">#881</td></tr>
+                <tr><td class="id">Stage 4</td><td class="id">LK-2</td><td>HT バーコード判定ロジック</td><td><span class="pill pill-warning">🟡 部分実装</span></td><td class="num">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         <div class="section-title">マスタ管理：10マスタの状況</div>
         <div class="card" style="margin-bottom:24px;">
