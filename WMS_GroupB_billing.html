@@ -147,6 +147,17 @@
   .reconcile-row.match td { background:#e6f4ea; }
   .reconcile-row.diff td { background:var(--c-alert-lt); }
   .reconcile-row .diff-amount { font-weight:600; color:var(--c-alert); font-family:var(--f-mono); }
+
+  /* スナップショット確定・変更不可 */
+  .locked-bar { display:flex; align-items:center; gap:10px; background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:9px 14px; font-size:12px; color:var(--c-text); margin-bottom:14px; line-height:1.5; }
+  .locked-bar .lock-label { font-weight:700; color:var(--c-accent); white-space:nowrap; }
+  .badge-locked { display:inline-flex; align-items:center; gap:4px; background:var(--c-accent); color:#fff; font-size:11px; font-weight:600; padding:2px 10px; white-space:nowrap; }
+  .badge-issued { display:inline-flex; align-items:center; background:#e6f4ea; border:1px solid #2e7d32; color:#2e7d32; font-size:11px; font-weight:600; padding:2px 10px; white-space:nowrap; }
+  .btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+  /* 端数処理バッジ */
+  .rounding-badge { display:inline-block; font-size:10px; font-weight:500; padding:1px 6px; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); font-family:var(--f-mono); }
+  .rounding-badge.default { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
 </style>
 </head>
 <body>
@@ -160,6 +171,7 @@
   <a href="#W-701"><b>W-701</b>請求書一覧</a>
   <a href="#W-702"><b>W-702</b>請求書詳細</a>
   <a href="#W-703"><b>W-703</b>請求実績</a>
+  <a href="#W-705"><b>W-705</b>請求ルール設定</a>
   <a href="#W-714"><b>W-714</b>委託先請求書突合</a>
 </div>
 
@@ -559,11 +571,18 @@
           <div class="tab">在庫明細書</div>
         </div>
 
-        <div style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px;">
+        <div class="locked-bar">
+          <span style="font-size:16px; flex-shrink:0;">🔒</span>
+          <span class="lock-label">スナップショット確定済 — 変更不可</span>
+          <span>在庫スナップショット（2026/04/30 23:59 確定）を使用して請求金額を計算済。発行後の編集は不可。誤りは翌月請求書に加減算（Q13-2）。</span>
+          <span class="badge-issued" style="margin-left:auto;">発行済</span>
+        </div>
+
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px; align-items:center;">
           <button class="btn sm">PDF出力</button>
           <button class="btn sm">CSV出力</button>
-          <button class="btn sm">プレビュー</button>
-          <button class="btn primary sm">発行</button>
+          <button class="btn sm" disabled>編集</button>
+          <button class="btn primary sm" disabled>再発行</button>
         </div>
 
         <div class="invoice-paper">
@@ -754,6 +773,212 @@
               <span>4/1</span><span>4/10</span><span>4/20</span><span>4/30</span>
             </div>
           </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-705 請求ルール設定 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-705">
+  <span class="num">W-705</span>請求ルール設定（荷主別 / 請求単位 · 端数処理）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：荷主ごとの請求単価・請求単位・端数処理方式を管理。<br>
+  <b>請求単位</b>（Q12-5確定）：<code>billing_rules.unit</code> を enum から <b>unit_master FK 参照</b>に変更。件 / ケース / ピース / パレット / 坪 / ㎡ / kg / hour 等を unit_master から選択。<br>
+  <b>端数処理</b>（Q13-1確定）：<b>荷主ごとに設定可・デフォルトは四捨五入</b>。切り捨て / 四捨五入（デフォルト）/ 切り上げ / 銀行家丸め の4択。月次バッチ計算時に参照。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/rules</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#">委託先請求書突合</a>
+        <a href="#" class="active">請求ルール設定</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　<b>請求ルール設定</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box" style="margin-bottom:14px;">
+          <div class="label">Q12-5 / Q13-1 確定仕様</div>
+          請求単位は <b>unit_master</b> から選択（enum 廃止）。端数処理は <b>荷主ごとに設定</b>・デフォルト <b>四捨五入</b>。
+          月次バッチ計算時に <code>rounding_method</code> カラムを参照して端数処理を適用。
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>荷主</label>
+              <select>
+                <option selected>MK001 マルキ食品</option>
+                <option>MK002 マルキ食品 EC</option>
+                <option>AL001 アルファ商事</option>
+              </select>
+            </div>
+            <div class="field"><label>料金種別</label>
+              <select><option>すべて</option><option>保管料</option><option>入庫料</option><option>出庫料</option></select>
+            </div>
+            <div class="field"><label>端数処理</label>
+              <select><option>すべて</option><option>四捨五入</option><option>切り捨て</option><option>切り上げ</option><option>銀行家丸め</option></select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">マルキ食品（MK001）　<b>4件</b></span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn primary sm">＋ ルール追加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span>請求ルール一覧 — MK001 マルキ食品</span>
+            <span class="meta">端数処理デフォルト：<span class="rounding-badge default">四捨五入</span></span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>料金種別</th>
+                  <th>請求単位<br><span style="font-size:10px; font-weight:400; color:var(--c-text-mute);">unit_master</span></th>
+                  <th class="right">単価（円）</th>
+                  <th>端数処理<br><span style="font-size:10px; font-weight:400; color:var(--c-text-mute);">rounding_method</span></th>
+                  <th>有効開始日</th>
+                  <th class="center" style="width:100px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>保管料</td>
+                  <td>
+                    <select style="font-size:12px; padding:3px 6px; border:1px solid var(--c-line-dk);">
+                      <option>パレット</option>
+                      <option>坪</option>
+                      <option>㎡</option>
+                      <option>ケース</option>
+                      <option>ピース</option>
+                    </select>
+                    <div style="font-size:10px; color:var(--c-text-mute); margin-top:2px;">unit_master.id=5</div>
+                  </td>
+                  <td class="right num">80</td>
+                  <td>
+                    <select style="font-size:12px; padding:3px 6px; border:1px solid var(--c-line-dk);">
+                      <option>切り捨て（floor）</option>
+                      <option selected>四捨五入（round）</option>
+                      <option>切り上げ（ceil）</option>
+                      <option>銀行家丸め（banker）</option>
+                    </select>
+                  </td>
+                  <td class="num">2026/04/01</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>入庫料</td>
+                  <td>
+                    <select style="font-size:12px; padding:3px 6px; border:1px solid var(--c-line-dk);">
+                      <option selected>件</option>
+                      <option>ケース</option>
+                      <option>パレット</option>
+                    </select>
+                    <div style="font-size:10px; color:var(--c-text-mute); margin-top:2px;">unit_master.id=1</div>
+                  </td>
+                  <td class="right num">200</td>
+                  <td>
+                    <select style="font-size:12px; padding:3px 6px; border:1px solid var(--c-line-dk);">
+                      <option>切り捨て（floor）</option>
+                      <option selected>四捨五入（round）</option>
+                      <option>切り上げ（ceil）</option>
+                      <option>銀行家丸め（banker）</option>
+                    </select>
+                  </td>
+                  <td class="num">2026/04/01</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>出庫料</td>
+                  <td>
+                    <select style="font-size:12px; padding:3px 6px; border:1px solid var(--c-line-dk);">
+                      <option selected>件</option>
+                      <option>ケース</option>
+                      <option>パレット</option>
+                    </select>
+                    <div style="font-size:10px; color:var(--c-text-mute); margin-top:2px;">unit_master.id=1</div>
+                  </td>
+                  <td class="right num">200</td>
+                  <td>
+                    <select style="font-size:12px; padding:3px 6px; border:1px solid var(--c-line-dk);">
+                      <option>切り捨て（floor）</option>
+                      <option selected>四捨五入（round）</option>
+                      <option>切り上げ（ceil）</option>
+                      <option>銀行家丸め（banker）</option>
+                    </select>
+                  </td>
+                  <td class="num">2026/04/01</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td>棚卸料</td>
+                  <td>
+                    <select style="font-size:12px; padding:3px 6px; border:1px solid var(--c-line-dk);">
+                      <option selected>回</option>
+                      <option>件</option>
+                      <option>hour</option>
+                    </select>
+                    <div style="font-size:10px; color:var(--c-text-mute); margin-top:2px;">unit_master.id=8</div>
+                  </td>
+                  <td class="right num">2,000</td>
+                  <td>
+                    <select style="font-size:12px; padding:3px 6px; border:1px solid var(--c-line-dk);">
+                      <option selected>切り捨て（floor）</option>
+                      <option>四捨五入（round）</option>
+                      <option>切り上げ（ceil）</option>
+                      <option>銀行家丸め（banker）</option>
+                    </select>
+                  </td>
+                  <td class="num">2026/04/01</td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box" style="margin-top:14px;">
+          <div class="label">端数処理の選択肢（rounding_method）</div>
+          <table style="width:100%; font-size:12px; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid var(--c-line);">
+              <td style="padding:4px 8px; font-family:var(--f-mono); font-weight:600;">floor</td>
+              <td style="padding:4px 8px;">切り捨て　例）123.7円 → 123円</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--c-line);">
+              <td style="padding:4px 8px; font-family:var(--f-mono); font-weight:600;">round <span class="rounding-badge default">デフォルト</span></td>
+              <td style="padding:4px 8px;">四捨五入　例）123.5円 → 124円</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--c-line);">
+              <td style="padding:4px 8px; font-family:var(--f-mono); font-weight:600;">ceil</td>
+              <td style="padding:4px 8px;">切り上げ　例）123.1円 → 124円</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 8px; font-family:var(--f-mono); font-weight:600;">banker</td>
+              <td style="padding:4px 8px;">銀行家丸め（偶数丸め）　例）123.5円 → 124円 / 124.5円 → 124円。PostgreSQL ROUND(numeric) で実装。</td>
+            </tr>
+          </table>
         </div>
 
       </div>
