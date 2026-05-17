@@ -97,7 +97,8 @@
 <div class="section-divider"><span class="num">W-503</span>取引先マスタ</div>
 <div class="desc">
   <b>役割</b>：出荷先となる取引先（得意先・店舗・営業所等）を管理する。同一法人の複数拠点は枝番（TP001-02等）で管理し履歴重視で保持（リネーム不可）。<br>
-  <b>方面自動判定</b>：住所の都道府県をもとに方面コードを自動付与（Q-2）。配送業者の自動振り分けに使用。
+  <b>方面自動判定</b>：住所の都道府県をもとに方面コードを自動付与（Q-2）。配送業者の自動振り分けに使用。<br>
+  <b>region_code 直接指定（QA-3）</b>：region_code を明示した場合、郵便番号7桁マップより優先して適用。未設定時は都道府県ベースの自動判定のみ。
 </div>
 
 <div class="pc-frame">
@@ -250,10 +251,11 @@
             </div>
           </div>
           <div class="form-section">
-            <h3>住所（方面自動判定に使用・Q-2）</h3>
+            <h3>住所・方面指定（Q-2 / QA-3）</h3>
             <div class="form-row">
               <div class="field"><label>郵便番号</label><input type="text" placeholder="000-0000" style="font-family:var(--f-mono);"></div>
               <div class="field"><label>都道府県<span class="required">*</span></label><select><option>東京都</option><option>神奈川県</option><option>大阪府</option><option>愛知県</option><option>福岡県</option></select></div>
+              <div class="field"><label>region_code</label><input type="text" placeholder="例：KANTO" style="font-family:var(--f-mono);"><span class="hint">任意。設定時は郵便番号7桁マップより優先（QA-3）</span></div>
               <div class="field"><label>方面（自動）</label><input type="text" value="KANTO" readonly style="background:#f0f2f5; font-family:var(--f-mono);"></div>
             </div>
             <div class="form-row">
