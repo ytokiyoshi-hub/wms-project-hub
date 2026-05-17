@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS ユーザー招待フロー（W-UI1）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-success:#1a7a3c; --c-success-lt:#e6f4ec;
+    --c-warn:#b85c00; --c-warn-lt:#fef3e2;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .flow-compare { max-width:1500px; margin:0 auto 32px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .flow-box { background:#353944; border:1px solid #4a4f5c; padding:16px 18px; }
+  .flow-box h3 { color:#fff; font-size:13px; font-weight:600; margin-bottom:10px; }
+  .flow-box .tag { display:inline-block; padding:2px 8px; font-size:10px; font-weight:600; border:1px solid; margin-bottom:10px; }
+  .flow-box .tag.std { border-color:#5b9bd5; color:#5b9bd5; }
+  .flow-box .tag.exc { border-color:#e07b39; color:#e07b39; }
+  .flow-step { display:flex; flex-direction:column; gap:4px; }
+  .flow-step .step { display:flex; align-items:flex-start; gap:8px; padding:6px 0; border-bottom:1px solid #4a4f5c; }
+  .flow-step .step:last-child { border-bottom:none; }
+  .flow-step .step-num { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; margin-top:2px; }
+  .flow-step .step-num.std { background:#1a3a5c; color:#fff; }
+  .flow-step .step-num.exc { background:#7a3500; color:#fff; }
+  .flow-step .step-body { flex:1; }
+  .flow-step .step-body .step-title { font-size:12px; font-weight:600; color:#fff; }
+  .flow-step .step-body .step-sub { font-size:11px; color:#a0a4ad; margin-top:2px; }
+  .flow-step .step-arrow { text-align:center; color:#5a5f6c; font-size:11px; padding:2px 0 2px 28px; }
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; margin-bottom:0; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .pc-frame .screen-label { background:#1a1c22; color:#6c7280; font-size:11px; padding:6px 12px 4px; font-family:var(--f-mono); }
+  .screen { background:var(--c-bg); height:800px; display:flex; overflow:hidden; position:relative; }
+  .screen.tall { height:900px; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); margin-bottom:14px; }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.success { background:var(--c-success); color:#fff; border-color:var(--c-success); }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.success { background:var(--c-success-lt); border-color:var(--c-success); color:var(--c-success); }
+  .pill.warn { background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn); }
+  .pill.pending { background:#fff9c4; border-color:#f0d060; color:#7a5f00; }
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+  .field input.filled { background:#f8f9ff; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .field .hint.warn { color:var(--c-warn); }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:12px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-warn-lt); border-left-color:var(--c-warn); }
+  .note-box.warn .label { color:var(--c-warn); }
+  .note-box.success { background:var(--c-success-lt); border-left-color:var(--c-success); }
+  .note-box.success .label { color:var(--c-success); }
+  .modal-overlay { position:absolute; inset:0; background:rgba(26,31,41,0.55); z-index:100; display:flex; align-items:flex-start; justify-content:center; padding:24px 20px; overflow-y:auto; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:560px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; }
+  .modal-header .tag-std { font-size:11px; color:#1a6ab8; background:#e3f2fd; border:1px solid #90caf9; padding:2px 8px; margin-left:8px; }
+  .modal-header .tag-exc { font-size:11px; color:#b85c00; background:#fef3e2; border:1px solid #ffcc80; padding:2px 8px; margin-left:8px; }
+  .modal-body { padding:18px; max-height:560px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+  .role-admin  { display:inline-block; padding:2px 10px; font-size:11px; font-weight:600; border-radius:2px; background:#c8e6c9; color:#1b5e20; }
+  .role-leader { display:inline-block; padding:2px 10px; font-size:11px; font-weight:600; border-radius:2px; background:#fff9c4; color:#f57f17; }
+  .role-worker { display:inline-block; padding:2px 10px; font-size:11px; font-weight:600; border-radius:2px; background:#e3f2fd; color:#0d47a1; }
+  .role-owner  { display:inline-block; padding:2px 10px; font-size:11px; font-weight:600; border-radius:2px; background:#f3e5f5; color:#4a148c; }
+  .invite-steps { display:flex; align-items:center; gap:0; margin-bottom:16px; }
+  .invite-steps .step { flex:1; padding:8px 14px; font-size:11px; font-weight:600; background:var(--c-bg); border:1px solid var(--c-line); color:var(--c-text-sub); text-align:center; }
+  .invite-steps .step.active { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .invite-steps .step.done { background:var(--c-success-lt); color:var(--c-success); border-color:var(--c-success); }
+  .invite-steps .arrow { color:var(--c-text-mute); padding:0 4px; font-size:13px; flex-shrink:0; }
+  .pw-reveal-box { background:#f8f9ff; border:1px solid var(--c-accent); padding:12px 14px; margin-top:10px; }
+  .pw-reveal-box .pw-label { font-size:10px; font-weight:600; color:var(--c-accent); margin-bottom:6px; }
+  .pw-reveal-box .pw-value { font-family:var(--f-mono); font-size:16px; font-weight:700; color:var(--c-text); letter-spacing:0.05em; }
+  .pw-reveal-box .pw-hint { font-size:11px; color:var(--c-text-mute); margin-top:4px; }
+  .force-pw-banner { background:#fff3cd; border:1px solid #ffc107; padding:8px 12px; font-size:12px; color:#856404; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .force-pw-banner .icon { font-size:16px; }
+  .login-screen { background:#fff; height:100%; display:flex; align-items:center; justify-content:center; }
+  .login-card { background:var(--c-base); border:1px solid var(--c-line); width:360px; padding:32px; }
+  .login-card .wms-logo { font-size:18px; font-weight:700; color:var(--c-accent); text-align:center; margin-bottom:4px; }
+  .login-card .wms-sub { font-size:11px; color:var(--c-text-mute); text-align:center; margin-bottom:24px; }
+  .login-card .pw-change-header { font-size:13px; font-weight:600; color:var(--c-text); text-align:center; margin-bottom:4px; }
+  .login-card .pw-change-sub { font-size:11px; color:var(--c-text-sub); text-align:center; margin-bottom:18px; line-height:1.6; }
+  .checkbox-row { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--c-text-sub); margin-top:4px; }
+  .checkbox-row input[type=checkbox] { width:14px; height:14px; }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-UI1 ユーザー招待フロー</h1>
+<p class="subtitle">標準フロー（メール招待）と例外フロー（HT現場向け直接作成）の2系統（Q12-4 確定）</p>
+
+<!-- ① フロー概要比較 -->
+<div class="section-divider"><span class="num">①</span>フロー概要比較</div>
+<div class="desc">
+  <b>Q12-4 確定</b>：ユーザー追加フローは2系統。一般ユーザーは<b>標準フロー</b>（メール招待→承認→権限付与）、HTハンディ端末の現場担当者は<b>例外フロー</b>（管理者直接作成→初期PW手渡し→初回ログイン変更必須）。
+  実装：標準フローは <code>admin.inviteUserByEmail()</code>、例外フローは <code>admin.createUser()</code> + <code>user_metadata.password_change_required = true</code>。
+</div>
+<div class="flow-compare">
+  <div class="flow-box">
+    <div class="tag std">標準フロー</div>
+    <h3>メール招待（一般ユーザー向け）</h3>
+    <div class="flow-step">
+      <div class="step"><div class="step-num std">1</div><div class="step-body"><div class="step-title">管理者がメールアドレスを入力</div><div class="step-sub">招待する相手のメールアドレス・付与予定ロール・荷主を入力して送信</div></div></div>
+      <div class="step-arrow">↓ Supabase Auth admin.inviteUserByEmail() 呼び出し</div>
+      <div class="step"><div class="step-num std">2</div><div class="step-body"><div class="step-title">招待メール承認待ち（pending）</div><div class="step-sub">相手がメールリンクをクリックして承認 → Auth ユーザー作成完了</div></div></div>
+      <div class="step-arrow">↓ ユーザーが招待メール内リンクをクリック</div>
+      <div class="step"><div class="step-num std">3</div><div class="step-body"><div class="step-title">管理者が権限付与（user_owners INSERT）</div><div class="step-sub">承認されたユーザーにロールと荷主アクセス権を手動設定</div></div></div>
+      <div class="step-arrow">↓ 設定完了 → ユーザーがログイン可能に</div>
+      <div class="step"><div class="step-num std">4</div><div class="step-body"><div class="step-title">ユーザーが通常ログイン</div><div class="step-sub">招待メールから設定したパスワードでログイン</div></div></div>
+    </div>
+  </div>
+  <div class="flow-box">
+    <div class="tag exc">例外フロー</div>
+    <h3>管理者直接作成（HT現場担当者向け・メールなし）</h3>
+    <div class="flow-step">
+      <div class="step"><div class="step-num exc">1</div><div class="step-body"><div class="step-title">管理者がID・初期パスワードを設定</div><div class="step-sub">ログインID・氏名・初期PW・ロール・荷主を管理者が直接入力</div></div></div>
+      <div class="step-arrow">↓ Supabase Auth admin.createUser() + email_confirmed=true</div>
+      <div class="step"><div class="step-num exc">2</div><div class="step-body"><div class="step-title">初期情報を現場担当者に手渡し</div><div class="step-sub">ログインID + 初期パスワードを紙または口頭で手渡し</div></div></div>
+      <div class="step-arrow">↓ password_change_required = true がセット済み</div>
+      <div class="step"><div class="step-num exc">3</div><div class="step-body"><div class="step-title">初回ログイン → パスワード変更強制</div><div class="step-sub">初回ログイン時にパスワード変更画面に強制リダイレクト</div></div></div>
+      <div class="step-arrow">↓ 変更完了 → 通常ログイン可能に</div>
+      <div class="step"><div class="step-num exc">4</div><div class="step-body"><div class="step-title">ユーザーがHTで通常ログイン</div><div class="step-sub">新パスワードでWMSにアクセス（HT端末向けUI）</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ② 標準フロー — 画面遷移 -->
+<div class="section-divider"><span class="num">②</span>標準フロー：メール招待 — 画面遷移</div>
+<div class="desc">
+  <b>STEP 1〜3 の画面遷移。</b>
+  STEP 1: 管理者がユーザー管理画面から「＋ メール招待」ボタンを押し、招待フォームを送信。
+  STEP 2: 招待一覧で承認待ちユーザーを確認。相手が招待メールを承認後に「権限付与」ボタンが活性化。
+  STEP 3: 管理者が権限付与ダイアログでロール・荷主を選択して保存。
+</div>
+
+<!-- 標準フロー STEP 1: 招待フォーム入力 -->
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/users</div>
+  </div>
+  <div class="screen-label">標準フロー STEP 1：「＋ メール招待」クリック → 招待フォーム入力</div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <div class="group">運用設定</div>
+        <a href="#" class="active">ユーザー・ロール</a>
+        <a href="#">調整理由コード</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　運用設定　/　<b>ユーザー・ロール</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田（管理者）</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box">
+          <div class="label">ユーザー追加方法を選択</div>
+          メールアドレスがある一般ユーザーは「<b>メール招待</b>（標準フロー）」、HTハンディ端末の現場担当者は「<b>直接作成</b>（例外フロー）」を使用する。
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span>招待一覧</span>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span class="meta">2件</span>
+              <button class="btn primary sm">＋ メール招待</button>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>メールアドレス</th>
+                  <th style="width:90px;">付与予定ロール</th>
+                  <th style="width:140px;">対象荷主</th>
+                  <th style="width:90px;">ステータス</th>
+                  <th style="width:120px;">招待日時</th>
+                  <th style="width:70px;" class="center">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>tanaka@example.com</td>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td>—</td>
+                  <td><span class="pill pending">承認待ち</span></td>
+                  <td style="font-size:11px; font-family:var(--f-mono);">05/17 09:32</td>
+                  <td class="center"><button class="btn sm" style="color:var(--c-alert); border-color:var(--c-alert);">取消</button></td>
+                </tr>
+                <tr>
+                  <td>suzuki@maruki.co.jp</td>
+                  <td><span class="role-owner">荷主</span></td>
+                  <td style="font-size:11px;"><span class="num">MK001</span> マルキ食品</td>
+                  <td><span class="pill success">承認済み</span></td>
+                  <td style="font-size:11px; font-family:var(--f-mono);">05/16 14:08</td>
+                  <td class="center"><button class="btn sm primary">権限付与</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- 招待フォームモーダル（STEP 1） -->
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <div class="modal-header">
+            <h2>メール招待 <span class="tag-std">標準フロー</span></h2>
+          </div>
+          <div class="modal-body">
+            <div class="invite-steps">
+              <div class="step active">1. 招待情報入力</div>
+              <div class="arrow">›</div>
+              <div class="step">2. メール送信</div>
+              <div class="arrow">›</div>
+              <div class="step">3. ユーザー承認待ち</div>
+              <div class="arrow">›</div>
+              <div class="step">4. 権限付与</div>
+            </div>
+            <div class="note-box" style="font-size:11px; margin-bottom:14px;">
+              招待メールが送信されます。相手がリンクをクリックして承認後、管理者が権限付与（STEP 4）を実施してください。
+            </div>
+            <div class="form-row">
+              <div class="field"><label>メールアドレス<span class="required">*</span></label><input type="email" class="filled" value="watanabe@example.com"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>氏名（任意）</label><input type="text" placeholder="渡辺 三郎（任意・後から変更可）"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>付与予定ロール<span class="required">*</span></label>
+                <select>
+                  <option>管理者</option>
+                  <option selected>リーダー</option>
+                  <option>作業者</option>
+                  <option>荷主</option>
+                </select>
+                <div class="hint">承認後に管理者が user_owners に設定する予定ロールです（仮設定）。</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>対象荷主（荷主ロール時のみ）</label>
+                <select disabled>
+                  <option>— ロールが「荷主」の場合に選択 —</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn">キャンセル</button>
+            <button class="btn primary">招待メールを送信</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 標準フロー STEP 2: 承認待ち状態 -->
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/users</div>
+  </div>
+  <div class="screen-label">標準フロー STEP 2：招待メール送信後 — 承認待ち（pending）状態</div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a><a href="#">荷主</a><a href="#">商品</a><a href="#">ロケーション</a>
+        <div class="group">運用設定</div>
+        <a href="#" class="active">ユーザー・ロール</a><a href="#">調整理由コード</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　運用設定　/　<b>ユーザー・ロール</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田（管理者）</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box success">
+          <div class="label">✅ 招待メールを送信しました</div>
+          watanabe@example.com に招待メールを送信しました。相手が承認するまで「承認待ち」と表示されます。承認後に「権限付与」ボタンが表示されます。
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span>招待一覧</span>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span class="meta">3件</span>
+              <button class="btn primary sm">＋ メール招待</button>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>メールアドレス</th>
+                  <th style="width:90px;">付与予定ロール</th>
+                  <th style="width:140px;">対象荷主</th>
+                  <th style="width:90px;">ステータス</th>
+                  <th style="width:120px;">招待日時</th>
+                  <th style="width:70px;" class="center">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#fffde7;">
+                  <td><b>watanabe@example.com</b></td>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td>—</td>
+                  <td><span class="pill pending">承認待ち</span></td>
+                  <td style="font-size:11px; font-family:var(--f-mono);">05/17 10:15</td>
+                  <td class="center"><button class="btn sm" style="color:var(--c-alert); border-color:var(--c-alert);">取消</button></td>
+                </tr>
+                <tr>
+                  <td>tanaka@example.com</td>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td>—</td>
+                  <td><span class="pill pending">承認待ち</span></td>
+                  <td style="font-size:11px; font-family:var(--f-mono);">05/17 09:32</td>
+                  <td class="center"><button class="btn sm" style="color:var(--c-alert); border-color:var(--c-alert);">取消</button></td>
+                </tr>
+                <tr>
+                  <td>suzuki@maruki.co.jp</td>
+                  <td><span class="role-owner">荷主</span></td>
+                  <td style="font-size:11px;"><span class="num">MK001</span> マルキ食品</td>
+                  <td><span class="pill success">承認済み</span></td>
+                  <td style="font-size:11px; font-family:var(--f-mono);">05/16 14:08</td>
+                  <td class="center"><button class="btn sm primary">権限付与</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>ユーザー一覧</span><span class="meta">有効 5件</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr><th style="width:150px;">ログインID</th><th>氏名</th><th style="width:90px;">ロール</th><th style="width:80px;">登録経路</th><th style="width:80px;" class="center">状態</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">admin</td><td>山田 太郎</td><td><span class="role-admin">管理者</span></td><td style="font-size:11px; color:var(--c-text-mute);">直接作成</td><td class="center"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="num">leader_sato</td><td>佐藤 一郎</td><td><span class="role-leader">リーダー</span></td><td style="font-size:11px; color:var(--c-text-mute);">メール招待</td><td class="center"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="num">worker_tanaka</td><td>田中 花子</td><td><span class="role-worker">作業者</span></td><td style="font-size:11px; color:var(--c-text-mute);">直接作成</td><td class="center"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 標準フロー STEP 3: 権限付与ダイアログ -->
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/users</div>
+  </div>
+  <div class="screen-label">標準フロー STEP 3：ユーザーが招待承認後 — 管理者が「権限付与」を実施</div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a><a href="#">荷主</a><a href="#">商品</a><a href="#">ロケーション</a>
+        <div class="group">運用設定</div>
+        <a href="#" class="active">ユーザー・ロール</a><a href="#">調整理由コード</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　運用設定　/　<b>ユーザー・ロール</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田（管理者）</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="card">
+          <div class="card-header"><span>招待一覧</span><span class="meta">3件</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>メールアドレス</th>
+                  <th style="width:90px;">付与予定ロール</th>
+                  <th style="width:90px;">ステータス</th>
+                  <th style="width:120px;">招待日時</th>
+                  <th style="width:120px;">承認日時</th>
+                  <th style="width:70px;" class="center">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#e6f4ec;">
+                  <td><b>watanabe@example.com</b></td>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td><span class="pill success">承認済み ✓</span></td>
+                  <td style="font-size:11px; font-family:var(--f-mono);">05/17 10:15</td>
+                  <td style="font-size:11px; font-family:var(--f-mono);">05/17 10:47</td>
+                  <td class="center"><button class="btn sm primary">権限付与</button></td>
+                </tr>
+                <tr>
+                  <td>tanaka@example.com</td>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td><span class="pill pending">承認待ち</span></td>
+                  <td style="font-size:11px; font-family:var(--f-mono);">05/17 09:32</td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">—</td>
+                  <td class="center"><button class="btn sm" style="color:var(--c-alert); border-color:var(--c-alert);">取消</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- 権限付与モーダル（STEP 3） -->
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <div class="modal-header">
+            <h2>権限付与 <span class="tag-std">標準フロー STEP 4</span></h2>
+          </div>
+          <div class="modal-body">
+            <div class="invite-steps">
+              <div class="step done">1. 招待情報入力</div>
+              <div class="arrow">›</div>
+              <div class="step done">2. メール送信</div>
+              <div class="arrow">›</div>
+              <div class="step done">3. ユーザー承認</div>
+              <div class="arrow">›</div>
+              <div class="step active">4. 権限付与</div>
+            </div>
+            <div class="note-box success" style="margin-bottom:14px;">
+              <div class="label">✅ watanabe@example.com が招待を承認しました</div>
+              承認日時：2026-05-17 10:47。ロールと荷主アクセス権を設定して保存してください。
+            </div>
+            <div class="form-section">
+              <h3>ユーザー情報（Auth から取得済み）</h3>
+              <div class="form-row">
+                <div class="field"><label>メールアドレス</label><input type="text" value="watanabe@example.com" disabled style="background:var(--c-bg); color:var(--c-text-sub);"></div>
+                <div class="field"><label>Auth ユーザーID</label><input type="text" value="a3f2e1d4-..." disabled style="background:var(--c-bg); color:var(--c-text-sub); font-family:var(--f-mono); font-size:11px;"></div>
+              </div>
+            </div>
+            <div class="form-section">
+              <h3>user_owners 設定（追加する権限）</h3>
+              <div class="form-row">
+                <div class="field"><label>ロール<span class="required">*</span></label>
+                  <select>
+                    <option>管理者 (admin)</option>
+                    <option selected>リーダー (operator)</option>
+                    <option>作業者 (viewer)</option>
+                    <option>荷主 (shipper)</option>
+                  </select>
+                  <div class="hint">確定ロール名：admin / operator / viewer / shipper（AU-1 確定）</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label>荷主アクセス</label>
+                  <select>
+                    <option>— 選択（荷主ロール以外は任意）—</option>
+                    <option>MK001 マルキ食品</option>
+                    <option>TK002 東北運送</option>
+                  </select>
+                  <div class="hint">リーダー・作業者ロールの場合は担当荷主を選択（未選択で全荷主閲覧）</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn">キャンセル</button>
+            <button class="btn primary">権限を付与して保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ③ 例外フロー — 画面遷移 -->
+<div class="section-divider"><span class="num">③</span>例外フロー：HT現場担当者向け直接作成 — 画面遷移</div>
+<div class="desc">
+  <b>HT現場担当者はメールアドレスを持たない場合がある。</b>
+  STEP 1: 管理者が直接作成フォームでID・初期パスワードを設定。
+  STEP 2: 作成完了画面で初期情報を確認して現場に手渡し。
+  STEP 3: 担当者が初回ログイン → パスワード変更強制画面が表示される。
+  実装：<code>admin.createUser()</code> + <code>user_metadata.password_change_required = true</code>。
+</div>
+
+<!-- 例外フロー STEP 1: 直接作成フォーム -->
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/users</div>
+  </div>
+  <div class="screen-label">例外フロー STEP 1：「＋ 直接作成（HT用）」クリック → 直接作成フォーム</div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a><a href="#">荷主</a><a href="#">商品</a><a href="#">ロケーション</a>
+        <div class="group">運用設定</div>
+        <a href="#" class="active">ユーザー・ロール</a><a href="#">調整理由コード</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　運用設定　/　<b>ユーザー・ロール</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田（管理者）</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="card">
+          <div class="card-header">
+            <span>ユーザー一覧</span>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span class="meta">有効 5件</span>
+              <button class="btn sm">＋ メール招待</button>
+              <button class="btn primary sm">＋ 直接作成（HT用）</button>
+            </div>
+          </div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr><th style="width:150px;">ログインID</th><th>氏名</th><th style="width:90px;">ロール</th><th style="width:90px;">登録経路</th><th style="width:80px;" class="center">状態</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">admin</td><td>山田 太郎</td><td><span class="role-admin">管理者</span></td><td style="font-size:11px;">直接作成</td><td class="center"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="num">leader_sato</td><td>佐藤 一郎</td><td><span class="role-leader">リーダー</span></td><td style="font-size:11px;">メール招待</td><td class="center"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="num">worker_tanaka</td><td>田中 花子</td><td><span class="role-worker">作業者</span></td><td style="font-size:11px;">直接作成</td><td class="center"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- 直接作成モーダル（STEP 1） -->
+      <div class="modal-overlay">
+        <div class="modal-box" style="max-width:520px;">
+          <div class="modal-header">
+            <h2>直接作成 <span class="tag-exc">例外フロー（HT用）</span></h2>
+          </div>
+          <div class="modal-body">
+            <div class="note-box warn" style="margin-bottom:14px;">
+              <div class="label">⚠ HT現場担当者向け例外フロー</div>
+              メールアドレスを持たない現場担当者用。管理者がID・パスワードを設定し、紙または口頭で手渡しします。初回ログイン時にパスワード変更が強制されます。
+            </div>
+            <div class="form-section">
+              <h3>アカウント情報</h3>
+              <div class="form-row">
+                <div class="field"><label>ログインID<span class="required">*</span></label><input type="text" class="filled" value="worker_kato"><div class="hint">英数字・アンダーバーのみ（20文字以内）</div></div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label>氏名<span class="required">*</span></label><input type="text" class="filled" value="加藤 次郎"></div>
+              </div>
+            </div>
+            <div class="form-section">
+              <h3>ロール・荷主設定</h3>
+              <div class="form-row">
+                <div class="field"><label>ロール<span class="required">*</span></label>
+                  <select>
+                    <option>管理者 (admin)</option>
+                    <option>リーダー (operator)</option>
+                    <option selected>作業者 (viewer)</option>
+                    <option>荷主 (shipper)</option>
+                  </select>
+                </div>
+                <div class="field"><label>対象荷主（荷主ロール時のみ）</label>
+                  <select disabled><option>— ロール「荷主」の場合に選択 —</option></select>
+                </div>
+              </div>
+            </div>
+            <div class="form-section">
+              <h3>初期パスワード設定</h3>
+              <div class="form-row">
+                <div class="field"><label>初期パスワード<span class="required">*</span></label><input type="text" class="filled" value="Temp-Pass-9876"><div class="hint warn">⚠ この画面でのみ表示されます。必ず手渡し前にコピーしてください。</div></div>
+              </div>
+              <div class="checkbox-row">
+                <input type="checkbox" checked id="force-pw">
+                <label for="force-pw">初回ログイン時にパスワード変更を強制する（<code>password_change_required = true</code>）</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn">キャンセル</button>
+            <button class="btn primary">アカウントを作成</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 例外フロー STEP 2: 初期情報発行確認 -->
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/users</div>
+  </div>
+  <div class="screen-label">例外フロー STEP 2：作成完了 — 初期情報（ログインID＋初期パスワード）確認・手渡し</div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a><a href="#">荷主</a><a href="#">商品</a><a href="#">ロケーション</a>
+        <div class="group">運用設定</div>
+        <a href="#" class="active">ユーザー・ロール</a><a href="#">調整理由コード</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　運用設定　/　<b>ユーザー・ロール</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田（管理者）</div>
+        </div>
+      </div>
+      <div class="content">
+        <!-- 作成完了モーダル（STEP 2） -->
+        <div class="modal-overlay" style="position:relative; inset:auto; background:transparent; padding:0; display:block; margin-bottom:0;">
+          <div class="modal-box" style="max-width:520px; margin:0 auto;">
+            <div class="modal-header">
+              <h2>アカウント作成完了 <span class="tag-exc">例外フロー（HT用）</span></h2>
+            </div>
+            <div class="modal-body">
+              <div class="note-box success" style="margin-bottom:16px;">
+                <div class="label">✅ アカウントを作成しました</div>
+                以下の初期情報を現場担当者に手渡してください。この画面を閉じると初期パスワードは再表示できません。
+              </div>
+              <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:16px; margin-bottom:14px;">
+                <div style="font-size:11px; font-weight:600; color:var(--c-text-sub); margin-bottom:8px;">手渡し用 初期情報</div>
+                <div class="pw-reveal-box" style="margin-bottom:10px;">
+                  <div class="pw-label">ログインID</div>
+                  <div class="pw-value">worker_kato</div>
+                </div>
+                <div class="pw-reveal-box">
+                  <div class="pw-label">初期パスワード（初回ログイン後に変更必須）</div>
+                  <div class="pw-value">Temp-Pass-9876</div>
+                  <div class="pw-hint">⚠ このパスワードはこの画面でのみ表示されます</div>
+                </div>
+              </div>
+              <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:12px; font-size:12px; margin-bottom:14px;">
+                <div style="font-weight:600; margin-bottom:6px;">設定内容確認</div>
+                <table style="width:100%; font-size:12px; border-collapse:collapse;">
+                  <tr><td style="padding:3px 0; color:var(--c-text-sub); width:120px;">氏名</td><td>加藤 次郎</td></tr>
+                  <tr><td style="padding:3px 0; color:var(--c-text-sub);">ロール</td><td><span class="role-worker">作業者</span></td></tr>
+                  <tr><td style="padding:3px 0; color:var(--c-text-sub);">初回PW変更</td><td style="color:var(--c-warn); font-weight:500;">強制（初回ログイン時）</td></tr>
+                  <tr><td style="padding:3px 0; color:var(--c-text-sub);">登録経路</td><td>直接作成（HT用）</td></tr>
+                </table>
+              </div>
+              <div class="force-pw-banner">
+                <span class="icon">🔒</span>
+                <span>初回ログイン時、このユーザーはパスワード変更画面に自動リダイレクトされます。</span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn primary">閉じる（一覧に戻る）</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 例外フロー STEP 3: 初回ログイン・パスワード変更強制 -->
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/auth/change-password</div>
+  </div>
+  <div class="screen-label">例外フロー STEP 3：担当者が初回ログイン → パスワード変更強制画面（リダイレクト先）</div>
+  <div class="screen">
+    <div class="login-screen">
+      <div class="login-card" style="width:420px;">
+        <div class="wms-logo">WMS</div>
+        <div class="wms-sub">東京DC（WH001）</div>
+        <div class="force-pw-banner" style="margin-bottom:20px;">
+          <span class="icon">🔒</span>
+          <span>初回ログインのため、パスワードの変更が必要です。</span>
+        </div>
+        <div class="pw-change-header">パスワードを変更してください</div>
+        <div class="pw-change-sub">
+          管理者から渡された初期パスワードから、<br>新しいパスワードに変更してください。
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="field">
+            <label>現在のパスワード（初期パスワード）<span class="required">*</span></label>
+            <input type="password" value="••••••••••••" class="filled">
+          </div>
+          <div class="field">
+            <label>新しいパスワード<span class="required">*</span></label>
+            <input type="password" placeholder="8文字以上・英数字混在">
+            <div class="hint">8文字以上、英字と数字を含めてください。</div>
+          </div>
+          <div class="field">
+            <label>新しいパスワード（確認）<span class="required">*</span></label>
+            <input type="password" placeholder="もう一度入力">
+          </div>
+          <button class="btn primary" style="margin-top:8px; padding:10px;">パスワードを変更して WMS を開始</button>
+        </div>
+        <div style="text-align:center; margin-top:16px; font-size:11px; color:var(--c-text-mute);">
+          ログインID: <span style="font-family:var(--f-mono);">worker_kato</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ④ 標準フロー 完了後 — ユーザー一覧 -->
+<div class="section-divider"><span class="num">④</span>両フロー完了後 — ユーザー一覧（統合確認）</div>
+<div class="desc">
+  権限付与完了後、ユーザー一覧に「登録経路（メール招待 / 直接作成）」が表示される。
+  招待一覧の「権限付与済み」はアーカイブされ、一覧からは非表示になる。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/users</div>
+  </div>
+  <div class="screen-label">両フロー完了後：ユーザー一覧（登録経路付き）</div>
+  <div class="screen" style="height:700px;">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a><a href="#">荷主</a><a href="#">商品</a><a href="#">ロケーション</a>
+        <div class="group">運用設定</div>
+        <a href="#" class="active">ユーザー・ロール</a><a href="#">調整理由コード</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　運用設定　/　<b>ユーザー・ロール</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田（管理者）</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="search-bar" style="background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px;">
+          <div class="form-row">
+            <div class="field"><label>ログインID・氏名</label><input type="text" placeholder="検索…"></div>
+            <div class="field"><label>ロール</label><select><option>すべて</option><option>管理者</option><option>リーダー</option><option>作業者</option><option>荷主</option></select></div>
+            <div class="field"><label>登録経路</label><select><option>すべて</option><option>メール招待</option><option>直接作成</option></select></div>
+            <div class="field"><label>状態</label><select><option>すべて</option><option selected>有効</option><option>無効</option></select></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
+            <span style="font-size:12px; color:var(--c-text-sub);">表示中　<b style="color:var(--c-text);">7件</b>　/ 全7件</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">＋ メール招待</button>
+              <button class="btn primary sm">＋ 直接作成（HT用）</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span>ユーザー一覧</span><span class="meta">有効 7件</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:150px;">ログインID</th>
+                  <th>氏名</th>
+                  <th style="width:90px;">ロール</th>
+                  <th style="width:140px;">荷主</th>
+                  <th style="width:90px;">登録経路</th>
+                  <th style="width:80px;" class="center">状態</th>
+                  <th style="width:70px;" class="center">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">admin</td>
+                  <td>山田 太郎</td>
+                  <td><span class="role-admin">管理者</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">— 全荷主</td>
+                  <td><span class="pill">直接作成</span></td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">leader_sato</td>
+                  <td>佐藤 一郎</td>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">—</td>
+                  <td><span class="pill accent">メール招待</span></td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr style="background:#f8f9ff;">
+                  <td class="num">watanabe</td>
+                  <td>渡辺 三郎</td>
+                  <td><span class="role-leader">リーダー</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">—</td>
+                  <td><span class="pill accent" style="background:#e3f2fd; border-color:#90caf9; color:#1a6ab8;">メール招待 ✓</span></td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">worker_tanaka</td>
+                  <td>田中 花子</td>
+                  <td><span class="role-worker">作業者</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">—</td>
+                  <td><span class="pill">直接作成</span></td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">worker_suzuki</td>
+                  <td>鈴木 次郎</td>
+                  <td><span class="role-worker">作業者</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">—</td>
+                  <td><span class="pill">直接作成</span></td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr style="background:#fff8f0;">
+                  <td class="num">worker_kato</td>
+                  <td>加藤 次郎</td>
+                  <td><span class="role-worker">作業者</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">—</td>
+                  <td><span class="pill" style="background:#fef3e2; border-color:#ffcc80; color:#b85c00;">直接作成 ✓ HT</span></td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+                <tr>
+                  <td class="num">owner_maruki</td>
+                  <td>大石 健</td>
+                  <td><span class="role-owner">荷主</span></td>
+                  <td style="font-size:11px;"><span class="num">MK001</span> マルキ食品</td>
+                  <td><span class="pill accent">メール招待</span></td>
+                  <td class="center"><span class="pill accent">有効</span></td>
+                  <td class="center"><button class="btn sm">編集</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
