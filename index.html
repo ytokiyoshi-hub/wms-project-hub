@@ -516,7 +516,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
       <div class="nav-item" data-page="screens">
         <span class="icon">◰</span>
         <span>画面モック</span>
-        <span class="badge" id="screen-count-badge">63</span>
+        <span class="badge" id="screen-count-badge">91</span>
       </div>
       <a class="nav-item" href="screens/index.html" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
         <span class="icon">▷</span>
@@ -611,8 +611,8 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
           <div class="kpi">
             <div class="lbl">画面モック</div>
-            <div class="val" id="screen-count-kpi">63</div>
-            <div class="delta" id="screen-count-delta">PC 45 / HT 6 / Mobile 3 / Portal 9</div>
+            <div class="val" id="screen-count-kpi">91</div>
+            <div class="delta" id="screen-count-delta">PC 66 / HT 13 / Mobile 3 / Portal 9</div>
           </div>
         </div>
 
@@ -850,9 +850,9 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         <input type="text" class="search-input" placeholder="画面ID・名称で検索（W-XXX, HT-XXX...）" id="screen-search">
 
         <div class="tabs">
-          <div class="tab active" data-screen-tab="all">すべて (63)</div>
-          <div class="tab" data-screen-tab="pc">PC (45)</div>
-          <div class="tab" data-screen-tab="ht">HT (6)</div>
+          <div class="tab active" data-screen-tab="all">すべて (91)</div>
+          <div class="tab" data-screen-tab="pc">PC (66)</div>
+          <div class="tab" data-screen-tab="ht">HT (13)</div>
           <div class="tab" data-screen-tab="mobile">スマホ (3)</div>
           <div class="tab" data-screen-tab="portal">ポータル (9)</div>
         </div>
@@ -1549,6 +1549,11 @@ const screens = [
   {id:'W-520',name:'方面マスタ',device:'pc',file:'WMS_Master_Region.html'},
   {id:'W-521',name:'請求単位マスタ',device:'pc',file:'WMS_Master_BillingUnit.html'},
   {id:'W-530',name:'郵便番号→方面マッピング',device:'pc',file:'WMS_Master_PostalRegionMap.html'},
+  {id:'W-MA1',name:'調整理由コードマスタ',device:'pc',file:'WMS_Master_AdjustmentReason.html'},
+  {id:'W-MA2',name:'ドライバーマスタ',device:'pc',file:'WMS_Master_Driver.html'},
+  {id:'W-MA3',name:'車両マスタ',device:'pc',file:'WMS_Master_Vehicle.html'},
+  {id:'W-MA4',name:'ユーザー・ロールマスタ',device:'pc',file:'WMS_Master_User.html'},
+  {id:'W-OM',name:'荷主管理（管理者）',device:'pc',file:'owner-mgmt-PC.html'},
   // PC - 在庫
   {id:'W-207',name:'ステータス変更',device:'pc',file:'WMS_Set2_inventory_PC.html#W-207'},
   {id:'W-208',name:'ロット出荷止め',device:'pc',file:'WMS_Set2_inventory_PC.html#W-208'},
@@ -1565,6 +1570,7 @@ const screens = [
   {id:'W-703',name:'請求実績',device:'pc',file:'WMS_GroupB_billing.html#W-703'},
   {id:'W-714',name:'委託先請求書突合',device:'pc',file:'WMS_GroupB_billing.html#W-714'},
   {id:'W-SNP',name:'月次スナップショット確定・修正',device:'pc',file:'WMS_Billing_Snapshot.html'},
+  {id:'W-705',name:'請求ルール設定',device:'pc',file:'WMS_GroupB_billing.html#W-705'},
   // PC - 人員
   {id:'W-513b',name:'従業員マスタ',device:'pc',file:'WMS_Set4_workforce_PC.html#W-513'},
   {id:'W-514',name:'業態マスタ',device:'pc',file:'WMS_Set4_workforce_PC.html#W-514'},
@@ -1582,6 +1588,7 @@ const screens = [
   {id:'HT-306',name:'積込確認',device:'ht',file:'WMS_Set3_outbound_HT.html#HT-306'},
   {id:'HT-307',name:'引渡確認',device:'ht',file:'WMS_Set3_outbound_HT.html#HT-307'},
   {id:'HT-504',name:'ステータス変更',device:'ht',file:'WMS_Set2_inventory_HT.html#HT-504'},
+  {id:'HT-1101',name:'荷主切替（HT）',device:'ht',file:'owner-switch-HT.html#HT-1101'},
   // スマホアプリ
   {id:'A-001',name:'シフト希望提出',device:'mobile',file:'WMS_Set4_workforce_App.html'},
   {id:'A-002',name:'確定シフト確認',device:'mobile',file:'WMS_Set4_workforce_App.html'},
