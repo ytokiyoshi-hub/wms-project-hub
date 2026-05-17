@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 月次スナップショット確定・修正管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-lock:#4a3700; --c-lock-bg:#fff8e1; --c-lock-border:#e6c200;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+  .screen.tall { height:960px; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); margin-bottom:14px; }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .btn:disabled { opacity:0.4; cursor:not-allowed; pointer-events:none; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; white-space:nowrap; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.lock { background:var(--c-lock-bg); border-color:var(--c-lock-border); color:var(--c-lock); }
+  .pill.ok { background:#e6f4ea; border-color:#34a853; color:#1a5c2a; }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+  table.list tr.locked-row td { background:var(--c-lock-bg); }
+  table.list tr.adj-row td { background:#f0f8ff; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:disabled, .field select:disabled, .field textarea:disabled { background:#f0f2f5; color:var(--c-text-mute); cursor:not-allowed; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:14px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:16px; margin-top:16px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:12px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-alert-lt); border-left-color:var(--c-alert); }
+  .note-box.warn .label { color:var(--c-alert); }
+  .note-box.lock-info { background:var(--c-lock-bg); border-left-color:var(--c-lock-border); }
+  .note-box.lock-info .label { color:var(--c-lock); }
+
+  .lock-banner { background:var(--c-lock-bg); border:1px solid var(--c-lock-border); padding:10px 16px; display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .lock-banner .icon { font-size:18px; }
+  .lock-banner .text { flex:1; font-size:12px; color:var(--c-lock); line-height:1.6; }
+  .lock-banner .text b { font-weight:700; }
+
+  .modal-style { background:var(--c-base); border:1px solid var(--c-line); max-width:900px; margin:0 auto; }
+  .modal-style .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-style .modal-header h2 { font-size:15px; font-weight:600; color:var(--c-text); }
+  .modal-style .modal-body { padding:18px; max-height:600px; overflow-y:auto; }
+  .modal-style .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+
+  .sub-section { margin:14px 0 8px; padding:8px 12px; background:var(--c-bg); border-left:3px solid var(--c-accent); font-size:12px; font-weight:600; color:var(--c-text); }
+  .readonly-field { background:var(--c-bg); border:1px solid var(--c-line); padding:7px 10px; font-size:13px; color:var(--c-text-mute); min-height:34px; }
+
+  /* サマリKPI */
+  .kpi-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:14px; }
+  .kpi { background:var(--c-base); border:1px solid var(--c-line); padding:12px 14px; }
+  .kpi .label { font-size:11px; color:var(--c-text-sub); font-weight:500; margin-bottom:6px; }
+  .kpi .value { font-size:20px; font-weight:600; font-family:var(--f-mono); line-height:1.2; }
+  .kpi .value .unit { font-size:11px; color:var(--c-text-sub); font-weight:500; margin-left:2px; }
+
+  .adj-amount-pos { color:#1a5c2a; font-family:var(--f-mono); font-weight:600; }
+  .adj-amount-neg { color:var(--c-alert); font-family:var(--f-mono); font-weight:600; }
+
+  .timeline { border-left:3px solid var(--c-line-dk); padding-left:16px; margin-left:8px; }
+  .timeline-item { position:relative; margin-bottom:16px; }
+  .timeline-item::before { content:''; position:absolute; left:-22px; top:4px; width:10px; height:10px; background:var(--c-bg); border:2px solid var(--c-line-dk); }
+  .timeline-item.active::before { background:var(--c-accent); border-color:var(--c-accent); }
+  .timeline-item .tl-label { font-size:11px; color:var(--c-text-sub); font-weight:600; }
+  .timeline-item .tl-body { font-size:12px; color:var(--c-text); margin-top:3px; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">月次スナップショット確定・修正管理</h1>
+<p class="subtitle">F-1301 請求書発行 / 月次スナップショット確定（ロック）・翌月加減算修正・過去データ直接書換禁止</p>
+
+<div class="quick-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="#W-SNP-001"><b>W-SNP-001</b>スナップショット一覧</a>
+  <a href="#W-SNP-002"><b>W-SNP-002</b>スナップショット詳細（ロック済み）</a>
+  <a href="#W-SNP-003"><b>W-SNP-003</b>翌月加減算 登録</a>
+  <a href="#W-SNP-004"><b>W-SNP-004</b>修正履歴・加減算一覧</a>
+</div>
+
+<!-- ============================== -->
+<!-- W-SNP-001 月次スナップショット一覧 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-SNP-001">
+  <span class="num">W-SNP-001</span>月次スナップショット一覧
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：荷主×月次のスナップショット一覧。ロック済み（確定）とドラフト（未確定）を一覧管理。<br>
+  <b>ロック原則</b>：一度確定（ロック）したスナップショットは直接書換不可。修正は必ず翌月加減算方式で行う。<br>
+  <b>関連</b>：process_13 Q13-2確定（翌月加減算方式）/ billing_invoices.adjustment_ref_invoice_id
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/snapshots</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#" class="active">月次スナップショット</a>
+        <a href="#">委託先請求書突合</a>
+        <a href="#">収支レポート</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　<b>月次スナップショット</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box lock-info">
+          <div class="label">🔒 過去データ直接書換禁止ルール</div>
+          ロック済みスナップショットは<b>直接編集できません</b>。前月分に誤りが見つかった場合は、
+          <b>翌月分の請求書に差額（加算 or 減算）を組み込む「翌月加減算方式」</b>を使用してください。
+          過去の原本は保持され、監査証跡として残ります。
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>対象年</label>
+              <select>
+                <option selected>2026年</option>
+                <option>2025年</option>
+              </select>
+            </div>
+            <div class="field"><label>荷主</label>
+              <select><option selected>すべて</option><option>マルキ食品 (MK001)</option><option>アルファ商事 (AL001)</option></select>
+            </div>
+            <div class="field"><label>状態</label>
+              <select>
+                <option selected>すべて</option>
+                <option>🔒 ロック済み</option>
+                <option>📝 ドラフト</option>
+                <option>⚠️ 加減算あり</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">ロック済み　<b>4件</b>　/　ドラフト　<b>1件</b></span>
+            <div style="margin-left:auto;">
+              <button class="btn sm">CSV出力</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="label">ロック済みスナップショット</div>
+            <div class="value">4 <span class="unit">件</span></div>
+          </div>
+          <div class="kpi">
+            <div class="label">ドラフト（今月）</div>
+            <div class="value">1 <span class="unit">件</span></div>
+          </div>
+          <div class="kpi">
+            <div class="label">翌月加減算 累積件数</div>
+            <div class="value">3 <span class="unit">件</span></div>
+          </div>
+          <div class="kpi">
+            <div class="label">加減算 累積金額</div>
+            <div class="value" style="font-size:16px;">−12,000 <span class="unit">円</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span>スナップショット一覧（2026年）</span>
+            <span class="meta">前月末日23:59時点の在庫を月次バッチが自動取得</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>対象月</th>
+                  <th>荷主</th>
+                  <th class="right">スナップショット在庫数</th>
+                  <th class="right">保管料（試算）</th>
+                  <th>取得日時</th>
+                  <th class="center">状態</th>
+                  <th>加減算</th>
+                  <th class="center" style="width:140px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="locked-row">
+                  <td class="num">2026-01</td>
+                  <td>マルキ食品 (MK001)</td>
+                  <td class="right num">2,450</td>
+                  <td class="right num">196,000</td>
+                  <td class="num" style="font-size:11px;">2026/01/31 23:59</td>
+                  <td class="center"><span class="pill lock">🔒 ロック済み</span></td>
+                  <td style="font-size:11px;"><span class="adj-amount-neg">−5,000円</span><br><span style="color:var(--c-text-mute); font-size:10px;">2月分に計上済み</span></td>
+                  <td class="center">
+                    <button class="btn sm">詳細</button>
+                    <button class="btn sm" disabled title="ロック済みのため直接編集不可">編集</button>
+                  </td>
+                </tr>
+                <tr class="locked-row">
+                  <td class="num">2026-02</td>
+                  <td>マルキ食品 (MK001)</td>
+                  <td class="right num">2,310</td>
+                  <td class="right num">184,800</td>
+                  <td class="num" style="font-size:11px;">2026/02/28 23:59</td>
+                  <td class="center"><span class="pill lock">🔒 ロック済み</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">なし</td>
+                  <td class="center">
+                    <button class="btn sm">詳細</button>
+                    <button class="btn sm" disabled title="ロック済みのため直接編集不可">編集</button>
+                  </td>
+                </tr>
+                <tr class="locked-row">
+                  <td class="num">2026-03</td>
+                  <td>マルキ食品 (MK001)</td>
+                  <td class="right num">2,800</td>
+                  <td class="right num">224,000</td>
+                  <td class="num" style="font-size:11px;">2026/03/31 23:59</td>
+                  <td class="center"><span class="pill lock">🔒 ロック済み</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">なし</td>
+                  <td class="center">
+                    <button class="btn sm">詳細</button>
+                    <button class="btn sm" disabled title="ロック済みのため直接編集不可">編集</button>
+                  </td>
+                </tr>
+                <tr class="locked-row">
+                  <td class="num">2026-04</td>
+                  <td>マルキ食品 (MK001)</td>
+                  <td class="right num">2,500</td>
+                  <td class="right num">200,000</td>
+                  <td class="num" style="font-size:11px;">2026/04/30 23:59</td>
+                  <td class="center"><span class="pill lock">🔒 ロック済み</span></td>
+                  <td style="font-size:11px;"><span class="adj-amount-neg">−7,000円</span><br><span style="color:var(--c-text-mute); font-size:10px;">5月分に計上予定</span></td>
+                  <td class="center">
+                    <button class="btn sm">詳細</button>
+                    <button class="btn sm" disabled title="ロック済みのため直接編集不可">編集</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="num">2026-05</td>
+                  <td>マルキ食品 (MK001)</td>
+                  <td class="right num">2,620</td>
+                  <td class="right num">209,600</td>
+                  <td class="num" style="font-size:11px;">2026/05/31 23:59（予定）</td>
+                  <td class="center"><span class="pill alert">📝 ドラフト</span></td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">−</td>
+                  <td class="center">
+                    <button class="btn sm">詳細</button>
+                    <button class="btn primary sm">確定&amp;ロック</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <div class="label">確定&amp;ロック操作について</div>
+          ドラフト状態のスナップショットのみ「確定&amp;ロック」が可能です。
+          ロック後は<b>直接の数値変更はできません</b>。月次バッチ請求書生成の前に、
+          スナップショットの内容を必ず確認してからロックしてください。<br>
+          ロック後に誤りが見つかった場合 → 「<b>翌月加減算登録</b>（W-SNP-003）」を使用します。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-SNP-002 スナップショット詳細（ロック済み） -->
+<!-- ============================== -->
+<div class="section-divider" id="W-SNP-002">
+  <span class="num">W-SNP-002</span>スナップショット詳細（ロック済み・読み取り専用）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：ロック済みスナップショットの詳細を参照。一切の直接編集不可。翌月加減算の起点として使用。<br>
+  <b>ロック後の変更方法</b>：画面下部の「翌月加減算を登録する」ボタンから W-SNP-003 へ遷移。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/snapshots/MK001/2026-04</div></div>
+  <div class="screen tall">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#" class="active">月次スナップショット</a>
+        <a href="#">委託先請求書突合</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　月次スナップショット　/　<b>MK001 2026-04</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="lock-banner">
+          <span class="icon">🔒</span>
+          <div class="text">
+            <b>このスナップショットはロック済みです。</b>
+            直接の数値変更はできません。誤りがある場合は「翌月加減算を登録する」ボタンを使用してください。<br>
+            ロック日時：2026/05/01 09:03 | 確定者：山田リーダー
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active">在庫スナップショット</div>
+          <div class="tab">請求計算根拠</div>
+          <div class="tab">加減算履歴</div>
+        </div>
+
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px;">
+          <button class="btn sm">CSV出力</button>
+          <button class="btn sm">PDF出力</button>
+          <button class="btn primary sm">翌月加減算を登録する</button>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">
+            <span>スナップショット情報</span>
+            <span class="meta"><span class="pill lock">🔒 ロック済み</span></span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field">
+                <label>荷主</label>
+                <div class="readonly-field">マルキ食品株式会社 (MK001)</div>
+              </div>
+              <div class="field">
+                <label>対象月</label>
+                <div class="readonly-field" style="font-family:var(--f-mono);">2026年4月（2026/03/31 23:59 時点）</div>
+              </div>
+              <div class="field">
+                <label>スナップショット取得日時</label>
+                <div class="readonly-field" style="font-family:var(--f-mono);">2026/04/30 23:59:12</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>保管方式</label>
+                <div class="readonly-field">3期制（上中下旬）</div>
+              </div>
+              <div class="field">
+                <label>端数処理</label>
+                <div class="readonly-field">四捨五入（round）</div>
+              </div>
+              <div class="field">
+                <label>ロック確定者</label>
+                <div class="readonly-field">山田リーダー（2026/05/01 09:03）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span>在庫明細（2026/04/30 23:59 時点）</span>
+            <span class="meta">総在庫数：2,500 / 品目数：12</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>SKU コード</th>
+                  <th>商品名</th>
+                  <th>ロット番号</th>
+                  <th>ロケーション</th>
+                  <th class="right">数量</th>
+                  <th>単位</th>
+                  <th class="right">単価</th>
+                  <th class="right">金額</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">S-00321</td>
+                  <td>シャンプー300ml</td>
+                  <td class="num">LOT-240315</td>
+                  <td class="num">A-01-02</td>
+                  <td class="right num">500</td>
+                  <td>ケース</td>
+                  <td class="right num">80</td>
+                  <td class="right num">40,000</td>
+                </tr>
+                <tr>
+                  <td class="num">S-00322</td>
+                  <td>リンス300ml</td>
+                  <td class="num">LOT-240320</td>
+                  <td class="num">A-01-03</td>
+                  <td class="right num">380</td>
+                  <td>ケース</td>
+                  <td class="right num">80</td>
+                  <td class="right num">30,400</td>
+                </tr>
+                <tr>
+                  <td class="num">S-00323</td>
+                  <td>ボディソープ500ml</td>
+                  <td class="num">LOT-240401</td>
+                  <td class="num">A-02-01</td>
+                  <td class="right num">620</td>
+                  <td>ケース</td>
+                  <td class="right num">80</td>
+                  <td class="right num">49,600</td>
+                </tr>
+                <tr>
+                  <td class="num">S-00401</td>
+                  <td>洗顔フォーム150g</td>
+                  <td class="num">LOT-240210</td>
+                  <td class="num">B-01-01</td>
+                  <td class="right num">1,000</td>
+                  <td>ケース</td>
+                  <td class="right num">80</td>
+                  <td class="right num">80,000</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4">合計（12品目）</td>
+                  <td class="right num">2,500</td>
+                  <td colspan="2" class="right">保管料合計</td>
+                  <td class="right num">200,000</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box warn">
+          <div class="label">🚫 直接書換禁止</div>
+          上記の数値を直接変更することはできません。数量・金額の修正が必要な場合は、
+          「翌月加減算を登録する」ボタンから修正手続きを行ってください。<br>
+          <b>翌月の請求書に「前月分調整：+/-XXXX 円（理由）」として自動付記されます。</b>
+        </div>
+
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+          <button class="btn sm">← スナップショット一覧に戻る</button>
+          <button class="btn primary sm">翌月加減算を登録する</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-SNP-003 翌月加減算 登録 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-SNP-003">
+  <span class="num">W-SNP-003</span>翌月加減算 登録（修正フォーム）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：ロック済みスナップショットに対する修正を「翌月の加減算」として登録。前月原本は保持されたまま、翌月請求書に差額行が付記される。<br>
+  <b>DB</b>：billing_invoices.adjustment_ref_invoice_id / adjustment_amount / adjustment_reason（Q13-2確定方式）
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/snapshots/adjustments/new?ref=INV-2604-MK001</div></div>
+  <div class="screen tall">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#" class="active">月次スナップショット</a>
+        <a href="#">委託先請求書突合</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　月次スナップショット　/　MK001 2026-04　/　<b>翌月加減算 登録</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="modal-style">
+          <div class="modal-header">
+            <h2>翌月加減算 登録</h2>
+            <span class="pill lock" style="font-size:12px;">🔒 ロック済み請求書への修正</span>
+          </div>
+          <div class="modal-body">
+
+            <div class="note-box lock-info">
+              <div class="label">翌月加減算方式について</div>
+              前月の確定スナップショットを<b>直接書き換えることはしません。</b>
+              代わりに、翌月（2026年5月）の請求書に差額行として組み込み、
+              「前月分調整：+/-XXXX 円（理由）」として明記します。<br>
+              前月の原本請求書は取り消しも再発行もせず、そのまま保持されます（監査証跡）。
+            </div>
+
+            <div class="form-section">
+              <h3>修正元情報（読み取り専用）</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>修正元 請求書番号</label>
+                  <div class="readonly-field" style="font-family:var(--f-mono);">INV-2604-MK001</div>
+                </div>
+                <div class="field">
+                  <label>荷主</label>
+                  <div class="readonly-field">マルキ食品株式会社 (MK001)</div>
+                </div>
+                <div class="field">
+                  <label>対象月</label>
+                  <div class="readonly-field" style="font-family:var(--f-mono);">2026年4月</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>元請求金額（税抜）</label>
+                  <div class="readonly-field" style="font-family:var(--f-mono); text-align:right; font-weight:600;">200,000 円</div>
+                </div>
+                <div class="field">
+                  <label>スナップショット在庫数</label>
+                  <div class="readonly-field" style="font-family:var(--f-mono); text-align:right;">2,500 ケース</div>
+                </div>
+                <div class="field">
+                  <label>ロック状態</label>
+                  <div class="readonly-field"><span class="pill lock">🔒 ロック済み（変更不可）</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>加減算の内容</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>加減算種別<span class="required">*</span></label>
+                  <select>
+                    <option>選択してください</option>
+                    <option selected>減算（控除）— 過請求を翌月に控除</option>
+                    <option>加算（追加請求）— 不足請求を翌月に追加</option>
+                  </select>
+                  <div class="hint">正：追加請求（不足分）/ 負：控除（過請求分）</div>
+                </div>
+                <div class="field">
+                  <label>調整金額（税抜）<span class="required">*</span></label>
+                  <input type="number" value="-7000" placeholder="-7000（控除）または 3000（追加）">
+                  <div class="hint">負の値＝控除（減算）、正の値＝追加請求（加算）</div>
+                </div>
+                <div class="field">
+                  <label>計上先（翌月）<span class="required">*</span></label>
+                  <select>
+                    <option selected>2026年5月（翌月）</option>
+                  </select>
+                  <div class="hint">翌月以降の請求書に組み込まれます</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field" style="grid-column:span 3;">
+                  <label>調整理由<span class="required">*</span></label>
+                  <textarea rows="3" placeholder="例：2026年4月の保管料計算でロケーションA-02-01の在庫数に誤りがあり、実数量は620ケースのところ720ケースとして計算していた。100ケース過請求分（8,000円）を控除。端数処理後 −7,000円。">2026年4月の保管料計算でロケーションB-01-01の在庫数に計上漏れがあり、実在庫より少なく集計されていた。差額 −7,000円を翌月控除として計上。</textarea>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>調整カテゴリ</label>
+                  <select>
+                    <option selected>保管料 誤計算</option>
+                    <option>入庫料 計上漏れ</option>
+                    <option>出庫料 誤カウント</option>
+                    <option>付帯作業料 追加</option>
+                    <option>その他</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>証跡ファイル（任意）</label>
+                  <input type="file" accept=".pdf,.xlsx,.csv" style="padding:5px 10px; font-size:12px;">
+                  <div class="hint">修正根拠の資料（計算シート等）を添付可</div>
+                </div>
+                <div class="field">
+                  <label>承認者（任意）</label>
+                  <select>
+                    <option>未選択（後で設定）</option>
+                    <option selected>田中部長</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>プレビュー：翌月請求書への反映イメージ</h3>
+              <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:14px; font-size:12px;">
+                <div style="font-weight:600; margin-bottom:8px; color:var(--c-text-sub);">2026年5月請求書（マルキ食品）への追加行：</div>
+                <table class="list" style="font-size:12px;">
+                  <thead>
+                    <tr>
+                      <th>項目</th>
+                      <th>説明</th>
+                      <th class="right" style="width:150px;">金額</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>保管料</td><td>通常計算分（2026年5月）</td><td class="right num">209,600</td></tr>
+                    <tr class="adj-row"><td style="color:var(--c-accent);">前月分調整（控除）</td><td style="color:var(--c-accent);">2026年4月 保管料誤計算分控除（INV-2604-MK001参照）</td><td class="right adj-amount-neg">−7,000</td></tr>
+                    <tr><td colspan="2" class="right">小計</td><td class="right num">202,600</td></tr>
+                    <tr><td colspan="2" class="right">消費税（10%）</td><td class="right num">20,260</td></tr>
+                    <tr style="font-weight:700;"><td colspan="2" class="right">合計（税込）</td><td class="right num">222,860</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn">キャンセル</button>
+            <button class="btn primary">加減算を登録（翌月請求書に反映）</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-SNP-004 修正履歴・加減算一覧 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-SNP-004">
+  <span class="num">W-SNP-004</span>修正履歴・加減算一覧（監査証跡）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：これまで発生した翌月加減算の全履歴を表示。どの月のどの請求書に誤りがあり、どの翌月分で調整されたかを一覧で確認。<br>
+  <b>監査証跡</b>：ロック済み原本は変更せず、加減算の記録のみが積み重なる。過去に遡って確認可能。
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/billing/snapshots/adjustments</div></div>
+  <div class="screen tall">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">請求管理</div>
+        <a href="#">請求書一覧</a>
+        <a href="#">請求実績</a>
+        <a href="#" class="active">月次スナップショット</a>
+        <a href="#">委託先請求書突合</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">請求管理　/　月次スナップショット　/　<b>修正履歴・加減算一覧</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>荷主</label>
+              <select><option selected>すべて</option><option>マルキ食品 (MK001)</option></select>
+            </div>
+            <div class="field"><label>修正元対象月</label><input type="month" value="2026-01" placeholder="すべて"></div>
+            <div class="field"><label>状態</label>
+              <select>
+                <option selected>すべて</option>
+                <option>計上済み</option>
+                <option>計上予定</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">加減算記録　<b>3件</b>（計上済み2件 / 計上予定1件）</span>
+            <div style="margin-left:auto;"><button class="btn sm">CSV出力</button></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">
+            <span>翌月加減算 一覧</span>
+            <span class="meta">過去データ直接書換履歴：0件（全件が翌月加減算方式で処理）</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>修正元 請求書</th>
+                  <th>荷主</th>
+                  <th>修正元 対象月</th>
+                  <th>計上先 月</th>
+                  <th class="right">調整金額</th>
+                  <th>カテゴリ</th>
+                  <th class="center">計上状態</th>
+                  <th>登録日 / 登録者</th>
+                  <th class="center" style="width:80px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="num">INV-2601-MK001</td>
+                  <td>マルキ食品</td>
+                  <td class="num">2026-01</td>
+                  <td class="num">2026-02</td>
+                  <td class="right adj-amount-neg">−5,000</td>
+                  <td>保管料 誤計算</td>
+                  <td class="center"><span class="pill ok">✓ 計上済み</span></td>
+                  <td style="font-size:11px;">2026/02/03<br>山田リーダー</td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr>
+                  <td class="num">INV-2603-MK001</td>
+                  <td>マルキ食品</td>
+                  <td class="num">2026-03</td>
+                  <td class="num">2026-04</td>
+                  <td class="right adj-amount-pos">+3,000</td>
+                  <td>入庫料 計上漏れ</td>
+                  <td class="center"><span class="pill ok">✓ 計上済み</span></td>
+                  <td style="font-size:11px;">2026/04/02<br>鈴木主任</td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+                <tr class="adj-row">
+                  <td class="num">INV-2604-MK001</td>
+                  <td>マルキ食品</td>
+                  <td class="num">2026-04</td>
+                  <td class="num">2026-05</td>
+                  <td class="right adj-amount-neg">−7,000</td>
+                  <td>保管料 誤計算</td>
+                  <td class="center"><span class="pill alert">📋 計上予定</span></td>
+                  <td style="font-size:11px;">2026/05/02<br>山田リーダー</td>
+                  <td class="center"><button class="btn sm">詳細</button></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4">累積合計（3件）</td>
+                  <td class="right adj-amount-neg">−9,000</td>
+                  <td colspan="4"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>加減算タイムライン（マルキ食品 MK001）</span></div>
+          <div class="card-body">
+            <div class="timeline">
+              <div class="timeline-item active">
+                <div class="tl-label">2026年1月 請求（INV-2601-MK001）</div>
+                <div class="tl-body">保管料：196,000円 <span class="pill lock" style="font-size:10px;">🔒 ロック済み</span><br>
+                  <span style="color:var(--c-text-mute);">→ 2月分に −5,000円 計上済み（保管料誤計算）</span>
+                </div>
+              </div>
+              <div class="timeline-item active">
+                <div class="tl-label">2026年2月 請求（INV-2602-MK001）</div>
+                <div class="tl-body">保管料：184,800円 + 前月調整 −5,000円 <span class="pill lock" style="font-size:10px;">🔒 ロック済み</span><br>
+                  <span style="color:var(--c-text-mute);">調整なし</span>
+                </div>
+              </div>
+              <div class="timeline-item active">
+                <div class="tl-label">2026年3月 請求（INV-2603-MK001）</div>
+                <div class="tl-body">保管料：224,000円 <span class="pill lock" style="font-size:10px;">🔒 ロック済み</span><br>
+                  <span style="color:var(--c-text-mute);">→ 4月分に +3,000円 計上済み（入庫料計上漏れ）</span>
+                </div>
+              </div>
+              <div class="timeline-item active">
+                <div class="tl-label">2026年4月 請求（INV-2604-MK001）</div>
+                <div class="tl-body">保管料：200,000円 + 前月調整 +3,000円 <span class="pill lock" style="font-size:10px;">🔒 ロック済み</span><br>
+                  <span style="color:var(--c-text-mute);">→ 5月分に −7,000円 計上予定（保管料誤計算）</span>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-label">2026年5月 請求（作成中）</div>
+                <div class="tl-body">保管料：209,600円 + <span class="adj-amount-neg">前月調整 −7,000円</span> = 202,600円<br>
+                  <span class="pill alert" style="font-size:10px;">📋 計上予定</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <div class="label">設計原則の確認</div>
+          <b>翌月加減算方式</b>：前月分に誤りが発覚しても、前月の原本請求書（スナップショット）を直接書き換えません。
+          翌月の請求書に調整行として組み込むことで、<br>
+          ① 監査証跡の保全（原本が変わらないため）<br>
+          ② 発行済み請求書の再発行・取り消し業務ゼロ<br>
+          ③ 荷主との合意が取れた月（翌月）での精算<br>
+          を同時に実現します。
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
