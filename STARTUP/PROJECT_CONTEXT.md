@@ -51,7 +51,30 @@
 - 「1号復帰」「2号復帰」の指示で都度切替。IDENTITY.md と STARTUP/{1,2}GO.md を切替時に読み直す
 - 切替時は kurokun_memo（category=handover）に現況を残してから切替
 - 役割は混在させない: 1号セッション中に実装コードを書かない、2号セッション中に specs を編集しない
-- account1 側 runner（さーちゃん/にーちゃん/こーちゃん/まーちゃん）は 5/22 以降停止。以降は account2 フリート（sa2chan/ni2chan/ko2chan/ma2chan）のみで運用
+
+### runner フリート移行（2026-05-22 切替・B案確定）
+
+時吉さん希望「社長室ダッシュボード・WMS Project Hub・メンバーをそのまま使い続けたい」を満たすため、members テーブル（id 2/5/6/7 / 8/12/15/17）と runner 名（さーちゃん/にーちゃん/こーちゃん/まーちゃん）は維持し、**plist の認証先のみ account2 に切替**して継続稼働させる。
+
+| runner | id | 5/22 以前 | 5/23 以降 |
+|---|---|---|---|
+| さーちゃん | 5 | account1 認証 | **account2 認証へ切替** |
+| にーちゃん | 7 | account1 認証 | **account2 認証へ切替** |
+| こーちゃん | 2 | account1 認証 | **account2 認証へ切替** |
+| まーちゃん | 6 | account1 認証 | **account2 認証へ切替** |
+| さーちゃん2号 | 15 | account2 | 変更なし |
+| にーちゃん2号 | 17 | account2 | 変更なし |
+| こーちゃん2号 | 12 | account2 | 変更なし |
+| まーちゃん2号 | 8 | account2 | 変更なし |
+
+**切替手順**: 各 plist（`~/Library/LaunchAgents/com.shacho-shitsu.{sa,ni,claude,ma}-chan-runner.plist`）の `EnvironmentVariables` に以下1行を追加し、`launchctl unload && launchctl load` で再読込：
+
+```xml
+<key>CLAUDE_CONFIG_DIR</key>
+<string>/Users/tokiyoshiyusuke/.claude-account2</string>
+```
+
+**運用上の留意**: 5/23 以降は 8 runner が account2 のトークン枠を共有する。同時並列稼働で limit hit が増えるため、runner-mgr で同時実行数を 3〜4 に制限する運用に切替予定。
 
 ---
 
