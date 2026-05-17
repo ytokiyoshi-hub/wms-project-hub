@@ -163,7 +163,7 @@
 | 選択肢D | 荷主別設定（高額品荷主はC・一般品はA） |
 | **時吉さん回答** | **C（確定 2026-05-16）：簿内品の廃棄は荷主の最終承認が必須（倉庫スタッフ申請 → 荷主承認フロー）。倉庫上長のみのB案は寄託物の法的所有権が荷主にあるため不成立。簿外品はWMS管理外。** |
 | まーちゃん推奨 | **D**：廃棄は取り消せないため「記録だけ」は危険。最低でもBを基本にし、高額品荷主はCを適用する構造が安全。ただし承認フローはAU-1（権限設計）確定後に詳細化。 |
-| 仕様への影響 | `disposal_approvals` テーブル（新設の可能性）/ AU-1との整合 / `shipment_orders.purpose` enum追加（廃棄を出荷フローで処理するため） |
+| 仕様への影響 | `disposal_approvals` テーブル（新設の可能性）/ AU-1との整合 / `shipment_orders.purpose_type` enum追加（廃棄を出荷フローで処理するため） |
 
 > **QA-5 補足確定（3号ヒアリング 2026-05-16）：**
 > ① 不適合品はR種別ロケに移動・倉庫外への物理移動は荷主指示が必須
@@ -172,7 +172,7 @@
 > ④ 廃棄の独立業務フローは設けない・出荷フロー（用途区分=廃棄）として処理する
 >
 > 設計への反映：
-> - `shipment_orders.purpose` enum を追加（`'outbound'` / `'disposal'` / `'sample'` / `'vendor_return'` 等）
+> - `shipment_orders.purpose_type` enum を追加（`'normal'` / `'disposal'` / `'sample'` / `'return_to_supplier'` 等）
 > - 「用途区分×在庫ステータス」出荷許可マトリクスを設計（disposal は quarantine ステータスのみ許可 等）
 > - 不適合品の出荷（廃棄含む）は理由（`disposition_note`）記載を確定条件とするバリデーション追加
 
@@ -320,30 +320,30 @@ customer_return_items.condition = 'hold'
 
 ### 用途区分 enum と出荷許可マトリクス（QA-5 確定設計）
 
-廃棄は独立業務ではなく出荷フロー（`purpose='disposal'`）として処理する。
+廃棄は独立業務ではなく出荷フロー（`purpose_type='disposal'`）として処理する。
 
 ```sql
--- shipment_orders テーブルへの purpose カラム追加
+-- shipment_orders テーブルへの purpose_type カラム追加
 ALTER TABLE shipment_orders
-  ADD COLUMN purpose TEXT NOT NULL DEFAULT 'outbound'
-    CHECK (purpose IN ('outbound', 'disposal', 'sample', 'vendor_return'));
+  ADD COLUMN purpose_type TEXT NOT NULL DEFAULT 'normal'
+    CHECK (purpose_type IN ('normal', 'disposal', 'sample', 'return_to_supplier'));
 
 -- 不適合品出荷（廃棄含む）に理由記載を必須化
 ALTER TABLE shipment_orders
   ADD COLUMN disposition_note TEXT;
 
 -- disposition_note 必須バリデーション（アプリ層 or CHECK 制約で実装）
--- purpose IN ('disposal','sample','vendor_return') の場合は disposition_note NOT NULL
+-- purpose_type IN ('disposal','sample','return_to_supplier') の場合は disposition_note NOT NULL
 ```
 
 **用途区分 × 在庫ステータス 出荷許可マトリクス：**
 
-| purpose（用途区分） | 許可する inventory.status | 備考 |
+| purpose_type（用途区分） | 許可する inventory.status | 備考 |
 |---------------------|--------------------------|------|
-| `outbound`（通常出荷） | `available` / `reserved` | 標準出荷フロー |
+| `normal`（通常出荷） | `available` / `reserved` | 標準出荷フロー |
 | `disposal`（廃棄） | `quarantine` / `available`（荷主承認後） | 廃棄は荷主指示起点必須 |
 | `sample`（サンプル出荷） | `available` | 引当数量に注意 |
-| `vendor_return`（仕入先返品） | `available` / `quarantine` | 入荷返品と連動 |
+| `return_to_supplier`（仕入先返品） | `available` / `quarantine` | 入荷返品と連動 |
 
 > ⚠️ `disposal` の場合は必ず `disposal_approvals` の承認完了を確認してから出荷処理を実行すること。
 
@@ -362,7 +362,7 @@ ALTER TABLE shipment_orders
 | QA-5①（不適合品移動先） | R種別ロケへ移動・倉庫外への物理移動は荷主指示が必須 | DB-5 |
 | QA-5②（廃棄記録形式） | WMS DBのみ・廃棄証憑/マニフェストは荷主側で管理 | — |
 | QA-5③（廃棄起点） | 廃棄は荷主指示起点・倉庫主導の廃棄判断はなし | AU-1 |
-| QA-5④（廃棄フロー統合） | 廃棄の独立業務フローは設けない・出荷フロー（purpose='disposal'）として処理 | BF-3 |
+| QA-5④（廃棄フロー統合） | 廃棄の独立業務フローは設けない・出荷フロー（purpose_type='disposal'）として処理 | BF-3 |
 | QA-11（返品戻入ロット） | 返品戻入時ロット番号は現物表記準拠・倉庫自動採番なし | DB-2 |
 | Q10-2（RMA運用設定） | RMA機能はオプション。`owners.rma_mode` で切替（disabled / wms_issue / shipper_linked）。通常入庫・返品入庫は入荷No.体系を一元管理 | — |
 | Q10-4（良品の在庫戻し） | C：荷主設定で自動戻し or 承認必須を切替。`owners.return_strategy.auto_restock` フラグで制御 | BF-4 |
@@ -467,11 +467,11 @@ ALTER TABLE shipment_orders
 | ①物理移動先 | 不適合品はR種別ロケ（`location_type='returns'`）に移動。倉庫外への物理移動は荷主指示が必須 |
 | ②廃棄記録形式 | WMS DBのみ。廃棄証憑/産廃マニフェストは荷主側で管理（WMSが証憑を発行しない） |
 | ③廃棄起点 | 廃棄は荷主指示起点。倉庫主導での廃棄判断・実行はなし |
-| ④廃棄フロー統合 | 廃棄の独立業務フローは設けない。出荷フロー（`purpose='disposal'`）に統合して処理 |
+| ④廃棄フロー統合 | 廃棄の独立業務フローは設けない。出荷フロー（`purpose_type='disposal'`）に統合して処理 |
 
 **反映済み：**
 - 本ファイル Q5 表の QA-5 補足ブロック ✅
-- DBスキーマ叩き台：`shipment_orders.purpose` enum 追加・用途区分×在庫ステータス 出荷許可マトリクス ✅
+- DBスキーマ叩き台：`shipment_orders.purpose_type` enum 追加・用途区分×在庫ステータス 出荷許可マトリクス ✅
 - 不適合品出荷は `disposition_note`（理由記載）を確定条件とするバリデーション設計 ✅
 - 決定事項サマリー：QA-5①〜④ 追加 ✅
 

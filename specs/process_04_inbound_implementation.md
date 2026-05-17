@@ -144,7 +144,7 @@ ALTER TABLE lots
 -- owners テーブル：ロット制御フラグ追加
 ALTER TABLE owners
   ADD COLUMN lots_required    BOOLEAN DEFAULT false,   -- ロット必須フラグ
-  ADD COLUMN max_lot_columns  INT DEFAULT 1,            -- 使用するロット欄数（1〜3）
+  ADD COLUMN lot_slots        INT DEFAULT 1,            -- 使用するロット欄数（1〜3）
   ADD COLUMN lot_1_label      TEXT DEFAULT 'ロット番号', -- 第1欄の表示名
   ADD COLUMN lot_2_label      TEXT,                     -- 第2欄の表示名
   ADD COLUMN lot_3_label      TEXT;                     -- 第3欄の表示名
