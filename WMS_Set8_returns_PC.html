@@ -120,6 +120,8 @@
   <span class="label">JUMP:</span>
   <a href="#w1001"><b>W-1001</b>返品受付一覧</a>
   <a href="#w1002"><b>W-1002</b>返品登録</a>
+  <a href="#w1003"><b>W-1003</b>返品良品 在庫戻し承認</a>
+  <a href="#w1004"><b>W-1004</b>廃棄最終承認（荷主）</a>
 </div>
 
 <!-- ============================================================
@@ -454,8 +456,8 @@
 
         <!-- Note box -->
         <div class="note-box">
-          <div class="label">返品受付後の流れ</div>
-          1. 受付登録 &nbsp;→&nbsp; 2. HT検品（ハンディターミナルで数量・状態確認）&nbsp;→&nbsp; 3. 判定区分（良品 / 廃棄 / 保留）&nbsp;→&nbsp; 4. 在庫戻し or 廃棄処理
+          <div class="label">返品受付後の流れ（Q10-3/Q10-4/Q10-5 確定仕様）</div>
+          1. 受付登録 &nbsp;→&nbsp; 2. HT検品（状態を <b>inventory.status</b> で記録・返品専用 enum 廃止）&nbsp;→&nbsp; 3a. 良品戻し：<b>auto_restock=true</b> は自動で <code>available</code> に移行 / <b>auto_restock=false</b> は W-1003 で承認フロー &nbsp;→&nbsp; 3b. 廃棄：倉庫スタッフ申請 → <b>荷主最終承認（W-1004・荷主ロールのみ）</b>
         </div>
 
         <!-- Bottom buttons -->
@@ -463,6 +465,277 @@
           <button class="btn">キャンセル</button>
           <button class="btn">下書き保存</button>
           <button class="btn primary">返品受付確定（HTへ送信）</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     W-1003: 返品良品 在庫戻し承認
+     ============================================================ -->
+<div class="section-divider" id="w1003">
+  <span class="num">W-1003</span>返品良品 在庫戻し承認
+  <span class="badge-new">Q10-4</span>
+</div>
+<div class="desc">
+  <b>概要：</b>返品良品（<code>inventory.status = 'returned_good'</code>）を通常在庫（<code>'available'</code>）に戻す承認画面。荷主設定 <code>owners.return_strategy.auto_restock = false</code> の場合のみ承認操作が必要。<br>
+  <b>auto_restock = true の荷主はHT検品完了時に自動で <code>available</code> に移行するため、この画面には表示されない。</b>倉庫スタッフも承認可能（荷主ロール不要）。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/restock-approval</div>
+  </div>
+  <div class="screen">
+    <div class="sidebar">
+      <div class="logo">WMS Pro<small>倉庫管理システム</small></div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#">入荷一覧</a>
+        <div class="group">返品</div>
+        <a href="#">返品受付一覧</a>
+        <a href="#">返品登録</a>
+        <a href="#" class="active">在庫戻し承認</a>
+        <a href="#">廃棄最終承認</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+      </nav>
+      <div class="sb-footer">v3.1.0 &nbsp;|&nbsp; 東京DC</div>
+    </div>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">返品 / <b>返品良品 在庫戻し承認</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主: <b>すべて</b> ▾</div>
+          <div class="user"><div class="avatar">田</div>田中</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box">
+          <div class="label">auto_restock 設定による分岐</div>
+          <b>auto_restock = true</b>（例：アルファ商事）：HT検品完了と同時に <code>returned_good → available</code> へ自動移行。この画面には表示されない。<br>
+          <b>auto_restock = false</b>（例：マルキ食品）：<code>returned_good</code> で保留中。本画面で承認後に <code>available</code> へ移行。
+        </div>
+        <div class="tabs">
+          <div class="tab active">承認待ち（4）</div>
+          <div class="tab">承認済み（18）</div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            返品良品 承認待ち一覧
+            <span class="meta">inventory.status = returned_good</span>
+          </div>
+          <table class="list">
+            <thead>
+              <tr>
+                <th>返品No</th>
+                <th>荷主</th>
+                <th class="center">auto_restock</th>
+                <th>SKU / 商品名</th>
+                <th class="right">数量</th>
+                <th>検品完了日</th>
+                <th>担当者</th>
+                <th class="center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="num">RT-00049</td>
+                <td>マルキ食品</td>
+                <td class="center"><span class="pill alert">false（承認必須）</span></td>
+                <td><span class="num">SKU-0012</span><br><span style="font-size:11px;color:var(--c-text-sub);">マルキパスタ 500g</span></td>
+                <td class="right num">8</td>
+                <td>05/08</td>
+                <td>鈴木</td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm primary">在庫に戻す</button>
+                  <button class="btn sm">差し戻し</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">RT-00047</td>
+                <td>マルキ食品</td>
+                <td class="center"><span class="pill alert">false（承認必須）</span></td>
+                <td><span class="num">SKU-0031</span><br><span style="font-size:11px;color:var(--c-text-sub);">マルキソース 200ml</span></td>
+                <td class="right num">3</td>
+                <td>05/07</td>
+                <td>山田</td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm primary">在庫に戻す</button>
+                  <button class="btn sm">差し戻し</button>
+                </td>
+              </tr>
+              <tr class="selected">
+                <td class="num">RT-00046</td>
+                <td>ビーシー食品</td>
+                <td class="center"><span class="pill alert">false（承認必須）</span></td>
+                <td><span class="num">SKU-0055</span><br><span style="font-size:11px;color:var(--c-text-sub);">BCドレッシング 300ml</span></td>
+                <td class="right num">2</td>
+                <td>05/06</td>
+                <td>伊藤</td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm primary">在庫に戻す</button>
+                  <button class="btn sm">差し戻し</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note-box warn" style="margin-top:14px;">
+          <div class="label">注意</div>
+          「在庫に戻す」実行後、<code>inventory.status</code> が <code>returned_good → available</code> に変更されます。ロット・シリアルは現物表記に準拠（Q10-6：倉庫自動採番なし）。
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     W-1004: 廃棄最終承認（荷主ロールのみ）
+     ============================================================ -->
+<div class="section-divider" id="w1004">
+  <span class="num">W-1004</span>廃棄最終承認（荷主ロールのみ）
+  <span class="badge-new">Q10-5</span>
+</div>
+<div class="desc">
+  <b>概要：</b>倉庫スタッフがHTで行った廃棄申請を荷主が最終承認する画面。<b>法的根拠：寄託物の所有権は荷主にあるため、廃棄の最終確定は荷主の承認が必須（Q10-5：選択肢C確定）。</b><br>
+  <b>権限：</b>荷主ロール（shipper）のみ操作可能。倉庫ロールはPC画面でも申請閲覧のみ（HT版と同じ申請権限）。<b>PC版のほうがHTより承認権限が強い</b>（荷主ログイン時のみ最終承認ボタンが有効）。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/disposal-approval</div>
+  </div>
+  <div class="screen">
+    <div class="sidebar">
+      <div class="logo">WMS Pro<small>倉庫管理システム</small></div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#">入荷一覧</a>
+        <div class="group">返品</div>
+        <a href="#">返品受付一覧</a>
+        <a href="#">返品登録</a>
+        <a href="#">在庫戻し承認</a>
+        <a href="#" class="active">廃棄最終承認</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+      </nav>
+      <div class="sb-footer">v3.1.0 &nbsp;|&nbsp; 東京DC</div>
+    </div>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">返品 / <b>廃棄最終承認</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主ログイン: <b>マルキ食品</b> ▾</div>
+          <div class="user"><div class="avatar" style="background:#b8002e;">荷</div>荷主担当</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="note-box warn">
+          <div class="label">荷主ロール専用画面</div>
+          この画面は<b>荷主ロール（shipper）のみ最終承認操作が可能</b>です。倉庫スタッフがログインした場合、承認ボタンは表示されず閲覧のみとなります（HTでの廃棄申請から権限が昇格しません）。
+        </div>
+        <div class="tabs">
+          <div class="tab active">承認待ち（2）</div>
+          <div class="tab">処理済み（7）</div>
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">
+            廃棄申請一覧
+            <span class="meta">倉庫スタッフ → 荷主最終承認フロー</span>
+          </div>
+          <table class="list">
+            <thead>
+              <tr>
+                <th>申請No</th>
+                <th>返品No</th>
+                <th>SKU / 商品名</th>
+                <th class="right">廃棄数量</th>
+                <th>廃棄理由</th>
+                <th>申請者</th>
+                <th>申請日</th>
+                <th>状態</th>
+                <th class="center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="selected">
+                <td class="num">DA-00012</td>
+                <td class="num">RT-00050</td>
+                <td><span class="num">SKU-0012</span><br><span style="font-size:11px;color:var(--c-text-sub);">マルキパスタ 500g</span></td>
+                <td class="right num">5</td>
+                <td>品質問題（賞味期限切れ近接）</td>
+                <td>鈴木（倉庫）</td>
+                <td>05/08</td>
+                <td><span class="pill alert">承認待ち</span></td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm danger">廃棄を承認</button>
+                  <button class="btn sm">却下・差し戻し</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">DA-00011</td>
+                <td class="num">RT-00048</td>
+                <td><span class="num">SKU-0031</span><br><span style="font-size:11px;color:var(--c-text-sub);">マルキソース 200ml</span></td>
+                <td class="right num">2</td>
+                <td>破損（漏れあり）</td>
+                <td>山田（倉庫）</td>
+                <td>05/07</td>
+                <td><span class="pill alert">承認待ち</span></td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm danger">廃棄を承認</button>
+                  <button class="btn sm">却下・差し戻し</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- 廃棄承認フォーム（選択行） -->
+        <div class="card">
+          <div class="card-header">
+            廃棄承認 詳細確認 — DA-00012
+            <span class="meta">荷主最終承認</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field">
+                <label>返品No</label>
+                <input type="text" value="RT-00050" readonly style="background:var(--c-bg);">
+              </div>
+              <div class="field">
+                <label>SKU</label>
+                <input type="text" value="SKU-0012 マルキパスタ 500g" readonly style="background:var(--c-bg);">
+              </div>
+              <div class="field">
+                <label>廃棄数量</label>
+                <input type="text" value="5" readonly style="background:var(--c-bg);">
+              </div>
+            </div>
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field" style="grid-column:span 3;">
+                <label>倉庫スタッフ 申請理由</label>
+                <textarea rows="2" readonly style="background:var(--c-bg);">品質問題（賞味期限切れ近接）。返品ロケにて検品実施。現物に賞味期限 2026-05-15 の表記確認。廃棄申請します。</textarea>
+              </div>
+            </div>
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field" style="grid-column:span 3;">
+                <label>荷主コメント（承認/却下理由）</label>
+                <textarea rows="2" placeholder="承認または却下の理由を記入してください（廃棄記録に残ります）"></textarea>
+              </div>
+            </div>
+            <div class="note-box warn" style="margin-bottom:14px;">
+              <div class="label">廃棄確定後は取り消し不可</div>
+              廃棄承認後は <code>disposal_approvals.status = 'approved'</code> が記録され、在庫から完全に除外されます。廃棄証憑・産廃マニフェストは荷主側で別途管理してください（WMSは証憑を発行しません）。
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+              <button class="btn">キャンセル</button>
+              <button class="btn">却下・差し戻し</button>
+              <button class="btn danger">廃棄を最終承認する</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

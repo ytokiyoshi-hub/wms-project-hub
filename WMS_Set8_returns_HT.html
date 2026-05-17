@@ -84,6 +84,8 @@
 <p class="subtitle">返品検品 3ステップ進捗画面（HT-1001）</p>
 <div class="quick-nav"><span class="label">画面ジャンプ：</span>
   <a href="#HT-1001"><b>HT-1001</b>返品検品 3ステップ</a>
+  <a href="#HT-1001-auto"><b>HT-1001-A</b>STEP3 自動戻し（auto_restock=true）</a>
+  <a href="#HT-1001-approval"><b>HT-1001-B</b>STEP3 承認フロー（auto_restock=false）</a>
 </div>
 
 <div class="section-divider" id="HT-1001">
@@ -201,15 +203,15 @@
             </div>
           </div>
 
-          <!-- 状態区分選択 -->
-          <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">状態区分を選択</div>
+          <!-- 状態区分選択（inventory.status 共用・Q10-3確定） -->
+          <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">状態区分を選択（inventory.status）</div>
 
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <div style="border:1px solid var(--c-accent); padding:6px 8px; font-size:11px; font-weight:500; color:var(--c-accent); background:var(--c-base);">良品</div>
-            <div style="border:1px solid var(--c-accent); padding:6px 8px; font-size:11px; font-weight:600; background:var(--c-accent); color:#fff;">要確認</div>
-            <div style="border:1px solid var(--c-alert); padding:6px 8px; font-size:11px; font-weight:500; color:var(--c-alert); background:var(--c-base);">廃棄確定</div>
-            <div style="border:1px solid var(--c-line-dk); padding:6px 8px; font-size:10px; color:var(--c-text-sub); background:var(--c-base);">保留（荷主確認待ち）</div>
+            <div style="border:1px solid var(--c-accent); padding:5px 8px; font-size:10px; font-weight:600; background:var(--c-accent); color:#fff;">returned_good<span style="font-weight:400; margin-left:6px; font-size:9px;">返品良品（在庫戻し待ち）</span></div>
+            <div style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-text-sub); background:var(--c-base);">quarantine<span style="font-weight:400; margin-left:6px; font-size:9px;">保留（荷主確認待ち）</span></div>
+            <div style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base);">廃棄申請<span style="font-weight:400; margin-left:6px; font-size:9px;">（HTは申請のみ。PC側で荷主最終承認）</span></div>
           </div>
+          <div style="font-size:8px; color:var(--c-accent); padding:3px 4px; background:var(--c-accent-lt); border-left:2px solid var(--c-accent);">返品専用 enum 廃止・inventory.status 共用（Q10-3）</div>
 
           <!-- 数量入力 -->
           <div style="display:flex; align-items:center; gap:8px; margin-top:auto;">
@@ -244,7 +246,7 @@
     </div>
     <div class="device-label">
       <span class="id">STEP 2</span>状態確認
-      <div class="desc-text">1明細ずつ状態区分を選択。良品／要確認／廃棄確定／保留から選んでF1確定。</div>
+      <div class="desc-text">inventory.status を直接選択（Q10-3：返品専用 enum 廃止）。returned_good / quarantine / 廃棄申請 から選んでF1確定。</div>
     </div>
   </div>
 
@@ -277,18 +279,22 @@
             </div>
           </div>
 
-          <!-- 処置選択 -->
+          <!-- 処置選択（auto_restock依存・Q10-4 / 廃棄申請のみQ10-5） -->
           <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">処置を選択</div>
 
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <div style="border:1px solid var(--c-accent); padding:7px 8px; font-size:10px; font-weight:500; color:var(--c-accent); background:var(--c-accent-lt);">在庫に戻す（返品良品ロケ）</div>
-            <div style="border:1px solid var(--c-alert); padding:7px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base);">廃棄処理</div>
-            <div style="border:1px solid var(--c-line-dk); padding:7px 8px; font-size:10px; color:var(--c-text-sub); background:var(--c-base);">保留（荷主確認）</div>
+            <div style="border:1px solid var(--c-accent); padding:5px 8px; font-size:10px; font-weight:600; background:var(--c-accent); color:#fff;">在庫に戻す（returned_good 登録）</div>
+            <div style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base);">廃棄申請（HTは申請のみ）</div>
+            <div style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; color:var(--c-text-sub); background:var(--c-base);">保留（quarantine）</div>
           </div>
 
-          <!-- 注意書き -->
-          <div style="font-size:9px; color:var(--c-text-sub); padding:4px 6px; background:var(--c-accent-lt); border-left:3px solid var(--c-accent);">
-            在庫戻しには荷主承認が必要です
+          <!-- auto_restock 分岐注記 -->
+          <div style="font-size:8px; color:var(--c-text); padding:3px 5px; background:var(--c-accent-lt); border-left:2px solid var(--c-accent);">
+            在庫戻し：auto_restock=true→自動で available / false→W-1003 で承認後 available（Q10-4）
+          </div>
+          <!-- 廃棄申請注記（Q10-5） -->
+          <div style="font-size:8px; color:var(--c-alert); padding:3px 5px; background:var(--c-alert-lt); border-left:2px solid var(--c-alert);">
+            廃棄申請はHTから送信のみ。最終承認はPC側 W-1004（荷主ロールのみ）。HTより承認権限強
           </div>
 
           <!-- 進捗 -->
@@ -322,17 +328,158 @@
       </div>
     </div>
     <div class="device-label">
-      <span class="id">STEP 3</span>判定確認
-      <div class="desc-text">処置（在庫戻し／廃棄／保留）を選択してF1確定。F3次明細で続行。全明細完了でPC画面に反映。</div>
+      <span class="id">STEP 3</span>処置決定（権限注意）
+      <div class="desc-text">在庫戻し：auto_restock設定で自動 or W-1003 承認待ちに分岐（Q10-4）。廃棄：HTは申請のみ。荷主がPC側 W-1004 で最終承認（Q10-5）。</div>
     </div>
   </div>
 
 </div><!-- /.ht-wrap -->
 
+<!-- ===== STEP 3 バリアント: auto_restock 分岐（Q10-4） ===== -->
+<div class="section-divider" id="HT-1001-auto" style="max-width:1500px; margin:32px auto 12px;">
+  <span class="num">HT-1001-A</span>STEP3 バリアント：auto_restock=true（自動戻し）
+  <span class="badge-new">Q10-4</span>
+</div>
+<div class="desc" style="max-width:1500px;">
+  <b>荷主設定 auto_restock=true の場合：</b>STEP 3 で「在庫に戻す」を選択すると <code>returned_good → available</code> に即時移行。W-1003 の承認フローは不要。アルファ商事など一般品荷主向け。
+</div>
+<div class="ht-wrap">
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:20 87%</span></div>
+        <div class="ht-header">
+          <span>返品検品 RT-00049</span>
+          <span class="scr-id">HT-1001-A</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step done"><span class="num">1</span>返品受付</div>
+            <div class="step done"><span class="num">2</span>状態確認</div>
+            <div class="step current"><span class="num">3</span>処置決定</div>
+          </div>
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
+            <div style="font-size:9px; color:var(--c-text-sub);">荷主 / 設定</div>
+            <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:600; margin-top:1px;">
+              <span>アルファ商事</span>
+              <span style="color:var(--c-accent); font-size:9px;">auto_restock=true</span>
+            </div>
+          </div>
+          <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">処置を選択</div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <div style="border:2px solid var(--c-accent); padding:7px 8px; font-size:10px; font-weight:700; color:var(--c-accent); background:var(--c-accent-lt);">在庫に即時戻す（available）</div>
+            <div style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base);">廃棄申請</div>
+            <div style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; color:var(--c-text-sub); background:var(--c-base);">保留</div>
+          </div>
+          <div style="font-size:8px; color:var(--c-accent); padding:3px 5px; background:var(--c-accent-lt); border-left:2px solid var(--c-accent);">
+            自動戻し：確定後すぐ available に移行
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>確定</div>
+          <div class="key-lbl"><span class="fn">F2</span>戻る</div>
+          <div class="key-lbl"><span class="fn">F3</span>次明細</div>
+          <div class="key-lbl"><span class="fn">F4</span>中止</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row"><div class="pkey scan">SCAN</div></div>
+        <div class="row"><div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div></div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-1001-A</span>auto_restock=true（自動戻し）
+      <div class="desc-text">F1確定で即時 available 移行。W-1003 承認不要。</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider" id="HT-1001-approval" style="max-width:1500px; margin:32px auto 12px;">
+  <span class="num">HT-1001-B</span>STEP3 バリアント：auto_restock=false（承認フロー）
+  <span class="badge-new">Q10-4</span>
+</div>
+<div class="desc" style="max-width:1500px;">
+  <b>荷主設定 auto_restock=false の場合：</b>STEP 3 で「在庫に戻す」を選択すると <code>returned_good</code> ステータスで登録・保留状態に。<b>PC画面 W-1003 での荷主または倉庫上長の承認後に <code>available</code> に移行</b>（食品・医薬品等の高品質管理荷主向け）。
+</div>
+<div class="ht-wrap">
+  <div>
+    <div class="ht-device">
+      <div class="brand">KEYENCE</div>
+      <div class="model">BT-A2000</div>
+      <div class="ht-screen">
+        <div class="ht-statusbar"><span>WiFi 5GHz</span><span>09:22 86%</span></div>
+        <div class="ht-header">
+          <span>返品検品 RT-00051</span>
+          <span class="scr-id">HT-1001-B</span>
+        </div>
+        <div class="ht-body">
+          <div class="step-progress">
+            <div class="step done"><span class="num">1</span>返品受付</div>
+            <div class="step done"><span class="num">2</span>状態確認</div>
+            <div class="step current"><span class="num">3</span>処置決定</div>
+          </div>
+          <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
+            <div style="font-size:9px; color:var(--c-text-sub);">荷主 / 設定</div>
+            <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:600; margin-top:1px;">
+              <span>マルキ食品</span>
+              <span style="color:var(--c-alert); font-size:9px;">auto_restock=false</span>
+            </div>
+          </div>
+          <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">処置を選択</div>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <div style="border:2px solid var(--c-accent); padding:7px 8px; font-size:10px; font-weight:700; color:var(--c-accent); background:var(--c-accent-lt);">返品良品として登録（returned_good）</div>
+            <div style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base);">廃棄申請</div>
+            <div style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; color:var(--c-text-sub); background:var(--c-base);">保留</div>
+          </div>
+          <div style="font-size:8px; color:var(--c-alert); padding:3px 5px; background:var(--c-alert-lt); border-left:2px solid var(--c-alert);">
+            承認待ち：PC W-1003 で承認後 available に移行
+          </div>
+        </div>
+        <div class="ht-key-labels">
+          <div class="key-lbl primary"><span class="fn">F1</span>確定</div>
+          <div class="key-lbl"><span class="fn">F2</span>戻る</div>
+          <div class="key-lbl"><span class="fn">F3</span>次明細</div>
+          <div class="key-lbl"><span class="fn">F4</span>中止</div>
+        </div>
+      </div>
+      <div class="ht-keypad">
+        <div class="row"><div class="pkey scan">SCAN</div></div>
+        <div class="row"><div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div></div>
+        <div class="ht-dpad-row">
+          <div class="ht-dpad"><div class="ok">OK</div></div>
+          <div class="ht-num-grid">
+            <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+            <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+            <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+            <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">
+      <span class="id">HT-1001-B</span>auto_restock=false（承認待ち）
+      <div class="desc-text">F1確定で returned_good 登録・W-1003 承認待ちへ。廃棄申請はHTから送信、最終承認はPC W-1004（荷主ロール）。</div>
+    </div>
+  </div>
+</div>
+
 <div style="max-width:1500px; margin:0 auto 0;">
   <div class="note-box">
-    <div class="label">返品検品フロー</div>
-    1. 返品ラベルorJANをスキャン → 2. 1明細ずつ状態区分を選択（良品/要確認/廃棄確定/保留）→ 3. 処置を決定 → 4. 全明細完了で検品完了・PC画面に反映
+    <div class="label">返品検品フロー（Q10-3/Q10-4/Q10-5 確定仕様）</div>
+    1. 返品ラベルorJANをスキャン → 2. 状態区分を <b>inventory.status</b> で選択（returned_good / quarantine / 廃棄申請）→ 3. 処置決定（在庫戻し or 廃棄申請 or 保留）→ 4. 全明細完了で検品完了・PC画面に反映
+    <br><b>良品戻し：</b>auto_restock=true → 自動で available / false → PC W-1003 で荷主/倉庫上長が承認後 available
+    <br><b>廃棄：</b>HTは申請送信のみ。PC W-1004（荷主ロール）が最終承認。<b>HTよりPCのほうが廃棄承認権限が強い。</b>
   </div>
 </div>
 
