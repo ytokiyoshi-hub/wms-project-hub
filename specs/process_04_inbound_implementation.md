@@ -114,7 +114,7 @@
 | 完璧に詰める部分 | 在庫汚染防止（誤って在庫に載せないバリデーション） |
 
 > ⚠️ これは「仕入先（ベンダー）への返品」であり、**顧客返品の物理受入（工程10 ②）とは別フロー**。  
-> 顧客返品受入は本工程の F-402〜F-406 を共用し、`inbound_movements.is_return=true` で区別する（Q10-2 確定）。
+> 顧客返品受入は本工程の F-402〜F-406 を共用し、`inbound_schedules.order_type='return'` で区別する（Q10-2 確定・v4 U-1 承認済み）。
 
 ---
 
@@ -175,15 +175,26 @@ ALTER TABLE owners
 -- shipper_linked : 荷主システムからRMA番号を連携受取（WMSは発番しない）
 ```
 
-#### inbound_movements テーブルへの追加カラム（返品入庫区別）
+> ⚠️ **本番実装TODO（Phase 9-V-PHASEE-FIX #957）**: Phase 9 プロト実装（2号）の `rma_mode` 値域が `none / wms_issue / shipper_link` になっているが、正式な specs 値域は `disabled / wms_issue / shipper_linked` である。本番実装時にプロト値域を specs に統一すること（`none → disabled`、`shipper_link → shipper_linked`）。
+
+#### inbound_schedules テーブルへの追加カラム（入庫種別）
 
 ```sql
--- 返品由来の入荷を区別するフラグ
+-- 入庫種別（通常/返品・予定段階で確定）
+ALTER TABLE inbound_schedules
+  ADD COLUMN order_type TEXT NOT NULL DEFAULT 'normal'
+    CHECK (order_type IN ('normal', 'return'));
+-- normal : 通常入庫（標準の入荷フロー）
+-- return : 返品入庫（顧客返品の物理受入）
+-- ※ 種別は inbound_movements ではなく inbound_schedules（予定）段階で確定する設計（v4 U-1 承認済み）
+```
+
+```sql
+-- 返品元の顧客返品ヘッダーとの紐付け（返品入庫時のみ使用）
 ALTER TABLE inbound_movements
-  ADD COLUMN is_return          BOOLEAN DEFAULT false,
   ADD COLUMN customer_return_id BIGINT REFERENCES customer_returns(id);
--- 通常入荷は is_return=false / customer_return_id=NULL
--- 顧客返品受入は is_return=true / customer_return_id=対応する返品ヘッダーID
+-- 返品入庫（order_type='return'）の場合のみ customer_return_id=対応する返品ヘッダーID
+-- 通常入庫は customer_return_id=NULL
 ```
 
 ---
@@ -230,4 +241,4 @@ F-407（入荷返品）：F-403 完了後にいつでも着手可
 
 ---
 
-*最終更新: 2026-05-17 / Phase 9-H1R-A #938 / さーちゃん（Q10-2: 入庫No.統一方針・RMA運用設定・owners.rma_mode 追加・inbound_movements.is_return 追加・F-407 区別注記 反映）*
+*最終更新: 2026-05-17 / Phase 9-V-PHASEE-FIX #957 / さーちゃん（修正1: inbound_movements.is_return → inbound_schedules.order_type（normal/return）に変更、修正2: owners.rma_mode 本番TODO注記追加）*
