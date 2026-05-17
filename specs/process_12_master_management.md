@@ -701,8 +701,47 @@ INSERT INTO adjustment_reason_codes (owner_id, code, label, sort_order) VALUES
 
 ---
 
+---
+
+## 11. Phase 9 本番 TODO（2号 verify 判明事項）
+
+> 出典：#932 / kurokun_memo#274（Phase 9 本番実装で必ず対応すべき事項として2号 verify で判明）
+> 追記：2026-05-17 / Phase 9-TODO-REC さーちゃん（#936）
+
+### R-7①：ロール名統一（プロトタイプ → 本番 Supabase）
+
+**Phase 9 本番 TODO：本番 Supabase 実装時に AU-1 確定ロール名に統一すること**
+
+| 実装状況 | ロール名 |
+|----------|---------|
+| wms-impl 2号プロトタイプ | `admin / leader / worker / owner_user` |
+| **AU-1 確定（3号ヒアリング）** | **`admin / operator / viewer / shipper`** |
+
+対応方針：
+
+- 本番 Supabase の `user_owners.role` CHECK 制約は AU-1 確定名（`admin / operator / viewer / shipper`）で実装すること（現行 process_12 スキーマはすでに確定名）
+- プロトのロール対応例：`leader` → `operator`、`worker` → `viewer` または `operator`、`owner_user` → `shipper`
+- プロトタイプデータをシードとして使う場合はロール名変換スクリプトを用意すること
+- RLS ポリシー内のロール名文字列も AU-1 確定名に統一する（特に `'admin'` 判定ロジックは変更なし）
+- 参照：HEARING_SHEET AU-1 / process_12 セクション3 user_owners 論点
+
+---
+
+### R-7②：`discrepancy.approve` を admin only に制限
+
+**Phase 9 本番 TODO：入荷差異の最終アクションを admin ロール専用に実装すること**
+
+- wms-impl 2号プロトタイプでは `leader` ロールも差異承認アクション（`discrepancy.approve`）を実行可能
+- **QA-10 確定（3号ヒアリング 2026-05-16）：入荷差異の最終アクション選択権は倉庫管理者（admin）ロールが持つ**
+- 本番実装では入荷差異処理 API/UI の権限チェックを `admin` のみに制限すること
+- 具体的には：`user_owners.role = 'admin'` の場合のみ差異最終アクション（実数受入・再検品要求・仕入先クレーム）の確定操作を許可する
+- 参照：HEARING_SHEET QA-10
+
+---
+
 *最終更新：2026-05-09 / Phase 9-β さーちゃん（工程12 マスタ管理論点叩き台）*  
 *プレースホルダ追加：2026-05-16 / Phase 9-DOC-PREP さーちゃん（#913）*  
 *Q12-1 確定反映：2026-05-16 / Phase 9-REFLECT-Q12 さーちゃん（#916）*  
 *QA-9 方式B 再確定反映：2026-05-17 / Phase 9-V-FIX-R5 さーちゃん（#931）*  
-*QA確定事項追記：2026-05-16 / Phase 9-REFLECT2-D にーちゃん（#925）*
+*QA確定事項追記：2026-05-16 / Phase 9-REFLECT2-D にーちゃん（#925）*  
+*Phase 9 本番 TODO 追記：2026-05-17 / Phase 9-TODO-REC さーちゃん（#936）*
