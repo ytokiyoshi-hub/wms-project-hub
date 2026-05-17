@@ -1547,6 +1547,8 @@ const screens = [
   {id:'W-517',name:'梱包ロジック設定',device:'pc',file:'WMS_Master_PackagingRule.html'},
   {id:'W-518',name:'補充ルール設定',device:'pc',file:'WMS_Master_ReplenishmentRule.html'},
   {id:'W-520',name:'方面マスタ',device:'pc',file:'WMS_Master_Region.html'},
+  {id:'W-521',name:'請求単位マスタ',device:'pc',file:'WMS_Master_BillingUnit.html'},
+  {id:'W-530',name:'郵便番号→方面マッピング',device:'pc',file:'WMS_Master_PostalRegionMap.html'},
   // PC - 在庫
   {id:'W-207',name:'ステータス変更',device:'pc',file:'WMS_Set2_inventory_PC.html#W-207'},
   {id:'W-208',name:'ロット出荷止め',device:'pc',file:'WMS_Set2_inventory_PC.html#W-208'},
@@ -1562,6 +1564,7 @@ const screens = [
   {id:'W-702',name:'請求書詳細',device:'pc',file:'WMS_GroupB_billing.html#W-702'},
   {id:'W-703',name:'請求実績',device:'pc',file:'WMS_GroupB_billing.html#W-703'},
   {id:'W-714',name:'委託先請求書突合',device:'pc',file:'WMS_GroupB_billing.html#W-714'},
+  {id:'W-SNP',name:'月次スナップショット確定・修正',device:'pc',file:'WMS_Billing_Snapshot.html'},
   // PC - 人員
   {id:'W-513b',name:'従業員マスタ',device:'pc',file:'WMS_Set4_workforce_PC.html#W-513'},
   {id:'W-514',name:'業態マスタ',device:'pc',file:'WMS_Set4_workforce_PC.html#W-514'},
@@ -1611,12 +1614,16 @@ const screens = [
   // Set8 - 返品処理
   {id:'W-1001',name:'返品受付一覧（Set8）',device:'pc',file:'WMS_Set8_returns_PC.html#w1001'},
   {id:'W-1002',name:'返品登録（Set8）',device:'pc',file:'WMS_Set8_returns_PC.html#w1002'},
+  {id:'W-1003',name:'返品廃棄承認フロー',device:'pc',file:'WMS_Return_Disposal_PC.html'},
   {id:'HT-1001',name:'返品受付HT（Set8）',device:'ht',file:'WMS_Set8_returns_HT.html#HT-1001'},
   // Set9 - 在庫2（棚卸し・在庫調整）
   {id:'S9-W-701',name:'棚卸し計画一覧（Set9）',device:'pc',file:'WMS_Set9_inventory_PC.html#w701'},
   {id:'S9-W-702',name:'棚卸し実施・差異確認（Set9）',device:'pc',file:'WMS_Set9_inventory_PC.html#w702'},
   {id:'S9-W-703',name:'在庫調整（Set9）',device:'pc',file:'WMS_Set9_inventory_PC.html#w703'},
   {id:'HT-701',name:'棚卸しHT（Set9）',device:'ht',file:'WMS_Set9_inventory_HT.html#HT-701'},
+  // Phase 9 - ユーザー管理・SKUインポート
+  {id:'W-UI1',name:'ユーザー招待フロー',device:'pc',file:'WMS_User_Invite.html'},
+  {id:'W-SKU-IMP',name:'SKU CSV一括インポート',device:'pc',file:'WMS_SKU_CSV_Import.html'},
   // ポータル
   {id:'P-000',name:'ポータルログイン',device:'portal',file:'WMS_Set5_portal.html#P-000'},
   {id:'P-001',name:'ポータルダッシュボード',device:'portal',file:'WMS_Set5_portal.html#P-001'},
