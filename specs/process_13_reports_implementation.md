@@ -41,7 +41,7 @@
 | 月跨ぎ繰越 | 前月末日23:59時点の在庫をスナップショットとして使用（QA-2③確定） |
 | 致命傷ライン | CA-1（請求賃率） / DB-4（荷主切替）/ AU-1（承認） |
 | 9割突っ走り部分 | PDF レイアウト・配色 |
-| 完璧に詰める部分 | 計算ロジック・端数処理・前月修正分の扱い・荷主側システムとの自動突合 |
+| 完璧に詰める部分 | 計算ロジック・端数処理（**荷主別設定・デフォルト四捨五入** Q13-1確定）・前月修正分（**翌月加減算方式** Q13-2確定）・荷主側システムとの自動突合 |
 
 **請求項目の典型構成（推奨案 D ベース）：**
 ```
@@ -216,5 +216,74 @@ WHERE br.rule_type = '保管料'
 
 ---
 
+---
+
+### Q12-5（帳票側）：請求単位マスター化（2026-05-17 確定）
+
+**確定：`billing_rules.unit` を enum から `unit_master` FK 参照化（帳票・計算ロジック側対応）**
+
+- `billing_rules.unit` カラムの型変更（enum → `unit_master.id` FK）は process_12 側 H1R-C タスクが担当
+- **帳票・計算ロジック側の責務（本 process_13 が対応）：**
+  - 請求計算時は `unit_master.unit_code`（ケース / ピース / 坪 / ㎡ / パレット / kg / hour 等）を参照して単価を適用
+  - 請求書帳票（PDF・CSV）の「単位」欄は `unit_master.unit_name` を表示
+  - 単位追加時に帳票側ロジック変更は不要（unit_master 参照で自動対応）
+- **SQL イメージ（請求計算時の unit 取得）：**
+  ```sql
+  SELECT br.unit_price, um.unit_code, um.unit_name
+  FROM billing_rules br
+  JOIN unit_master um ON um.id = br.unit_id
+  WHERE br.owner_id = ? AND br.rule_type = ?;
+  ```
+
+---
+
+### Q13-1：端数処理の荷主別設定（2026-05-17 確定・選択肢B＋荷主別切替）
+
+**確定：端数処理は荷主ごとに設定可能・デフォルトは四捨五入**
+
+- `billing_rules` に端数処理設定カラムを追加（migration は process_12 側と調整）：
+  ```sql
+  ALTER TABLE billing_rules
+    ADD COLUMN rounding_method TEXT NOT NULL DEFAULT 'round'
+      CHECK (rounding_method IN ('floor', 'round', 'ceil'));
+  -- 'floor' = 切り捨て（A）, 'round' = 四捨五入（B）, 'ceil' = 切り上げ（C）
+  ```
+- デフォルト値は `'round'`（四捨五入）
+- 月次バッチ請求計算時に荷主ごとの `rounding_method` を参照して端数処理を適用
+- 帳票には端数処理後の整数値（円単位）を表示
+- **計算ロジックイメージ：**
+  ```sql
+  SELECT
+    CASE br.rounding_method
+      WHEN 'floor' THEN FLOOR(ps.qty * br.unit_price)
+      WHEN 'ceil'  THEN CEIL(ps.qty * br.unit_price)
+      ELSE              ROUND(ps.qty * br.unit_price)  -- 'round' がデフォルト
+    END AS storage_fee
+  FROM period_snapshot ps
+  JOIN billing_rules br ON br.owner_id = ps.owner_id AND br.rule_type = '保管料';
+  ```
+
+---
+
+### Q13-2：請求書修正フロー（2026-05-17 確定・選択肢A）
+
+**確定：請求書修正は翌月加減算方式**
+
+- 前月請求書に誤りが発覚した場合、翌月分の請求書に差額（加算 or 減算）を組み込む
+- `billing_invoices` に修正対応カラムを追加：
+  ```sql
+  ALTER TABLE billing_invoices
+    ADD COLUMN adjustment_ref_invoice_id BIGINT REFERENCES billing_invoices(id),
+    ADD COLUMN adjustment_amount         NUMERIC,  -- 正=追加請求、負=控除
+    ADD COLUMN adjustment_reason         TEXT;
+  ```
+- **在庫データ整合性の修正**（`inventory_adjustments` 経由）は process_11 側 H1R-B タスクが担当
+- 月次スナップショットの確定値は変更しない（翌月の差額で吸収）
+- 帳票（PDF）には修正行として「前月分調整：+/-XXXX 円（理由）」を明示
+- 前月請求書の原本は保持（取り消し・再発行はしない）
+
+---
+
 *最終更新: 2026-05-08 / Phase 7-I まーちゃん（工程13 帳票・レポート 6機能の論点叩き台）*  
-*QA確定事項追記：2026-05-16 / Phase 9-REFLECT2-D にーちゃん（#925）*
+*QA確定事項追記：2026-05-16 / Phase 9-REFLECT2-D にーちゃん（#925）*  
+*HEARING1確定反映：2026-05-17 / Phase 9-H1R-D さーちゃん（#941）Q12-5帳票側・Q13-1・Q13-2*
