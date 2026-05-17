@@ -576,6 +576,38 @@
           </div>
         </div>
 
+        <!-- 荷主固有設定カード -->
+        <div class="card">
+          <div class="card-header">
+            荷主固有設定（確定仕様 Q10〜QA）
+            <button class="btn sm">編集</button>
+          </div>
+          <div class="card-body">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0;">
+              <div style="padding:0 16px 0 0; border-right:1px solid var(--c-line);">
+                <div class="kv-row"><span class="k">棚卸方式</span><span class="v">循環棚卸</span></div>
+                <div class="kv-row" style="margin-top:2px;"><span class="k" style="font-size:10px; color:var(--c-text-mute);">Q11-1</span><span class="v" style="font-size:10px; color:var(--c-text-mute);">5種から選択</span></div>
+                <div class="kv-row" style="margin-top:10px;"><span class="k">JANコード書式</span><span class="v">厳格</span></div>
+                <div class="kv-row"><span class="k" style="font-size:10px; color:var(--c-text-mute);">Q12-2</span><span class="v" style="font-size:10px; color:var(--c-text-mute);">チェックデジット検証あり</span></div>
+                <div class="kv-row" style="margin-top:10px;"><span class="k">RMA番号運用</span><span class="v">WMS発番</span></div>
+                <div class="kv-row"><span class="k" style="font-size:10px; color:var(--c-text-mute);">Q10-2</span><span class="v" style="font-size:10px; color:var(--c-text-mute);">WMS発番 / 連携受取 / 不使用</span></div>
+              </div>
+              <div style="padding:0 16px; border-right:1px solid var(--c-line);">
+                <div class="kv-row"><span class="k">良品戻し自動補充</span><span class="v"><span class="pill ok" style="font-size:10px; padding:0 6px;">有効</span></span></div>
+                <div class="kv-row"><span class="k" style="font-size:10px; color:var(--c-text-mute);">Q10-4</span><span class="v" style="font-size:10px; color:var(--c-text-mute);">auto_restock フラグ</span></div>
+                <div class="kv-row" style="margin-top:10px;"><span class="k">保管料計算</span><span class="v">月末</span></div>
+                <div class="kv-row"><span class="k" style="font-size:10px; color:var(--c-text-mute);">QA-2</span><span class="v" style="font-size:10px; color:var(--c-text-mute);">当月末在庫ベース</span></div>
+              </div>
+              <div style="padding:0 0 0 16px;">
+                <div class="kv-row"><span class="k">補充発火タイミング</span><span class="v">即時</span></div>
+                <div class="kv-row"><span class="k" style="font-size:10px; color:var(--c-text-mute);">QA-6</span><span class="v" style="font-size:10px; color:var(--c-text-mute);">在庫切れ検知時（即時）</span></div>
+                <div class="kv-row" style="margin-top:10px;"><span class="k">ロットフォーマット</span><span class="v">製造日基準</span></div>
+                <div class="kv-row"><span class="k" style="font-size:10px; color:var(--c-text-mute);">QA-7</span><span class="v" style="font-size:10px; color:var(--c-text-mute);">YYYYMMDD形式</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- 操作エリア -->
         <div class="card">
           <div class="card-header">

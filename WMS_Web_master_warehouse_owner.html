@@ -1235,6 +1235,80 @@
             </div>
 
             <div class="form-section">
+              <h3>荷主固有設定（確定仕様 Q10〜QA）</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>棚卸方式<span class="required">*</span></label>
+                  <select>
+                    <option>日々棚卸</option>
+                    <option selected>循環棚卸</option>
+                    <option>ピッキング時確認</option>
+                    <option>月次棚卸</option>
+                    <option>期末棚卸</option>
+                  </select>
+                  <div class="hint">Q11-1：荷主単位で棚卸サイクルを設定（5種から選択）</div>
+                </div>
+                <div class="field">
+                  <label>JANコード書式チェック</label>
+                  <select>
+                    <option selected>厳格（チェックデジット検証あり）</option>
+                    <option>緩和（形式チェックのみ）</option>
+                  </select>
+                  <div class="hint">Q12-2：入荷・出荷時のJANコード検証レベル</div>
+                </div>
+                <div class="field">
+                  <label>RMA番号運用方式</label>
+                  <select>
+                    <option selected>WMS発番</option>
+                    <option>連携受取（荷主システムから）</option>
+                    <option>不使用</option>
+                  </select>
+                  <div class="hint">Q10-2：返品受付時のRMA番号の採番方式</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>良品戻し自動補充（auto_restock）</label>
+                  <select>
+                    <option selected>有効（良品確認後に自動補充）</option>
+                    <option>無効（手動確認後）</option>
+                  </select>
+                  <div class="hint">Q10-4：返品良品の在庫自動補充フラグ</div>
+                </div>
+                <div class="field">
+                  <label>保管料計算タイミング</label>
+                  <select>
+                    <option>月初（前月末在庫ベース）</option>
+                    <option selected>月末（当月末在庫ベース）</option>
+                    <option>日次（日別在庫積算）</option>
+                  </select>
+                  <div class="hint">QA-2：月次保管料の計算基準日</div>
+                </div>
+                <div class="field">
+                  <label>補充発火タイミング</label>
+                  <select>
+                    <option selected>在庫切れ検知時（即時）</option>
+                    <option>ピッキング完了時</option>
+                    <option>日次バッチ（翌朝）</option>
+                  </select>
+                  <div class="hint">QA-6：補充指示の発行タイミング</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>ロットフォーマット設定</label>
+                  <select>
+                    <option selected>製造日基準（YYYYMMDD）</option>
+                    <option>賞味期限基準（YYYYMMDD）</option>
+                    <option>ロット番号（英数字）</option>
+                    <option>製造日＋ロット番号（複合）</option>
+                  </select>
+                  <div class="hint">QA-7：ロット番号の書式・採番ルール</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
               <h3>関連設定（編集後アクセス可能）</h3>
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
                 <button class="btn sm">契約単価設定 →</button>
@@ -1389,6 +1463,80 @@
                 <div class="field" style="grid-column: span 2;">
                   <label>備考</label>
                   <textarea rows="2">スポット契約。請求は別途月末に手配書で対応。</textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>荷主固有設定（確定仕様 Q10〜QA）</h3>
+              <div class="form-row">
+                <div class="field">
+                  <label>棚卸方式</label>
+                  <select>
+                    <option>日々棚卸</option>
+                    <option selected>循環棚卸</option>
+                    <option>ピッキング時確認</option>
+                    <option>月次棚卸</option>
+                    <option>期末棚卸</option>
+                  </select>
+                  <div class="hint">Q11-1：荷主単位で棚卸サイクルを設定（5種から選択）</div>
+                </div>
+                <div class="field">
+                  <label>JANコード書式チェック</label>
+                  <select>
+                    <option selected>厳格（チェックデジット検証あり）</option>
+                    <option>緩和（形式チェックのみ）</option>
+                  </select>
+                  <div class="hint">Q12-2：入荷・出荷時のJANコード検証レベル</div>
+                </div>
+                <div class="field">
+                  <label>RMA番号運用方式</label>
+                  <select>
+                    <option selected>WMS発番</option>
+                    <option>連携受取（荷主システムから）</option>
+                    <option>不使用</option>
+                  </select>
+                  <div class="hint">Q10-2：返品受付時のRMA番号の採番方式</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>良品戻し自動補充（auto_restock）</label>
+                  <select>
+                    <option selected>有効（良品確認後に自動補充）</option>
+                    <option>無効（手動確認後）</option>
+                  </select>
+                  <div class="hint">Q10-4：返品良品の在庫自動補充フラグ</div>
+                </div>
+                <div class="field">
+                  <label>保管料計算タイミング</label>
+                  <select>
+                    <option>月初（前月末在庫ベース）</option>
+                    <option selected>月末（当月末在庫ベース）</option>
+                    <option>日次（日別在庫積算）</option>
+                  </select>
+                  <div class="hint">QA-2：月次保管料の計算基準日</div>
+                </div>
+                <div class="field">
+                  <label>補充発火タイミング</label>
+                  <select>
+                    <option selected>在庫切れ検知時（即時）</option>
+                    <option>ピッキング完了時</option>
+                    <option>日次バッチ（翌朝）</option>
+                  </select>
+                  <div class="hint">QA-6：補充指示の発行タイミング</div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>ロットフォーマット設定</label>
+                  <select>
+                    <option selected>製造日基準（YYYYMMDD）</option>
+                    <option>賞味期限基準（YYYYMMDD）</option>
+                    <option>ロット番号（英数字）</option>
+                    <option>製造日＋ロット番号（複合）</option>
+                  </select>
+                  <div class="hint">QA-7：ロット番号の書式・採番ルール</div>
                 </div>
               </div>
             </div>
