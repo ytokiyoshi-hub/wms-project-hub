@@ -75,7 +75,7 @@
 </head>
 <body>
 <h1 class="page-title">Set9 棚卸しスキャン HT画面</h1>
-<p class="subtitle">棚卸しスキャン 3ステップ（ロケスキャン → SKUカウント → 確認）</p>
+<p class="subtitle">棚卸しスキャン 3ステップ（ロケスキャン → SKUカウント → 確認）/ 5方式対応（Q11-1 確定）</p>
 
 <div class="section-divider" id="HT-701">
   <span class="num">HT-701</span>棚卸しスキャン（3ステップ）
@@ -113,6 +113,7 @@
             <div style="font-size:9px; color:var(--c-text-sub);">セッション</div>
             <div style="font-size:11px; font-weight:600; font-family:var(--f-mono);">CNT-2605-001</div>
             <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">荷主: マルキ食品　1F-Aゾーン</div>
+            <div style="font-size:9px; color:var(--c-accent); font-weight:600; margin-top:2px;">方式: 循環棚卸（凍結なし）</div>
           </div>
 
           <!-- 進捗 -->
@@ -192,6 +193,7 @@
               <div style="font-size:11px; font-weight:600; font-family:var(--f-mono);">A01-01-02</div>
               <div style="font-size:9px; color:var(--c-text-sub);">1F-Aゾーン / 常温</div>
             </div>
+            <div style="font-size:9px; color:var(--c-accent); font-weight:600; margin-top:2px;">CNT-2605-001 / 循環棚卸</div>
           </div>
 
           <!-- スキャン指示 -->
@@ -363,11 +365,12 @@
 </div><!-- /.ht-wrap -->
 
 <div class="note-box">
-  <div class="label">棚卸しスキャンのポイント</div>
+  <div class="label">棚卸しスキャンのポイント（5方式対応 / Q11-1 確定）</div>
   1. ロケーションのバーコードをスキャンしてからSKUをカウント（ロケ単位で完結）<br>
   2. 帳簿値は基本非表示（先入観を防ぐため）。確認ステップのみ差異を表示<br>
   3. 差異が出たロケはPC画面から再カウント指示が出ます（最大3回）<br>
-  4. 全ロケ完了後、管理者が差異確定 → 在庫調整（W-703）で補正
+  4. 全ロケ完了後、管理者が差異確定 → 在庫調整（W-703）で調整理由コード選択＋補足欄入力<br>
+  5. 棚卸し方式によって凍結の有無が異なります：<b>日々・ピッキング・循環棚卸は凍結なし</b>（通常入出庫と並行）、<b>月次棚卸は部分凍結</b>、<b>期末棚卸は全体凍結</b>
 </div>
 
 </body>

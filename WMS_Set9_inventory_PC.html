@@ -119,7 +119,7 @@
 <body>
 
 <h1 class="page-title">Set9 棚卸し・在庫調整 PC画面</h1>
-<p class="subtitle">棚卸し計画一覧 / 棚卸し実施（差異確認） / 在庫調整</p>
+<p class="subtitle">棚卸し計画一覧（5方式対応） / 棚卸し実施（差異確認） / 在庫調整（調整理由コード選択）</p>
 
 <div class="quick-nav">
   <span class="label">Quick Nav:</span>
@@ -135,7 +135,7 @@
   <span class="num">W-701</span>棚卸し計画一覧
 </div>
 <div class="desc">
-  <b>W-701 棚卸し計画一覧</b> — 棚卸しセッション（循環棚卸・一斉棚卸）の一覧・進捗管理。実施中は対象ロケーションへの出荷指示を自動凍結。
+  <b>W-701 棚卸し計画一覧</b> — 棚卸しセッション（<b>日々棚卸・ピッキング時在庫確認・循環棚卸・月次棚卸・期末棚卸</b> の5方式）の一覧・進捗管理。月次・期末棚卸は対象ロケーションへの出荷指示を凍結。日々・ピッキング・循環棚卸は凍結なしで通常入出庫と並行運用可。荷主ごとに方式を選択・複数モード併用可（Q11-1 確定）。
 </div>
 
 <div class="pc-frame">
@@ -185,8 +185,8 @@
       <div class="content">
 
         <div class="note-box warn" style="margin-bottom:14px;">
-          <div class="label">⚠ 出荷停止中ロケーションあり</div>
-          棚卸し実施中のロケーションは出荷指示が一時停止されています。対象ロケ: 1F-A01〜A10 (マルキ食品)
+          <div class="label">⚠ 出荷停止中ロケーションあり（月次・期末棚卸のみ凍結）</div>
+          棚卸し実施中のロケーションは出荷指示が一時停止されています。対象ロケ: 1F-A01〜A10 (マルキ食品 / 月次棚卸)
         </div>
 
         <div class="tabs">
@@ -234,7 +234,7 @@
               <tr>
                 <td class="num text-bold">CNT-2605-002</td>
                 <td>アルファ商事</td>
-                <td>一斉棚卸</td>
+                <td>期末棚卸</td>
                 <td>全ロケ</td>
                 <td class="right num">145</td>
                 <td>
@@ -251,8 +251,82 @@
           </table>
         </div>
 
-        <div style="margin-top:14px; display:flex; justify-content:flex-end;">
-          <button class="btn primary">棚卸し新規開始</button>
+        <!-- 棚卸し方式選択（新規開始ダイアログ相当） -->
+        <div class="card" style="margin-top:14px;">
+          <div class="card-header">棚卸し新規開始<div class="meta">方式を選択してセッションを作成</div></div>
+          <div class="card-body">
+            <div class="form-row" style="margin-bottom:12px;">
+              <div class="field">
+                <label>荷主<span class="required">*</span></label>
+                <select>
+                  <option>マルキ食品</option>
+                  <option>アルファ商事</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>棚卸し方式<span class="required">*</span></label>
+                <select>
+                  <option>-- 選択してください --</option>
+                  <option>日々棚卸</option>
+                  <option>ピッキング時在庫確認</option>
+                  <option selected>循環棚卸</option>
+                  <option>月次棚卸</option>
+                  <option>期末棚卸</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>対象範囲<span class="required">*</span></label>
+                <select>
+                  <option>1F-Aゾーン</option>
+                  <option>1F-Bゾーン</option>
+                  <option>全ロケ</option>
+                </select>
+              </div>
+            </div>
+            <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:10px 14px; font-size:12px; line-height:1.7; margin-bottom:12px;">
+              <div style="font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:4px;">棚卸し方式の違い（Q11-1 確定）</div>
+              <table style="width:100%; border-collapse:collapse; font-size:11px;">
+                <thead>
+                  <tr>
+                    <th style="padding:4px 8px; text-align:left; border-bottom:1px solid var(--c-accent); color:var(--c-accent);">方式</th>
+                    <th style="padding:4px 8px; text-align:left; border-bottom:1px solid var(--c-accent); color:var(--c-accent);">凍結</th>
+                    <th style="padding:4px 8px; text-align:left; border-bottom:1px solid var(--c-accent); color:var(--c-accent);">推奨ターゲット</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line);">日々棚卸</td>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line); color:var(--c-text-sub);">なし</td>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line); color:var(--c-text-sub);">高回転SKU・Aクラス商品</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line);">ピッキング時在庫確認</td>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line); color:var(--c-text-sub);">なし</td>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line); color:var(--c-text-sub);">高回転倉庫・人員効率化</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line);">循環棚卸</td>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line); color:var(--c-text-sub);">なし</td>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line); color:var(--c-text-sub);">規模中〜大・SKU多</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line);">月次棚卸</td>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line); color:var(--c-alert);">部分凍結</td>
+                    <td style="padding:3px 8px; border-bottom:1px solid var(--c-line); color:var(--c-text-sub);">月次精度報告が必要な荷主</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:3px 8px;">期末棚卸</td>
+                    <td style="padding:3px 8px; color:var(--c-alert);">全体凍結</td>
+                    <td style="padding:3px 8px; color:var(--c-text-sub);">規模小・SKU少／決算期対応</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+              <button class="btn">キャンセル</button>
+              <button class="btn primary">セッション作成</button>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -525,22 +599,26 @@
           <div class="card-body">
             <div class="form-row">
               <div class="field">
-                <label>調整理由<span class="required">*</span></label>
+                <label>調整理由コード<span class="required">*</span></label>
                 <select>
-                  <option selected>棚卸し差異確定</option>
-                  <option>数量誤入力修正</option>
-                  <option>破損廃棄</option>
-                  <option>その他</option>
+                  <option>-- 選択してください --</option>
+                  <option selected>IC001: 棚卸し差異（棚卸し由来）</option>
+                  <option>DM001: 破損</option>
+                  <option>LS001: 紛失</option>
+                  <option>CE001: 数え誤り</option>
+                  <option>TH001: 盗難</option>
+                  <option>OT001: その他</option>
                 </select>
+                <div class="hint">adjustment_reason_codes マスタから選択（マスタ画面で追加・変更可能）</div>
               </div>
               <div class="field">
                 <label>承認者<span class="required">*</span></label>
                 <input type="text" value="管理者 田中" />
               </div>
               <div class="field" style="grid-column: span 2;">
-                <label>調整メモ</label>
+                <label>補足欄</label>
                 <textarea rows="2" style="resize:vertical;">CNT-2605-001 棚卸し差異確定による在庫補正（2026/05/08）</textarea>
-                <div class="hint">任意。監査証跡として inventory_movements に記録されます。</div>
+                <div class="hint">任意。理由コードへの補足情報として inventory_adjustments.supplement_note に記録されます。</div>
               </div>
             </div>
           </div>
