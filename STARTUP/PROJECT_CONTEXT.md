@@ -47,6 +47,31 @@
 
 ---
 
+## wms-impl 起動情報
+
+| 項目 | 値 |
+|------|-----|
+| ポート | 8777 |
+| 起動コマンド | `cd ~/github/wms-impl && npm start` |
+| DB | `db/wms.sqlite`（自動生成） |
+
+```bash
+# headless Chrome での screenshot 検証（puppeteer 使用）
+node -e "
+const puppeteer = require('puppeteer');
+(async () => {
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+  const page = await browser.newPage();
+  await page.goto('http://localhost:8777');
+  await page.screenshot({ path: 'screenshot.png', fullPage: true });
+  await browser.close();
+  console.log('screenshot.png saved');
+})();
+"
+```
+
+---
+
 ## runner フリート構成
 
 | runner | assigned_to | 状態 | 用途 |
