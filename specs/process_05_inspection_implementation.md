@@ -144,6 +144,27 @@ permission_matrix（機能×ロール×可否）
 
 > F-504（検品 NG 時のフロー）とも連携。差異発生 → 権限確認 → アクション選択 → 記録 の順で処理する。
 
+### 検品差異種別（discrepancy_type）
+
+検品時に検出された差異の種別。`inbound_discrepancies.discrepancy_type` カラムで管理する enum 値。
+
+| 値 | 表示名 | 説明 |
+|---|---|---|
+| `quantity` | 数量差異 | 予定数と実数の数量相違。`difference` カラムの符号で過剰／不足を表現 |
+| `quality` | 品質不良 | 破損・期限切れ・隔離対象等の品質問題 |
+| `wrong_item` | 誤納品 | 別商品の納品（商品コード不一致等） |
+
+詳細補足は `reason_detail TEXT` に自由記述で記録する（例：「外装つぶれ」「賞味期限14日切れ」「同シリーズ別SKU」）。
+
+#### 設計方針
+
+- 「数量過剰／数量不足」は分離せず `quantity` に統合し、`difference` の符号で表現（モック `inspection-discrepancy-PC.html` 準拠）
+- 「破損／期限切れ／隔離」は品質問題として `quality` に集約。区別が必要な場合は `reason_detail` で補足
+- 上記3値域は画面モック `inspection-discrepancy-PC.html`（2026-05-17 最新）のフィルタ・サマリの差異区分に準拠
+- 承認アクション（実数受入／再検品要求／仕入先クレーム）は本 enum と独立し、`permission_matrix` で切替
+
+> 2号プロト先行実装済（B-2 W1 verify PASS・commit ee32ee8）。本仕様は SPEC_REQUESTS_FOR_1_v5 を1号で正式反映したもの。
+
 ---
 
 ## 次工程への申し送り
