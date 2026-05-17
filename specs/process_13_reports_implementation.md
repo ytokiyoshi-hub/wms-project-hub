@@ -245,8 +245,8 @@ WHERE br.rule_type = '保管料'
   ```sql
   ALTER TABLE billing_rules
     ADD COLUMN rounding_method TEXT NOT NULL DEFAULT 'round'
-      CHECK (rounding_method IN ('floor', 'round', 'ceil'));
-  -- 'floor' = 切り捨て（A）, 'round' = 四捨五入（B）, 'ceil' = 切り上げ（C）
+      CHECK (rounding_method IN ('floor', 'round', 'ceil', 'banker'));
+  -- 'floor' = 切り捨て（A）, 'round' = 四捨五入（B）, 'ceil' = 切り上げ（C）, 'banker' = 銀行家丸め・偶数丸め（D）
   ```
 - デフォルト値は `'round'`（四捨五入）
 - 月次バッチ請求計算時に荷主ごとの `rounding_method` を参照して端数処理を適用
@@ -255,13 +255,15 @@ WHERE br.rule_type = '保管料'
   ```sql
   SELECT
     CASE br.rounding_method
-      WHEN 'floor' THEN FLOOR(ps.qty * br.unit_price)
-      WHEN 'ceil'  THEN CEIL(ps.qty * br.unit_price)
-      ELSE              ROUND(ps.qty * br.unit_price)  -- 'round' がデフォルト
+      WHEN 'floor'  THEN FLOOR(ps.qty * br.unit_price)
+      WHEN 'ceil'   THEN CEIL(ps.qty * br.unit_price)
+      WHEN 'banker' THEN ROUND(ps.qty * br.unit_price)  -- PostgreSQL NUMERIC の ROUND は偶数丸め（銀行家丸め）
+      ELSE               ROUND(ps.qty * br.unit_price)  -- 'round' がデフォルト（四捨五入）
     END AS storage_fee
   FROM period_snapshot ps
   JOIN billing_rules br ON br.owner_id = ps.owner_id AND br.rule_type = '保管料';
   ```
+  > **銀行家丸め補足**：PostgreSQL の `ROUND(numeric)` は NUMERIC 型に対し偶数丸め（round half to even）を適用するため `'banker'` の実装として流用可。FLOAT 型の場合は別途カスタム関数が必要。会計上正当な丸め方式として2号実装で追認済み。
 
 ---
 
@@ -286,4 +288,5 @@ WHERE br.rule_type = '保管料'
 
 *最終更新: 2026-05-08 / Phase 7-I まーちゃん（工程13 帳票・レポート 6機能の論点叩き台）*  
 *QA確定事項追記：2026-05-16 / Phase 9-REFLECT2-D にーちゃん（#925）*  
-*HEARING1確定反映：2026-05-17 / Phase 9-H1R-D さーちゃん（#941）Q12-5帳票側・Q13-1・Q13-2*
+*HEARING1確定反映：2026-05-17 / Phase 9-H1R-D さーちゃん（#941）Q12-5帳票側・Q13-1・Q13-2*  
+*U-5 rounding_method banker追加：2026-05-17 / Phase 9-V-PHASED-FIX さーちゃん（#954）*
