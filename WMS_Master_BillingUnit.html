@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 請求単位マスタ（unit_master）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#00695c; --c-ok-lt:#e0f2f1;
+    --c-warn:#b45309; --c-warn-lt:#fef3c7;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .btn.danger { background:var(--c-alert-lt); color:var(--c-alert); border-color:var(--c-alert); }
+  .btn.danger:hover { background:#fbd0d9; }
+  .btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.warn { background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn); }
+  table.list { width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+  .field input:disabled, .field select:disabled { background:var(--c-bg); color:var(--c-text-sub); cursor:not-allowed; }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:12px; }
+  .form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+  .form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+  .form-section h3 { font-size:12px; font-weight:600; color:var(--c-text-sub); margin-bottom:10px; }
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:10px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .modal-overlay { display:none; position:absolute; inset:0; background:rgba(26,31,41,0.55); z-index:100; align-items:flex-start; justify-content:center; padding:24px 20px; overflow-y:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:540px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-body { padding:18px; max-height:560px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+  .warn-box { background:var(--c-warn-lt); border-left:3px solid var(--c-warn); padding:8px 12px; font-size:12px; color:var(--c-text); margin-bottom:12px; }
+</style>
+</head>
+<body>
+<h1 class="page-title">請求単位マスタ（unit_master）</h1>
+<p class="subtitle">請求・保管・作業の課金単位を定義。使用中単位は削除不可（Q12-5 対応）</p>
+
+<div class="section-divider"><span class="num">unit_master</span>請求単位マスタ</div>
+<div class="desc">
+  <b>役割</b>：billing_rules の unit カラムが参照する単位定義マスタ。enum（CHECK制約）からFK参照に変更することで、マイグレーションなしに新単位追加が可能になる（Q12-5 確定）。<br>
+  <b>初期8単位</b>：既存4単位（ケース/ピース/坪/平方メートル）＋今回追加4単位（時間/重量(kg)/立米(m3)/車建）。<br>
+  <b>削除制限</b>：billing_rules で参照中の単位（使用中）は削除不可。inactive にして非表示にすることを推奨。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/billing-units</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#">方面</a>
+        <a href="#">カレンダー</a>
+        <div class="group">請求設定</div>
+        <a href="#" class="active">請求単位マスタ</a>
+        <a href="#">単価マスタ</a>
+        <div class="group">運用設定</div>
+        <a href="#">調整理由コード</a>
+        <a href="#">ユーザー・ロール</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　請求設定　/　<b>請求単位マスタ</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="note-box">
+          <div class="label">Q12-5 unit_master テーブル</div>
+          billing_rules の課金単位を enum から FK 参照に変更。既存4単位（case/piece/tsubo/sqm）は使用中のため削除不可。
+          新規単位はここから追加でき、マイグレーション不要。
+        </div>
+
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field"><label>コード・表示名</label><input type="text" placeholder="case、ケース 等"></div>
+            <div class="field"><label>分類</label>
+              <select>
+                <option>すべて</option>
+                <option>count（個数）</option>
+                <option>area（面積）</option>
+                <option>time（時間）</option>
+                <option>weight（重量）</option>
+                <option>volume（体積）</option>
+              </select>
+            </div>
+            <div class="field"><label>状態</label>
+              <select>
+                <option>すべて</option>
+                <option>有効</option>
+                <option>無効</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">全　<b>8件</b>　（使用中 <b>4件</b>）</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn primary sm" onclick="openAddModal()">＋ 単位追加</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span>単位一覧</span><span class="meta">並び順</span></div>
+          <div style="padding:0;">
+            <table class="list">
+              <colgroup>
+                <col style="width:90px;">
+                <col style="width:120px;">
+                <col style="width:110px;">
+                <col style="width:100px;">
+                <col style="width:60px;">
+                <col style="width:80px;">
+                <col style="width:75px;">
+                <col>
+                <col style="width:90px;">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>コード</th>
+                  <th>表示名</th>
+                  <th>英語名</th>
+                  <th>分類</th>
+                  <th class="center">並び順</th>
+                  <th class="center">使用中</th>
+                  <th class="center">状態</th>
+                  <th>備考</th>
+                  <th class="center">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 既存4単位（使用中・削除不可） -->
+                <tr>
+                  <td class="num">case</td>
+                  <td>ケース</td>
+                  <td style="color:var(--c-text-sub);">Case</td>
+                  <td><span class="pill">count</span></td>
+                  <td class="center num">1</td>
+                  <td class="center"><span class="pill warn">使用中</span></td>
+                  <td class="center"><span class="pill ok">有効</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">ケース単位の保管・作業料</td>
+                  <td class="center" style="display:flex; gap:4px; justify-content:center;">
+                    <button class="btn sm" onclick="openEditModal('case')">編集</button>
+                    <button class="btn sm danger" disabled title="使用中のため削除不可">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="num">piece</td>
+                  <td>ピース</td>
+                  <td style="color:var(--c-text-sub);">Piece</td>
+                  <td><span class="pill">count</span></td>
+                  <td class="center num">2</td>
+                  <td class="center"><span class="pill warn">使用中</span></td>
+                  <td class="center"><span class="pill ok">有効</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">個口単位のピッキング料</td>
+                  <td class="center" style="display:flex; gap:4px; justify-content:center;">
+                    <button class="btn sm" onclick="openEditModal('piece')">編集</button>
+                    <button class="btn sm danger" disabled title="使用中のため削除不可">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="num">tsubo</td>
+                  <td>坪</td>
+                  <td style="color:var(--c-text-sub);">Tsubo</td>
+                  <td><span class="pill">area</span></td>
+                  <td class="center num">3</td>
+                  <td class="center"><span class="pill warn">使用中</span></td>
+                  <td class="center"><span class="pill ok">有効</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">坪単位の保管料（倉庫スペース）</td>
+                  <td class="center" style="display:flex; gap:4px; justify-content:center;">
+                    <button class="btn sm" onclick="openEditModal('tsubo')">編集</button>
+                    <button class="btn sm danger" disabled title="使用中のため削除不可">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="num">sqm</td>
+                  <td>平方メートル</td>
+                  <td style="color:var(--c-text-sub);">Sqm</td>
+                  <td><span class="pill">area</span></td>
+                  <td class="center num">4</td>
+                  <td class="center"><span class="pill warn">使用中</span></td>
+                  <td class="center"><span class="pill ok">有効</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">m2 単位の保管料（SI単位系）</td>
+                  <td class="center" style="display:flex; gap:4px; justify-content:center;">
+                    <button class="btn sm" onclick="openEditModal('sqm')">編集</button>
+                    <button class="btn sm danger" disabled title="使用中のため削除不可">削除</button>
+                  </td>
+                </tr>
+                <!-- 今回追加4単位（未使用・削除可能） -->
+                <tr>
+                  <td class="num">hour</td>
+                  <td>時間</td>
+                  <td style="color:var(--c-text-sub);">Hour</td>
+                  <td><span class="pill">time</span></td>
+                  <td class="center num">5</td>
+                  <td class="center"><span class="pill accent">未使用</span></td>
+                  <td class="center"><span class="pill ok">有効</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">時間当たり作業料（ピッキング等）</td>
+                  <td class="center" style="display:flex; gap:4px; justify-content:center;">
+                    <button class="btn sm" onclick="openEditModal('hour')">編集</button>
+                    <button class="btn sm danger" onclick="confirmDelete('hour', '時間')">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="num">kg</td>
+                  <td>重量(kg)</td>
+                  <td style="color:var(--c-text-sub);">Kg</td>
+                  <td><span class="pill">weight</span></td>
+                  <td class="center num">6</td>
+                  <td class="center"><span class="pill accent">未使用</span></td>
+                  <td class="center"><span class="pill ok">有効</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">重量物保管料・輸送料</td>
+                  <td class="center" style="display:flex; gap:4px; justify-content:center;">
+                    <button class="btn sm" onclick="openEditModal('kg')">編集</button>
+                    <button class="btn sm danger" onclick="confirmDelete('kg', '重量(kg)')">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="num">cbm</td>
+                  <td>立米(m3)</td>
+                  <td style="color:var(--c-text-sub);">Cbm</td>
+                  <td><span class="pill">volume</span></td>
+                  <td class="center num">7</td>
+                  <td class="center"><span class="pill accent">未使用</span></td>
+                  <td class="center"><span class="pill ok">有効</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">体積単位保管料（m3）</td>
+                  <td class="center" style="display:flex; gap:4px; justify-content:center;">
+                    <button class="btn sm" onclick="openEditModal('cbm')">編集</button>
+                    <button class="btn sm danger" onclick="confirmDelete('cbm', '立米(m3)')">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="num">truckload</td>
+                  <td>車建</td>
+                  <td style="color:var(--c-text-sub);">Truckload</td>
+                  <td><span class="pill">count</span></td>
+                  <td class="center num">8</td>
+                  <td class="center"><span class="pill accent">未使用</span></td>
+                  <td class="center"><span class="pill ok">有効</span></td>
+                  <td style="color:var(--c-text-sub); font-size:11px;">トラック1台単位の車建料金</td>
+                  <td class="center" style="display:flex; gap:4px; justify-content:center;">
+                    <button class="btn sm" onclick="openEditModal('truckload')">編集</button>
+                    <button class="btn sm danger" onclick="confirmDelete('truckload', '車建')">削除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 追加・編集モーダル -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2 id="modal-title">請求単位 新規追加</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="warn-box" id="modal-warn" style="display:none;">
+            コードは一度登録すると変更できません。billing_rules の FK として使用されます。
+          </div>
+          <div class="form-section">
+            <div class="form-row">
+              <div class="field">
+                <label>コード<span class="required">*</span></label>
+                <input type="text" id="f-code" placeholder="例：pallet" style="font-family:var(--f-mono);">
+                <span class="hint">英小文字・数字のみ（例：case / piece / hour）。登録後変更不可。</span>
+              </div>
+              <div class="field">
+                <label>英語名<span class="required">*</span></label>
+                <input type="text" id="f-name" placeholder="例：Pallet">
+                <span class="hint">内部識別用の英語名称</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field" style="grid-column:span 2;">
+                <label>表示名（日本語）<span class="required">*</span></label>
+                <input type="text" id="f-label" placeholder="例：パレット">
+                <span class="hint">単価マスタ・請求書で表示される単位名</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>分類<span class="required">*</span></label>
+                <select id="f-category">
+                  <option value="count">count（個数）</option>
+                  <option value="area">area（面積）</option>
+                  <option value="time">time（時間）</option>
+                  <option value="weight">weight（重量）</option>
+                  <option value="volume">volume（体積）</option>
+                  <option value="other">other（その他）</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>並び順</label>
+                <input type="number" id="f-sort" value="100" min="0" max="999">
+                <span class="hint">小さい値ほど先に表示</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>状態</label>
+                <select id="f-status">
+                  <option value="active">有効</option>
+                  <option value="inactive">無効</option>
+                </select>
+                <span class="hint">無効にすると単価マスタの選択肢から非表示になる</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field" style="grid-column:span 2;">
+                <label>備考</label>
+                <input type="text" id="f-note" placeholder="運用上の注意事項など">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeModal()">キャンセル</button>
+          <button class="btn primary" id="modal-save-btn">登録</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function openAddModal() {
+  document.getElementById('modal-title').textContent = '請求単位 新規追加';
+  document.getElementById('modal-warn').style.display = 'block';
+  document.getElementById('f-code').disabled = false;
+  document.getElementById('f-code').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-label').value = '';
+  document.getElementById('f-category').value = 'count';
+  document.getElementById('f-sort').value = 100;
+  document.getElementById('f-status').value = 'active';
+  document.getElementById('f-note').value = '';
+  document.getElementById('modal-save-btn').textContent = '登録';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+const UNITS = {
+  case:      { name:'Case',      label:'ケース',       category:'count',  sort:1,  status:'active', note:'ケース単位の保管・作業料' },
+  piece:     { name:'Piece',     label:'ピース',       category:'count',  sort:2,  status:'active', note:'個口単位のピッキング料' },
+  tsubo:     { name:'Tsubo',     label:'坪',           category:'area',   sort:3,  status:'active', note:'坪単位の保管料（倉庫スペース）' },
+  sqm:       { name:'Sqm',       label:'平方メートル', category:'area',   sort:4,  status:'active', note:'m2 単位の保管料（SI単位系）' },
+  hour:      { name:'Hour',      label:'時間',         category:'time',   sort:5,  status:'active', note:'時間当たり作業料（ピッキング等）' },
+  kg:        { name:'Kg',        label:'重量(kg)',     category:'weight', sort:6,  status:'active', note:'重量物保管料・輸送料' },
+  cbm:       { name:'Cbm',       label:'立米(m3)',     category:'volume', sort:7,  status:'active', note:'体積単位保管料（m3）' },
+  truckload: { name:'Truckload', label:'車建',         category:'count',  sort:8,  status:'active', note:'トラック1台単位の車建料金' },
+};
+
+function openEditModal(code) {
+  const u = UNITS[code];
+  if (!u) return;
+  document.getElementById('modal-title').textContent = '請求単位 編集：' + code;
+  document.getElementById('modal-warn').style.display = 'none';
+  document.getElementById('f-code').disabled = true;
+  document.getElementById('f-code').value = code;
+  document.getElementById('f-name').value = u.name;
+  document.getElementById('f-label').value = u.label;
+  document.getElementById('f-category').value = u.category;
+  document.getElementById('f-sort').value = u.sort;
+  document.getElementById('f-status').value = u.status;
+  document.getElementById('f-note').value = u.note;
+  document.getElementById('modal-save-btn').textContent = '更新';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function confirmDelete(code, label) {
+  alert('単位「' + label + '」（' + code + '）を削除してもよいですか？\n\nこの操作は取り消せません。');
+}
+</script>
+</body>
+</html>
