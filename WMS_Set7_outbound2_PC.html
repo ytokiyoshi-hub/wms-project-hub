@@ -133,6 +133,7 @@
   <a href="#W-803"><b>W-803</b>梱包・出荷検品</a>
   <a href="#W-804"><b>W-804</b>出荷実績一覧</a>
   <a href="#W-805"><b>W-805</b>出荷確定・伝票発行</a>
+  <a href="#W-806"><b>W-806</b>積込管理</a>
 </div>
 
 <!-- ============================== -->
@@ -1006,6 +1007,300 @@
             </div>
 
           </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- W-806 積込管理 -->
+<!-- ============================== -->
+<div class="section-divider" id="W-806">
+  <span class="num">W-806</span>積込管理（配送便容量管理・振替）
+  <span class="badge-new">NEW</span>
+</div>
+<div class="desc">
+  <b>役割</b>：積込作業の進捗管理と配送便の積載容量管理。容量超過検出時に振替候補を自動算出・表示し、担当者が最終確定を行う（QA-14）。<br>
+  <b>確定事項</b>：超過検出 → 振替候補を優先順表示（同方面次便→翌日同便→他業者）/ <b>最終確定は必ず担当者が行う（自動確定禁止）</b>
+</div>
+<div class="pc-frame">
+  <div class="browser-bar"><div class="dots"><span></span><span></span><span></span></div><div class="url">https://wms.example.com/outbound/loading</div></div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">出荷</div>
+        <a href="#">出庫指示一覧</a>
+        <a href="#">引当・ウェーブ</a>
+        <a href="#">ピッキング管理</a>
+        <a href="#">梱包・検品</a>
+        <a href="#" class="active">積込管理</a>
+        <a href="#">出荷確定</a>
+        <a href="#">出荷実績</a>
+      </nav>
+      <div class="sb-footer">v3.2.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">出荷　/　<b>積込管理</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>すべて</b> ▼</div>
+          <div class="user"><div class="avatar">木</div>木村（積込担当）</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <div class="step-progress" style="margin-bottom:16px;">
+          <div class="step done"><span class="num">1</span>ピッキング</div>
+          <div class="step done"><span class="num">2</span>梱包・検品</div>
+          <div class="step done"><span class="num">3</span>送り状発行</div>
+          <div class="step current"><span class="num">4</span>仮置き・積込</div>
+          <div class="step"><span class="num">5</span>出荷確定</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:14px;">
+
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="card-header">配送便情報 <span class="meta">本日 2026/05/09</span></div>
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px;">
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">便名</div>
+                    <div class="text-bold">13:30便　東京西エリア</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">運送会社</div>
+                    <div class="text-bold">ヤマト運輸</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">車両</div>
+                    <div>2tトラック（TK-2209）</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; color:var(--c-text-sub);">積載上限</div>
+                    <div class="text-mono text-bold">2,000 kg　／　10.0 m³</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <span>積込一覧 <span class="meta">7件 / 9個口</span></span>
+                <span class="pill alert">容量超過</span>
+              </div>
+              <div class="card-body" style="padding:0;">
+                <table class="list">
+                  <thead>
+                    <tr>
+                      <th style="width:30px;"></th>
+                      <th>出荷No</th>
+                      <th>届け先</th>
+                      <th class="right">個口</th>
+                      <th class="right">重量(kg)</th>
+                      <th class="right">容量(m³)</th>
+                      <th class="center">状態</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td class="num">SO-00201</td>
+                      <td>○○スーパー 渋谷店</td>
+                      <td class="right num">2</td>
+                      <td class="right num">320</td>
+                      <td class="right num">1.4</td>
+                      <td class="center"><span class="pill ok">積込済</span></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="num">SO-00203</td>
+                      <td>□□薬局 池袋本店</td>
+                      <td class="right num">2</td>
+                      <td class="right num">280</td>
+                      <td class="right num">1.2</td>
+                      <td class="center"><span class="pill ok">積込済</span></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="num">SO-00207</td>
+                      <td>△△コンビニ 中野店</td>
+                      <td class="right num">1</td>
+                      <td class="right num">180</td>
+                      <td class="right num">0.8</td>
+                      <td class="center"><span class="pill ok">積込済</span></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="num">SO-00210</td>
+                      <td>◇◇百貨店 新宿店</td>
+                      <td class="right num">2</td>
+                      <td class="right num">520</td>
+                      <td class="right num">2.4</td>
+                      <td class="center"><span class="pill ok">積込済</span></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td class="num">SO-00212</td>
+                      <td>○○スーパー 吉祥寺店</td>
+                      <td class="right num">1</td>
+                      <td class="right num">360</td>
+                      <td class="right num">1.8</td>
+                      <td class="center"><span class="pill ok">積込済</span></td>
+                    </tr>
+                    <tr style="background:#fff8e1;">
+                      <td><input type="checkbox" checked></td>
+                      <td class="num">SO-00215</td>
+                      <td>■■食料品店 杉並区</td>
+                      <td class="right num">1</td>
+                      <td class="right num" style="color:var(--c-alert); font-weight:600;">260</td>
+                      <td class="right num" style="color:var(--c-alert); font-weight:600;">1.6</td>
+                      <td class="center"><span class="pill alert">超過原因</span></td>
+                    </tr>
+                    <tr style="background:#fff8e1;">
+                      <td><input type="checkbox" checked></td>
+                      <td class="num">SO-00216</td>
+                      <td>◆◆酒店 練馬区</td>
+                      <td class="right num">1</td>
+                      <td class="right num" style="color:var(--c-alert); font-weight:600;">260</td>
+                      <td class="right num" style="color:var(--c-alert); font-weight:600;">1.1</td>
+                      <td class="center"><span class="pill alert">超過原因</span></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr style="background:var(--c-alert-lt);">
+                      <td colspan="3" style="color:var(--c-alert); font-weight:600;">合計（超過）</td>
+                      <td class="right num">9</td>
+                      <td class="right num" style="color:var(--c-alert); font-weight:700;">2,180</td>
+                      <td class="right num" style="color:var(--c-alert); font-weight:700;">10.3</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td colspan="3" style="font-size:11px; color:var(--c-text-sub);">積載上限</td>
+                      <td></td>
+                      <td class="right num" style="font-size:11px; color:var(--c-text-sub);">2,000</td>
+                      <td class="right num" style="font-size:11px; color:var(--c-text-sub);">10.0</td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="card-header">積載状況</div>
+              <div class="card-body">
+                <div style="margin-bottom:14px;">
+                  <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                    <span>重量</span>
+                    <span class="text-mono" style="color:var(--c-alert); font-weight:700;">2,180 / 2,000 kg</span>
+                  </div>
+                  <div class="pbar" style="height:10px; background:var(--c-alert-lt); border:1px solid var(--c-alert);">
+                    <div class="fill alert" style="width:100%;"></div>
+                  </div>
+                  <div style="font-size:11px; color:var(--c-alert); margin-top:3px; text-align:right; font-weight:600;">+ 180 kg 超過</div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                    <span>容量</span>
+                    <span class="text-mono" style="color:var(--c-alert); font-weight:700;">10.3 / 10.0 m³</span>
+                  </div>
+                  <div class="pbar" style="height:10px; background:var(--c-alert-lt); border:1px solid var(--c-alert);">
+                    <div class="fill alert" style="width:100%;"></div>
+                  </div>
+                  <div style="font-size:11px; color:var(--c-alert); margin-top:3px; text-align:right; font-weight:600;">+ 0.3 m³ 超過</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header" style="background:var(--c-alert-lt); color:var(--c-alert); border-bottom-color:var(--c-alert);">
+                <span>振替候補一覧</span>
+                <span style="font-size:11px; font-weight:400;">容量超過のため振替先を選択してください</span>
+              </div>
+              <div class="card-body">
+
+                <div class="note-box warn" style="margin-bottom:12px;">
+                  <div class="label">振替手順（QA-14）</div>
+                  候補一覧から振替先の便を1つ選択し、「振替確定」を押してください。<br>
+                  チェック済みの出荷（SO-00215・SO-00216）が選択した便に移ります。
+                </div>
+
+                <!-- 候補1：同方面次便（推奨） -->
+                <div style="border:2px solid var(--c-accent); background:var(--c-accent-lt); padding:10px; margin-bottom:8px; cursor:pointer;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                        <input type="radio" name="transfer-dest" id="r1" checked style="accent-color:var(--c-accent);">
+                        <label for="r1" style="font-size:12px; font-weight:700; color:var(--c-accent); cursor:pointer;">15:30便　東京西エリア</label>
+                        <span class="pill ok" style="font-size:10px;">推奨</span>
+                      </div>
+                      <div style="font-size:11px; color:var(--c-text-sub); margin-left:18px;">ヤマト運輸 / 2tトラック / <b style="color:var(--c-accent);">同方面次便</b></div>
+                    </div>
+                    <div style="text-align:right; font-size:11px;">
+                      <div style="color:var(--c-text-sub);">空き容量</div>
+                      <div class="text-mono" style="font-weight:700; color:var(--c-accent);">1,480 kg</div>
+                      <div class="text-mono" style="color:var(--c-accent);">7.2 m³</div>
+                    </div>
+                  </div>
+                  <div style="font-size:11px; color:var(--c-accent); margin-top:6px; padding-top:6px; border-top:1px solid var(--c-accent);">
+                    振替後の超過：なし（重量 520 kg／容量 2.7 m³ を吸収可）
+                  </div>
+                </div>
+
+                <!-- 候補2：翌日同便 -->
+                <div style="border:1px solid var(--c-line-dk); background:var(--c-base); padding:10px; margin-bottom:8px; cursor:pointer;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                        <input type="radio" name="transfer-dest" id="r2" style="accent-color:var(--c-accent);">
+                        <label for="r2" style="font-size:12px; font-weight:700; cursor:pointer;">13:30便　東京西エリア（翌営業日）</label>
+                      </div>
+                      <div style="font-size:11px; color:var(--c-text-sub); margin-left:18px;">ヤマト運輸 / 2tトラック / <b>翌日同便</b>　2026/05/10</div>
+                    </div>
+                    <div style="text-align:right; font-size:11px;">
+                      <div style="color:var(--c-text-sub);">空き容量</div>
+                      <div class="text-mono" style="font-weight:700;">2,000 kg</div>
+                      <div class="text-mono">10.0 m³</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 候補3：他業者（参考） -->
+                <div style="border:1px dashed var(--c-line-dk); background:var(--c-bg); padding:10px; margin-bottom:12px;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; opacity:0.75;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                        <input type="radio" name="transfer-dest" id="r3" style="accent-color:var(--c-accent);" disabled>
+                        <label for="r3" style="font-size:12px; font-weight:700; color:var(--c-text-sub);">他業者（参考提示）</label>
+                        <span class="pill" style="font-size:10px;">要見積</span>
+                      </div>
+                      <div style="font-size:11px; color:var(--c-text-sub); margin-left:18px;">佐川急便 / 当日手配（時間要確認）/ <b>エリア近接対応可</b></div>
+                    </div>
+                    <div style="text-align:right; font-size:11px; color:var(--c-text-sub);">
+                      <div>容量</div>
+                      <div class="text-mono">要確認</div>
+                    </div>
+                  </div>
+                  <div style="font-size:11px; color:var(--c-text-mute); margin-top:6px; padding-top:6px; border-top:1px dashed var(--c-line);">
+                    ※ 参考提示のみ。選択するには別途手配が必要です。
+                  </div>
+                </div>
+
+                <div style="border-top:1px solid var(--c-line); padding-top:12px; display:flex; gap:8px;">
+                  <button class="btn" style="flex:1;">キャンセル</button>
+                  <button class="btn danger" style="flex:2;">15:30便へ振替確定（2件）</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
