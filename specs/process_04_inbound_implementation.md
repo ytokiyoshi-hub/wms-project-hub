@@ -113,6 +113,9 @@
 | 9割突っ走り部分 | 帳票文面 |
 | 完璧に詰める部分 | 在庫汚染防止（誤って在庫に載せないバリデーション） |
 
+> ⚠️ これは「仕入先（ベンダー）への返品」であり、**顧客返品の物理受入（工程10 ②）とは別フロー**。  
+> 顧客返品受入は本工程の F-402〜F-406 を共用し、`inbound_movements.is_return=true` で区別する（Q10-2 確定）。
+
 ---
 
 ## QA確定事項（3号ヒアリング・QA-7）
@@ -149,6 +152,39 @@ ALTER TABLE owners
 
 > 旧 `lot_number` カラムが存在する場合は `lot_1` へのマイグレーションが必要。
 > B-7 ユーザー・ロールマスタ確定後に権限周りとの連携を整備。
+
+### 入庫No.統一方針（Q10-2 確定）
+
+| 項目 | 確定内容 |
+|------|---------|
+| 方針 | 通常入庫・返品入庫（顧客返品の物理受入）を分岐させず、**すべて本工程の入荷No.体系で一元管理** |
+| 返品入庫フロー | 工程10「②物理受入」は本工程（F-402〜F-406）の入荷フローを共用する |
+| RMA機能 | オプション扱い。`owners.rma_mode` フィールドで荷主ごとに切替 |
+
+> ⚠️ F-407（入荷返品・ベンダー戻し）は**仕入先へのベンダー返品**であり、「返品入庫（顧客返品の物理受入）」とは**別フロー**。混同しないこと。
+
+#### owners テーブルへの追加カラム（RMA運用設定）
+
+```sql
+-- RMA運用設定（荷主ごとに切替）
+ALTER TABLE owners
+  ADD COLUMN rma_mode TEXT DEFAULT 'disabled'
+    CHECK (rma_mode IN ('disabled', 'wms_issue', 'shipper_linked'));
+-- disabled       : RMA番号管理なし（物理受入から処理開始）
+-- wms_issue      : WMSでRMA番号を発番・管理
+-- shipper_linked : 荷主システムからRMA番号を連携受取（WMSは発番しない）
+```
+
+#### inbound_movements テーブルへの追加カラム（返品入庫区別）
+
+```sql
+-- 返品由来の入荷を区別するフラグ
+ALTER TABLE inbound_movements
+  ADD COLUMN is_return          BOOLEAN DEFAULT false,
+  ADD COLUMN customer_return_id BIGINT REFERENCES customer_returns(id);
+-- 通常入荷は is_return=false / customer_return_id=NULL
+-- 顧客返品受入は is_return=true / customer_return_id=対応する返品ヘッダーID
+```
 
 ---
 
@@ -194,4 +230,4 @@ F-407（入荷返品）：F-403 完了後にいつでも着手可
 
 ---
 
-*最終更新: 2026-05-16 / Phase 9-REFLECT2-A さーちゃん（QA-7: ロット番号現物表記準拠・多重ロット欄・英数字制約・ロット必須フラグ・自動採番廃止 反映。不適合品表記統一）*
+*最終更新: 2026-05-17 / Phase 9-H1R-A #938 / さーちゃん（Q10-2: 入庫No.統一方針・RMA運用設定・owners.rma_mode 追加・inbound_movements.is_return 追加・F-407 区別注記 反映）*

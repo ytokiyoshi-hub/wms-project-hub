@@ -36,10 +36,11 @@
 
 ```
 ①返品申請・受付
- └─ RMA番号発番 or 外部管理（Q1で決定）
+ └─ RMA番号発番 or 外部管理（Q10-2確定：RMAはオプション・`owners.rma_mode` で切替）
         ↓
 ②物理受入
  └─ HTスキャン（Q7で決定）
+ └─ 入荷No.は工程4（process_04）と同一体系で一元管理（Q10-2確定）
         ↓
 ③検品・状態確認
  └─ 判定区分（Q3で決定）
@@ -113,9 +114,9 @@
 | 選択肢B | WMSでRMA番号を発番・トラッキング（返品の事前登録が必要） |
 | 選択肢C | 荷主システムからRMA番号を連携受取（WMSで発番せず受け取るのみ） |
 | 選択肢D | 荷主別に切替（A/B/C を荷主ごとに選択可能） |
-| **時吉さん回答** | **未回答（要レビュー）** |
+| **時吉さん回答** | **確定（Q10-2 / 3号ヒアリング 2026-05-17）：D案ベース。RMA機能はオプション扱い。荷主マスターの `owners.rma_mode` フィールドで切替（`disabled`=不使用 / `wms_issue`=WMS発番 / `shipper_linked`=荷主連携受取）。通常入庫・返品入庫は同一の入荷No.体系で一元管理（分岐なし）。** |
 | まーちゃん推奨 | **D**：荷主によってRMA管理の有無が違う。ただし最初はAから入って、需要があればB/Cを追加するのが現実的。 |
-| 仕様への影響 | `customer_returns.rma_number` / `owners.return_strategy` の rma_required フラグ |
+| 仕様への影響 | `customer_returns.rma_number` / `owners.rma_mode`（TEXT: disabled / wms_issue / shipper_linked） |
 
 ---
 
@@ -145,9 +146,9 @@
 | 選択肢B | 「返品良品」ステータスで一旦保留 → 荷主確認 or 上長承認後に通常在庫に移動 |
 | 選択肢C | 荷主設定で選択（自動戻しOKの荷主はA・承認必須の荷主はB） |
 | 選択肢D | — |
-| **時吉さん回答** | **未回答（要レビュー）** |
+| **時吉さん回答** | **確定（Q10-4 / 3号ヒアリング 2026-05-17）：C案採用。返品良品の通常在庫戻しは荷主ごとに切替（自動戻し or 承認必須）。`owners.return_strategy.auto_restock` フラグで制御（true=自動戻し OK / false=承認必須）。食品・医薬品等の高品質管理荷主は false（承認必須）、一般品は true（自動戻し）が推奨デフォルト。** |
 | まーちゃん推奨 | **C**：食品・医薬品等の高品質管理荷主はBが必須。一般品はAでOK。owners.return_strategy に `auto_restock` フラグを設ける。 |
-| 仕様への影響 | `owners.return_strategy.auto_restock` / `inventory.status` の遷移フロー |
+| 仕様への影響 | `owners.return_strategy.auto_restock`（BOOLEAN・confirmed）/ `inventory.status` の遷移フロー |
 
 ---
 
@@ -282,10 +283,21 @@ CREATE TABLE disposal_approvals (
 -- owners テーブルに返品戦略設定を追加
 ALTER TABLE owners ADD COLUMN return_strategy JSONB DEFAULT '{
   "auto_restock": false,
-  "rma_required": false,
+  "return_default_status": "quarantine",
   "notification_method": "none",
   "condition_types": ["good", "hold", "dispose"]
 }'::jsonb;
+-- auto_restock: true=返品良品を通常在庫に自動戻し / false=承認必須（Q10-4確定）
+-- return_default_status: 返品入庫時の inventory.status 初期値（荷主/ユーザー設定可・Q10-3確定）
+-- ※ rma_required は rma_mode に統合のため削除
+
+-- RMA運用設定（Q10-2確定：荷主ごとに切替）
+ALTER TABLE owners
+  ADD COLUMN rma_mode TEXT DEFAULT 'disabled'
+    CHECK (rma_mode IN ('disabled', 'wms_issue', 'shipper_linked'));
+-- disabled       : RMA番号管理なし（物理受入から処理開始）
+-- wms_issue      : WMSでRMA番号を発番・管理
+-- shipper_linked : 荷主システムからRMA番号を連携受取（WMSは発番しない）
 
 -- billing_rules テーブルに返品処理賃率を追加
 ALTER TABLE billing_rules ADD COLUMN return_processing_rate NUMERIC(12,2);
@@ -352,6 +364,8 @@ ALTER TABLE shipment_orders
 | QA-5③（廃棄起点） | 廃棄は荷主指示起点・倉庫主導の廃棄判断はなし | AU-1 |
 | QA-5④（廃棄フロー統合） | 廃棄の独立業務フローは設けない・出荷フロー（purpose='disposal'）として処理 | BF-3 |
 | QA-11（返品戻入ロット） | 返品戻入時ロット番号は現物表記準拠・倉庫自動採番なし | DB-2 |
+| Q10-2（RMA運用設定） | RMA機能はオプション。`owners.rma_mode` で切替（disabled / wms_issue / shipper_linked）。通常入庫・返品入庫は入荷No.体系を一元管理 | — |
+| Q10-4（良品の在庫戻し） | C：荷主設定で自動戻し or 承認必須を切替。`owners.return_strategy.auto_restock` フラグで制御 | BF-4 |
 
 ---
 
@@ -359,19 +373,18 @@ ALTER TABLE shipment_orders
 
 | Q | 論点 | 依存する致命傷ライン | 推奨案 |
 |---|------|-------------------|--------|
-| Q2 | RMA番号管理の要否 | — | D（荷主別・最初はA） |
-| Q4 | 良品の在庫戻し承認 | BF-4 | C（荷主別設定） |
 | Q7 | HTスキャン仕様 | LK-2 | C（荷主別設定） |
 | Q8 | 荷主通知・精算 | LK-1/CA-1 | C（LK-1確定後） |
 
 > ✅ Q1・Q3・Q5 は 2026-05-16 時吉さんヒアリングで確定済み（上記「決定事項サマリー」参照）
 > ✅ Q6（ロット引き継ぎ）は QA-11 で確定済み（現物表記準拠・倉庫自動採番なし）
+> ✅ Q2（RMA運用設定）・Q4（良品の在庫戻し）は 2026-05-17 Q10-2/Q10-4 で確定済み
 
 > Q7・Q8 は他の致命傷ラインに依存。LK-1/LK-2/CA-1 確定後に詳細化。
 
 ---
 
-## ⏳ 時吉さん決定待ち（先行ロック論点：Q10-1 / Q10-3 / Q10-5）
+## ⏳ 時吉さん決定待ち→確定済み論点（Q10-1 / Q10-2 / Q10-3 / Q10-4 / Q10-5）
 
 > **このセクションは時吉さんの判断を受け取るための受け入れ節です。**  
 > 決定が届いたら各項目の「決定内容」欄を埋め、`**時吉さん回答**` 行も上部の論点テーブルに反映してください。
@@ -480,6 +493,44 @@ ALTER TABLE shipment_orders
 
 ---
 
+### Q10-2：入庫No.統一 / RMA運用設定
+
+**ステータス：✅ 確定済み（3号ヒアリング 2026-05-17）**
+
+| 項目 | 内容 |
+|------|------|
+| **時吉さんの決定** | **D案ベース：RMA機能はオプション。荷主マスター `owners.rma_mode` フィールドで切替。通常入庫・返品入庫は入荷No.体系を一元管理（分岐なし）** |
+| 決定した選択肢 | D（荷主別切替ベース） |
+| 決定理由・背景 | 通常入庫と返品入庫を別々のフローに分岐させると、入荷実績の集計・管理が複雑化する。同一の入荷No.体系で一元管理することで、棚入れ・在庫加算の共通処理を流用できる。RMA番号は荷主の業務スタイル依存のため、オプション扱いが適切。 |
+
+**反映済み：**
+- 本ファイル Q2 表の `**時吉さん回答**` 行 ✅
+- 全体フロー ①返品申請・受付 の注記更新 ✅
+- 全体フロー ②物理受入 に入荷No.統一の旨を追記 ✅
+- `owners.rma_mode` カラム追加設計（DBスキーマ叩き台） ✅
+- 決定事項サマリー Q10-2 行追加 ✅
+- process_04_inbound_implementation.md に Q10-2 反映 ✅
+
+---
+
+### Q10-4：良品の在庫戻し承認フロー
+
+**ステータス：✅ 確定済み（3号ヒアリング 2026-05-17）**
+
+| 項目 | 内容 |
+|------|------|
+| **時吉さんの決定** | **C案：荷主設定で自動戻し or 承認必須を切替。`owners.return_strategy.auto_restock` フラグで制御** |
+| 決定した選択肢 | C |
+| 決定理由・背景 | 食品・医薬品等の高品質管理荷主は承認必須（false）。一般品は検品完了後に即自動戻し（true）で運用効率を高める。荷主ごとに柔軟に切替できる設計が必要。 |
+
+**反映済み：**
+- 本ファイル Q4 表の `**時吉さん回答**` 行 ✅
+- `owners.return_strategy.auto_restock`（BOOLEAN）設計確定 ✅
+- 決定事項サマリー Q10-4 行追加 ✅
+- 在庫ステータス遷移（`returned_good` → 承認後 `available` / または直接 `available`）設計に整合 ✅
+
+---
+
 ## 次工程への申し送り
 
 - **工程11（棚卸）**：返品保留品（quarantine ステータス）が棚卸の対象に含まれるかを確認
@@ -490,3 +541,4 @@ ALTER TABLE shipment_orders
 ---
 
 *作成: 2026-05-09 / Phase 9-α TODO #136 / こーちゃん（代理）*
+*最終更新: 2026-05-17 / Phase 9-H1R-A #938 / さーちゃん（Q10-2: 入庫No.統一・RMA運用設定・owners.rma_mode 追加。Q10-4: 良品在庫戻し C案確定・auto_restock 確定）*
