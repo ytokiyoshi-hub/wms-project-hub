@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS 郵便番号→方面マッピング管理（W-530）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.warn { background:#fff8e1; border-color:#f59e0b; color:#92400e; }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus, .field textarea:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+  .search-bar .actions .stats b { color:var(--c-text); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:#fff8e1; border-color:#f59e0b; }
+  .note-box.warn .label { color:#92400e; }
+
+  /* CSVインポートモーダル */
+  .modal-overlay {
+    display:none;
+    position:absolute;
+    inset:0;
+    background:rgba(26,31,41,0.55);
+    z-index:100;
+    align-items:flex-start;
+    justify-content:center;
+    padding:40px 20px;
+    overflow-y:auto;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--c-base); border:1px solid var(--c-line); width:100%; max-width:640px; }
+  .modal-header { padding:14px 18px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; }
+  .modal-header h2 { font-size:15px; font-weight:600; color:var(--c-text); }
+  .modal-header .close-btn { background:none; border:none; font-size:18px; color:var(--c-text-sub); cursor:pointer; padding:0 4px; line-height:1; }
+  .modal-header .close-btn:hover { color:var(--c-text); }
+  .modal-body { padding:18px; max-height:520px; overflow-y:auto; }
+  .modal-footer { padding:12px 18px; border-top:1px solid var(--c-line); display:flex; justify-content:flex-end; gap:8px; background:var(--c-bg); }
+
+  /* CSVドロップゾーン */
+  .drop-zone { border:2px dashed var(--c-line-dk); background:var(--c-bg); padding:32px 20px; text-align:center; cursor:pointer; transition:border-color .15s; }
+  .drop-zone:hover { border-color:var(--c-accent); background:var(--c-accent-lt); }
+  .drop-zone .icon { font-size:32px; margin-bottom:8px; }
+  .drop-zone .label { font-size:13px; color:var(--c-text-sub); }
+  .drop-zone .hint { font-size:11px; color:var(--c-text-mute); margin-top:4px; }
+
+  .import-steps { margin:16px 0; }
+  .import-steps .step { display:flex; gap:12px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--c-line); }
+  .import-steps .step:last-child { border-bottom:none; }
+  .import-steps .step-num { width:22px; height:22px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:1px; }
+  .import-steps .step-body { font-size:12px; color:var(--c-text); line-height:1.6; }
+  .import-steps .step-body b { font-weight:600; }
+
+  .format-table { width:100%; border-collapse:collapse; font-size:11px; margin-top:8px; }
+  .format-table th, .format-table td { border:1px solid var(--c-line); padding:5px 8px; text-align:left; }
+  .format-table thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); }
+  .format-table .mono { font-family:var(--f-mono); }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-530 郵便番号→方面マッピング管理</h1>
+<p class="subtitle">配送振分ロジック（QA-3 D変形確定） / 郵便番号7桁→方面コードのマッピングテーブル管理</p>
+
+<div class="section-divider" id="W-530"><span class="num">W-530</span>郵便番号→方面マッピング管理</div>
+<div class="desc">
+  <b>役割</b>：出荷先住所の郵便番号（7桁）から方面コードを自動判定するためのマッピングテーブルを管理する。<br>
+  <b>確定仕様（QA-3 D変形・2026-05-16）</b>：郵便番号7桁マップを基本判定に使用。取引先マスタに <b>region_code</b> が設定されている場合は region_code を優先使用する。<br>
+  <b>更新サイクル</b>：年1回（日本郵便の郵便番号データ更新に合わせてCSVインポートで一括更新）
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/postal-region-map</div>
+  </div>
+  <div class="screen">
+
+    <!-- サイドバー -->
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">商品</a>
+        <a href="#">ロケーション</a>
+        <a href="#">ピッキングエリア</a>
+        <a href="#">在庫ステータス</a>
+        <a href="#">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#">方面</a>
+        <a href="#" class="active">郵便番号マップ</a>
+        <a href="#">ユーザー</a>
+        <a href="#">カレンダー</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+
+    <!-- メインエリア -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　<b>郵便番号→方面マッピング管理</b></div>
+        <div class="actions">
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- 仕様説明ノート -->
+        <div class="note-box">
+          <div class="label">判定ロジック（QA-3 D変形確定）</div>
+          出荷指示の配送先郵便番号（7桁）をこのマップで検索し、方面コードを自動付与します。
+          取引先マスタに <b>region_code</b> が設定されている場合は、そちらを優先使用します（郵便番号マップより上位）。
+          マップ更新は年1回。日本郵便の郵便番号データ更新（通常4月）に合わせてCSVインポートを実施します。
+        </div>
+
+        <div class="note-box warn">
+          <div class="label">取引先マスタとの優先関係</div>
+          取引先マスタの <b>region_code</b> フィールドに方面コードが登録されている取引先への出荷は、
+          このマップを参照せず <b>region_code を優先使用</b>します。
+          特定取引先で方面を固定したい場合は取引先マスタ側で設定してください。
+        </div>
+
+        <!-- 検索バー -->
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field">
+              <label>郵便番号（前方一致）</label>
+              <input type="text" id="search-postal" placeholder="例：106、530-00" style="font-family:var(--f-mono);">
+            </div>
+            <div class="field">
+              <label>方面コード</label>
+              <select id="search-region">
+                <option value="">すべて</option>
+                <option value="KANTO">KANTO（関東）</option>
+                <option value="KANSAI">KANSAI（関西）</option>
+                <option value="CHUBU">CHUBU（中部）</option>
+                <option value="KYUSHU">KYUSHU（九州）</option>
+                <option value="TOHOKU">TOHOKU（東北）</option>
+                <option value="HOKKAIDO">HOKKAIDO（北海道）</option>
+                <option value="CHUGOKU">CHUGOKU（中国・四国）</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>更新年度</label>
+              <select id="search-year">
+                <option value="">すべて</option>
+                <option value="2026" selected>2026年版</option>
+                <option value="2025">2025年版</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <span class="stats">表示中　<b id="stats-count">8件</b>（全 <b>124,623件</b>）</span>
+            <div style="margin-left:auto; display:flex; gap:8px;">
+              <button class="btn sm">CSV出力</button>
+              <button class="btn sm" onclick="doSearch()">検索</button>
+              <button class="btn primary sm" onclick="openImportModal()">CSVインポート（年次更新）</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 一覧テーブル -->
+        <div class="card">
+          <div class="card-header">
+            <span>郵便番号→方面 マッピング一覧</span>
+            <span class="meta">郵便番号順 / 2026年版</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:110px;">郵便番号</th>
+                  <th>住所（参考）</th>
+                  <th style="width:120px;">方面コード</th>
+                  <th style="width:80px;">方面名</th>
+                  <th class="center" style="width:80px;">適用年度</th>
+                  <th class="center" style="width:80px;">取引先上書</th>
+                  <th>備考</th>
+                </tr>
+              </thead>
+              <tbody id="map-tbody">
+                <tr>
+                  <td class="num">100-0001</td>
+                  <td style="font-size:11px;">東京都千代田区千代田</td>
+                  <td class="num"><span class="pill accent">KANTO</span></td>
+                  <td>関東</td>
+                  <td class="center"><span class="pill">2026</span></td>
+                  <td class="center">—</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);"></td>
+                </tr>
+                <tr>
+                  <td class="num">106-0032</td>
+                  <td style="font-size:11px;">東京都港区六本木</td>
+                  <td class="num"><span class="pill accent">KANTO</span></td>
+                  <td>関東</td>
+                  <td class="center"><span class="pill">2026</span></td>
+                  <td class="center">—</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);"></td>
+                </tr>
+                <tr>
+                  <td class="num">460-0001</td>
+                  <td style="font-size:11px;">愛知県名古屋市中区三の丸</td>
+                  <td class="num"><span class="pill accent">CHUBU</span></td>
+                  <td>中部</td>
+                  <td class="center"><span class="pill">2026</span></td>
+                  <td class="center">—</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);"></td>
+                </tr>
+                <tr>
+                  <td class="num">530-0001</td>
+                  <td style="font-size:11px;">大阪府大阪市北区梅田</td>
+                  <td class="num"><span class="pill accent">KANSAI</span></td>
+                  <td>関西</td>
+                  <td class="center"><span class="pill">2026</span></td>
+                  <td class="center">—</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);"></td>
+                </tr>
+                <tr>
+                  <td class="num">600-8001</td>
+                  <td style="font-size:11px;">京都府京都市下京区四条通</td>
+                  <td class="num"><span class="pill accent">KANSAI</span></td>
+                  <td>関西</td>
+                  <td class="center"><span class="pill">2026</span></td>
+                  <td class="center">—</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);"></td>
+                </tr>
+                <tr>
+                  <td class="num">812-0011</td>
+                  <td style="font-size:11px;">福岡県福岡市博多区博多駅前</td>
+                  <td class="num"><span class="pill accent">KYUSHU</span></td>
+                  <td>九州</td>
+                  <td class="center"><span class="pill">2026</span></td>
+                  <td class="center">—</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);"></td>
+                </tr>
+                <tr>
+                  <td class="num">980-0021</td>
+                  <td style="font-size:11px;">宮城県仙台市青葉区中央</td>
+                  <td class="num"><span class="pill accent">TOHOKU</span></td>
+                  <td>東北</td>
+                  <td class="center"><span class="pill">2026</span></td>
+                  <td class="center">—</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);"></td>
+                </tr>
+                <tr>
+                  <td class="num">060-0001</td>
+                  <td style="font-size:11px;">北海道札幌市中央区北一条西</td>
+                  <td class="num"><span class="pill accent">HOKKAIDO</span></td>
+                  <td>北海道</td>
+                  <td class="center"><span class="pill">2026</span></td>
+                  <td class="center">—</td>
+                  <td style="font-size:11px; color:var(--c-text-sub);"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CSVインポートモーダル -->
+    <div class="modal-overlay" id="import-modal" onclick="handleOverlayClick(event)">
+      <div class="modal-box" id="modal-box">
+        <div class="modal-header">
+          <h2>郵便番号マップ CSVインポート（年次更新）</h2>
+          <button class="close-btn" onclick="closeImportModal()">✕</button>
+        </div>
+        <div class="modal-body">
+
+          <div class="note-box warn" style="margin-bottom:14px;">
+            <div class="label">注意：全件置換</div>
+            インポートを実行すると、現在の2026年版マッピング（124,623件）は削除され、
+            アップロードしたCSVの内容に全件置換されます。実行前に必ずバックアップCSVをダウンロードしてください。
+          </div>
+
+          <div class="import-steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <b>バックアップ</b>：「CSV出力」で現在のマッピングをダウンロードして保管
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <b>CSVを準備</b>：日本郵便の郵便番号データを方面コード列付きのCSVに変換する
+                <br>（変換ツール：<span style="font-family:var(--f-mono); font-size:11px;">tools/postal_to_region_map.py</span>）
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <b>CSVフォーマット</b>（ヘッダー行あり）：
+                <table class="format-table">
+                  <thead>
+                    <tr>
+                      <th>列名</th>
+                      <th>型</th>
+                      <th>例</th>
+                      <th>備考</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td class="mono">postal_code</td><td>TEXT</td><td class="mono">1000001</td><td>7桁・ハイフンなし</td></tr>
+                    <tr><td class="mono">region_code</td><td>TEXT</td><td class="mono">KANTO</td><td>方面マスタのコード</td></tr>
+                    <tr><td class="mono">address_ref</td><td>TEXT</td><td class="mono">東京都千代田区千代田</td><td>参考住所（任意）</td></tr>
+                    <tr><td class="mono">note</td><td>TEXT</td><td class="mono"></td><td>備考（任意）</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                <b>アップロード</b>：下記ゾーンにCSVをドラッグ&amp;ドロップ（または選択）
+              </div>
+            </div>
+          </div>
+
+          <!-- ドロップゾーン -->
+          <div class="drop-zone" onclick="document.getElementById('csv-file-input').click()">
+            <div class="icon">📂</div>
+            <div class="label">CSVファイルをドラッグ＆ドロップ、またはクリックして選択</div>
+            <div class="hint">対応形式：.csv（UTF-8）/ ファイルサイズ上限 50MB</div>
+            <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleFileSelect(this)">
+          </div>
+
+          <div id="file-selected-msg" style="display:none; margin-top:10px; font-size:12px; color:var(--c-accent); font-weight:500;"></div>
+
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeImportModal()">キャンセル</button>
+          <button class="btn" onclick="alert('モックのためダウンロードは動作しません')">現在データCSV出力</button>
+          <button class="btn primary" onclick="handleImport()">インポート実行</button>
+        </div>
+      </div>
+    </div>
+    <!-- /モーダル -->
+
+  </div><!-- /.screen -->
+</div><!-- /.pc-frame -->
+
+<script>
+  function openImportModal() {
+    document.getElementById('import-modal').classList.add('open');
+    document.getElementById('file-selected-msg').style.display = 'none';
+    document.getElementById('csv-file-input').value = '';
+  }
+
+  function closeImportModal() {
+    document.getElementById('import-modal').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('import-modal')) closeImportModal();
+  }
+
+  function handleFileSelect(input) {
+    if (input.files && input.files[0]) {
+      const f = input.files[0];
+      const msg = document.getElementById('file-selected-msg');
+      msg.style.display = 'block';
+      msg.textContent = '選択済み：' + f.name + '（' + (f.size / 1024).toFixed(1) + ' KB）';
+    }
+  }
+
+  function handleImport() {
+    const input = document.getElementById('csv-file-input');
+    if (!input.files || !input.files[0]) {
+      alert('CSVファイルを選択してください。');
+      return;
+    }
+    const confirmed = confirm(
+      '現在の郵便番号マッピング（124,623件）を全件削除してインポートします。\n' +
+      'バックアップは取得しましたか？\n\n' +
+      '実行してよければ「OK」を押してください。'
+    );
+    if (!confirmed) return;
+    alert('インポート完了（モックのため実際には保存されません）\n\nファイル：' + input.files[0].name + '\n件数：124,623件（サンプル表示）');
+    closeImportModal();
+  }
+
+  function doSearch() {
+    alert('検索実行（モックのため絞り込みは動作しません）');
+  }
+</script>
+</body>
+</html>
