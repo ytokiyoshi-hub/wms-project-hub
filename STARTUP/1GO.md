@@ -18,7 +18,18 @@
    ~/github/wms-project-hub/wms-project-hub/STARTUP/PROJECT_CONTEXT.md
    ```
 
-4. **役割宣言して待機**
+4. **kurokun_memo の handover を読む**（前1号からの引き継ぎ）
+   ```sql
+   SELECT id, content, created_at
+   FROM kurokun_memo
+   WHERE category = 'handover' AND status = 'open'
+   ORDER BY created_at DESC LIMIT 5;
+   ```
+   - 引き継ぎメモが存在すれば必ず読み、現況・次の一手を把握してから役割宣言
+   - 読了・中継などのアクション完了後に `status='resolved'` ＋ `resolved_note` で閉じる
+   - これを飛ばすと前セッションの文脈（進行中ウェーブ・verify 待ち・直近の判定）を見失う
+
+5. **役割宣言して待機**
 
 ---
 
