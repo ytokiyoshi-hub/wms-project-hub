@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS SKU CSV一括インポート（W-503）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-ok:#15803d; --c-ok-lt:#dcfce7;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1200px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .desc { max-width:1200px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+  .pc-frame { max-width:1200px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; position:relative; }
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; }
+  .topbar .user { display:flex; align-items:center; gap:8px; font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+  .card { background:var(--c-base); border:1px solid var(--c-line); margin-bottom:14px; }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:16px; }
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.danger:hover { background:#8f001f; }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+  .btn:disabled { opacity:0.45; cursor:not-allowed; }
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+  /* Step indicator */
+  .steps { display:flex; align-items:center; gap:0; margin-bottom:20px; }
+  .step { display:flex; align-items:center; gap:8px; font-size:12px; }
+  .step .num { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; border:2px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); flex-shrink:0; }
+  .step .label { color:var(--c-text-sub); font-weight:500; }
+  .step.active .num { background:var(--c-accent); border-color:var(--c-accent); color:#fff; }
+  .step.active .label { color:var(--c-text); font-weight:600; }
+  .step.done .num { background:var(--c-ok); border-color:var(--c-ok); color:#fff; }
+  .step.done .label { color:var(--c-text-sub); }
+  .step-line { flex:1; height:1px; background:var(--c-line-dk); margin:0 8px; min-width:24px; }
+  /* Mode selection */
+  .mode-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+  .mode-card { border:2px solid var(--c-line); padding:12px 14px; cursor:pointer; background:var(--c-base); transition:border-color 0.1s; }
+  .mode-card:hover { border-color:var(--c-line-dk); }
+  .mode-card.selected { border-color:var(--c-accent); background:var(--c-accent-lt); }
+  .mode-card input[type="radio"] { display:none; }
+  .mode-card .mode-id { font-family:var(--f-mono); font-size:13px; font-weight:700; color:var(--c-accent); margin-bottom:4px; }
+  .mode-card .mode-label { font-size:13px; font-weight:600; color:var(--c-text); margin-bottom:4px; }
+  .mode-card .mode-desc { font-size:11px; color:var(--c-text-sub); line-height:1.5; }
+  .mode-card .mode-sql { font-family:var(--f-mono); font-size:10px; color:var(--c-text-mute); margin-top:6px; background:var(--c-bg); padding:3px 6px; border:1px solid var(--c-line); }
+  .mode-card .badge-recommended { display:inline-block; font-size:10px; font-weight:600; padding:1px 6px; background:var(--c-accent-lt); color:var(--c-accent); border:1px solid var(--c-accent); margin-bottom:4px; }
+  /* File drop zone */
+  .drop-zone { border:2px dashed var(--c-line-dk); padding:28px 20px; text-align:center; background:var(--c-bg); cursor:pointer; }
+  .drop-zone:hover { border-color:var(--c-accent); background:var(--c-accent-lt); }
+  .drop-zone .icon { font-size:28px; margin-bottom:8px; }
+  .drop-zone .main-text { font-size:13px; font-weight:600; color:var(--c-text); margin-bottom:4px; }
+  .drop-zone .sub-text { font-size:11px; color:var(--c-text-sub); }
+  /* Preview section */
+  .preview-section { display:none; }
+  .preview-section.show { display:block; }
+  .summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px; }
+  .summary-box { background:var(--c-base); border:1px solid var(--c-line); padding:12px 14px; text-align:center; }
+  .summary-box .s-label { font-size:11px; color:var(--c-text-sub); margin-bottom:6px; }
+  .summary-box .s-value { font-family:var(--f-mono); font-size:22px; font-weight:700; color:var(--c-text); }
+  .summary-box.s-new .s-value { color:var(--c-ok); }
+  .summary-box.s-exists .s-value { color:var(--c-accent); }
+  .summary-box.s-skip .s-value { color:var(--c-text-sub); }
+  .summary-box.s-error .s-value { color:var(--c-alert); }
+  /* Preview table (K-2 準拠) */
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:7px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:#f9fafb; }
+  table.list .center { text-align:center; }
+  table.list .right { text-align:right; }
+  table.list .num { font-family:var(--f-mono); }
+  table.list .row-new td { background:#f0fdf4; }
+  table.list .row-update td { background:#eff6ff; }
+  table.list .row-skip td { background:#f9fafb; color:var(--c-text-sub); }
+  table.list .row-err td { background:var(--c-alert-lt); }
+  /* Action bar */
+  .action-bar { display:flex; align-items:center; gap:10px; padding:12px 0 0; border-top:1px solid var(--c-line); margin-top:4px; }
+  .action-bar .note { font-size:11px; color:var(--c-text-sub); flex:1; }
+  /* Info/warning callout */
+  .callout { padding:10px 14px; font-size:12px; border-left:3px solid; margin-bottom:12px; line-height:1.6; }
+  .callout.info { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .callout.warn { background:#fffbeb; border-color:#d97706; color:#92400e; }
+  .callout b { font-weight:600; }
+  /* Complete screen */
+  .complete-screen { display:none; text-align:center; padding:40px 20px; }
+  .complete-screen.show { display:block; }
+  .complete-screen .icon { font-size:40px; margin-bottom:14px; }
+  .complete-screen h3 { font-size:18px; font-weight:600; color:var(--c-ok); margin-bottom:8px; }
+  .complete-screen p { font-size:13px; color:var(--c-text-sub); }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field input, .field select { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; }
+</style>
+</head>
+<body>
+<h1 class="page-title">W-503 SKU CSV一括インポート</h1>
+<p class="subtitle">荷主の SKU を CSV ファイルで一括登録・更新する（S-4 確定仕様）</p>
+
+<div class="section-divider"><span class="num">W-503</span>SKU CSV一括インポート</div>
+<div class="desc">
+  <b>役割</b>：荷主追加時などに数百〜数千件の SKU を CSV で一括投入する。実行前に必ずプレビューで件数を確認してから本実行する2ステップ UI。<br>
+  <b>3モード</b>：A=上書き（既存を新データで更新）／B=禁止（既存はスキップ）／C=差分のみ（新規のみ追加・既存は変更せず差分明示）。<b>参照</b>：specs/process_12_master_management.md S-4
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/master/skus/import</div>
+  </div>
+  <div class="screen">
+    <aside class="sidebar">
+      <div class="logo">WMS<small>東京DC（WH001）</small></div>
+      <nav>
+        <div class="group">マスタ</div>
+        <a href="#">倉庫</a>
+        <a href="#">荷主</a>
+        <a href="#">SKU / 商品</a>
+        <a href="#" class="active" style="background:var(--c-accent-dk);border-left-color:#fff;">　↳ CSV一括インポート</a>
+        <a href="#">ロケーション</a>
+        <a href="#">取引先</a>
+        <a href="#">配送業者</a>
+        <a href="#">梱包材</a>
+        <a href="#">補充ルール</a>
+      </nav>
+      <div class="sb-footer">v3.1.0</div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">マスタ　/　SKU　/　<b>CSV一括インポート</b></div>
+        <div class="actions">
+          <div class="owner-switcher">荷主：<b>マルキ食品 (MK001)</b> ▼</div>
+          <div class="user"><div class="avatar">山</div>山田</div>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- Step indicator -->
+        <div class="steps">
+          <div class="step done" id="step1-ind">
+            <div class="num">✓</div>
+            <div class="label">① ファイル・モード設定</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step active" id="step2-ind">
+            <div class="num">2</div>
+            <div class="label">② プレビュー確認</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step" id="step3-ind">
+            <div class="num">3</div>
+            <div class="label">③ 実行完了</div>
+          </div>
+        </div>
+
+        <!-- Step 1: File + mode (shown collapsed after file selected) -->
+        <div class="card" id="step1-card">
+          <div class="card-header">
+            <span>STEP 1 — ファイル選択・インポートモード設定</span>
+            <span class="meta" id="step1-summary" style="color:var(--c-ok);font-weight:600;">skus_MK001_20260517.csv　/ モード B: 禁止</span>
+          </div>
+          <div class="card-body" id="step1-body" style="display:none;">
+            <div style="margin-bottom:16px;">
+              <div style="font-size:12px;font-weight:600;margin-bottom:8px;">荷主選択</div>
+              <div class="field" style="max-width:320px;">
+                <label>インポート対象荷主<span style="color:var(--c-alert);margin-left:3px;font-weight:700;">*</span></label>
+                <select>
+                  <option>MK001 マルキ食品</option>
+                  <option>AB002 アベフーズ</option>
+                  <option>SH003 新橋商事</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="font-size:12px;font-weight:600;margin-bottom:8px;">インポートモード選択<span style="color:var(--c-alert);margin-left:3px;font-weight:700;">*</span></div>
+            <div class="mode-cards">
+              <label class="mode-card" onclick="selectMode(this,'A')">
+                <input type="radio" name="import-mode" value="A">
+                <div class="mode-id">MODE A</div>
+                <div class="mode-label">上書き</div>
+                <div class="mode-desc">既存 SKU も CSV のデータで上書き更新する。荷主マスタ全件再構築時に使用。</div>
+                <div class="mode-sql">ON CONFLICT DO UPDATE</div>
+              </label>
+              <label class="mode-card selected" onclick="selectMode(this,'B')">
+                <input type="radio" name="import-mode" value="B" checked>
+                <div class="badge-recommended">推奨</div>
+                <div class="mode-id">MODE B</div>
+                <div class="mode-label">禁止（既存スキップ）</div>
+                <div class="mode-desc">既存 SKU がある行はスキップ。重複ゼロで安全に新規追加する場合に使用。</div>
+                <div class="mode-sql">ON CONFLICT DO NOTHING</div>
+              </label>
+              <label class="mode-card" onclick="selectMode(this,'C')">
+                <input type="radio" name="import-mode" value="C">
+                <div class="mode-id">MODE C</div>
+                <div class="mode-label">差分のみ</div>
+                <div class="mode-desc">新規 SKU のみ追加。B と同等だが件数レポートで「新規 / スキップ」を明示する。</div>
+                <div class="mode-sql">ON CONFLICT DO NOTHING + diff report</div>
+              </label>
+            </div>
+
+            <div style="font-size:12px;font-weight:600;margin-bottom:8px;">CSV ファイル選択</div>
+            <div class="drop-zone" onclick="simulateFileSelect()">
+              <div class="icon">📂</div>
+              <div class="main-text">クリックしてファイルを選択　または　ここにドロップ</div>
+              <div class="sub-text">CSV（UTF-8 BOM あり推奨）・最大 5MB・ヘッダー行必須</div>
+            </div>
+            <div style="margin-top:10px;display:flex;justify-content:flex-end;gap:8px;">
+              <button class="btn">テンプレートCSVダウンロード</button>
+              <button class="btn primary" onclick="showPreview()">分析してプレビュー →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Preview -->
+        <div class="preview-section show" id="step2-section">
+
+          <div class="callout info">
+            <b>プレビュー（ドライラン）</b>　本 INSERT はまだ実行されていません。下記の件数・内容を確認してから「本実行」を押してください。
+          </div>
+
+          <!-- Summary boxes -->
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="s-label">CSV 総件数</div>
+              <div class="s-value num">248</div>
+            </div>
+            <div class="summary-box s-new">
+              <div class="s-label">新規追加予定</div>
+              <div class="s-value num">214</div>
+            </div>
+            <div class="summary-box s-exists">
+              <div class="s-label">既存一致（スキップ予定）</div>
+              <div class="s-value num">31</div>
+            </div>
+            <div class="summary-box s-error">
+              <div class="s-label">エラー行</div>
+              <div class="s-value num">3</div>
+            </div>
+          </div>
+
+          <div class="callout warn" id="warn-errors">
+            <b>3行にエラーがあります。</b>　エラー行はインポートされません。内容を確認してCSVを修正するか、エラー行を除いて実行してください。
+          </div>
+
+          <!-- Preview table (K-2 準拠) -->
+          <div class="card">
+            <div class="card-header">
+              <span>プレビュー（先頭10件 + エラー全件表示）</span>
+              <span class="meta">モード B: 禁止（既存スキップ）　/　荷主: MK001 マルキ食品</span>
+            </div>
+            <table class="list">
+              <thead>
+                <tr>
+                  <th style="width:40px;" class="center">行</th>
+                  <th style="width:70px;" class="center">結果</th>
+                  <th style="width:110px;">SKUコード</th>
+                  <th style="width:110px;">荷主SKUコード</th>
+                  <th>SKU名</th>
+                  <th style="width:70px;" class="center">温度帯</th>
+                  <th style="width:60px;" class="right">CS入数</th>
+                  <th style="width:60px;" class="right">BL入数</th>
+                  <th style="width:180px;">エラー内容</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="row-new">
+                  <td class="center num">2</td>
+                  <td class="center"><span class="pill ok">新規</span></td>
+                  <td class="num">S-01001</td>
+                  <td class="num">MK-A001</td>
+                  <td>マルキしょうゆ 1L×12</td>
+                  <td class="center"><span class="pill">常温</span></td>
+                  <td class="right num">12</td>
+                  <td class="right num">2</td>
+                  <td>—</td>
+                </tr>
+                <tr class="row-new">
+                  <td class="center num">3</td>
+                  <td class="center"><span class="pill ok">新規</span></td>
+                  <td class="num">S-01002</td>
+                  <td class="num">MK-A002</td>
+                  <td>マルキみりん 500ml×20</td>
+                  <td class="center"><span class="pill">常温</span></td>
+                  <td class="right num">20</td>
+                  <td class="right num">4</td>
+                  <td>—</td>
+                </tr>
+                <tr class="row-skip">
+                  <td class="center num">4</td>
+                  <td class="center"><span class="pill">スキップ</span></td>
+                  <td class="num">S-00321</td>
+                  <td class="num">MK-0321</td>
+                  <td>（既存と一致）</td>
+                  <td class="center">—</td>
+                  <td class="right num">—</td>
+                  <td class="right num">—</td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">既存 SKU（S-00321）がすでに存在するためスキップ</td>
+                </tr>
+                <tr class="row-new">
+                  <td class="center num">5</td>
+                  <td class="center"><span class="pill ok">新規</span></td>
+                  <td class="num">S-01003</td>
+                  <td class="num">MK-A003</td>
+                  <td>冷凍餃子 300g×10</td>
+                  <td class="center"><span class="pill" style="background:#ede9fe;border-color:#7c3aed;color:#7c3aed;">冷凍</span></td>
+                  <td class="right num">10</td>
+                  <td class="right num">2</td>
+                  <td>—</td>
+                </tr>
+                <tr class="row-new">
+                  <td class="center num">6</td>
+                  <td class="center"><span class="pill ok">新規</span></td>
+                  <td class="num">S-01004</td>
+                  <td class="num">MK-A004</td>
+                  <td>チルドプリン 6P×8</td>
+                  <td class="center"><span class="pill" style="background:#e0f2fe;border-color:#0284c7;color:#0284c7;">冷蔵</span></td>
+                  <td class="right num">8</td>
+                  <td class="right num">1</td>
+                  <td>—</td>
+                </tr>
+                <tr class="row-skip">
+                  <td class="center num">7</td>
+                  <td class="center"><span class="pill">スキップ</span></td>
+                  <td class="num">S-00322</td>
+                  <td class="num">MK-0322</td>
+                  <td>（既存と一致）</td>
+                  <td class="center">—</td>
+                  <td class="right num">—</td>
+                  <td class="right num">—</td>
+                  <td style="font-size:11px; color:var(--c-text-mute);">既存 SKU（S-00322）がすでに存在するためスキップ</td>
+                </tr>
+                <tr class="row-new">
+                  <td class="center num">8</td>
+                  <td class="center"><span class="pill ok">新規</span></td>
+                  <td class="num">S-01005</td>
+                  <td class="num">MK-A005</td>
+                  <td>純米酒 720ml×12</td>
+                  <td class="center"><span class="pill">常温</span></td>
+                  <td class="right num">12</td>
+                  <td class="right num">3</td>
+                  <td>—</td>
+                </tr>
+                <tr class="row-new">
+                  <td class="center num">9</td>
+                  <td class="center"><span class="pill ok">新規</span></td>
+                  <td class="num">S-01006</td>
+                  <td class="num">MK-A006</td>
+                  <td>ポン酢 1L×12</td>
+                  <td class="center"><span class="pill">常温</span></td>
+                  <td class="right num">12</td>
+                  <td class="right num">2</td>
+                  <td>—</td>
+                </tr>
+                <tr class="row-err">
+                  <td class="center num">12</td>
+                  <td class="center"><span class="pill alert">エラー</span></td>
+                  <td class="num">—</td>
+                  <td class="num">MK-A009</td>
+                  <td>（sku_code 欠落）</td>
+                  <td class="center">—</td>
+                  <td class="right num">—</td>
+                  <td class="right num">—</td>
+                  <td style="font-size:11px; color:var(--c-alert);font-weight:500;">sku_code が空欄です（必須項目）</td>
+                </tr>
+                <tr class="row-err">
+                  <td class="center num">45</td>
+                  <td class="center"><span class="pill alert">エラー</span></td>
+                  <td class="num">S-01044</td>
+                  <td class="num">MK-A044</td>
+                  <td>（temp_zone 不正値）</td>
+                  <td class="center"><span class="pill alert">?</span></td>
+                  <td class="right num">—</td>
+                  <td class="right num">—</td>
+                  <td style="font-size:11px; color:var(--c-alert);font-weight:500;">温度帯「常乾」は無効な値です（AMB/COLD/FROZ のいずれか）</td>
+                </tr>
+                <tr class="row-err">
+                  <td class="center num">201</td>
+                  <td class="center"><span class="pill alert">エラー</span></td>
+                  <td class="num">S-01200</td>
+                  <td class="num">MK-A200</td>
+                  <td>梅干し 500g×6</td>
+                  <td class="center"><span class="pill">常温</span></td>
+                  <td class="right num">6</td>
+                  <td class="right num">—</td>
+                  <td style="font-size:11px; color:var(--c-alert);font-weight:500;">case_qty（ケース入数）が 0 以下の値です</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Action bar -->
+          <div class="action-bar">
+            <div class="note">
+              エラー行 3件はインポートされません。<br>
+              <b>実行すると: 新規 214件 を INSERT、既存 31件をスキップします。</b>
+            </div>
+            <button class="btn" onclick="resetToStep1()">← 戻る・CSVを修正</button>
+            <button class="btn danger" onclick="executeImport()">本実行（214件 INSERT）</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Complete (hidden until execute) -->
+        <div class="complete-screen" id="step3-section">
+          <div class="icon">✅</div>
+          <h3>インポート完了</h3>
+          <p style="margin-bottom:16px;">214件の SKU を MK001 マルキ食品 に登録しました。<br>スキップ: 31件　エラー（未登録）: 3件</p>
+          <div style="display:flex;gap:8px;justify-content:center;">
+            <button class="btn primary" onclick="goToSkuList()">SKU一覧を確認 →</button>
+            <button class="btn" onclick="resetAll()">続けてインポート</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 注釈 -->
+<div class="section-divider"><span class="num">備考</span>仕様メモ</div>
+<div class="desc">
+  <b>S-4 確定仕様（Q12-3）</b>：3モード選択 → ドライラン API でプレビュー（件数のみ） → ユーザー確認 → 本 INSERT の2ステップ UI。<br>
+  <b>エラー行</b>：sku_code 欠落・温度帯不正・数値エラー等。エラー行はスキップして残りは正常に登録する（partial success）。<br>
+  <b>CSV テンプレート</b>：sku_code, owner_sku_code, name, temp_zone(AMB/COLD/FROZ), case_qty, ball_qty, lot_managed(0/1), expiry_managed(0/1), serial_managed(0/1) の列を標準とする。
+</div>
+
+<script>
+  function selectMode(el, mode) {
+    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function simulateFileSelect() {
+    document.getElementById('step1-summary').style.display = 'inline';
+  }
+
+  function showPreview() {
+    document.getElementById('step1-body').style.display = 'none';
+    document.getElementById('step1-ind').className = 'step done';
+    document.getElementById('step1-ind').querySelector('.num').textContent = '✓';
+    document.getElementById('step2-ind').className = 'step active';
+    document.getElementById('step2-section').classList.add('show');
+  }
+
+  function resetToStep1() {
+    document.getElementById('step1-body').style.display = 'block';
+    document.getElementById('step1-ind').className = 'step active';
+    document.getElementById('step1-ind').querySelector('.num').textContent = '1';
+    document.getElementById('step2-ind').className = 'step';
+    document.getElementById('step2-section').classList.remove('show');
+  }
+
+  function executeImport() {
+    document.getElementById('step2-section').classList.remove('show');
+    document.getElementById('step2-ind').className = 'step done';
+    document.getElementById('step2-ind').querySelector('.num').textContent = '✓';
+    document.getElementById('step3-ind').className = 'step active';
+    document.getElementById('step3-section').classList.add('show');
+  }
+
+  function resetAll() {
+    document.getElementById('step1-body').style.display = 'block';
+    document.getElementById('step1-ind').className = 'step active';
+    document.getElementById('step1-ind').querySelector('.num').textContent = '1';
+    document.getElementById('step2-ind').className = 'step';
+    document.getElementById('step2-ind').querySelector('.num').textContent = '2';
+    document.getElementById('step3-ind').className = 'step';
+    document.getElementById('step3-ind').querySelector('.num').textContent = '3';
+    document.getElementById('step2-section').classList.remove('show');
+    document.getElementById('step3-section').classList.remove('show');
+  }
+
+  function goToSkuList() {
+    alert('SKU一覧画面に遷移（モック）');
+  }
+</script>
+</body>
+</html>
