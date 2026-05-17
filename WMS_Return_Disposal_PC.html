@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>返品廃棄承認フロー PC画面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  :root {
+    --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+    --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+    --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+    --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+    --c-warn:#b45309; --c-warn-lt:#fef3c7;
+    --c-ok:#065f46; --c-ok-lt:#d1fae5;
+    --f-base:'Noto Sans JP',sans-serif; --f-mono:'Roboto Mono',monospace;
+  }
+  html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 80px; line-height: 1.6; }
+  h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+  p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:6px; }
+  p.spec-ref { text-align:center; color:#a0a4ad; font-size:12px; margin-bottom:24px; }
+  p.spec-ref b { color:#c8ccd4; }
+
+  .quick-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+  .quick-nav .label { color:#c8ccd4; font-weight:500; }
+  .quick-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+  .quick-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+  .quick-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+
+  .flow-banner { max-width:1500px; margin:0 auto 24px; background:#353944; border:1px solid #4a4f5c; padding:14px 20px; }
+  .flow-banner .flow-title { color:#c8ccd4; font-size:11px; font-weight:700; letter-spacing:0.08em; margin-bottom:10px; }
+  .flow-banner .flow-steps { display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+  .flow-banner .step { display:flex; align-items:center; gap:0; }
+  .flow-banner .step-box { background:#1a1c22; border:1px solid #4a4f5c; padding:8px 16px; font-size:12px; color:#c8ccd4; line-height:1.4; }
+  .flow-banner .step-box .step-num { font-family:var(--f-mono); font-size:10px; color:#8da2bf; margin-bottom:2px; }
+  .flow-banner .step-box .step-name { font-weight:600; color:#fff; }
+  .flow-banner .step-box .step-who { font-size:11px; color:#8da2bf; margin-top:1px; }
+  .flow-banner .arrow { color:#4a4f5c; font-size:18px; padding:0 8px; }
+  .flow-banner .step-box.current { border-color:var(--c-alert); background:#2a1015; }
+  .flow-banner .step-box.current .step-name { color:var(--c-alert); }
+
+  .section-divider { color:#fff; font-size:15px; font-weight:500; padding:18px 0 8px; border-bottom:1px solid #4a4f5c; max-width:1500px; margin:32px auto 12px; }
+  .section-divider .num { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:12px; }
+  .section-divider .badge-new { display:inline-block; background:#1a3a5c; color:#fff; font-size:10px; padding:1px 6px; margin-left:8px; font-weight:600; }
+  .desc { max-width:1500px; margin:0 auto 14px; color:#c8ccd4; font-size:12px; line-height:1.7; padding:12px 16px; background:#353944; border-left:3px solid #c8ccd4; }
+  .desc b { color:#fff; font-weight:500; }
+
+  .pc-frame { max-width:1500px; margin:0 auto 36px; background:#1a1c22; padding:12px 12px 22px; }
+  .pc-frame .browser-bar { background:#353944; padding:7px 12px; display:flex; align-items:center; gap:8px; font-size:11px; }
+  .pc-frame .browser-bar .dots { display:flex; gap:5px; }
+  .pc-frame .browser-bar .dots span { width:10px; height:10px; background:#555; }
+  .pc-frame .browser-bar .url { background:#1a1c22; padding:4px 10px; flex:1; color:#a0a4ad; font-family:var(--f-mono); font-size:11px; }
+
+  .screen { background:var(--c-bg); height:820px; display:flex; overflow:hidden; }
+
+  .sidebar { width:220px; background:var(--c-accent); color:#fff; flex-shrink:0; display:flex; flex-direction:column; }
+  .sidebar .logo { padding:18px 18px; border-bottom:1px solid var(--c-accent-dk); font-size:15px; font-weight:600; }
+  .sidebar .logo small { display:block; font-size:11px; font-weight:400; color:#b5c1d1; margin-top:4px; }
+  .sidebar nav { flex:1; padding:8px 0; overflow-y:auto; }
+  .sidebar nav .group { padding:14px 18px 6px; font-size:10px; color:#8da2bf; letter-spacing:0.1em; font-weight:500; }
+  .sidebar nav a { display:flex; align-items:center; padding:9px 18px; color:#d6dee9; text-decoration:none; font-size:13px; border-left:3px solid transparent; }
+  .sidebar nav a:hover { background:rgba(255,255,255,0.06); color:#fff; }
+  .sidebar nav a.active { background:var(--c-accent-dk); color:#fff; border-left-color:#fff; font-weight:500; }
+  .sidebar .sb-footer { padding:12px 18px; border-top:1px solid var(--c-accent-dk); font-size:11px; color:#8da2bf; }
+
+  .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .topbar { background:var(--c-base); height:48px; border-bottom:1px solid var(--c-line); display:flex; align-items:center; padding:0 20px; flex-shrink:0; }
+  .topbar .crumb { font-size:13px; color:var(--c-text-sub); flex:1; }
+  .topbar .crumb b { color:var(--c-text); font-weight:600; }
+  .topbar .actions { display:flex; gap:16px; align-items:center; font-size:13px; }
+  .topbar .user { display:flex; align-items:center; gap:8px; color:var(--c-text); font-weight:500; }
+  .topbar .user .avatar { width:28px; height:28px; background:var(--c-accent); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; }
+  .topbar .owner-switcher { display:flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid var(--c-line-dk); background:var(--c-bg); font-size:12px; cursor:pointer; }
+  .topbar .owner-switcher b { color:var(--c-accent); }
+  .content { flex:1; padding:20px; overflow-y:auto; background:var(--c-bg); }
+
+  .card { background:var(--c-base); border:1px solid var(--c-line); }
+  .card-header { padding:11px 16px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; color:var(--c-text); }
+  .card-header .meta { font-size:11px; font-weight:400; color:var(--c-text-sub); }
+  .card-body { padding:14px 16px; }
+
+  .btn { border:1px solid var(--c-line-dk); background:var(--c-base); color:var(--c-text); padding:6px 14px; font-size:12px; font-family:var(--f-base); font-weight:500; cursor:pointer; line-height:1.4; }
+  .btn:hover { background:var(--c-bg); }
+  .btn.primary { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+  .btn.primary:hover { background:var(--c-accent-dk); }
+  .btn.danger { background:var(--c-alert); color:#fff; border-color:var(--c-alert); }
+  .btn.danger:hover { background:#8b0020; }
+  .btn.ok { background:var(--c-ok); color:#fff; border-color:var(--c-ok); }
+  .btn.sm { padding:3px 10px; font-size:11px; }
+
+  .pill { display:inline-block; padding:1px 8px; font-size:11px; font-weight:500; border:1px solid var(--c-line-dk); background:var(--c-bg); color:var(--c-text-sub); line-height:1.6; }
+  .pill.alert { background:var(--c-alert-lt); border-color:var(--c-alert); color:var(--c-alert); }
+  .pill.accent { background:var(--c-accent-lt); border-color:var(--c-accent); color:var(--c-accent); }
+  .pill.warn { background:var(--c-warn-lt); border-color:var(--c-warn); color:var(--c-warn); }
+  .pill.ok { background:var(--c-ok-lt); border-color:var(--c-ok); color:var(--c-ok); }
+
+  table.list { width:100%; border-collapse:collapse; font-size:12px; }
+  table.list th, table.list td { border-bottom:1px solid var(--c-line); padding:8px 10px; text-align:left; vertical-align:middle; }
+  table.list thead th { background:var(--c-bg); font-weight:600; color:var(--c-text-sub); font-size:11px; border-bottom:1px solid var(--c-line-dk); border-top:1px solid var(--c-line); }
+  table.list tbody tr:hover { background:var(--c-bg); cursor:pointer; }
+  table.list tbody tr.selected { background:var(--c-accent-lt); }
+  table.list .right { text-align:right; }
+  table.list .center { text-align:center; }
+  table.list .num { font-family:var(--f-mono); font-weight:500; }
+  table.list tfoot td { background:var(--c-bg); font-weight:600; }
+
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; color:var(--c-text-sub); font-weight:500; }
+  .field label .required { color:var(--c-alert); margin-left:3px; font-weight:700; }
+  .field input, .field select, .field textarea { border:1px solid var(--c-line-dk); padding:7px 10px; font-size:13px; background:var(--c-base); font-family:var(--f-base); color:var(--c-text); }
+  .field input:focus, .field select:focus { outline:2px solid var(--c-accent); outline-offset:-1px; border-color:var(--c-accent); }
+  .field .hint { font-size:11px; color:var(--c-text-mute); margin-top:2px; }
+  .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; }
+
+  .search-bar { background:var(--c-base); border:1px solid var(--c-line); padding:14px; margin-bottom:14px; }
+  .search-bar .actions { display:flex; gap:8px; margin-top:12px; align-items:center; }
+  .search-bar .actions .stats { font-size:12px; color:var(--c-text-sub); }
+
+  .tabs { display:flex; border-bottom:1px solid var(--c-line-dk); margin-bottom:14px; }
+  .tabs .tab { padding:9px 18px; cursor:pointer; font-size:13px; color:var(--c-text-sub); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:400; }
+  .tabs .tab.active { color:var(--c-accent); border-bottom-color:var(--c-accent); font-weight:600; }
+
+  .note-box { background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:10px 14px; font-size:12px; color:var(--c-text); line-height:1.7; margin-bottom:14px; }
+  .note-box .label { font-size:11px; font-weight:700; color:var(--c-accent); margin-bottom:3px; }
+  .note-box.warn { background:var(--c-warn-lt); border-left-color:var(--c-warn); }
+  .note-box.warn .label { color:var(--c-warn); }
+  .note-box.alert { background:var(--c-alert-lt); border-left-color:var(--c-alert); }
+  .note-box.alert .label { color:var(--c-alert); }
+
+  .approval-detail { background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:14px 16px; margin-bottom:14px; }
+  .approval-detail .ad-title { font-size:13px; font-weight:700; color:var(--c-alert); margin-bottom:10px; }
+  .approval-detail table { width:100%; border-collapse:collapse; font-size:12px; }
+  .approval-detail table td { padding:5px 8px; border-bottom:1px solid #f3c0cb; }
+  .approval-detail table td:first-child { font-weight:600; color:var(--c-text-sub); width:130px; }
+
+  .text-mono { font-family:var(--f-mono); }
+  .text-bold { font-weight:600; }
+  .text-alert { color:var(--c-alert); }
+  .text-warn { color:var(--c-warn); }
+  .text-ok { color:var(--c-ok); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">返品廃棄承認フロー PC画面</h1>
+<p class="subtitle">廃棄申請一覧 / 廃棄申請登録 / 荷主承認</p>
+<p class="spec-ref"><b>仕様根拠：</b>process_10_returns.md Q10-5（確定C案）/ QA-5 補足 / disposal_approvals テーブル設計</p>
+
+<div class="quick-nav">
+  <span class="label">JUMP:</span>
+  <a href="#wd001"><b>W-D001</b>廃棄申請一覧</a>
+  <a href="#wd002"><b>W-D002</b>廃棄申請登録</a>
+  <a href="#wd003"><b>W-D003</b>荷主承認画面</a>
+</div>
+
+<!-- フロー図 -->
+<div class="flow-banner">
+  <div class="flow-title">廃棄承認フロー（Q10-5 確定：倉庫スタッフ申請 → 荷主最終承認 必須）</div>
+  <div class="flow-steps">
+    <div class="step">
+      <div class="step-box">
+        <div class="step-num">Step 1</div>
+        <div class="step-name">返品受入・検品</div>
+        <div class="step-who">倉庫スタッフ（HT）</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box current">
+        <div class="step-num">Step 2</div>
+        <div class="step-name">廃棄申請登録</div>
+        <div class="step-who">倉庫スタッフ（PC）</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box current">
+        <div class="step-num">Step 3</div>
+        <div class="step-name">荷主 最終承認</div>
+        <div class="step-who">荷主ユーザー（PC）</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box">
+        <div class="step-num">Step 4</div>
+        <div class="step-name">廃棄出荷処理</div>
+        <div class="step-who">purpose_type='disposal'</div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="step-box">
+        <div class="step-num">Step 5</div>
+        <div class="step-name">廃棄完了記録</div>
+        <div class="step-who">WMS DB のみ記録</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     W-D001: 廃棄申請一覧
+     ============================================================ -->
+<div class="section-divider" id="wd001">
+  <span class="num">W-D001</span>廃棄申請一覧
+  <span class="badge-new">倉庫スタッフ / 荷主 共通</span>
+</div>
+<div class="desc">
+  <b>概要：</b>返品品の廃棄申請を一覧管理する画面。倉庫スタッフは申請状況を確認し、荷主ユーザーは承認待ちの案件を把握できる。タブ切り替えで「承認待ち」「承認済み」「却下」を確認。<br>
+  <b>仕様：</b>disposal_approvals テーブル参照。status: pending（承認待ち）/ approved（承認済み）/ rejected（却下）。廃棄起点は常に荷主指示（QA-5③）。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/disposal</div>
+  </div>
+  <div class="screen">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        WMS Pro
+        <small>倉庫管理システム</small>
+      </div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#">入荷一覧</a>
+        <div class="group">返品</div>
+        <a href="#">返品受付一覧</a>
+        <a href="#">返品登録</a>
+        <a href="#">返品検品</a>
+        <a href="#" class="active">廃棄申請一覧</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷一覧</a>
+      </nav>
+      <div class="sb-footer">v3.1.0 &nbsp;|&nbsp; 東京DC</div>
+    </div>
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">返品 / <b>廃棄申請一覧</b></div>
+        <div class="actions">
+          <div class="owner-switcher">
+            荷主: <b>マルキ食品</b> ▾
+          </div>
+          <div class="user">
+            <div class="avatar">田</div>
+            田中
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <!-- Note box -->
+        <div class="note-box alert" style="margin-bottom:12px;">
+          <div class="label">廃棄ルール（QA-5 確定）</div>
+          廃棄は荷主指示起点。倉庫主導での廃棄判断・実行はなし。不適合品はR種別ロケに保管中。廃棄証憑は荷主側で管理（WMSは発行しない）。
+        </div>
+        <!-- Search bar -->
+        <div class="search-bar">
+          <div class="form-row">
+            <div class="field">
+              <label>申請期間（開始）</label>
+              <input type="date" value="2026-05-01">
+            </div>
+            <div class="field">
+              <label>申請期間（終了）</label>
+              <input type="date" value="2026-05-17">
+            </div>
+            <div class="field">
+              <label>荷主</label>
+              <select>
+                <option>すべて</option>
+                <option selected>マルキ食品</option>
+                <option>アルファ商事</option>
+                <option>ビーシー食品</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>承認状態</label>
+              <select>
+                <option>すべて</option>
+                <option selected>承認待ち</option>
+                <option>承認済み</option>
+                <option>却下</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn primary">検索</button>
+            <button class="btn">クリア</button>
+            <span class="stats">4件（承認待ち）</span>
+            <div style="flex:1;"></div>
+            <button class="btn">CSV出力</button>
+            <button class="btn danger">廃棄申請登録</button>
+          </div>
+        </div>
+        <!-- Tabs -->
+        <div class="tabs">
+          <div class="tab active">承認待ち（4）</div>
+          <div class="tab">承認済み（12）</div>
+          <div class="tab">却下（2）</div>
+        </div>
+        <!-- Table (K-2 layout) -->
+        <div class="card">
+          <div class="card-header">
+            廃棄申請一覧
+            <span class="meta">最終更新: 2026-05-17 09:15</span>
+          </div>
+          <table class="list">
+            <thead>
+              <tr>
+                <th>申請No</th>
+                <th>返品No</th>
+                <th>荷主</th>
+                <th>品目 / SKU</th>
+                <th class="right">廃棄数量</th>
+                <th>廃棄理由（disposition_note）</th>
+                <th>申請日</th>
+                <th>申請者</th>
+                <th>承認状態</th>
+                <th class="center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="num">DA-00041</td>
+                <td class="num">RT-00051</td>
+                <td>マルキ食品</td>
+                <td>
+                  <span class="num">SKU-0023</span><br>
+                  <span style="font-size:11px;color:var(--c-text-sub);">マルキ缶詰 200g</span>
+                </td>
+                <td class="right num">3</td>
+                <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">缶が凹み・異臭あり。食品衛生上廃棄必要。</td>
+                <td>05/16</td>
+                <td>田中</td>
+                <td><span class="pill warn">承認待ち</span></td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm">詳細</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">DA-00040</td>
+                <td class="num">RT-00050</td>
+                <td>マルキ食品</td>
+                <td>
+                  <span class="num">SKU-0012</span><br>
+                  <span style="font-size:11px;color:var(--c-text-sub);">マルキパスタ 500g</span>
+                </td>
+                <td class="right num">2</td>
+                <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">外袋破損・内容物露出のため再販不可。</td>
+                <td>05/15</td>
+                <td>山本</td>
+                <td><span class="pill warn">承認待ち</span></td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm">詳細</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">DA-00039</td>
+                <td class="num">RT-00048</td>
+                <td>アルファ商事</td>
+                <td>
+                  <span class="num">SKU-0045</span><br>
+                  <span style="font-size:11px;color:var(--c-text-sub);">アルファドレッシング 500ml</span>
+                </td>
+                <td class="right num">5</td>
+                <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">蓋が変形・中身漏れの痕跡あり。食品安全上廃棄。</td>
+                <td>05/14</td>
+                <td>佐藤</td>
+                <td><span class="pill warn">承認待ち</span></td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm">詳細</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="num">DA-00038</td>
+                <td class="num">RT-00047</td>
+                <td>マルキ食品</td>
+                <td>
+                  <span class="num">SKU-0034</span><br>
+                  <span style="font-size:11px;color:var(--c-text-sub);">マルキソース 300ml</span>
+                </td>
+                <td class="right num">1</td>
+                <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">期限切れ・荷主確認済みにて廃棄申請。</td>
+                <td>05/13</td>
+                <td>田中</td>
+                <td><span class="pill warn">承認待ち</span></td>
+                <td class="center" style="white-space:nowrap;">
+                  <button class="btn sm">詳細</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     W-D002: 廃棄申請登録
+     ============================================================ -->
+<div class="section-divider" id="wd002">
+  <span class="num">W-D002</span>廃棄申請登録
+  <span class="badge-new">倉庫スタッフ</span>
+</div>
+<div class="desc">
+  <b>概要：</b>倉庫スタッフが返品検品後に廃棄が必要と判断した品目を申請登録する画面。申請後、荷主ユーザーに通知され承認待ち（pending）状態に遷移する。<br>
+  <b>仕様：</b>disposal_approvals.requested_by（倉庫スタッフ）/ disposition_note は必須入力（QA-5）/ 廃棄品は quarantine ステータスのみ対象（出荷許可マトリクス）。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/disposal/new</div>
+  </div>
+  <div class="screen">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        WMS Pro
+        <small>倉庫管理システム</small>
+      </div>
+      <nav>
+        <div class="group">入荷</div>
+        <a href="#">入荷一覧</a>
+        <div class="group">返品</div>
+        <a href="#">返品受付一覧</a>
+        <a href="#">返品登録</a>
+        <a href="#">返品検品</a>
+        <a href="#" class="active">廃棄申請一覧</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫一覧</a>
+        <div class="group">出荷</div>
+        <a href="#">出荷一覧</a>
+      </nav>
+      <div class="sb-footer">v3.1.0 &nbsp;|&nbsp; 東京DC</div>
+    </div>
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">返品 / 廃棄申請一覧 / <b>廃棄申請登録</b></div>
+        <div class="actions">
+          <div class="owner-switcher">
+            荷主: <b>マルキ食品</b> ▾
+          </div>
+          <div class="user">
+            <div class="avatar">田</div>
+            田中
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <!-- Warning note -->
+        <div class="note-box alert" style="margin-bottom:14px;">
+          <div class="label">重要：廃棄は荷主の最終承認が必須です（Q10-5 C案確定）</div>
+          この申請を送信すると荷主ユーザーに通知されます。荷主の承認が完了するまで廃棄出荷処理は実行できません。倉庫スタッフの判断のみでの廃棄実行は禁止されています。
+        </div>
+
+        <!-- Section 1: 対象返品情報 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">対象返品情報</div>
+          <div class="card-body">
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="field">
+                <label>荷主<span class="required">*</span></label>
+                <select>
+                  <option value="">選択してください</option>
+                  <option selected>マルキ食品</option>
+                  <option>アルファ商事</option>
+                  <option>ビーシー食品</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>返品No<span class="required">*</span></label>
+                <select>
+                  <option value="">選択してください</option>
+                  <option selected>RT-00051（マルキ食品 / 05/16受付）</option>
+                  <option>RT-00050（マルキ食品 / 05/15受付）</option>
+                </select>
+                <span class="hint">検品完了・quarantine ステータスの返品のみ表示</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: 廃棄申請明細 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">
+            廃棄申請明細
+            <span class="meta">1明細</span>
+          </div>
+          <div class="card-body" style="padding-bottom:10px;">
+            <table class="list" style="margin-bottom:10px;">
+              <thead>
+                <tr>
+                  <th>SKU / 商品名</th>
+                  <th>ロット</th>
+                  <th>現在ステータス</th>
+                  <th>返品数量</th>
+                  <th class="right">廃棄申請数量<span class="text-alert">*</span></th>
+                  <th class="center">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="num">SKU-0023</span><br>
+                    <span style="font-size:11px;color:var(--c-text-sub);">マルキ缶詰 200g</span>
+                  </td>
+                  <td class="num">LOT-260301</td>
+                  <td><span class="pill alert">quarantine</span></td>
+                  <td class="num">5</td>
+                  <td class="right">
+                    <input type="number" value="3" style="width:70px;text-align:right;padding:4px 6px;font-size:12px;border:1px solid var(--c-line-dk);">
+                  </td>
+                  <td class="center">
+                    <button class="btn sm danger">削除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="btn sm">+ 明細を追加</button>
+          </div>
+        </div>
+
+        <!-- Section 3: 廃棄理由 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">廃棄理由（disposition_note）</div>
+          <div class="card-body">
+            <div class="field" style="margin-bottom:12px;">
+              <label>廃棄理由<span class="required">*</span></label>
+              <textarea rows="4" style="resize:vertical;" placeholder="具体的な廃棄理由を記入してください（例：缶が凹み・異臭あり。食品衛生上廃棄必要。）">缶が凹み・異臭あり。食品衛生上廃棄必要。荷主に事前連絡済み（2026-05-16）。</textarea>
+              <span class="hint">目的区分=廃棄（purpose_type='disposal'）の場合、disposition_note は必須入力です（QA-5 設計）。荷主への報告根拠となります。</span>
+            </div>
+            <div class="field">
+              <label>荷主への連絡状況</label>
+              <select>
+                <option>荷主に事前連絡済み（口頭）</option>
+                <option>荷主に事前連絡済み（メール）</option>
+                <option>連絡未実施（申請が通知になる）</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Note box -->
+        <div class="note-box" style="margin-bottom:14px;">
+          <div class="label">申請後の流れ</div>
+          1. 廃棄申請を送信（disposal_approvals.status = 'pending'）&nbsp;→&nbsp;
+          2. 荷主ユーザーに通知&nbsp;→&nbsp;
+          3. 荷主が承認（status = 'approved'）または却下（status = 'rejected'）&nbsp;→&nbsp;
+          4. 承認後、廃棄出荷処理を実行（shipment_orders.purpose_type = 'disposal'）&nbsp;→&nbsp;
+          5. 廃棄完了記録（WMS DB のみ・廃棄証憑は荷主側で管理）
+        </div>
+
+        <!-- Bottom buttons -->
+        <div style="display:flex; gap:10px; justify-content:flex-end; padding-top:4px;">
+          <button class="btn">キャンセル</button>
+          <button class="btn danger">廃棄申請を送信（荷主へ通知）</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     W-D003: 荷主承認画面
+     ============================================================ -->
+<div class="section-divider" id="wd003">
+  <span class="num">W-D003</span>荷主承認画面
+  <span class="badge-new">荷主ユーザー専用</span>
+</div>
+<div class="desc">
+  <b>概要：</b>荷主ユーザーが廃棄申請の詳細を確認し、承認または却下を行う画面。廃棄は荷主の法的所有権に基づき荷主の最終意思確認が必須（Q10-5 C案確定）。承認後に廃棄出荷処理（purpose_type='disposal'）が実行可能になる。<br>
+  <b>仕様：</b>disposal_approvals.approved_by（荷主ユーザー）/ shipper ロール権限必須 / 承認時に approved_at セット。
+</div>
+
+<div class="pc-frame">
+  <div class="browser-bar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="url">https://wms.example.com/returns/disposal/DA-00041/approve</div>
+  </div>
+  <div class="screen">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        WMS Pro
+        <small>倉庫管理システム</small>
+      </div>
+      <nav>
+        <div class="group">ダッシュボード</div>
+        <a href="#">承認待ち一覧</a>
+        <div class="group">返品</div>
+        <a href="#">返品状況確認</a>
+        <a href="#" class="active">廃棄承認</a>
+        <div class="group">在庫</div>
+        <a href="#">在庫照会</a>
+        <div class="group">帳票</div>
+        <a href="#">返品処理報告書</a>
+      </nav>
+      <div class="sb-footer">v3.1.0 &nbsp;|&nbsp; 荷主ポータル</div>
+    </div>
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div class="crumb">廃棄承認 / <b>申請詳細 DA-00041</b></div>
+        <div class="actions">
+          <div class="owner-switcher">
+            荷主: <b>マルキ食品</b>
+          </div>
+          <div class="user">
+            <div class="avatar">佐</div>
+            佐々木（荷主）
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <!-- Alert: 承認要求 -->
+        <div class="note-box alert" style="margin-bottom:14px;">
+          <div class="label">廃棄承認のご確認</div>
+          以下の廃棄申請が届いています。内容を確認の上、承認または却下を選択してください。<br>
+          <b>廃棄は取り消せません。</b>承認後は廃棄出荷処理が実行されます。廃棄証憑（産廃マニフェスト等）は貴社側でご管理ください。
+        </div>
+
+        <!-- 申請詳細カード -->
+        <div class="approval-detail" style="margin-bottom:14px;">
+          <div class="ad-title">廃棄申請 DA-00041 の詳細</div>
+          <table>
+            <tr><td>申請No</td><td class="num">DA-00041</td></tr>
+            <tr><td>対象返品No</td><td class="num">RT-00051</td></tr>
+            <tr><td>申請者（倉庫）</td><td>田中 太郎（東京DC）</td></tr>
+            <tr><td>申請日時</td><td>2026-05-16 14:30</td></tr>
+            <tr><td>承認期限</td><td class="text-alert">2026-05-19（3日以内）</td></tr>
+          </table>
+        </div>
+
+        <!-- 廃棄品明細 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">廃棄申請明細</div>
+          <table class="list">
+            <thead>
+              <tr>
+                <th>SKU / 商品名</th>
+                <th>ロット</th>
+                <th class="right">廃棄申請数量</th>
+                <th>現在保管場所</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="num">SKU-0023</span><br>
+                  <span style="font-size:11px;color:var(--c-text-sub);">マルキ缶詰 200g</span>
+                </td>
+                <td class="num">LOT-260301</td>
+                <td class="right num text-alert">3</td>
+                <td>R-001（quarantine ロケ）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 廃棄理由 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">廃棄理由（倉庫スタッフ記入）</div>
+          <div class="card-body">
+            <p style="font-size:13px;line-height:1.8;">缶が凹み・異臭あり。食品衛生上廃棄必要。荷主に事前連絡済み（2026-05-16）。</p>
+          </div>
+        </div>
+
+        <!-- 却下理由入力（却下時のみ表示） -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">却下理由（却下する場合のみ記入）</div>
+          <div class="card-body">
+            <div class="field">
+              <label>却下理由</label>
+              <textarea rows="3" style="resize:vertical;" placeholder="例：現物を確認してから判断したい。倉庫担当者に連絡します。"></textarea>
+              <span class="hint">却下した場合、廃棄申請は「却下」状態になります。倉庫スタッフに通知されます。</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 確認チェックボックス -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header">承認前確認事項</div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" style="margin-top:3px;flex-shrink:0;">
+                廃棄対象品の詳細（品目・数量・廃棄理由）を確認しました
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" style="margin-top:3px;flex-shrink:0;">
+                廃棄証憑（産廃マニフェスト等）の管理は自社で行うことを了承します（WMSは発行しません）
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                <input type="checkbox" style="margin-top:3px;flex-shrink:0;">
+                承認後、廃棄の取り消しはできないことを理解しました
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom buttons -->
+        <div style="display:flex; gap:10px; justify-content:flex-end; padding-top:4px;">
+          <button class="btn">戻る</button>
+          <button class="btn danger">却下する</button>
+          <button class="btn ok" style="padding:8px 24px;font-size:13px;">承認する（廃棄を確定）</button>
+        </div>
+
+        <!-- 承認後状態イメージ（参考） -->
+        <div class="note-box" style="margin-top:16px;">
+          <div class="label">承認後の処理フロー（自動）</div>
+          承認完了（disposal_approvals.status = 'approved' / approved_by = 佐々木 / approved_at = 承認日時）&nbsp;→&nbsp;
+          廃棄出荷オーダー自動生成（shipment_orders.purpose_type = 'disposal'）&nbsp;→&nbsp;
+          出荷処理実行&nbsp;→&nbsp;
+          廃棄完了記録（WMS DBのみ）
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
