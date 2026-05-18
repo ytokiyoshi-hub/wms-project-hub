@@ -776,6 +776,373 @@ curl -s -X POST http://localhost:3000/api/putaway/${LINE_ID} \
 
 ---
 
+## SC-WMS-07: 破損品の2ライン分割棚入れ（SC-INB-03 対応）
+
+**対応 QA1 シナリオ**：SC-INB-03（破損品発見・良品/不良品の分別棚入れ）  
+**wms-impl の制約**：`/api/inspect` に不良品報告フィールドがないため、1スケジュール2ライン（良品ライン + 破損品ライン）に分割する方式を採用する。
+
+---
+
+### Step 0: テストデータ投入（QUARANTINE ロケーション作成 + 2ライン入荷予定）
+
+```bash
+# QUARANTINE ロケーション作成（存在しない場合のみ）
+curl -s -X POST http://localhost:3000/api/locations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "1AK-QUAR-001",
+    "floor": "1",
+    "floor_zone": "A",
+    "type_char": "K",
+    "aisle": "00",
+    "position": "001",
+    "note": "検疫エリア（破損品・不良品の一時格納）"
+  }'
+# 期待: { "ok": true }
+```
+
+```sql
+-- QUARANTINE ロケーション存在確認
+SELECT code, status, note FROM locations WHERE code = '1AK-QUAR-001';
+-- status = 'active' であること
+```
+
+```bash
+# 1スケジュール・2ライン（良品57 + 破損品3）で入荷予定登録
+curl -s -X POST http://localhost:3000/api/inbound-schedules \
+  -H "Content-Type: application/json" \
+  -d '{
+    "owner_code": "MK001",
+    "supplier_name": "テスト仕入先F",
+    "scheduled_date": "2026-05-18",
+    "inspection_method": "full",
+    "note": "SC-WMS-07 破損品分割テスト",
+    "lines": [
+      { "product_code": "S-00001", "expected_qty": 57, "putaway_priority": 50 },
+      { "product_code": "S-00001", "expected_qty": 3,  "putaway_priority": 99 }
+    ]
+  }'
+# → { "id": <schedule_id>, "schedule_no": "..." }
+```
+
+```sql
+-- 2ライン登録確認（同一 product_code で別 id）
+SELECT l.id AS line_id, l.product_code, l.expected_qty, l.status
+FROM inbound_schedule_lines l
+JOIN inbound_schedules s ON l.schedule_id = s.id
+WHERE s.supplier_name = 'テスト仕入先F'
+ORDER BY l.id;
+-- 2件: expected_qty=57 と expected_qty=3
+-- GOOD_LINE_ID と DAMAGE_LINE_ID をメモ
+```
+
+---
+
+### Step 1: 良品ライン（57個）を検品 → 通常ロケへ棚入れ
+
+```bash
+GOOD_LINE_ID=<57個のline_id>
+curl -s -X POST http://localhost:3000/api/inspect/${GOOD_LINE_ID} \
+  -H "Content-Type: application/json" \
+  -d '{ "inspected_qty": 57, "note": "SC-WMS-07 良品57個" }'
+# 期待: { "ok": true, "discrepancy_id": null, "difference": 0 }
+
+curl -s -X POST http://localhost:3000/api/putaway/${GOOD_LINE_ID} \
+  -H "Content-Type: application/json" \
+  -d '{ "location_code": "1AP-01-101" }'
+# 期待: { "ok": true }
+```
+
+---
+
+### Step 2: 破損品ライン（3個）を検品 → QUARANTINE ロケへ棚入れ
+
+```bash
+DAMAGE_LINE_ID=<3個のline_id>
+curl -s -X POST http://localhost:3000/api/inspect/${DAMAGE_LINE_ID} \
+  -H "Content-Type: application/json" \
+  -d '{ "inspected_qty": 3, "note": "SC-WMS-07 破損品3個" }'
+# 期待: { "ok": true, "discrepancy_id": null, "difference": 0 }
+
+curl -s -X POST http://localhost:3000/api/putaway/${DAMAGE_LINE_ID} \
+  -H "Content-Type: application/json" \
+  -d '{ "location_code": "1AK-QUAR-001" }'
+# 期待: { "ok": true }
+```
+
+---
+
+### Step 3: 在庫分別確認（✅ 分離確認）
+
+```sql
+-- 良品・破損品が別ロケーションに分かれていること
+SELECT product_code, location_code, qty
+FROM inventory
+WHERE product_code = 'S-00001'
+  AND location_code IN ('1AP-01-101', '1AK-QUAR-001', '1AK-99-001');
+-- 1AP-01-101: qty=57（良品）
+-- 1AK-QUAR-001: qty=3（破損品）
+-- 1AK-99-001: qty=0（仮置きゼロ）
+
+-- 出荷可能在庫確認（QUARANTINE 分を除外）
+-- ⚠️ wms-impl は在庫の status フィールドを持たないため、ロケーションコードで識別する
+SELECT SUM(qty) AS normal_stock
+FROM inventory
+WHERE product_code = 'S-00001'
+  AND location_code NOT LIKE '%QUAR%'
+  AND location_code != '1AK-99-001';
+-- → 57（破損品の3個は合計に含まれない）
+
+-- transactions 確認（良品 2件 + 破損品 2件 = 計4件の putaway TX）
+SELECT tx_type, location_code, qty
+FROM inventory_transactions
+WHERE product_code = 'S-00001' AND tx_type = 'putaway'
+ORDER BY id DESC LIMIT 4;
+```
+
+### 合否判定チェックリスト（SC-WMS-07）
+
+| # | 確認項目 | 確認 SQL / 方法 | 期待値 | 判定 |
+|---|---------|---------------|-------|------|
+| 1 | QUARANTINE ロケーション存在 | locations SELECT | status='active' | □ |
+| 2 | 2ライン登録 | inbound_schedule_lines | 57個と3個の2件 | □ |
+| 3 | 良品 57個が通常ロケに格納 | inventory（1AP-01-101） | qty=57 | □ |
+| 4 | 破損品 3個が QUARANTINE に格納 | inventory（1AK-QUAR-001） | qty=3 | □ |
+| 5 | 仮置き在庫がゼロ | inventory（1AK-99-001） | qty=0 | □ |
+| 6 | 出荷可能在庫が 57（破損除外） | SUM WHERE NOT QUAR | 57 | □ |
+
+---
+
+## SC-WMS-08: ASN なし入荷（asn_no 省略 / SC-INB-04 対応）
+
+**対応 QA1 シナリオ**：SC-INB-04（事前通知なし入荷・アドホック入荷）  
+**wms-impl の実装**：`asn_no` フィールドは省略可（NULL 許容）。`schedule_no` は自動採番される。
+
+---
+
+### Step 0: ASN なしでのスケジュール登録
+
+```bash
+# asn_no を省略して登録（NULL になる）
+curl -s -X POST http://localhost:3000/api/inbound-schedules \
+  -H "Content-Type: application/json" \
+  -d '{
+    "owner_code": "MK001",
+    "supplier_name": "テスト仕入先G（アドホック）",
+    "scheduled_date": "2026-05-18",
+    "note": "SC-WMS-08 ASNなし入荷テスト",
+    "lines": [
+      { "product_code": "S-00003", "expected_qty": 20 }
+    ]
+  }'
+# → { "id": <schedule_id>, "schedule_no": "SC-YYYYMMDD-XX", "rma_no": null }
+# asn_no を渡していないため rma_no も null であること
+```
+
+**DB 確認 SQL（ASN なし確認）：**
+
+```sql
+-- asn_no が NULL で登録されていること
+SELECT id, schedule_no, asn_no, supplier_name, owner_code, inspection_method
+FROM inbound_schedules
+WHERE supplier_name = 'テスト仕入先G（アドホック）'
+ORDER BY id DESC LIMIT 1;
+-- asn_no = NULL
+-- schedule_no は自動採番（例: SC-20260518-XX）
+```
+
+---
+
+### Step 1: 通常どおり検品 → 棚入れ
+
+```bash
+# line_id 取得
+LINE_ID=$(sqlite3 /Users/tokiyoshiyusuke/github/wms-impl/server/db.sqlite \
+  "SELECT l.id FROM inbound_schedule_lines l JOIN inbound_schedules s ON l.schedule_id=s.id WHERE s.supplier_name='テスト仕入先G（アドホック）' AND l.status='planned' LIMIT 1;")
+
+curl -s -X POST http://localhost:3000/api/inspect/${LINE_ID} \
+  -H "Content-Type: application/json" \
+  -d '{ "inspected_qty": 20, "note": "SC-WMS-08 ASNなし入荷 検品OK" }'
+# 期待: { "ok": true, "discrepancy_id": null, "difference": 0 }
+
+curl -s -X POST http://localhost:3000/api/putaway/${LINE_ID} \
+  -H "Content-Type: application/json" \
+  -d '{ "location_code": "1AT-02-101" }'
+# 期待: { "ok": true }
+```
+
+---
+
+### Step 2: 在庫・スケジュール確認
+
+```sql
+-- ASN なしでも正常に在庫計上されること
+SELECT product_code, location_code, qty
+FROM inventory
+WHERE product_code = 'S-00003' AND location_code = '1AT-02-101';
+-- qty = 20
+
+-- スケジュールの asn_no が NULL のまま完了していること
+SELECT s.schedule_no, s.asn_no, l.status, l.putaway_location
+FROM inbound_schedules s
+JOIN inbound_schedule_lines l ON l.schedule_id = s.id
+WHERE s.supplier_name = 'テスト仕入先G（アドホック）';
+-- asn_no = NULL, status = 'completed', putaway_location = '1AT-02-101'
+```
+
+### 合否判定チェックリスト（SC-WMS-08）
+
+| # | 確認項目 | 確認 SQL / 方法 | 期待値 | 判定 |
+|---|---------|---------------|-------|------|
+| 1 | asn_no なしで登録成功 | API レスポンス | ok:true, schedule_no 生成 | □ |
+| 2 | asn_no = NULL で保存 | inbound_schedules.asn_no | NULL | □ |
+| 3 | 検品・棚入れ正常完了 | inbound_schedule_lines.status | 'completed' | □ |
+| 4 | 在庫計上 OK | inventory（1AT-02-101） | qty=20 | □ |
+| 5 | schedule_no は自動採番 | inbound_schedules.schedule_no | 'SC-YYYYMMDD-XX' 形式 | □ |
+
+---
+
+## SC-WMS-09: putaway_priority 確認（SC-INB-05 対応・仕様ギャップ含む）
+
+**対応 QA1 シナリオ**：SC-INB-05（緊急入荷・優先フラグ付き）  
+**⚠️ 既知の仕様ギャップ**：`putaway/pending` は `inspected_at` 順でソートされ、`putaway_priority` は未使用（`server/index.js L780`）。  
+本シナリオでは `putaway_priority` の保存動作を確認しつつ、緊急入荷の運用ワークアラウンドを示す。
+
+---
+
+### Step 0: 通常スケジュール3件 + 緊急スケジュール1件を登録
+
+```bash
+# 通常スケジュール 3件（putaway_priority=50）
+for i in 1 2 3; do
+  curl -s -X POST http://localhost:3000/api/inbound-schedules \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"owner_code\": \"MK001\",
+      \"supplier_name\": \"テスト仕入先H-通常${i}\",
+      \"scheduled_date\": \"2026-05-18\",
+      \"note\": \"SC-WMS-09 通常スケジュール${i}\",
+      \"lines\": [{ \"product_code\": \"S-00004\", \"expected_qty\": 5, \"putaway_priority\": 50 }]
+    }"
+done
+
+# 緊急スケジュール 1件（putaway_priority=1）
+curl -s -X POST http://localhost:3000/api/inbound-schedules \
+  -H "Content-Type: application/json" \
+  -d '{
+    "owner_code": "MK001",
+    "supplier_name": "テスト仕入先H-緊急",
+    "scheduled_date": "2026-05-18",
+    "note": "SC-WMS-09 緊急入荷テスト EMERGENCY",
+    "lines": [
+      { "product_code": "S-00004", "expected_qty": 5, "putaway_priority": 1 }
+    ]
+  }'
+```
+
+```sql
+-- 4件とも登録確認
+SELECT l.id AS line_id, l.product_code, l.expected_qty, l.putaway_priority,
+       s.supplier_name
+FROM inbound_schedule_lines l
+JOIN inbound_schedules s ON l.schedule_id = s.id
+WHERE s.supplier_name LIKE 'テスト仕入先H%'
+ORDER BY l.putaway_priority ASC, l.id ASC;
+-- 緊急: putaway_priority=1
+-- 通常3件: putaway_priority=50
+-- URGENT_LINE_ID をメモ
+```
+
+---
+
+### Step 1: 緊急スケジュールを最初に検品（優先ワークアラウンド）
+
+```bash
+# ⚠️ wms-impl は putaway_priority でソートしないため、緊急品は「先に検品する」ことで putaway キューの先頭に来る
+URGENT_LINE_ID=<緊急スケジュールのline_id>
+curl -s -X POST http://localhost:3000/api/inspect/${URGENT_LINE_ID} \
+  -H "Content-Type: application/json" \
+  -d '{ "inspected_qty": 5, "note": "SC-WMS-09 緊急入荷 検品OK（優先処理）" }'
+```
+
+---
+
+### Step 2: 通常スケジュール 3件を後から検品
+
+```bash
+# 通常スケジュール 3件の line_id を取得して検品
+for SUPPLIER in "テスト仕入先H-通常1" "テスト仕入先H-通常2" "テスト仕入先H-通常3"; do
+  LINE_ID=$(sqlite3 /Users/tokiyoshiyusuke/github/wms-impl/server/db.sqlite \
+    "SELECT l.id FROM inbound_schedule_lines l JOIN inbound_schedules s ON l.schedule_id=s.id WHERE s.supplier_name='${SUPPLIER}' AND l.status='planned' LIMIT 1;")
+  curl -s -X POST http://localhost:3000/api/inspect/${LINE_ID} \
+    -H "Content-Type: application/json" \
+    -d "{\"inspected_qty\": 5, \"note\": \"SC-WMS-09 通常検品\"}"
+done
+```
+
+---
+
+### Step 3: putaway/pending キューで順序確認
+
+```bash
+curl -s http://localhost:3000/api/putaway/pending | python3 -m json.tool | grep -E '"id"|"putaway_priority"|"supplier_name"|"inspected_at"'
+```
+
+**期待動作の確認：**
+
+```sql
+-- inspected_at 順でソートされていること（putaway_priority 順ではない）
+SELECT l.id, l.putaway_priority, l.inspected_at, s.supplier_name
+FROM inbound_schedule_lines l
+JOIN inbound_schedules s ON l.schedule_id = s.id
+WHERE l.status = 'inspected' AND s.supplier_name LIKE 'テスト仕入先H%'
+ORDER BY l.inspected_at ASC, l.id ASC;
+-- 緊急スケジュール（putaway_priority=1）が先に検品済みのため inspected_at が最小値 → キュー先頭に表示
+-- → 緊急先処理の意図通りの順序
+```
+
+**⚠️ 仕様ギャップの確認：**
+
+```sql
+-- putaway_priority=1 が DB に保存されていること
+SELECT id, putaway_priority FROM inbound_schedule_lines WHERE id = <URGENT_LINE_ID>;
+-- putaway_priority = 1 で保存されている（DB 書き込みは正常）
+
+-- ただし putaway/pending API の ORDER BY は inspected_at のみ（putaway_priority は無視）
+-- → 緊急入荷の優先度を保証するには「緊急品を先に検品する」運用フローが必要
+```
+
+---
+
+### Step 4: 緊急スケジュールを最初に棚入れ
+
+```bash
+curl -s -X POST http://localhost:3000/api/putaway/${URGENT_LINE_ID} \
+  -H "Content-Type: application/json" \
+  -d '{ "location_code": "1AP-01-102" }'
+# 期待: { "ok": true }
+
+# 在庫確認（緊急品が先に棚入れ完了）
+```
+
+```sql
+SELECT product_code, location_code, qty FROM inventory
+WHERE product_code = 'S-00004' AND location_code = '1AP-01-102';
+-- qty = 5（緊急品が先に棚入れ完了）
+```
+
+### 合否判定チェックリスト（SC-WMS-09）
+
+| # | 確認項目 | 確認 SQL / 方法 | 期待値 | 判定 |
+|---|---------|---------------|-------|------|
+| 1 | putaway_priority=1 が DB に保存 | inbound_schedule_lines | putaway_priority=1 | □ |
+| 2 | putaway/pending は inspected_at 順 | API レスポンス順序 + SQL ORDER BY | 先に検品した緊急品が先頭 | □ |
+| 3 | ⚠️ putaway_priority ソート未実装を確認 | SQL ORDER BY putaway_priority vs inspected_at | 仕様ギャップの記録 | □ |
+| 4 | 緊急品を先に棚入れ完了できる | inbound_schedule_lines.status | 緊急ライン: 'completed' | □ |
+| 5 | 在庫計上 OK | inventory（1AP-01-102） | qty=5 | □ |
+
+---
+
 ## テストデータクリーンアップ
 
 全シナリオ完了後、以下 SQL で wms-impl SQLite DB のテストデータをクリアする。
@@ -807,12 +1174,18 @@ WHERE schedule_id IN (
 -- 入荷ヘッダー削除
 DELETE FROM inbound_schedules WHERE supplier_name LIKE 'テスト仕入先%';
 
+-- SC-WMS-07 で作成した QUARANTINE ロケーションを削除
+DELETE FROM locations WHERE code = '1AK-QUAR-001';
+
 -- クリーン状態確認
 SELECT COUNT(*) AS inv_count FROM inventory;
 -- → 0
 
 SELECT COUNT(*) AS lines_count FROM inbound_schedule_lines
 WHERE schedule_id IN (SELECT id FROM inbound_schedules WHERE supplier_name LIKE 'テスト仕入先%');
+-- → 0
+
+SELECT COUNT(*) AS quar_loc FROM locations WHERE code = '1AK-QUAR-001';
 -- → 0
 ```
 
@@ -822,12 +1195,15 @@ WHERE schedule_id IN (SELECT id FROM inbound_schedules WHERE supplier_name LIKE 
 
 | # | シナリオ | 検証内容 | LOT | 担当者 | 実施日 | 結果 | 備考 |
 |---|---------|---------|-----|-------|-------|------|------|
-| 1 | SC-WMS-01 | 正常入荷・完走 | 不要 | | | □OK / □NG | |
-| 2 | SC-WMS-02 | shortage 差異 → accept_actual | 不要 | | | □OK / □NG | |
+| 1 | SC-WMS-01 | 正常入荷・完走（SC-INB-01 対応） | 不要 | | | □OK / □NG | |
+| 2 | SC-WMS-02 | shortage 差異 → accept_actual（SC-INB-02 対応） | 不要 | | | □OK / □NG | |
 | 3 | SC-WMS-03 | overage 差異検出 | 不要 | | | □OK / □NG | |
 | 4 | SC-WMS-04 | re_inspect → 在庫ロールバック | 不要 | | | □OK / □NG | SC-WMS-02 の差異を流用 |
 | 5 | SC-WMS-05 | ロット・賞味期限付き入荷 | 必要 | | | □OK / □NG | |
 | 6 | SC-WMS-06 | 無効ロケ棚入れ → 400エラー | 不要 | | | □OK / □NG | |
+| 7 | SC-WMS-07 | 破損品の2ライン分割棚入れ（SC-INB-03 対応） | 不要 | | | □OK / □NG | QUARANTINE ロケ作成が前提 |
+| 8 | SC-WMS-08 | ASN なし入荷（SC-INB-04 対応） | 不要 | | | □OK / □NG | asn_no=NULL 確認 |
+| 9 | SC-WMS-09 | putaway_priority 確認（SC-INB-05 対応） | 不要 | | | □OK / □NG | 仕様ギャップ含む |
 
 ---
 
@@ -842,6 +1218,9 @@ WHERE schedule_id IN (SELECT id FROM inbound_schedules WHERE supplier_name LIKE 
 | 差異自動生成 | `inspected_qty ≠ expected_qty` の場合に自動作成 | `server/index.js L458-465` |
 | 再検品ロールバック | `action='re_inspect'` 時に `inspected_qty > 0` の場合のみ在庫戻しが実行される | `server/index.js L499-508` |
 | ロケーション有効性 | 棚入れ時に `locations.status='active'` を必ず確認する | `server/index.js L792` |
+| putaway_priority ⚠️ | DB には保存されるが `putaway/pending` の ORDER BY には未使用（`inspected_at` 順） | `server/index.js L780` |
+| 破損品処理 | ネイティブの不良品報告フィールドなし。2ライン分割（良品+破損品）で対応 | SC-WMS-07 参照 |
+| ASN なし入荷 | `asn_no` 省略で NULL 登録・`schedule_no` は自動採番。別途ステータス管理は手動 | SC-WMS-08 参照 |
 
 ---
 
@@ -859,4 +1238,5 @@ WHERE schedule_id IN (SELECT id FROM inbound_schedules WHERE supplier_name LIKE 
 ---
 
 *本ドキュメントはにーちゃん（id=7）が Phase 9-QA3（#1004）として作成。wms-impl の SQLite 実装（inbound_schedules / inbound_schedule_lines / inventory / inventory_transactions）に対応した検証手順と curl コマンド・SQL を整備した。*  
+*#1005 にて SC-WMS-07〜09（破損品2ライン分割・ASN なし入荷・putaway_priority 確認）を追記し、QA1 シナリオ SC-INB-03〜05 との対応を完結させた。putaway_priority のソート未実装（仕様ギャップ）も本ドキュメントに記録済み。*  
 *Supabase 本番環境向けの検証は `e2e_inbound_putaway_qa3.md` を参照すること。*
