@@ -583,7 +583,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
   <main class="main">
     <div class="topbar">
       <div class="crumb"><b id="crumb-current">ダッシュボード</b></div>
-      <div class="last-updated">最終更新：2026/05/18</div>
+      <div class="last-updated">最終更新：2026/05/19</div>
     </div>
 
     <div class="content">
@@ -654,7 +654,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
             <div class="marker"></div>
             <div class="body">
               <div class="title">フェーズ5：実装開発（Phase 9）</div>
-              <div class="desc">Stage 1〜4 全14項目実装完了・セキュリティ修正完了（2026-05-16）。wms-impl B-1マスタ管理15画面完走・B-2入荷フロー8画面完走（2026-05-17）。B-3出荷フロー進行中（W1 verify PASS / W2 verify PASS / W3〜W5 未着手）</div>
+              <div class="desc">Stage 1〜4 全14項目実装完了・セキュリティ修正完了（2026-05-16）。wms-impl B-1マスタ管理15画面完走・B-2入荷フロー8画面完走（2026-05-17）。B-3出荷フロー進行中（W1 verify PASS / W2 verify PASS / W3〜W5 未着手）。Phase 9-AU2 skus DDL文書化完了（#1002）・Phase 9-QA3 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 完了（#1004/#1005）</div>
             </div>
             <div class="pct">100%</div>
           </div>
@@ -750,7 +750,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         <div class="page-title">進捗詳細</div>
         <div class="page-subtitle">Phase 9 実装状況と工程レビュー詳細進捗</div>
 
-        <div class="section-title">Phase 9 実装状況（2026-05-17 時点・14項目）</div>
+        <div class="section-title">Phase 9 実装状況（2026-05-19 時点・14項目）</div>
         <div class="card" style="margin-bottom:24px;">
           <div class="card-h">
             <span>Stage 別実装進捗</span>
@@ -841,7 +841,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
         </div>
 
-        <div class="section-title">wms-impl 実装進捗（2026-05-18 時点）</div>
+        <div class="section-title">wms-impl 実装進捗（2026-05-19 時点）</div>
         <div class="card" style="margin-bottom:24px;">
           <div class="card-h">
             <span>実装バッチ別進捗</span>
@@ -880,7 +880,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
         </div>
 
         <div class="section-title">B-3 出荷フロー ウェーブ別詳細</div>
-        <div class="card">
+        <div class="card" style="margin-bottom:24px;">
           <div class="card-h">
             <span>B-3 出荷フロー 5ウェーブ計画</span>
             <span class="meta">W1 verify PASS / W2 verify PASS / W3〜W5 未着手</span>
@@ -908,6 +908,37 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                   <td>（5ウェーブ計画内・未定）</td>
                   <td><span class="pill pill-pending">未着手</span></td>
                   <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-title">Phase 9 追加作業（2026-05-19 完了）</div>
+        <div class="card">
+          <div class="card-h">
+            <span>AU2 SQL文書化・QA3 E2E検証シナリオ</span>
+            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09</span>
+          </div>
+          <div class="card-b" style="padding:0;">
+            <table class="tbl">
+              <thead>
+                <tr><th>Phase</th><th>内容</th><th>成果物</th><th>状態</th><th>根拠タスク</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="id">9-AU2</td>
+                  <td>skus テーブル SQL DDL 文書化（owner_id × sku_code × jan UNIQUE / RLS 2ポリシー / FK）</td>
+                  <td>wms-impl/sql/phase9_stage1_skus.sql</td>
+                  <td><span class="pill pill-success">✅ 完了</span></td>
+                  <td class="num">#1002 / #1003</td>
+                </tr>
+                <tr>
+                  <td class="id">9-QA3</td>
+                  <td>入荷〜棚入れ E2E 検証シナリオ詳細化（SC-WMS-01〜09：正常入荷・shortage/overage・ロット・ASNなし・putaway_priority等）</td>
+                  <td>e2e_inbound_putaway_wms_impl_qa3.md</td>
+                  <td><span class="pill pill-success">✅ 完了</span></td>
+                  <td class="num">#1004 / #1005</td>
                 </tr>
               </tbody>
             </table>
