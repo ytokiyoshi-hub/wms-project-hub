@@ -583,7 +583,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
   <main class="main">
     <div class="topbar">
       <div class="crumb"><b id="crumb-current">ダッシュボード</b></div>
-      <div class="last-updated">最終更新：2026/05/21</div>
+      <div class="last-updated">最終更新：2026/05/22</div>
     </div>
 
     <div class="content">
@@ -914,11 +914,11 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
         </div>
 
-        <div class="section-title">Phase 9 追加作業（2026-05-21 更新）</div>
+        <div class="section-title">Phase 9 追加作業（2026-05-22 更新）</div>
         <div class="card">
           <div class="card-h">
-            <span>AU2 SQL文書化・QA3 E2E検証シナリオ・QA2 Stage1 DB migration検証</span>
-            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 / Stage1 DB migration staging PASS</span>
+            <span>AU2 SQL文書化・QA3 E2E検証シナリオ・QA2 Stage1 DB migration検証・DB4 RLS SQL・CA1 billing_rules SQL</span>
+            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 / Stage1 DB migration staging PASS / 荷主切替RLS / 請求ルールSQL</span>
           </div>
           <div class="card-b" style="padding:0;">
             <table class="tbl">
@@ -946,6 +946,27 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                   <td>kurokun_memo#341（テスト詳細記録）</td>
                   <td><span class="pill pill-success">✅ 完了</span></td>
                   <td class="num">#1007</td>
+                </tr>
+                <tr>
+                  <td class="id">9-DB4</td>
+                  <td>荷主切替 owner_id RLS 設計・SQL作成（inventory/lots/serials/locations/skus 5テーブル × 2ポリシー / owner_id カラム追加・インデックス・RLS有効化）</td>
+                  <td>sql/phase9_stage1_rls.sql（272行 / commit 2dc528e）</td>
+                  <td><span class="pill pill-success">✅ 完了</span></td>
+                  <td class="num">#1011</td>
+                </tr>
+                <tr>
+                  <td class="id">9-CA1</td>
+                  <td>billing_rules テーブル設計・SQL 作成（charge_type/effective_from/effective_to / billing_invoices・billing_invoice_lines テーブル + generate_monthly_billing 関数 / DB適用済み）</td>
+                  <td>sql/phase9_stage4_billing.sql（commit a999d89）</td>
+                  <td><span class="pill pill-success">✅ 完了</span></td>
+                  <td class="num">#1012</td>
+                </tr>
+                <tr>
+                  <td class="id">9-QA2<br><small>再検証</small></td>
+                  <td>Stage1 DB migration 再検証（jan_code/unit カラム・idx_skus_owner_jan_code インデックス・RLS全3テーブル 10シナリオ全PASS）</td>
+                  <td>kurokun_memo（再検証記録）</td>
+                  <td><span class="pill pill-success">✅ 完了</span></td>
+                  <td class="num">#1013</td>
                 </tr>
               </tbody>
             </table>
