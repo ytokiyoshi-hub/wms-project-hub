@@ -29,7 +29,14 @@
    - 読了・中継などのアクション完了後に `status='resolved'` ＋ `resolved_note` で閉じる
    - これを飛ばすと前セッションの文脈（進行中ウェーブ・verify 待ち・直近の判定）を見失う
 
-5. **役割宣言して待機**
+5. **最新 HANDOVER_*.md を読む**（テストサイト2 構築・1号↔2号運用の引継ぎ書）
+   ```
+   ls -t ~/github/wms-project-hub/wms-project-hub/HANDOVER_*.md | head -1
+   ```
+   - 最新の HANDOVER_*.md があれば必ず読む（型ルール・成果・進行中タスク・主要URL）
+   - 新アカウント切替直後・大きな成果反映後 等に新しい HANDOVER が追加される
+
+6. **役割宣言して待機**
 
 ---
 
