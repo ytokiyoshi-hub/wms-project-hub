@@ -583,7 +583,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
   <main class="main">
     <div class="topbar">
       <div class="crumb"><b id="crumb-current">ダッシュボード</b></div>
-      <div class="last-updated">最終更新：2026/05/23</div>
+      <div class="last-updated">最終更新：2026/05/24</div>
     </div>
 
     <div class="content">
@@ -914,11 +914,11 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
         </div>
 
-        <div class="section-title">Phase 9 追加作業（2026-05-22 更新）</div>
+        <div class="section-title">Phase 9 追加作業（2026-05-24 更新）</div>
         <div class="card">
           <div class="card-h">
-            <span>AU2 SQL文書化・QA3 E2E検証シナリオ・QA2 Stage1 DB migration検証・DB4 RLS SQL・CA1 billing_rules SQL</span>
-            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 / Stage1 DB migration staging PASS / 荷主切替RLS / 請求ルールSQL</span>
+            <span>AU2 SQL文書化・QA3 E2E検証シナリオ・QA2 Stage1 DB migration検証・DB4 RLS SQL・CA1 billing_rules SQL・API2 OpenAPI仕様</span>
+            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 / Stage1 DB migration staging PASS / 荷主切替RLS / 請求ルールSQL / 入荷・検品API仕様</span>
           </div>
           <div class="card-b" style="padding:0;">
             <table class="tbl">
@@ -952,7 +952,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                   <td>荷主切替 owner_id RLS 設計・SQL作成（inventory/lots/serials/locations/skus 5テーブル × 2ポリシー / owner_id カラム追加・インデックス・RLS有効化）</td>
                   <td>sql/phase9_stage1_rls.sql（272行 / commit 2dc528e）</td>
                   <td><span class="pill pill-success">✅ 完了</span></td>
-                  <td class="num">#1011</td>
+                  <td class="num">#1011 / #1016</td>
                 </tr>
                 <tr>
                   <td class="id">9-CA1</td>
@@ -967,6 +967,13 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                   <td>kurokun_memo（再検証記録）</td>
                   <td><span class="pill pill-success">✅ 完了</span></td>
                   <td class="num">#1013</td>
+                </tr>
+                <tr>
+                  <td class="id">9-API2</td>
+                  <td>WMS入荷・検品 API エンドポイント仕様（POST /inbound + PATCH /inbound/{id}/inspect / OpenAPI YAML追記 L180-258 / スキーマ4件：InboundCreate/Inbound/InspectionSummary/InspectUpdateRequest）</td>
+                  <td>docs/wms-api-draft.yaml（commit 36cc789）</td>
+                  <td><span class="pill pill-success">✅ 完了</span></td>
+                  <td class="num">#1017</td>
                 </tr>
               </tbody>
             </table>
