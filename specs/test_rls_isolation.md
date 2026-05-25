@@ -1,9 +1,10 @@
 # Phase 9-QA4: 荷主切替 RLS 検証シナリオ（owner_id 分離確認）
 
 作成日：2026-05-10  
+最終更新：2026-05-25（#1021 により SC-RLS-11・SC-RLS-12 追加）  
 作成者：にーちゃん（id=7）  
-対応タスク：#832 Phase 9-QA4  
-依存：Phase 9-AU1（user_owners テーブル）/ Phase 9-DB4（業務テーブル RLS）
+対応タスク：#832 Phase 9-QA4 / #1021 Phase 9-QA4（2号）  
+依存：Phase 9-AU1（user_owners テーブル）/ Phase 9-DB4（業務テーブル RLS）/ Phase 9-fixsec（work_orders 追加ポリシー）
 
 ---
 
@@ -644,6 +645,187 @@ FROM allocation_results;
 
 ---
 
+## SC-RLS-11: work_orders の荷主分離確認
+
+**対象ポリシー**：`work_orders_owner_access`（ALL / admin・operator）/ `work_orders_viewer_read`（SELECT / viewer）/ `work_orders_shipper_read`（SELECT / shipper）  
+**SQL ファイル**：`sql/phase9_fixsec_part1_rls.sql`（Section 6）
+
+### 11-1. work_orders RLS 有効確認（service_role で実行）
+
+```sql
+SELECT tablename, rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public' AND tablename = 'work_orders';
+-- 期待値: rowsecurity = true
+```
+
+### 11-2. work_orders ポリシー一覧確認
+
+```sql
+SELECT policyname, cmd, qual
+FROM pg_policies
+WHERE tablename = 'work_orders'
+ORDER BY policyname;
+-- 期待値: work_orders_owner_access (ALL) / work_orders_viewer_read (SELECT) / work_orders_shipper_read (SELECT) の3件
+```
+
+### 11-3. テスト用 work_orders データ投入（service_role で実行）
+
+```sql
+-- TKY の work_order
+INSERT INTO work_orders (owner_id, order_type, status, priority, notes)
+VALUES (1, 'inbound', 'pending', 'normal', 'RLS検証用TKY作業指示')
+RETURNING id, owner_id, order_type;
+
+-- FDB の work_order
+INSERT INTO work_orders (owner_id, order_type, status, priority, notes)
+VALUES (2, 'inbound', 'pending', 'normal', 'RLS検証用FDB作業指示')
+RETURNING id, owner_id, order_type;
+```
+
+**投入確認（service_role）：**
+
+```sql
+SELECT id, owner_id, order_type, notes
+FROM work_orders
+WHERE notes LIKE 'RLS検証用%'
+ORDER BY owner_id;
+-- → TKY (owner_id=1) / FDB (owner_id=2) の2行が存在すること
+```
+
+### 11-4. TKY User（operator）で FDB の work_orders が見えないこと
+
+```sql
+-- TKY User（operator）のJWT で実行
+SELECT id, owner_id, order_type, notes
+FROM work_orders
+ORDER BY owner_id;
+-- 期待値: owner_id=1 行のみ（owner_id=2 の FDB 行は含まれない）
+```
+
+### 11-5. FDB User（operator）で TKY の work_orders が見えないこと
+
+```sql
+-- FDB User（operator）のJWT で実行
+SELECT id, owner_id, order_type, notes
+FROM work_orders
+ORDER BY owner_id;
+-- 期待値: owner_id=2 行のみ（owner_id=1 の TKY 行は含まれない）
+```
+
+### 11-6. viewer による work_orders クロス荷主 SELECT がブロックされること
+
+```sql
+-- TKY Viewer のJWT で実行（自荷主は見える）
+SELECT id, owner_id, order_type FROM work_orders;
+-- 期待値: owner_id=1 行のみ返る。owner_id=2 行は含まれない
+```
+
+### 11-7. operator による work_orders クロス INSERT がブロックされること
+
+```sql
+-- TKY User（operator）のJWT で実行
+INSERT INTO work_orders (owner_id, order_type, status, priority, notes)
+VALUES (2, 'inbound', 'pending', 'normal', 'クロスINSERT試行');
+-- 期待値: new row violates row-level security policy for table "work_orders"
+```
+
+```sql
+-- クロス INSERT 後の確認（service_role で実行）
+SELECT COUNT(*) FROM work_orders WHERE notes = 'クロスINSERT試行';
+-- → 0（INSERT が通っていないこと）
+```
+
+### 合否判定
+
+| # | 確認項目 | ユーザー | 期待値 | 判定 |
+|---|---------|---------|-------|------|
+| 1 | work_orders rowsecurity | service_role | true | □ |
+| 2 | ポリシー3件存在 | service_role | 3件（owner_access/viewer_read/shipper_read） | □ |
+| 3 | TKY User から FDB work_orders が見えない | TKY operator | 0行 | □ |
+| 4 | FDB User から TKY work_orders が見えない | FDB operator | 0行 | □ |
+| 5 | viewer は自荷主 SELECT のみ | TKY viewer | owner_id=1 行のみ | □ |
+| 6 | クロス INSERT ブロック | TKY operator | RLS 違反エラー | □ |
+
+### クリーンアップ
+
+```sql
+DELETE FROM work_orders WHERE notes LIKE 'RLS検証用%' OR notes = 'クロスINSERT試行';
+```
+
+---
+
+## SC-RLS-12: shipment_orders の RLS 未適用確認（⚠️ セキュリティギャップ）
+
+> **⚠️ 警告**：`shipment_orders` テーブルは `owner_id` カラムを持つが、現時点（2026-05-25）において RLS ポリシーが適用されていない。
+> このシナリオは「未適用を確認して修正を促す」ための検証シナリオである。
+> 修正タスク起票が必要（さーちゃん担当）。
+
+### 12-1. shipment_orders RLS 状態確認（service_role で実行）
+
+```sql
+SELECT tablename, rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public' AND tablename = 'shipment_orders';
+-- 期待値（現状）: rowsecurity = false  ← ⚠️ これがセキュリティギャップ
+-- 修正後の期待値: rowsecurity = true
+```
+
+### 12-2. shipment_orders ポリシー一覧確認
+
+```sql
+SELECT COUNT(*) FROM pg_policies
+WHERE tablename = 'shipment_orders';
+-- 期待値（現状）: 0件  ← ⚠️ ポリシー未設定
+-- 修正後の期待値: 2件以上（owner_access / shipper_read 等）
+```
+
+### 12-3. RLS 未適用時のクロスリーク確認（セキュリティギャップの実証）
+
+> この確認は RLS が **未適用** の場合のみ実施する。修正後は不要。
+
+```sql
+-- テスト用データ投入（service_role で実行）
+INSERT INTO shipment_orders (owner_id, order_number, source_type, status)
+VALUES (1, 'RLS-TEST-TKY-001', 'manual', 'draft'),
+       (2, 'RLS-TEST-FDB-001', 'manual', 'draft');
+
+-- TKY User のJWT で実行
+SELECT id, owner_id, order_number FROM shipment_orders ORDER BY owner_id;
+-- 現状の結果（RLS 未適用）: owner_id=1 と owner_id=2 の両方が見える ← セキュリティ違反
+-- 修正後の期待値: owner_id=1 行のみ（RLS が適用されていれば）
+```
+
+### 12-4. クリーンアップ
+
+```sql
+DELETE FROM shipment_orders WHERE order_number IN ('RLS-TEST-TKY-001', 'RLS-TEST-FDB-001');
+```
+
+### 合否判定
+
+| # | 確認項目 | 現状期待値 | 修正後期待値 | 判定 |
+|---|---------|----------|------------|------|
+| 1 | shipment_orders rowsecurity | false（⚠️ 未適用） | true | □ |
+| 2 | ポリシー件数 | 0件（⚠️ 未設定） | 2件以上 | □ |
+| 3 | クロスリーク確認 | 両荷主行が見える（⚠️） | 自荷主のみ | □ |
+
+### 修正タスク（起票が必要）
+
+```
+タイトル: Phase 9-DB6: shipment_orders に RLS ポリシーを適用（owner_id 分離）
+担当: さーちゃん（id=5）
+内容:
+  - ALTER TABLE shipment_orders ENABLE ROW LEVEL SECURITY;
+  - CREATE POLICY shipment_orders_owner_access ON shipment_orders FOR ALL
+      USING (owner_id IN (SELECT owner_id FROM user_owners WHERE user_id = auth.uid() AND role IN ('admin', 'operator')));
+  - CREATE POLICY shipment_orders_viewer_read ON shipment_orders FOR SELECT
+      USING (owner_id IN (SELECT owner_id FROM user_owners WHERE user_id = auth.uid() AND role IN ('viewer', 'shipper')));
+  - 適用後に SC-RLS-12 を再実行して修正後の期待値を確認すること
+```
+
+---
+
 ## 全体クリーンアップ SQL
 
 テスト完了後、以下を実行してテストデータを削除する。
@@ -700,6 +882,8 @@ SELECT COUNT(*) FROM locations WHERE code = 'SHARED-DOCK-01';
 | 8 | SC-RLS-08 | get_my_owner_ids() のロール別動作確認 | | □OK / □NG | |
 | 9 | SC-RLS-09 | billing_rules の荷主分離（billing_rules_owner_access） | | □OK / □NG | |
 | 10 | SC-RLS-10 | allocation_results の荷主分離（allocation_results_owner_isolation） | | □OK / □NG | |
+| 11 | SC-RLS-11 | work_orders の荷主分離（3ポリシー検証） | | □OK / □NG | #1021 追加 |
+| 12 | SC-RLS-12 | shipment_orders の RLS 未適用確認（⚠️ セキュリティギャップ） | | □OK / □NG | 修正タスク起票要 |
 
 ---
 
@@ -750,7 +934,8 @@ SELECT COUNT(*) FROM locations WHERE code = 'SHARED-DOCK-01';
 
 *このドキュメントはにーちゃん（id=7）が Phase 9-QA4（#832）として作成した。*  
 *RLS ポリシーが実際に deploy されたら、本シナリオを順番に実施して分離を実証すること。*  
-*SC-RLS-09・SC-RLS-10 は Phase 9-QA7fix（#905）にて追加。QA7（#898）実施結果をもとに billing_rules / allocation_results のシナリオを補完。*
+*SC-RLS-09・SC-RLS-10 は Phase 9-QA7fix（#905）にて追加。QA7（#898）実施結果をもとに billing_rules / allocation_results のシナリオを補完。*  
+*SC-RLS-11・SC-RLS-12 は Phase 9-QA4（#1021）にて追加。work_orders の fixsec 適用確認と shipment_orders の RLS 未適用ギャップを記録。*
 
 ---
 
