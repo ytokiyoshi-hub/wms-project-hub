@@ -583,7 +583,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
   <main class="main">
     <div class="topbar">
       <div class="crumb"><b id="crumb-current">ダッシュボード</b></div>
-      <div class="last-updated">最終更新：2026/05/25</div>
+      <div class="last-updated">最終更新：2026/05/26</div>
     </div>
 
     <div class="content">
@@ -914,11 +914,11 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
         </div>
 
-        <div class="section-title">Phase 9 追加作業（2026-05-25 更新）</div>
+        <div class="section-title">Phase 9 追加作業（2026-05-26 更新）</div>
         <div class="card">
           <div class="card-h">
-            <span>AU2 SQL文書化・QA3 E2E検証シナリオ・QA2 Stage1 DB migration検証・DB4 RLS SQL・CA1 billing_rules SQL・API2 OpenAPI仕様</span>
-            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 / Stage1 DB migration staging PASS / 荷主切替RLS / 請求ルールSQL / 入荷・検品API仕様</span>
+            <span>AU2 SQL文書化・QA3 E2E検証シナリオ・QA2 Stage1 DB migration検証・DB4 RLS SQL・CA1 billing_rules SQL・API2 OpenAPI仕様・QA4 RLS検証シナリオ</span>
+            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 / Stage1 DB migration staging PASS / 荷主切替RLS / 請求ルールSQL / 入荷・検品API仕様 / 荷主切替RLS検証SC-RLS-11/12</span>
           </div>
           <div class="card-b" style="padding:0;">
             <table class="tbl">
@@ -974,6 +974,13 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                   <td>docs/wms-api-draft.yaml（commit 36cc789）</td>
                   <td><span class="pill pill-success">✅ 完了</span></td>
                   <td class="num">#1017</td>
+                </tr>
+                <tr>
+                  <td class="id">9-QA4</td>
+                  <td>荷主切替 RLS 検証シナリオ作成（SC-RLS-11: work_orders 3ポリシー検証 / SC-RLS-12: shipment_orders RLSポリシー不在のセキュリティギャップ記録・修正タスク起票済み）</td>
+                  <td>specs/test_rls_isolation.md（commit 9f6e104）</td>
+                  <td><span class="pill pill-success">✅ 完了</span></td>
+                  <td class="num">#1021</td>
                 </tr>
               </tbody>
             </table>
