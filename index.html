@@ -583,7 +583,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
   <main class="main">
     <div class="topbar">
       <div class="crumb"><b id="crumb-current">ダッシュボード</b></div>
-      <div class="last-updated">最終更新：2026/05/27</div>
+      <div class="last-updated">最終更新：2026/05/28</div>
     </div>
 
     <div class="content">
@@ -914,11 +914,11 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
         </div>
 
-        <div class="section-title">Phase 9 追加作業（2026-05-26 更新）</div>
+        <div class="section-title">Phase 9 追加作業（2026-05-28 更新）</div>
         <div class="card">
           <div class="card-h">
-            <span>AU2 SQL文書化・QA3 E2E検証シナリオ・QA2 Stage1 DB migration検証・DB4 RLS SQL・CA1 billing_rules SQL・API2 OpenAPI仕様・QA4 RLS検証シナリオ</span>
-            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 / Stage1 DB migration staging PASS / 荷主切替RLS / 請求ルールSQL / 入荷・検品API仕様 / 荷主切替RLS検証SC-RLS-11/12</span>
+            <span>AU2 SQL文書化・QA3 E2E検証シナリオ・QA2 Stage1 DB migration検証・DB4 RLS SQL・CA1 billing_rules SQL・API2 OpenAPI仕様・QA4 RLS検証シナリオ・AU1 users/user_owners+RLS SQL</span>
+            <span class="meta">DB DDL文書化 / 入荷〜棚入れ E2E検証シナリオ SC-WMS-01〜09 / Stage1 DB migration staging PASS / 荷主切替RLS / 請求ルールSQL / 入荷・検品API仕様 / 荷主切替RLS検証SC-RLS-11/12 / users+user_owners+RLS DB適用完了</span>
           </div>
           <div class="card-b" style="padding:0;">
             <table class="tbl">
@@ -981,6 +981,13 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                   <td>specs/test_rls_isolation.md（commit 9f6e104）</td>
                   <td><span class="pill pill-success">✅ 完了</span></td>
                   <td class="num">#1021</td>
+                </tr>
+                <tr>
+                  <td class="id">9-AU1</td>
+                  <td>users/user_owners テーブル + RLS ポリシー雛形 SQL 作成（profiles テーブル・on_auth_user_created トリガー・get_my_owner_ids ヘルパー関数・user_owners+profiles RLS ポリシー・複合インデックス / apply_migration で本番 DB 適用 / F-1〜F-8 全検証クリア）</td>
+                  <td>sql/phase9_stage1_auth.sql（commit 2085952）</td>
+                  <td><span class="pill pill-success">✅ 完了</span></td>
+                  <td class="num">#1027</td>
                 </tr>
               </tbody>
             </table>
