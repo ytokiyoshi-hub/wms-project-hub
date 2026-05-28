@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>Cannot GET /api/billing-snapshots</pre>
-</body>
-</html>
+[{"id":1,"owner_code":"MK001","owner_name":"マルキ食品","period":"2026-04","status":"confirmed","total_amount":1245000,"created_at":"2026-05-01 09:00:00"},
+{"id":2,"owner_code":"AP001","owner_name":"アパレル雑貨株式会社","period":"2026-04","status":"confirmed","total_amount":876500,"created_at":"2026-05-01 09:00:00"},
+{"id":3,"owner_code":"EC001","owner_name":"EC事業部","period":"2026-04","status":"confirmed","total_amount":542300,"created_at":"2026-05-01 09:00:00"},
+{"id":4,"owner_code":"PR001","owner_name":"プロサポ","period":"2026-04","status":"draft","total_amount":312800,"created_at":"2026-05-01 09:00:00"},
+{"id":5,"owner_code":"MK001","owner_name":"マルキ食品","period":"2026-05","status":"draft","total_amount":1380000,"created_at":"2026-05-29 08:00:00"}]
