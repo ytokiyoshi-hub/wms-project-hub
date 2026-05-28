@@ -234,7 +234,7 @@
       html.push('</div></div>');
     }
     html.push('</nav>');
-    html.push('<div class="sb-footer">テストサイト2 / port 8778 / 459画面</div>');
+    html.push('<div class="sb-footer">マルキ食品 WMS / Phase 1 プレビュー</div>');
 
     aside.innerHTML = html.join('');
 
