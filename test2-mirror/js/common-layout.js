@@ -181,7 +181,7 @@
     const groups = groupItems();
 
     const html = [];
-    html.push('<div class="logo"><a href="/" style="color:inherit; text-decoration:none;">WMS<small>東京DC（WH001）</small></a></div>');
+    html.push('<div class="logo"><a href="." style="color:inherit; text-decoration:none;">WMS<small>東京DC（WH001）</small></a></div>');
     html.push('<nav class="cl-nav">');
 
     for (const g of groups) {
