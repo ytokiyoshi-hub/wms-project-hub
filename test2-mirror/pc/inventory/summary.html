@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>在庫サマリ — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -51,12 +52,12 @@
           <div class="card-header"><span>関連業務画面</span></div>
           <div class="card-body">
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <a class="btn" href="/pc/inventory/lots.html">ロット追跡</a>
-              <a class="btn" href="/pc/inventory/snapshots.html">スナップショット</a>
-              <a class="btn" href="/pc/inventory/move.html">在庫移動</a>
-              <a class="btn" href="/pc/inventory/adjust.html">在庫調整</a>
-              <a class="btn" href="/pc/inventory/expiry.html">期限管理</a>
-              <a class="btn" href="/pc/inventory/inventory_kpi.html">在庫KPI</a>
+              <a class="btn" href="pc/inventory/lots.html">ロット追跡</a>
+              <a class="btn" href="pc/inventory/snapshots.html">スナップショット</a>
+              <a class="btn" href="pc/inventory/move.html">在庫移動</a>
+              <a class="btn" href="pc/inventory/adjust.html">在庫調整</a>
+              <a class="btn" href="pc/inventory/expiry.html">期限管理</a>
+              <a class="btn" href="pc/inventory/inventory_kpi.html">在庫KPI</a>
             </div>
           </div>
         </div>
@@ -153,7 +154,7 @@ async function loadData() {
           <td class="right num">${s.qty.toLocaleString()}</td>
           <td class="right num">${s.lot.size}</td>
           <td class="right num">${s.loc.size}</td>
-          <td class="center"><a class="btn sm" href="/inventory.html?owner=${encodeURIComponent(o)}">詳細</a></td>
+          <td class="center"><a class="btn sm" href="inventory.html?owner=${encodeURIComponent(o)}">詳細</a></td>
         </tr>
       `).join('');
 
@@ -168,7 +169,7 @@ async function loadData() {
               <td>${esc(st)}</td>
               <td class="right num">${s.count}</td>
               <td class="right num">${s.qty.toLocaleString()}</td>
-              <td class="center">${isHold ? '<a class="btn sm primary" href="/pc/inventory/hold.html">対応</a>' : '<a class="btn sm" href="/inventory.html">確認</a>'}</td>
+              <td class="center">${isHold ? '<a class="btn sm primary" href="pc/inventory/hold.html">対応</a>' : '<a class="btn sm" href="inventory.html">確認</a>'}</td>
             </tr>
           `;
         }).join('');

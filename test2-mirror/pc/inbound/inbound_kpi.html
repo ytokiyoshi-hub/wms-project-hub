@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>入荷KPI — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,37 +41,37 @@
   
         <div class="stats" id="kpi-cards">
           <div class="stat">
-            <a class="drill" href="/pc/inbound/plans.html">＞</a>
+            <a class="drill" href="pc/inbound/plans.html">＞</a>
             <div class="label">入荷予定 総件数</div>
             <div class="value accent" id="k-sched">-</div>
             <div class="delta">DB 全期間</div>
           </div>
           <div class="stat">
-            <a class="drill" href="/pc/inbound/inspection_status.html">＞</a>
+            <a class="drill" href="pc/inbound/inspection_status.html">＞</a>
             <div class="label">検品実績 件数</div>
             <div class="value accent" id="k-insp">-</div>
             <div class="delta">inbound_actuals 全期間</div>
           </div>
           <div class="stat">
-            <a class="drill" href="/pc/inbound/inspection_history.html">＞</a>
+            <a class="drill" href="pc/inbound/inspection_history.html">＞</a>
             <div class="label">検品合格率</div>
             <div class="value" id="k-pass">-</div>
             <div class="delta" id="k-pass-d">-</div>
           </div>
           <div class="stat">
-            <a class="drill" href="/pc/inbound/putaway.html">＞</a>
+            <a class="drill" href="pc/inbound/putaway.html">＞</a>
             <div class="label">棚入完了率</div>
             <div class="value" id="k-comp">-</div>
             <div class="delta">completed の割合</div>
           </div>
           <div class="stat">
-            <a class="drill" href="/pc/inbound/discrepancy.html">＞</a>
+            <a class="drill" href="pc/inbound/discrepancy.html">＞</a>
             <div class="label">差異 総件数</div>
             <div class="value" id="k-diff">-</div>
             <div class="delta">累積</div>
           </div>
           <div class="stat">
-            <a class="drill" href="/pc/inbound/discrepancy.html?status=pending">＞</a>
+            <a class="drill" href="pc/inbound/discrepancy.html?status=pending">＞</a>
             <div class="label">差異 未処理</div>
             <div class="value" id="k-pend">-</div>
             <div class="delta">対応が必要</div>
@@ -105,11 +106,11 @@
           <div class="card-header"><span>関連業務画面</span></div>
           <div class="card-body">
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <a class="btn" href="/pc/inbound/plans.html">入荷予定一覧</a>
-              <a class="btn" href="/pc/inbound/inspection_status.html">検品進捗</a>
-              <a class="btn" href="/pc/inbound/inspection_history.html">検品履歴</a>
-              <a class="btn" href="/pc/inbound/discrepancy.html">差異処理</a>
-              <a class="btn" href="/pc/inbound/asn_history.html">ASN受信履歴</a>
+              <a class="btn" href="pc/inbound/plans.html">入荷予定一覧</a>
+              <a class="btn" href="pc/inbound/inspection_status.html">検品進捗</a>
+              <a class="btn" href="pc/inbound/inspection_history.html">検品履歴</a>
+              <a class="btn" href="pc/inbound/discrepancy.html">差異処理</a>
+              <a class="btn" href="pc/inbound/asn_history.html">ASN受信履歴</a>
             </div>
           </div>
         </div>
@@ -175,13 +176,13 @@ async function loadKPI() {
     const bar = document.getElementById('alert-bar');
     bar.classList.remove('show');
     if (pendingDiscrep >= 5) {
-      bar.innerHTML = `差異未処理が <b>${pendingDiscrep} 件</b>（仕入先連絡が遅れている可能性） → <a href="/pc/inbound/discrepancy.html?status=pending" style="color:var(--c-accent); font-weight:600;">差異処理画面 →</a>`;
+      bar.innerHTML = `差異未処理が <b>${pendingDiscrep} 件</b>（仕入先連絡が遅れている可能性） → <a href="pc/inbound/discrepancy.html?status=pending" style="color:var(--c-accent); font-weight:600;">差異処理画面 →</a>`;
       bar.classList.add('show');
     } else if (acceptanceRate != null && Number(acceptanceRate) < 90) {
-      bar.innerHTML = `検品合格率 <b>${acceptanceRate}%</b>（目標 95%）→ <a href="/pc/inbound/inspection_history.html" style="color:var(--c-accent); font-weight:600;">仕入先別の差異率を確認 →</a>`;
+      bar.innerHTML = `検品合格率 <b>${acceptanceRate}%</b>（目標 95%）→ <a href="pc/inbound/inspection_history.html" style="color:var(--c-accent); font-weight:600;">仕入先別の差異率を確認 →</a>`;
       bar.classList.add('show');
     } else if (pendingDiscrep > 0) {
-      bar.innerHTML = `差異 ${pendingDiscrep} 件 が処理待ち → <a href="/pc/inbound/discrepancy.html?status=pending" style="color:var(--c-accent); font-weight:600;">対応 →</a>`;
+      bar.innerHTML = `差異 ${pendingDiscrep} 件 が処理待ち → <a href="pc/inbound/discrepancy.html?status=pending" style="color:var(--c-accent); font-weight:600;">対応 →</a>`;
       bar.classList.add('show');
     }
 
@@ -222,7 +223,7 @@ async function loadKPI() {
           <td class="c-num">${s.diff}</td>
           <td class="c-num ${rate > 10 ? 'text-alert' : ''}">${rate}%</td>
           <td class="c-status">${judge}</td>
-          <td class="c-action"><a class="btn sm" href="/pc/inbound/inspection_history.html">履歴</a></td>
+          <td class="c-action"><a class="btn sm" href="pc/inbound/inspection_history.html">履歴</a></td>
         </tr>`;
       }).join('');
     }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>W-401 入荷予定一覧 — WMS テストサイト2</title>
@@ -71,9 +72,9 @@ table.list-main tbody tr:hover { background:#f5f9fc; }
               <button class="btn" onclick="resetFilter()">クリア</button>
               <span id="stats" style="font-size:11px; color:#9ca3af;">読込中…</span>
               <div style="margin-left:auto; display:flex; gap:6px;">
-                <button class="btn" onclick="location.href='/pc/inbound/asn_import.html'" style="font-size:11px;">ASN取込</button>
-                <button class="btn" onclick="location.href='/pc/inbound/register.html'" style="font-size:11px;">手入力登録</button>
-                <button class="btn primary" onclick="location.href='/pc/inbound/register.html?no_asn=1'">ASNなし入荷</button>
+                <button class="btn" onclick="location.href='pc/inbound/asn_import.html'" style="font-size:11px;">ASN取込</button>
+                <button class="btn" onclick="location.href='pc/inbound/register.html'" style="font-size:11px;">手入力登録</button>
+                <button class="btn primary" onclick="location.href='pc/inbound/register.html?no_asn=1'">ASNなし入荷</button>
               </div>
             </div>
           </div>
@@ -214,14 +215,14 @@ function render() {
     const stPill = isLate ? '<span class="pill alert">遅延</span>' : `<span class="pill ${s.cls}">${escapeHtml(s.label)}</span>`;
     return `
       <tr class="${isLate ? '' : 'row-mute'}">
-        <td class="c-code"><a href="/pc/inbound/plan_detail.html?id=${r.id}" style="color:var(--c-accent); font-weight:600;">${escapeHtml(r.schedule_no)}</a></td>
+        <td class="c-code"><a href="pc/inbound/plan_detail.html?id=${r.id}" style="color:var(--c-accent); font-weight:600;">${escapeHtml(r.schedule_no)}</a></td>
         <td class="c-code">${escapeHtml(r.owner_code || '-')}</td>
         <td class="c-text">${escapeHtml(r.supplier_name || '-')}</td>
         <td class="c-date" style="${dateStyle}">${escapeHtml(r.scheduled_date || '-')}</td>
         <td class="c-num">${r.line_count ?? '-'}</td>
         <td class="c-status">${stPill}</td>
         <td class="c-action">
-          <a class="btn sm" href="/pc/inbound/plan_detail.html?id=${r.id}">詳細</a>
+          <a class="btn sm" href="pc/inbound/plan_detail.html?id=${r.id}">詳細</a>
           ${canDelete ? `<button class="btn sm" style="background:var(--c-alert-lt); color:var(--c-alert);" onclick="deletePlan(${r.id}, '${escapeHtml(r.schedule_no)}')">削除</button>` : ''}
         </td>
       </tr>

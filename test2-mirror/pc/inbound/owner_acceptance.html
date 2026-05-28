@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>荷主受領通知 — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -32,8 +33,8 @@
         </div>
   
         <div style="display:flex; gap:8px;">
-          <button class="btn primary" onclick="location.href='/pc/inbound/discrepancy.html'">差異処理画面へ</button>
-          <button class="btn" onclick="location.href='/pc/integration/jobs.html'">送信ジョブ画面（W-510）</button>
+          <button class="btn primary" onclick="location.href='pc/inbound/discrepancy.html'">差異処理画面へ</button>
+          <button class="btn" onclick="location.href='pc/integration/jobs.html'">送信ジョブ画面（W-510）</button>
           <button class="btn" onclick="loadData()">再読込</button>
         </div>
         </div>
@@ -92,7 +93,7 @@ async function loadData() {
       const rowBg = hasDiff ? 'background:var(--c-alert-lt);' : '';
       const diffCell = hasDiff ? `<span class="pill alert">${diff > 0 ? '+' : ''}${diff}</span>` : '<span class="pill accent">差異なし</span>';
       const action = hasDiff
-        ? `<button class="btn sm" onclick="location.href='/pc/inbound/discrepancy.html'">差異承認</button>`
+        ? `<button class="btn sm" onclick="location.href='pc/inbound/discrepancy.html'">差異承認</button>`
         : `<span style="color:var(--c-text-sub); font-size:11px;">受領通知済 (想定)</span>`;
       return `
         <tr style="${rowBg}">

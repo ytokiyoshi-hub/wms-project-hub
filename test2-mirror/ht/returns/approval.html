@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>HT-1001-B 返品STEP3 承認待ち — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,12 +14,12 @@
 
 <div class="ht-nav">
   <span class="label">画面ジャンプ：</span>
-  <a href="/ht/returns/scan.html"><b>HT-1001-1</b>返品受付</a>
-  <a href="/ht/returns/status.html"><b>HT-1001-2</b>状態確認</a>
-  <a href="/ht/returns/judge.html"><b>HT-1001-3</b>判定（標準）</a>
-  <a href="/ht/returns/auto.html"><b>HT-1001-A</b>自動戻し</a>
-  <a href="/ht/returns/approval.html" class="active"><b>HT-1001-B</b>承認待ち</a>
-  <a href="/">トップ</a>
+  <a href="ht/returns/scan.html"><b>HT-1001-1</b>返品受付</a>
+  <a href="ht/returns/status.html"><b>HT-1001-2</b>状態確認</a>
+  <a href="ht/returns/judge.html"><b>HT-1001-3</b>判定（標準）</a>
+  <a href="ht/returns/auto.html"><b>HT-1001-A</b>自動戻し</a>
+  <a href="ht/returns/approval.html" class="active"><b>HT-1001-B</b>承認待ち</a>
+  <a href="">トップ</a>
 </div>
 
 <div class="ht-wrap">
@@ -71,10 +72,10 @@
         <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">F1で申請</div>
       </div>
       <div class="ht-key-labels">
-        <div class="key-lbl primary" onclick="alert('承認申請登録：PC W-1003 で承認待ち'); location.href='/'"><span class="fn">F1</span>申請</div>
+        <div class="key-lbl primary" onclick="alert('承認申請登録：PC W-1003 で承認待ち'); location.href=''"><span class="fn">F1</span>申請</div>
         <div class="key-lbl" onclick="history.back()"><span class="fn">F2</span>戻る</div>
-        <div class="key-lbl" onclick="location.href='/ht/returns/scan.html'"><span class="fn">F3</span>次明細</div>
-        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F4</span>中止</div>
+        <div class="key-lbl" onclick="location.href='ht/returns/scan.html'"><span class="fn">F3</span>次明細</div>
+        <div class="key-lbl" onclick="location.href=''"><span class="fn">F4</span>中止</div>
       </div>
     </div>
     <div class="ht-keypad">

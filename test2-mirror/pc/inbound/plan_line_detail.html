@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <meta name="hide-from-nav" content="true">
 <title>入荷予定 明細詳細 — WMS テストサイト2</title>
@@ -49,11 +50,11 @@ table.list-main tbody tr:hover { background:#f5f9fc; }
   <main class="main">
     <div class="topbar">
       <div class="crumb parent-crumb">
-        <a href="/">📋 トップ</a>
+        <a href="">📋 トップ</a>
         <span class="sep">/</span>
-        <a href="/pc/inbound/plans.html">入荷予定一覧 (W-401)</a>
+        <a href="pc/inbound/plans.html">入荷予定一覧 (W-401)</a>
         <span class="sep">/</span>
-        <a id="cr-parent" href="/pc/inbound/plans.html">入荷予定 詳細</a>
+        <a id="cr-parent" href="pc/inbound/plans.html">入荷予定 詳細</a>
         <span class="sep">/</span>
         <b id="crumb-line">明細</b>
         <span class="badge">孫画面（3階層目）</span>
@@ -68,11 +69,11 @@ table.list-main tbody tr:hover { background:#f5f9fc; }
         <div class="left-pane">
 
           <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
-            <a class="btn" id="back-detail" href="/pc/inbound/plans.html">← 入荷予定 詳細へ戻る</a>
-            <a class="btn" href="/pc/inbound/plans.html">入荷予定一覧（親の親）</a>
+            <a class="btn" id="back-detail" href="pc/inbound/plans.html">← 入荷予定 詳細へ戻る</a>
+            <a class="btn" href="pc/inbound/plans.html">入荷予定一覧（親の親）</a>
             <span style="margin-left:auto;"></span>
             <button class="btn" onclick="reload()">再読込</button>
-            <a class="btn primary" href="/ht/inspect/scan.html">HT 検品スキャン</a>
+            <a class="btn primary" href="ht/inspect/scan.html">HT 検品スキャン</a>
           </div>
 
           <!-- 控えめアラート: 推奨次アクション (1個・判断が変わるときだけ) -->
@@ -112,11 +113,11 @@ table.list-main tbody tr:hover { background:#f5f9fc; }
             <div class="card-header"><span>関連業務画面</span></div>
             <div class="card-body">
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <a class="btn" style="flex:1; text-align:center;" id="back-detail-2" href="/pc/inbound/plans.html">入荷予定 詳細（親）</a>
-                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/discrepancy.html">差異処理</a>
-                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/inspection_history.html">検品履歴</a>
-                <a class="btn" style="flex:1; text-align:center;" href="/pc/inventory/lot_traceability.html" id="trace-link">ロットトレース</a>
-                <a class="btn" style="flex:1; text-align:center;" href="/ht/inspect/scan.html">HT 検品スキャン</a>
+                <a class="btn" style="flex:1; text-align:center;" id="back-detail-2" href="pc/inbound/plans.html">入荷予定 詳細（親）</a>
+                <a class="btn" style="flex:1; text-align:center;" href="pc/inbound/discrepancy.html">差異処理</a>
+                <a class="btn" style="flex:1; text-align:center;" href="pc/inbound/inspection_history.html">検品履歴</a>
+                <a class="btn" style="flex:1; text-align:center;" href="pc/inventory/lot_traceability.html" id="trace-link">ロットトレース</a>
+                <a class="btn" style="flex:1; text-align:center;" href="ht/inspect/scan.html">HT 検品スキャン</a>
               </div>
             </div>
           </div>
@@ -300,13 +301,13 @@ async function reload() {
     na.classList.remove('show', 'alert-color');
     const diff2 = (line.inspected_qty == null) ? null : (line.inspected_qty - line.expected_qty);
     if (diff2 !== null && diff2 !== 0) {
-      na.innerHTML = `差異 <b>${diff2 > 0 ? '+' + diff2 : diff2}</b> あり → <a href="/pc/inbound/discrepancy.html" style="color:var(--c-accent); font-weight:600;">差異処理画面で対応 →</a>`;
+      na.innerHTML = `差異 <b>${diff2 > 0 ? '+' + diff2 : diff2}</b> あり → <a href="pc/inbound/discrepancy.html" style="color:var(--c-accent); font-weight:600;">差異処理画面で対応 →</a>`;
       na.classList.add('show', 'alert-color');
     } else if (line.status === 'inspected' && !line.putaway_at) {
-      na.innerHTML = `検品済 → 棚入れ未完了 → <a href="/pc/inbound/putaway.html" style="color:var(--c-accent); font-weight:600;">棚入れ指示へ →</a>`;
+      na.innerHTML = `検品済 → 棚入れ未完了 → <a href="pc/inbound/putaway.html" style="color:var(--c-accent); font-weight:600;">棚入れ指示へ →</a>`;
       na.classList.add('show');
     } else if (line.status === 'planned') {
-      na.innerHTML = `未検品 → <a href="/ht/inspect/asn.html" style="color:var(--c-accent); font-weight:600;">HT で検品を開始 →</a>`;
+      na.innerHTML = `未検品 → <a href="ht/inspect/asn.html" style="color:var(--c-accent); font-weight:600;">HT で検品を開始 →</a>`;
       na.classList.add('show');
     }
 

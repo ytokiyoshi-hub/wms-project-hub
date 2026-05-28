@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>入荷後アクション — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,12 +28,12 @@
             <table class="list list-full">
               <thead><tr><th>順</th><th>アクション</th><th>説明</th><th>実行タイミング</th><th class="center">関連画面</th></tr></thead>
               <tbody>
-                <tr><td class="num">1</td><td>クロスドック判定</td><td>引当待ち受注と紐付けて即出荷へ</td><td>検品完了直後</td><td class="center"><a class="btn sm" href="/pc/inbound/cross_dock_console.html">確認</a></td></tr>
-                <tr><td class="num">2</td><td>棚入れ指示生成</td><td>非クロスドック分を棚入れ対象に</td><td>クロスドック判定後</td><td class="center"><a class="btn sm" href="/pc/inbound/putaway.html">確認</a></td></tr>
-                <tr><td class="num">3</td><td>受領通知送信</td><td>EDI 856 / Webhook で荷主に通知</td><td>棚入れ完了</td><td class="center"><a class="btn sm" href="/pc/inbound/owner_acceptance.html">確認</a></td></tr>
-                <tr><td class="num">4</td><td>補充推奨更新</td><td>需要予測×新在庫数で再計算</td><td>棚入れ完了 + 1分</td><td class="center"><a class="btn sm" href="/pc/inventory/replenishment.html">確認</a></td></tr>
-                <tr><td class="num">5</td><td>滞留評価更新</td><td>新ロットを除外した滞留評価</td><td>棚入れ完了 + 5分</td><td class="center"><a class="btn sm" href="/pc/inventory/aging.html">確認</a></td></tr>
-                <tr><td class="num">6</td><td>ABC再計算（条件付き）</td><td>過去90日売上が±10%変動した場合のみ</td><td>棚入れ完了 + 30分</td><td class="center"><a class="btn sm" href="/pc/inventory/abc_analysis.html">確認</a></td></tr>
+                <tr><td class="num">1</td><td>クロスドック判定</td><td>引当待ち受注と紐付けて即出荷へ</td><td>検品完了直後</td><td class="center"><a class="btn sm" href="pc/inbound/cross_dock_console.html">確認</a></td></tr>
+                <tr><td class="num">2</td><td>棚入れ指示生成</td><td>非クロスドック分を棚入れ対象に</td><td>クロスドック判定後</td><td class="center"><a class="btn sm" href="pc/inbound/putaway.html">確認</a></td></tr>
+                <tr><td class="num">3</td><td>受領通知送信</td><td>EDI 856 / Webhook で荷主に通知</td><td>棚入れ完了</td><td class="center"><a class="btn sm" href="pc/inbound/owner_acceptance.html">確認</a></td></tr>
+                <tr><td class="num">4</td><td>補充推奨更新</td><td>需要予測×新在庫数で再計算</td><td>棚入れ完了 + 1分</td><td class="center"><a class="btn sm" href="pc/inventory/replenishment.html">確認</a></td></tr>
+                <tr><td class="num">5</td><td>滞留評価更新</td><td>新ロットを除外した滞留評価</td><td>棚入れ完了 + 5分</td><td class="center"><a class="btn sm" href="pc/inventory/aging.html">確認</a></td></tr>
+                <tr><td class="num">6</td><td>ABC再計算（条件付き）</td><td>過去90日売上が±10%変動した場合のみ</td><td>棚入れ完了 + 30分</td><td class="center"><a class="btn sm" href="pc/inventory/abc_analysis.html">確認</a></td></tr>
                 <tr><td class="num">7</td><td>荷主ポータル反映</td><td>在庫照会画面に最新数値</td><td>棚入れ完了 + 1秒</td><td class="center"><span style="color:var(--c-text-sub); font-size:11px;">portal</span></td></tr>
               </tbody>
             </table>
@@ -116,8 +117,8 @@ async function loadData() {
         ? `<span class="pill alert">差異 ${diffCnt}件</span>`
         : '<span class="pill accent">完了</span>';
       const btn = hasIssue
-        ? `<a class="btn sm primary" href="/pc/inbound/discrepancy.html">差異対応</a>`
-        : `<a class="btn sm" href="/pc/inbound/owner_acceptance.html">受領確認</a>`;
+        ? `<a class="btn sm primary" href="pc/inbound/discrepancy.html">差異対応</a>`
+        : `<a class="btn sm" href="pc/inbound/owner_acceptance.html">受領確認</a>`;
       return `
         <tr ${hasIssue ? 'style="background:var(--c-alert-lt);"' : ''}>
           <td class="num">${esc(s.scheduled_date)}</td>

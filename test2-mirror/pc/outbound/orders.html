@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>W-301 出荷指示一覧 — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -130,7 +131,7 @@ function render() {
       <td class="c-text">${escapeHtml(r.scheduled_date || '-')}</td>
       <td class="c-num">${r.line_count ?? '-'}</td>
       <td class="c-status"><span class="pill ${st.cls}">${escapeHtml(st.label)}</span></td>
-      <td class="c-action"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button> <button class="btn primary sm" onclick="location.href='/ht/pick/wave.html'">HT ピックへ</button></td>
+      <td class="c-action"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button> <button class="btn primary sm" onclick="location.href='ht/pick/wave.html'">HT ピックへ</button></td>
     </tr>`;
   }).join('');
 }

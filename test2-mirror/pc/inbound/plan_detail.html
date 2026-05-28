@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <meta name="hide-from-nav" content="true">
 <title>入荷予定 詳細 — WMS テストサイト2</title>
@@ -54,9 +55,9 @@ table.list-main tbody tr:hover { background:#f5f9fc; }
   <main class="main">
     <div class="topbar">
       <div class="crumb parent-crumb">
-        <a href="/">📋 トップ</a>
+        <a href="">📋 トップ</a>
         <span class="sep">/</span>
-        <a href="/pc/inbound/plans.html">入荷予定一覧 (W-401)</a>
+        <a href="pc/inbound/plans.html">入荷予定一覧 (W-401)</a>
         <span class="sep">/</span>
         <b id="crumb-no">詳細</b>
         <span class="badge">小画面（W-401-D 子画面）</span>
@@ -71,10 +72,10 @@ table.list-main tbody tr:hover { background:#f5f9fc; }
         <div class="left-pane">
 
           <div style="display:flex; gap:8px; margin-bottom:14px;">
-            <a class="btn" href="/pc/inbound/plans.html">← 一覧へ戻る</a>
+            <a class="btn" href="pc/inbound/plans.html">← 一覧へ戻る</a>
             <span style="margin-left:auto;"></span>
             <button class="btn" onclick="reload()">再読込</button>
-            <button class="btn primary" onclick="location.href='/ht/inspect/asn.html'">HT 検品へ</button>
+            <button class="btn primary" onclick="location.href='ht/inspect/asn.html'">HT 検品へ</button>
             <button class="btn" id="btn-delete" onclick="deleteSchedule()" style="display:none; background:var(--c-alert-lt); color:var(--c-alert);">削除（planned のみ）</button>
           </div>
 
@@ -125,11 +126,11 @@ table.list-main tbody tr:hover { background:#f5f9fc; }
             <div class="card-header"><span>関連業務画面（子画面の動線）</span></div>
             <div class="card-body">
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/plans.html">入荷予定一覧（親）</a>
-                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/actuals.html">入荷実績一覧</a>
-                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/discrepancy.html">差異処理</a>
-                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/putaway.html">棚入れ指示</a>
-                <a class="btn" style="flex:1; text-align:center;" href="/ht/inspect/asn.html">HT 検品（ASN選択）</a>
+                <a class="btn" style="flex:1; text-align:center;" href="pc/inbound/plans.html">入荷予定一覧（親）</a>
+                <a class="btn" style="flex:1; text-align:center;" href="pc/inbound/actuals.html">入荷実績一覧</a>
+                <a class="btn" style="flex:1; text-align:center;" href="pc/inbound/discrepancy.html">差異処理</a>
+                <a class="btn" style="flex:1; text-align:center;" href="pc/inbound/putaway.html">棚入れ指示</a>
+                <a class="btn" style="flex:1; text-align:center;" href="ht/inspect/asn.html">HT 検品（ASN選択）</a>
               </div>
             </div>
           </div>
@@ -305,7 +306,7 @@ async function reload() {
         } else {
           el.innerHTML = others.slice(0, 3).map(o => `
             <div class="row">
-              <span class="code"><a href="/pc/inbound/plan_detail.html?id=${o.id}" style="color:var(--c-accent); text-decoration:none;">${esc(o.schedule_no)}</a></span>
+              <span class="code"><a href="pc/inbound/plan_detail.html?id=${o.id}" style="color:var(--c-accent); text-decoration:none;">${esc(o.schedule_no)}</a></span>
               <span class="name">${esc(o.owner_code || '')} ${esc(o.scheduled_date || '')}</span>
               <span class="when">${esc(o.status)}</span>
             </div>`).join('');
@@ -317,13 +318,13 @@ async function reload() {
     const bar = document.getElementById('suggestion-bar');
     bar.classList.remove('show', 'alert-color');
     if (discrepLines > 0) {
-      bar.innerHTML = `差異が <b>${discrepLines} 行</b> あります → <a href="/pc/inbound/discrepancy.html" style="color:var(--c-accent); font-weight:600;">差異処理画面で対応 →</a>`;
+      bar.innerHTML = `差異が <b>${discrepLines} 行</b> あります → <a href="pc/inbound/discrepancy.html" style="color:var(--c-accent); font-weight:600;">差異処理画面で対応 →</a>`;
       bar.classList.add('show', 'alert-color');
     } else if (planned > 0 && d.status === 'planned') {
-      bar.innerHTML = `未検品 ${planned} 行 → <a href="/ht/inspect/asn.html" style="color:var(--c-accent); font-weight:600;">HT 検品開始 →</a>`;
+      bar.innerHTML = `未検品 ${planned} 行 → <a href="ht/inspect/asn.html" style="color:var(--c-accent); font-weight:600;">HT 検品開始 →</a>`;
       bar.classList.add('show');
     } else if (inspected > 0 && inspected === totalLines && discrepLines === 0) {
-      bar.innerHTML = `全 ${totalLines} 行 検品完了・差異なし → <a href="/pc/inbound/putaway.html" style="color:var(--c-accent); font-weight:600;">棚入れへ →</a>`;
+      bar.innerHTML = `全 ${totalLines} 行 検品完了・差異なし → <a href="pc/inbound/putaway.html" style="color:var(--c-accent); font-weight:600;">棚入れへ →</a>`;
       bar.classList.add('show');
     }
     const tb = document.getElementById('tb-lines');
@@ -344,7 +345,7 @@ async function reload() {
         return `
           <tr class="${hasDiff ? '' : 'row-mute'}">
             <td class="c-num">${i + 1}</td>
-            <td class="c-code"><a href="/pc/inbound/plan_line_detail.html?schedule_id=${scheduleId}&line_id=${l.id}" style="color:var(--c-accent); font-weight:600;">${esc(l.product_code)}</a></td>
+            <td class="c-code"><a href="pc/inbound/plan_line_detail.html?schedule_id=${scheduleId}&line_id=${l.id}" style="color:var(--c-accent); font-weight:600;">${esc(l.product_code)}</a></td>
             <td class="c-text" style="width:180px;">${esc(l.product_name || '-')}</td>
             <td class="c-code">${esc(l.lot_no || '-')}</td>
             <td class="c-num">${l.expected_qty}</td>
@@ -352,7 +353,7 @@ async function reload() {
             <td class="c-num ${hasDiff ? 'text-alert' : ''}">${diffStr}</td>
             <td class="c-code">${esc(l.putaway_location || '-')}</td>
             <td class="c-status">${lineStatusPill}</td>
-            <td class="c-action"><a class="btn sm" href="/pc/inbound/plan_line_detail.html?schedule_id=${scheduleId}&line_id=${l.id}">詳細</a></td>
+            <td class="c-action"><a class="btn sm" href="pc/inbound/plan_line_detail.html?schedule_id=${scheduleId}&line_id=${l.id}">詳細</a></td>
           </tr>
         `;
       }).join('');

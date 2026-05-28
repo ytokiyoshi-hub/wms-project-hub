@@ -17,9 +17,12 @@
     if (!apiBase) return; // ローカル直配信時はブリッジ不要
     const _origFetch = window.fetch.bind(window);
     window.fetch = function(url, init) {
-      if (typeof url === 'string' && url.startsWith('/api/')) {
-        const stripped = url.replace(/^\/api\//, '').replace(/\?.*$/, '');
-        return _origFetch(apiBase + '/api/' + stripped + '.json', init);
+      if (typeof url === 'string') {
+        // /api/X, api/X どちらも catch、クエリ・末尾スラッシュ対応
+        const m = url.match(/^\/?api\/(.+?)\/?(\?.*)?$/);
+        if (m) {
+          return _origFetch(apiBase + '/api/' + m[1] + '.json', init);
+        }
       }
       return _origFetch(url, init);
     };

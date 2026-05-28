@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>在庫KPIダッシュボード — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -52,11 +53,11 @@
           <div class="card-header"><span>関連業務画面</span></div>
           <div class="card-body">
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-              <a class="btn" href="/pc/inventory/summary.html">在庫サマリ</a>
-              <a class="btn" href="/pc/inventory/expiry.html">期限管理</a>
-              <a class="btn" href="/pc/inventory/dead_stock.html">滞留在庫</a>
-              <a class="btn" href="/pc/inventory/adjust.html">在庫調整</a>
-              <a class="btn" href="/pc/inventory/transactions.html">トランザクション</a>
+              <a class="btn" href="pc/inventory/summary.html">在庫サマリ</a>
+              <a class="btn" href="pc/inventory/expiry.html">期限管理</a>
+              <a class="btn" href="pc/inventory/dead_stock.html">滞留在庫</a>
+              <a class="btn" href="pc/inventory/adjust.html">在庫調整</a>
+              <a class="btn" href="pc/inventory/transactions.html">トランザクション</a>
             </div>
           </div>
         </div>
@@ -160,7 +161,7 @@ async function loadData() {
         <td class="c-num">${s.lot.size}</td>
         <td class="c-num">${s.loc.size}</td>
         <td class="c-num ${s.exp > 0 ? 'text-alert' : ''}">${s.exp}</td>
-        <td class="c-action"><a class="btn sm" href="/inventory.html?owner=${encodeURIComponent(o)}">詳細</a></td>
+        <td class="c-action"><a class="btn sm" href="inventory.html?owner=${encodeURIComponent(o)}">詳細</a></td>
       </tr>
     `).join('');
   } catch (e) {

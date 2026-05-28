@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>W-402 入荷予定登録 — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,9 +27,9 @@
   <main class="main">
     <div class="topbar">
       <div class="crumb">
-        <a href="/" style="color:var(--c-accent); text-decoration:none;">📋 トップ</a>
+        <a href="" style="color:var(--c-accent); text-decoration:none;">📋 トップ</a>
         <span style="color:var(--c-line-dk); margin:0 6px;">/</span>
-        <a href="/pc/inbound/plans.html" style="color:var(--c-accent); text-decoration:none;">入荷予定一覧 (W-401)</a>
+        <a href="pc/inbound/plans.html" style="color:var(--c-accent); text-decoration:none;">入荷予定一覧 (W-401)</a>
         <span style="color:var(--c-line-dk); margin:0 6px;">/</span>
         <b>入荷予定登録 (W-402)</b>
         <span class="badge">フォーム型</span>
@@ -37,7 +38,7 @@
     <div class="content">
 
       <div style="display:flex; gap:8px; margin-bottom:14px;">
-        <a class="btn" href="/pc/inbound/plans.html">← 一覧へ戻る</a>
+        <a class="btn" href="pc/inbound/plans.html">← 一覧へ戻る</a>
       </div>
   
         <!-- のっぺり対策: 主作業（左 2/3）＋ 参考情報（右 1/3）の2カラム -->
@@ -95,7 +96,7 @@
             「登録」を押すと、確認ダイアログ → POST → 成功時に W-401 入荷予定一覧 へ自動遷移し、登録した予定が一覧上に表示されます。失敗時はエラーメッセージを表示。
           </div>
           <div class="bar-actions">
-            <button class="btn" onclick="location.href='/pc/inbound/plans.html'">キャンセル</button>
+            <button class="btn" onclick="location.href='pc/inbound/plans.html'">キャンセル</button>
             <button class="btn primary" onclick="register()">登録</button>
           </div>
         </div></div>
@@ -173,7 +174,7 @@ async function updateRefPanels() {
     } else {
       tbR.innerHTML = recent.map(r => `
         <tr>
-          <td class="c-code"><a href="/pc/inbound/plan_detail.html?id=${r.id}" style="color:var(--c-accent); font-size:11px;">${escapeHtml(r.schedule_no)}</a></td>
+          <td class="c-code"><a href="pc/inbound/plan_detail.html?id=${r.id}" style="color:var(--c-accent); font-size:11px;">${escapeHtml(r.schedule_no)}</a></td>
           <td class="c-date" style="font-size:11px;">${escapeHtml(r.scheduled_date || '-')}</td>
           <td class="c-num" style="font-size:11px;">${r.line_count ?? '-'}</td>
         </tr>

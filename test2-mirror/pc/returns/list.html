@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<base href="/wms-project-hub/test2-mirror/">
 <meta charset="UTF-8">
 <title>返品処理一覧 — WMS テストサイト2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,8 +35,8 @@
                 <th>返品No</th><th>荷主</th><th>顧客</th><th>受付日</th><th class="right">明細数</th><th>原因区分</th><th class="center">状態</th><th class="center" style="width:160px;">操作</th>
               </tr></thead>
               <tbody>
-                <tr><td class="num">RT-26060101</td><td class="num">MK001</td><td>東京食品センター</td><td class="num">2026-06-01</td><td class="right num">3</td><td>顧客都合</td><td class="center"><span class="pill accent">承認待ち</span></td><td class="center"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button><button class="btn primary sm" onclick="location.href='/pc/returns/restock_approval.html'">承認へ</button></td></tr>
-                <tr><td class="num">RT-26060102</td><td class="num">EC001</td><td>横浜EC物流</td><td class="num">2026-06-02</td><td class="right num">1</td><td>不良品</td><td class="center"><span class="pill alert">廃棄申請</span></td><td class="center"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button><button class="btn danger sm" onclick="location.href='/pc/returns/disposal_approval.html'">廃棄承認へ</button></td></tr>
+                <tr><td class="num">RT-26060101</td><td class="num">MK001</td><td>東京食品センター</td><td class="num">2026-06-01</td><td class="right num">3</td><td>顧客都合</td><td class="center"><span class="pill accent">承認待ち</span></td><td class="center"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button><button class="btn primary sm" onclick="location.href='pc/returns/restock_approval.html'">承認へ</button></td></tr>
+                <tr><td class="num">RT-26060102</td><td class="num">EC001</td><td>横浜EC物流</td><td class="num">2026-06-02</td><td class="right num">1</td><td>不良品</td><td class="center"><span class="pill alert">廃棄申請</span></td><td class="center"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button><button class="btn danger sm" onclick="location.href='pc/returns/disposal_approval.html'">廃棄承認へ</button></td></tr>
                 <tr><td class="num">RT-26053101</td><td class="num">MK001</td><td>営業課A</td><td class="num">2026-05-31</td><td class="right num">2</td><td>誤配送</td><td class="center"><span class="pill">完了</span></td><td class="center"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button></td></tr>
               </tbody>
             </table>
