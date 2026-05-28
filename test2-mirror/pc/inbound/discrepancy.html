@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>W-404 差異処理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>差異処理 (W-404)</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box warn">
+          <div class="text-bold text-alert" style="margin-bottom:4px;">差異承認の3アクション分類</div>
+          <b>1. 実数受入</b>（差異を許容）／<b>2. 再検品</b>（HT端末で再スキャン）／<b>3. クレーム</b>（仕入先へ連絡・返品処理）
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>ステータス</label>
+              <select id="f-status">
+                <option value="pending">未処理</option>
+                <option value="approved">承認済</option>
+                <option value="rejected">却下</option>
+                <option value="">全て</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn primary" onclick="loadData()">検索</button>
+            <span id="meta" style="font-size:12px; color:var(--c-text-sub); margin-left:auto;">-</span>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>差異あり入荷実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>差異ID</th><th>入荷予定</th><th>荷主</th><th>商品</th><th class="right">予定数</th><th class="right">実績数</th><th class="right">差異</th><th>区分</th><th>状態</th><th class="center" style="width:280px;">対応</th>
+              </tr></thead>
+              <tbody id="tb">
+                <tr><td colspan="10" style="text-align:center; padding:24px; color:var(--c-text-sub);">読み込み中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function loadData() {
+  const status = document.getElementById('f-status').value;
+  const url = '/api/discrepancies' + (status ? `?status=${status}` : '');
+  const tb = document.getElementById('tb');
+  try {
+    const rows = await fetch(url).then(r => r.json());
+    document.getElementById('meta').textContent = `${rows.length}件`;
+    if (rows.length === 0) {
+      tb.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--c-text-sub);">該当データなし</td></tr>';
+      return;
+    }
+    tb.innerHTML = rows.map(r => {
+      const rowBg = r.status === 'pending' ? 'background:var(--c-alert-lt);' : '';
+      const statusPill = { pending: '<span class="pill alert">未処理</span>', approved: '<span class="pill accent">承認済</span>', rejected: '<span class="pill">却下</span>' }[r.status] || r.status;
+      const actions = r.status === 'pending'
+        ? `<button class="btn sm" onclick="approve(${r.id}, 'accept_actual', '実数受入')">実数受入</button>
+           <button class="btn sm" onclick="approve(${r.id}, 're_inspect', '再検品')">再検品</button>
+           <button class="btn danger sm" onclick="approve(${r.id}, 'claim_supplier', '仕入先クレーム')">クレーム</button>`
+        : `<span style="color:var(--c-text-sub); font-size:11px;">処理済 (${r.approval_action || '-'})</span>`;
+      return `
+        <tr style="${rowBg}">
+          <td class="num">#${r.id}</td>
+          <td class="num">${esc(r.schedule_no || '-')}</td>
+          <td class="num">${esc(r.owner_code || '-')}</td>
+          <td>${esc(r.product_code)} ${esc(r.product_name || '')}</td>
+          <td class="right num">${r.expected_qty}</td>
+          <td class="right num">${r.inspected_qty}</td>
+          <td class="right num text-alert">${r.difference > 0 ? '+' : ''}${r.difference}</td>
+          <td>${esc(r.reason_category || '-')}</td>
+          <td>${statusPill}</td>
+          <td class="center">${actions}</td>
+        </tr>
+      `;
+    }).join('');
+  } catch (e) {
+    tb.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+async function approve(id, action, label) {
+  if (!confirm(`差異ID #${id} を「${label}」で処理しますか？`)) return;
+  try {
+    const res = await fetch(`/api/discrepancies/${id}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action,
+        approval_note: `PC画面で「${label}」処理`,
+        discrepancy_type: 'quantity',
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(`処理失敗: ${err.error || res.status}`);
+      return;
+    }
+    alert(`「${label}」処理完了: 差異 #${id}`);
+    await loadData();
+  } catch (e) { alert('通信エラー: ' + e.message); }
+}
+loadData();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

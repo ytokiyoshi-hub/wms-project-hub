@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主契約管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主契約管理（S-9 契約条件・期間）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主との3PL契約条件管理（S-9）</div>
+          契約期間・最低保管料・支払サイト・自動更新可否を記録。期限60日前にアラート発報。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>契約一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-code">契約No</th><th class="c-text">開始日</th><th class="c-text">終了日</th><th class="c-text">請求方式</th><th class="c-num">最低料金</th><th class="c-text">更新</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001 マルキ食品</td><td class="c-code">CTR-2024-001</td><td class="c-text">2024-04-01</td><td class="c-text">2027-03-31</td><td class="c-text"><span class="pill">3期制</span></td><td class="c-num">¥500,000/月</td><td class="c-text"><span class="pill accent">自動</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">AP001 アパレルプレミアム</td><td class="c-code">CTR-2024-005</td><td class="c-text">2024-10-01</td><td class="c-text">2026-09-30</td><td class="c-text"><span class="pill">坪貸し</span></td><td class="c-num">¥1,200,000/月</td><td class="c-text"><span class="pill">手動</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EC001 EC太郎</td><td class="c-code">CTR-2025-008</td><td class="c-text">2025-01-01</td><td class="c-text">2025-12-31</td><td class="c-text"><span class="pill">2期制</span></td><td class="c-num">¥300,000/月</td><td class="c-text"><span class="pill accent">自動</span></td><td class="c-status"><span class="pill alert">更新間近</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">PR001 プレミアム流通</td><td class="c-code">CTR-2024-011</td><td class="c-text">2024-08-01</td><td class="c-text">2026-07-31</td><td class="c-text"><span class="pill">3期制</span></td><td class="c-num">¥800,000/月</td><td class="c-text"><span class="pill">手動</span></td><td class="c-status"><span class="pill alert">要更新交渉</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>契約条件詳細（MK001 CTR-2024-001）</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>支払サイト</label><div class="text-mono" style="font-weight:600;">月末締め翌月末払い</div></div>
+              <div class="field"><label>請求書発行日</label><div class="text-mono">毎月5日</div></div>
+              <div class="field"><label>消費税</label><div class="text-mono">10%</div></div>
+              <div class="field"><label>遅延損害金</label><div class="text-mono">年14.6%</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>解約予告</label><div>3ヶ月前書面通知</div></div>
+              <div class="field"><label>免責条項</label><div>天災・荷主指示瑕疵による損害</div></div>
+              <div class="field"><label>守秘義務</label><div>契約終了後 5年</div></div>
+              <div class="field"><label>契約書PDF</label><div><a class="text-mono" href="javascript:void(0)" onclick="alert('CTR-2024-001.pdf を表示します（モック）')">CTR-2024-001.pdf</a></div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>更新アラート（60日前以内）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-code">契約No</th><th class="c-text">終了日</th><th class="c-num">残日数</th><th class="c-text">対応</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">PR001 プレミアム流通</td><td class="c-code">CTR-2024-011</td><td class="c-text">2026-07-31</td><td class="text-alert c-num">60日</td><td class="c-text"><button class="btn small primary" onclick="alert('「更新交渉」モック動作（実装は後続フェーズ）')">更新交渉</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

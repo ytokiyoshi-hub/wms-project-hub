@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>VIP顧客マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>VIP顧客マスタ（S-51 重要取引先）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">VIP顧客の特別ルール（S-51）</div>
+          年間取引額・戦略重要度などからVIP顧客を登録。優先ピック・無料返品・専任サポートを設定。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>VIP顧客一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">VIPコード</th><th class="c-code">顧客名</th><th class="c-text">ランク</th><th class="c-code">荷主</th><th class="c-text">年間取引額</th><th class="c-text">特典</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">VIP-001</td><td class="c-code">東京食品センター</td><td class="c-text"><span class="pill alert">プラチナ</span></td><td class="c-code">MK001</td><td class="c-text">¥120,000,000</td><td class="c-text">優先ピック / 無料返品 / 専任</td></tr>
+                <tr><td class="c-code">VIP-002</td><td class="c-code">北陸チェーン本部</td><td class="c-text"><span class="pill accent">ゴールド</span></td><td class="c-code">MK001</td><td class="c-text">¥85,000,000</td><td class="c-text">優先ピック / 無料返品</td></tr>
+                <tr><td class="c-code">VIP-003</td><td class="c-code">横浜EC物流</td><td class="c-text"><span class="pill accent">ゴールド</span></td><td class="c-code">EC001</td><td class="c-text">¥58,000,000</td><td class="c-text">優先ピック / 専任</td></tr>
+                <tr><td class="c-code">VIP-004</td><td class="c-code">営業課A</td><td class="c-text"><span class="pill">シルバー</span></td><td class="c-code">MK001</td><td class="c-text">¥32,000,000</td><td class="c-text">優先ピック</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ランク別特典</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">特典</th><th class="c-text">プラチナ</th><th class="c-text">ゴールド</th><th class="c-text">シルバー</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">優先ピック</td><td class="c-text">◎ 最優先</td><td class="c-text">◎</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">専任サポート</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">無料返品</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">クール便割引</td><td class="c-text">20%</td><td class="c-text">10%</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">SLAペナルティ免除</td><td class="c-text">軽微違反のみ</td><td class="c-text">-</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">営業部長 直アクセス</td><td class="c-text">◎</td><td class="c-text">-</td><td class="c-text">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>VIP実績（過去12ヶ月）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>VIP取引額合計</label><div class="text-mono text-accent" style="font-weight:600;">¥295,000,000</div></div>
+              <div class="field"><label>全社売上比</label><div class="text-mono" style="font-weight:600;">38%</div></div>
+              <div class="field"><label>SLA達成率（VIP）</label><div class="text-mono text-accent" style="font-weight:600;">99.6%</div></div>
+              <div class="field"><label>苦情件数</label><div class="text-mono">2件（解決済）</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

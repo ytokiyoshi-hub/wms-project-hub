@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>為替レート — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>為替レート（S-44 輸出入対応）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">輸入商品の為替レート管理（S-44）</div>
+          TTB / TTS / TTM を日次取込。輸入商品の取得原価計算と請求換算に利用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>現在レート（2026-06-01）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">通貨</th><th class="c-code">TTB</th><th class="c-code">TTS</th><th class="c-code">TTM</th><th class="c-text">更新元</th><th class="c-text">前日比</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">USD 米ドル</td><td class="c-code">142.20</td><td class="c-code">144.20</td><td class="c-code">143.20</td><td class="c-text">みずほ銀行</td><td class="c-text">+0.32</td></tr>
+                <tr><td class="c-text">EUR ユーロ</td><td class="c-code">155.80</td><td class="c-code">157.80</td><td class="c-code">156.80</td><td class="c-text">みずほ銀行</td><td class="c-text">-0.15</td></tr>
+                <tr><td class="c-text">CNY 人民元</td><td class="c-code">19.65</td><td class="c-code">19.95</td><td class="c-code">19.80</td><td class="c-text">みずほ銀行</td><td class="c-text">+0.02</td></tr>
+                <tr><td class="c-text">KRW 韓国ウォン</td><td class="c-code">0.105</td><td class="c-code">0.107</td><td class="c-code">0.106</td><td class="c-text">みずほ銀行</td><td class="c-text">±0</td></tr>
+                <tr><td class="c-text">VND ベトナムドン</td><td class="c-code">0.0058</td><td class="c-code">0.0060</td><td class="c-code">0.0059</td><td class="c-text">みずほ銀行</td><td class="c-text">±0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>取得原価換算（輸入SKU）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-text">仕入通貨</th><th class="c-num">仕入単価</th><th class="c-text">換算（JPY）</th><th class="c-text">適用レート</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-EC001-100</td><td class="c-text">輸入雑貨A</td><td class="c-text">CNY</td><td class="c-num">¥38.00</td><td class="c-text">¥752</td><td class="c-text">CNY 19.80</td></tr>
+                <tr><td class="c-code">SKU-EC001-200</td><td class="c-text">輸入電子部品</td><td class="c-text">USD</td><td class="c-num">$8.50</td><td class="c-text">¥1,217</td><td class="c-text">USD 143.20</td></tr>
+                <tr><td class="c-code">SKU-AP001-300</td><td class="c-text">輸入アパレル</td><td class="c-text">VND</td><td class="c-num">d125,000</td><td class="c-text">¥738</td><td class="c-text">VND 0.0059</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>レート設定</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>更新頻度</label><div class="text-mono">日次 03:00</div></div>
+              <div class="field"><label>更新元API</label><div class="text-mono">みずほ銀行（公開API）</div></div>
+              <div class="field"><label>換算基準</label><div class="text-mono">TTM（中値）</div></div>
+              <div class="field"><label>失敗時動作</label><div class="text-mono">前日レート継続</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

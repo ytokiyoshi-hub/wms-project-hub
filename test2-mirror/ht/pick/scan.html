@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT-804-2 ピッキング：ロケ→SKU — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-804 ピッキング作業</h1>
+<p class="subtitle">ウェーブ受取 → ロケスキャン → 数量確認の業務貫通 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/pick/wave.html"><b>HT-804-1</b>ウェーブ受取</a>
+  <a href="/ht/pick/scan.html" class="active"><b>HT-804-2</b>ロケ→SKU</a>
+  <a href="/ht/pick/done.html"><b>HT-804-3</b>数量→完了</a>
+  <a href="/ht/inspect/asn.html"><b>HT-403</b>検品</a>
+  <a href="/ht/putaway/instructions.html"><b>HT-406</b>棚入れ</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">12:35 87%</span></div>
+      <div class="ht-header">
+        <span>ピック指示</span>
+        <span class="scr-id">HT-804</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+          <span style="color:var(--c-text-sub);">WV-2605-003</span>
+          <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">2 / 5</span>
+        </div>
+
+        <div style="background:var(--c-accent); color:#fff; padding:10px; text-align:center;">
+          <div style="font-size:9px; opacity:0.8; margin-bottom:2px;">移動先ロケ</div>
+          <div style="font-family:var(--f-mono); font-size:22px; font-weight:700; letter-spacing:2px;" id="loc-code">3AP-02-001</div>
+          <div style="font-size:9px; opacity:0.7; margin-top:2px;" id="loc-desc">1F常温エリア</div>
+        </div>
+
+        <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
+          <div style="font-size:9px; color:var(--c-text-sub);">対象SKU</div>
+          <div style="font-family:var(--f-mono); font-size:11px; font-weight:600; margin-top:2px;" id="sku-code">-</div>
+          <div style="font-size:12px; font-weight:600; margin-top:2px;" id="sku-name">読込中</div>
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:4px;">賞味期限：2026/12/31（FEFO対象）</div>
+        </div>
+
+        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px; text-align:center;">
+          <div style="font-size:9px; color:var(--c-accent);">ピック数量</div>
+          <div style="font-family:var(--f-mono); font-size:28px; font-weight:700; color:var(--c-accent); line-height:1.2;" id="pick-qty">12</div>
+          <div style="font-size:9px; color:var(--c-text-sub);">本（在庫：36本）</div>
+        </div>
+
+        <input id="scan-input" placeholder="商品バーコードをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+
+        <div style="font-size:10px; color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-accent); margin-top:auto;">
+          ★ バーコードをスキャンして確認
+        </div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl disabled"><span class="fn">F1</span>−</div>
+        <div class="key-lbl"><span class="fn">F2</span>部分ピック</div>
+        <div class="key-lbl"><span class="fn">F3</span>欠品報告</div>
+        <div class="key-lbl" onclick="history.back()"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row"><div class="pkey scan">SCAN</div></div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-804</span>②ロケ→スキャン
+  <div class="desc-text">大きな文字でロケ番号を確認→移動→商品スキャンで照合。</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 87%`; };
+setClock(); setInterval(setClock, 30000);
+
+// wave.html で pick_task_id / pick_target_sku/qty/loc が保存されている前提
+let targetJan = sessionStorage.getItem('pick_target_sku') || '';
+const targetLoc = sessionStorage.getItem('pick_target_loc') || '-';
+const targetQty = sessionStorage.getItem('pick_target_qty') || '-';
+
+document.getElementById('loc-code').textContent = targetLoc;
+document.getElementById('sku-code').textContent = targetJan;
+document.getElementById('pick-qty').textContent = targetQty;
+
+(async () => {
+  try {
+    const products = await fetch('/api/products').then(r => r.json());
+    const item = (products || []).find(p => p.code === targetJan);
+    if (item) {
+      document.getElementById('sku-name').textContent = item.name || targetJan;
+      // JAN コードで照合する場合のヒント
+      if (item.jan_code) targetJan = targetJan; // SKU コード照合のまま
+    } else {
+      document.getElementById('sku-name').textContent = targetJan;
+    }
+  } catch (e) {
+    document.getElementById('sku-name').textContent = targetJan;
+  }
+})();
+
+window.htSimulateScan = () => {
+  document.getElementById('scan-input').value = targetJan;
+  setTimeout(() => location.href = '/ht/pick/done.html', 200);
+};
+
+document.getElementById('scan-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const v = e.target.value.trim();
+    if (v === targetJan) location.href = '/ht/pick/done.html';
+    else alert('SKU不一致 (期待: ' + targetJan + ')');
+  }
+});
+</script>
+</body>
+</html>

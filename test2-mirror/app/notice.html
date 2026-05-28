@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>App-5 お知らせ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app-mock.css">
+</head>
+<body>
+
+<h1 class="page-title">App-5 お知らせ</h1>
+<p class="subtitle">通知・連絡事項一覧 (iPhone 375x812 想定)</p>
+
+<div class="app-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/app/home.html"><b>App-1</b>ホーム</a>
+  <a href="/app/shifts.html"><b>App-2</b>シフト</a>
+  <a href="/app/timecard.html"><b>App-3</b>勤怠</a>
+  <a href="/app/payroll.html"><b>App-4</b>給与</a>
+  <a href="/app/notice.html" class="active"><b>App-5</b>お知らせ</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="app-wrap">
+  <div class="app-device">
+    <div class="app-screen">
+      <div class="app-statusbar"><span id="clock">9:30</span><span>📶 100%</span></div>
+      <div class="app-header">
+        <div class="title">お知らせ</div>
+        <div class="sub">未読 3件</div>
+      </div>
+      <div class="app-body">
+        <div class="app-card" style="border-left:3px solid var(--c-alert);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-weight:600; font-size:13px;">繁忙期手当について</div>
+            <span style="background:var(--c-alert); color:#fff; font-size:9px; padding:2px 6px; border-radius:10px;">未読</span>
+          </div>
+          <div style="font-size:11px; color:var(--c-text-sub); margin-top:4px;">2026/06/01</div>
+          <div style="font-size:12px; margin-top:6px; line-height:1.6;">6月は繁忙期のため、所定時間外勤務に対して 25% 手当を支給します。詳細は人事部までご確認ください。</div>
+        </div>
+
+        <div class="app-card" style="border-left:3px solid var(--c-accent);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-weight:600; font-size:13px;">新人研修 6/15</div>
+            <span style="background:var(--c-alert); color:#fff; font-size:9px; padding:2px 6px; border-radius:10px;">未読</span>
+          </div>
+          <div style="font-size:11px; color:var(--c-text-sub); margin-top:4px;">2026/05/28</div>
+          <div style="font-size:12px; margin-top:6px; line-height:1.6;">6月15日（土）10:00-12:00、3F会議室にて新人研修を実施します。</div>
+        </div>
+
+        <div class="app-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-weight:600; font-size:13px;">夏季休暇申請 受付中</div>
+          </div>
+          <div style="font-size:11px; color:var(--c-text-sub); margin-top:4px;">2026/05/20</div>
+          <div style="font-size:12px; margin-top:6px; line-height:1.6;">夏季休暇（7月-9月）の申請を受付中です。6月末までに提出してください。</div>
+        </div>
+      </div>
+      <div class="app-tabbar">
+        <div class="tab" onclick="location.href='/app/home.html'"><span class="icon">🏠</span>ホーム</div>
+        <div class="tab" onclick="location.href='/app/shifts.html'"><span class="icon">📅</span>シフト</div>
+        <div class="tab" onclick="location.href='/app/timecard.html'"><span class="icon">⏰</span>勤怠</div>
+        <div class="tab" onclick="location.href='/app/payroll.html'"><span class="icon">💴</span>給与</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">App-5</span>お知らせ
+  <div class="desc-text">通知・連絡事項一覧</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>データ同期ダッシュボード — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>同期ダッシュボード（X-11 連携俯瞰）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">全連携の同期状況俯瞰（X-11）</div>
+          EDI / API / SFTP / TMS / ERP の全ジョブをひとつのダッシュボードで監視。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の同期成績</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>総ジョブ数</label><div class="text-mono" style="font-weight:600;">2,840</div></div>
+              <div class="field"><label>成功</label><div class="text-mono text-accent" style="font-weight:600;">2,832</div></div>
+              <div class="field"><label>失敗</label><div class="text-mono text-alert" style="font-weight:600;">8</div></div>
+              <div class="field"><label>成功率</label><div class="text-mono">99.72%</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>連携別 状態</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">連携</th><th class="c-num">ジョブ数</th><th class="c-text">成功</th><th class="c-text">失敗</th><th class="c-text">平均レイテンシ</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">MK001 EDI</td><td class="c-num">128</td><td class="c-text">128</td><td class="c-text">0</td><td class="c-text">88ms</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">AP001 SFTP</td><td class="c-num">24</td><td class="c-text">24</td><td class="c-text">0</td><td class="c-text">142ms</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">EC001 API</td><td class="c-num">2,420</td><td class="c-text">2,418</td><td class="c-text">2</td><td class="c-text">220ms</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PR001 SFTP</td><td class="c-num">48</td><td class="c-text">43</td><td class="text-alert c-text">5</td><td class="text-alert c-text">timeout</td><td class="c-status"><span class="pill alert">障害中</span></td></tr>
+                <tr><td class="c-text">佐川e-Net</td><td class="c-num">82</td><td class="c-text">82</td><td class="c-text">0</td><td class="c-text">320ms</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">ヤマトB2クラウド</td><td class="c-num">35</td><td class="c-text">34</td><td class="c-text">1</td><td class="c-text">280ms</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">自社便TMS</td><td class="c-num">28</td><td class="c-text">28</td><td class="c-text">0</td><td class="c-text">120ms</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">ERP (各種)</td><td class="c-num">75</td><td class="c-text">75</td><td class="c-text">0</td><td class="c-text">580ms</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>失敗ジョブ詳細</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-text">連携</th><th class="c-text">エラー</th><th class="c-text">対応</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">14:00</td><td class="c-text">PR001 SFTP</td><td class="c-text">接続タイムアウト</td><td class="c-text"><span class="pill">自動リトライ中（3/5）</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">13:30</td><td class="c-text">PR001 SFTP</td><td class="c-text">接続タイムアウト</td><td class="c-text"><span class="pill alert">手動対応中</span></td></tr>
+                <tr><td class="c-date">11:08</td><td class="c-text">EC001 API</td><td class="c-text">VAL-005 金額不一致</td><td class="c-text"><span class="pill accent">DLQ送信済</span></td></tr>
+                <tr><td class="c-date">10:42</td><td class="c-text">ヤマトB2クラウド</td><td class="c-text">住所不明</td><td class="c-text"><span class="pill accent">手動修正済</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

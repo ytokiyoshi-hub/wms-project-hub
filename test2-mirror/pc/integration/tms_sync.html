@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TMS連携 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>TMS連携（X-4 配送管理システム）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">運送会社TMSとの双方向連携（X-4）</div>
+          出荷指示送信／追跡番号取得／配達完了取込。佐川e-Net・ヤマトB2クラウド・自社TMS API対応。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>連携TMS一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">連携先</th><th class="c-code">API版</th><th class="c-text">方式</th><th class="c-text">頻度</th><th class="c-text">本日送信</th><th class="c-text">本日取込</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">佐川e-Net</td><td class="c-code">v2.4</td><td class="c-text">REST API</td><td class="c-text">5分毎</td><td class="c-text">82</td><td class="c-text">82</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">ヤマトB2クラウド</td><td class="c-code">v3.1</td><td class="c-text">REST API</td><td class="c-text">5分毎</td><td class="c-text">35</td><td class="c-text">35</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">自社便TMS</td><td class="c-code">v1.0</td><td class="c-text">REST API</td><td class="c-text">即時</td><td class="c-text">28</td><td class="c-text">28</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">カントウ運送 EDI</td><td class="c-code">EDI-FTP</td><td class="c-text">SFTP</td><td class="c-text">15分毎</td><td class="c-text">42</td><td class="text-alert c-text">38</td><td class="c-status"><span class="pill alert">取込遅延</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>連携データ種別</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">データ</th><th class="c-text">方向</th><th class="c-text">説明</th><th class="c-text">取込結果</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">出荷指示</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">受領先住所 / サイズ / 重量 / 希望日</td><td class="c-text">追跡番号採番</td></tr>
+                <tr><td class="c-text">追跡番号</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">運送会社の追跡番号</td><td class="c-text">SOへ書き込み</td></tr>
+                <tr><td class="c-text">配達完了</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">配達日時 / 受領者印</td><td class="c-text">SO配達完了</td></tr>
+                <tr><td class="c-text">不在持戻り</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">持戻り回数 / 次回予定</td><td class="c-text">受取人通知</td></tr>
+                <tr><td class="c-text">返送</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">受取拒否 / 住所不明等</td><td class="c-text">返品受付起票</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>連携エラー（直近24時間）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-text">連携先</th><th class="c-text">データ</th><th class="c-text">エラー</th><th class="c-text">対応</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">13:42</td><td class="c-text">カントウ運送</td><td class="c-text">追跡番号</td><td class="c-text">SFTP接続タイムアウト</td><td class="c-text"><span class="pill">自動リトライ中</span></td></tr>
+                <tr><td class="c-date">10:08</td><td class="c-text">佐川e-Net</td><td class="c-text">出荷指示</td><td class="c-text">受領先郵便番号不明</td><td class="c-text"><span class="pill accent">手動修正済</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

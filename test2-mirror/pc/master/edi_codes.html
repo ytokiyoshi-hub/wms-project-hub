@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>EDIコード変換 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>EDIコード変換（S-65 業界標準コード）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">EDI業界標準コードの相互変換（S-65）</div>
+          ANSI X12 / EDIFACT / JEDI / GS1 BMS 間のコード変換テーブル。荷主のEDI形式に応じて自動変換。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>主要メッセージタイプ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">用途</th><th class="c-text">ANSI X12</th><th class="c-text">EDIFACT</th><th class="c-code">JEDI</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">発注</td><td class="c-text">850</td><td class="c-text">ORDERS</td><td class="c-code">9020</td></tr>
+                <tr><td class="c-text">注文応答</td><td class="c-text">855</td><td class="c-text">ORDRSP</td><td class="c-code">9022</td></tr>
+                <tr><td class="c-text">事前出荷通知（ASN）</td><td class="c-text">856</td><td class="c-text">DESADV</td><td class="c-code">9410</td></tr>
+                <tr><td class="c-text">請求書</td><td class="c-text">810</td><td class="c-text">INVOIC</td><td class="c-code">9821</td></tr>
+                <tr><td class="c-text">支払通知</td><td class="c-text">820</td><td class="c-text">PAYORD</td><td class="c-code">9831</td></tr>
+                <tr><td class="c-text">在庫照会</td><td class="c-text">846</td><td class="c-text">INVRPT</td><td class="c-code">9210</td></tr>
+                <tr><td class="c-text">機能応答</td><td class="c-text">997</td><td class="c-text">CONTRL</td><td class="c-code">7022</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>単位コード変換</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">WMS表記</th><th class="c-text">UN/EDIFACT</th><th class="c-code">JEDI</th><th class="c-text">例</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">個（PCS）</td><td class="c-text">PCE</td><td class="c-code">EA</td><td class="c-text">個別アイテム</td></tr>
+                <tr><td class="c-text">ケース（CS）</td><td class="c-text">CT</td><td class="c-code">CT</td><td class="c-text">標準ケース</td></tr>
+                <tr><td class="c-text">パレット（PT）</td><td class="c-text">PF</td><td class="c-code">PL</td><td class="c-text">パレット</td></tr>
+                <tr><td class="c-text">キログラム</td><td class="c-text">KGM</td><td class="c-code">KG</td><td class="c-text">重量</td></tr>
+                <tr><td class="c-text">リットル</td><td class="c-text">LTR</td><td class="c-code">LT</td><td class="c-text">容量</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 採用EDI標準</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">標準</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">ANSI X12</td><td class="c-text">米国系取引先含む</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">JEDI</td><td class="c-text">国内標準</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">REST API（JSON）</td><td class="c-text">EDIではなくAPI</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-text">EDIFACT</td><td class="c-text">欧州系</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

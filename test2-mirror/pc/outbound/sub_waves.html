@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>サブウェーブ管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>サブウェーブ管理（C-2 出荷分割）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">サブウェーブ（C-4 出荷分割）</div>
+          大型出荷を複数の作業単位（サブウェーブ）に分割。エリア並行作業時の単位。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>進行中のサブウェーブ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-text">親ウェーブ</th><th class="c-text">サブ#</th><th class="c-text">エリア</th><th class="c-code">担当</th><th class="c-num">行数</th><th class="c-text">進捗</th><th class="c-status">状態</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="c-text">WV-26060101</td><td class="c-text">SW-01</td><td class="c-text">1F常温-A</td><td class="c-code">田中 太郎</td><td class="c-num">5</td><td class="c-text"><div style="display:flex; gap:6px; align-items:center;"><div style="width:60px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:60%;"></div></div>3/5</div></td><td class="c-status"><span class="pill accent">進行中</span></td></tr>
+                <tr><td class="c-text">WV-26060101</td><td class="c-text">SW-02</td><td class="c-text">1F常温-B</td><td class="c-code">佐藤 花子</td><td class="c-num">7</td><td class="c-text"><div style="display:flex; gap:6px; align-items:center;"><div style="width:60px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:100%;"></div></div>7/7</div></td><td class="c-status"><span class="pill accent">完了</span></td></tr>
+                <tr><td class="c-text">WV-26060101</td><td class="c-text">SW-03</td><td class="c-text">1F常温-C</td><td class="c-code">-</td><td class="c-num">3</td><td class="c-text"><div style="display:flex; gap:6px; align-items:center;"><div style="width:60px; height:6px; background:var(--c-line);"><div style="height:100%; width:0%;"></div></div>0/3</div></td><td class="c-status"><span class="pill">未着手</span></td></tr>
+                <tr><td class="c-text">WV-26060104</td><td class="c-text">SW-01</td><td class="c-text">3F常温-リレー1</td><td class="c-code">渡辺 大輔</td><td class="c-num">5</td><td class="c-text"><div style="display:flex; gap:6px; align-items:center;"><div style="width:60px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:100%;"></div></div>5/5</div></td><td class="c-status"><span class="pill accent">引継待ち</span></td></tr>
+                <tr><td class="c-text">WV-26060104</td><td class="c-text">SW-02</td><td class="c-text">3F常温-リレー2</td><td class="c-code">伊藤 真理</td><td class="c-num">5</td><td class="c-text"><div style="display:flex; gap:6px; align-items:center;"><div style="width:60px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:60%;"></div></div>3/5</div></td><td class="c-status"><span class="pill accent">進行中</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

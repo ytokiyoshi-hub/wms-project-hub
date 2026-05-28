@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>パレット番号引当 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>パレット番号引当（S-66 PLR管理）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">物理パレットへのLPN紐付け管理（S-66）</div>
+          所有パレット1枚1枚に固有番号を採番し、現在の在庫位置・荷物・状態を追跡。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>パレットインベントリ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">パレットID</th><th class="c-text">種別</th><th class="c-text">現在位置</th><th class="c-text">積載品</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">PT-001</td><td class="c-text">標準PL</td><td class="c-text">A-01-01</td><td class="c-text">SKU-MK001-001 ×120</td><td class="c-status"><span class="pill accent">使用中</span></td></tr>
+                <tr><td class="c-text">PT-002</td><td class="c-text">標準PL</td><td class="c-text">A-01-02</td><td class="c-text">SKU-MK001-002 ×80</td><td class="c-status"><span class="pill accent">使用中</span></td></tr>
+                <tr><td class="c-text">PT-008</td><td class="c-text">標準PL</td><td class="c-text">REF-01</td><td class="c-text">SKU-MK001-003 ×120</td><td class="c-status"><span class="pill accent">使用中</span></td></tr>
+                <tr><td class="c-text">PT-101</td><td class="c-text">米欧PL</td><td class="c-text">Y-OUT-02</td><td class="c-text">SO-26060115向け</td><td class="c-status"><span class="pill">出荷待</span></td></tr>
+                <tr><td class="c-text">PT-202</td><td class="c-text">標準PL</td><td class="c-text">空パレット置場</td><td class="c-text">-</td><td class="c-status"><span class="pill accent">空</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PT-085</td><td class="c-text">標準PL</td><td class="c-text">不明</td><td class="c-text">-</td><td class="c-status"><span class="pill alert">紛失調査中</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>パレット保有状況</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>所有総数</label><div class="text-mono" style="font-weight:600;">328 枚</div></div>
+              <div class="field"><label>使用中</label><div class="text-mono text-accent" style="font-weight:600;">248 枚</div></div>
+              <div class="field"><label>空</label><div class="text-mono">78 枚</div></div>
+              <div class="field"><label>紛失調査</label><div class="text-mono text-alert" style="font-weight:600;">2 枚</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>紛失調査</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">パレットID</th><th class="c-text">最終確認</th><th class="c-text">最終位置</th><th class="c-text">調査状況</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">PT-085</td><td class="c-text">2026-05-22</td><td class="c-text">東京食品センター</td><td class="c-text">配送先確認中</td></tr>
+                <tr><td class="c-text">PT-156</td><td class="c-text">2026-05-15</td><td class="c-text">東京DC バース</td><td class="c-text">監視カメラ確認中</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

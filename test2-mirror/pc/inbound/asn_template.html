@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ASNテンプレート — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>ASNテンプレート（W-419 雛形）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別 ASN受信フォーマット雛形（W-419）</div>
+          荷主ごとに異なるEDIフォーマットの雛形。カラム順・必須項目・コード変換を一元管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>登録テンプレート（実 API: csv_format_masters）</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>ID</th><th>荷主</th><th>データタイプ</th><th>フォーマット名</th><th>encoding</th><th>区切</th><th>既定</th></tr></thead>
+              <tbody id="tb-templates"><tr><td colspan="7" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ASN-T-MK01 項目定義</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>#</th><th>EDIタグ</th><th>WMS変換先</th><th>必須</th></tr></thead>
+              <tbody>
+                <tr><td class="num">1</td><td class="num">BSN02</td><td>asn_no</td><td><span class="pill alert">必須</span></td></tr>
+                <tr><td class="num">2</td><td class="num">BSN03</td><td>scheduled_date</td><td><span class="pill alert">必須</span></td></tr>
+                <tr><td class="num">3</td><td class="num">N1*ST</td><td>warehouse_code</td><td><span class="pill alert">必須</span></td></tr>
+                <tr><td class="num">4</td><td class="num">N1*SF</td><td>supplier_name</td><td><span class="pill">推奨</span></td></tr>
+                <tr><td class="num">5</td><td class="num">LIN01</td><td>line_number</td><td><span class="pill alert">必須</span></td></tr>
+                <tr><td class="num">6</td><td class="num">LIN03 UP</td><td>jan_code（バーコード）</td><td><span class="pill alert">必須</span></td></tr>
+                <tr><td class="num">7</td><td class="num">LIN03 BP</td><td>vendor_sku（荷主SKU）</td><td><span class="pill">推奨</span></td></tr>
+                <tr><td class="num">8</td><td class="num">SN102</td><td>expected_qty</td><td><span class="pill alert">必須</span></td></tr>
+                <tr><td class="num">9</td><td class="num">REF*LO</td><td>lot_no</td><td><span class="pill">推奨</span></td></tr>
+                <tr><td class="num">10</td><td class="num">REF*EX</td><td>expiry_date</td><td><span class="pill alert">必須（食品）</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function loadTemplates() {
+  try {
+    const rows = await fetch('/api/csv-format-masters').then(r => r.json()).catch(() => []);
+    document.getElementById('meta').textContent = `${rows.length}件`;
+    const tb = document.getElementById('tb-templates');
+    if (rows.length === 0) {
+      tb.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--c-text-sub);">テンプレート未登録 — マスタ管理から追加してください</td></tr>';
+      return;
+    }
+    tb.innerHTML = rows.map(r => `
+      <tr>
+        <td class="num">${r.id}</td>
+        <td>${esc(r.owner_code)}</td>
+        <td>${esc(r.data_type)}</td>
+        <td>${esc(r.format_name)}</td>
+        <td>${esc(r.encoding)}</td>
+        <td>${esc(r.delimiter)}</td>
+        <td>${r.is_default ? '<span class="pill accent">既定</span>' : '-'}</td>
+      </tr>`).join('');
+  } catch (e) {
+    document.getElementById('tb-templates').innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--c-alert);">読込失敗</td></tr>`;
+  }
+}
+loadTemplates();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

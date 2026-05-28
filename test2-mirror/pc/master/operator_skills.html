@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>作業者スキルマスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>作業者スキルマスタ（H-12 スキル定義）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">作業スキルの体系定義（H-12）</div>
+          作業者個別のスキル評価基準を明文化。ピッキング・梱包・FL運転・QA等の各スキルレベル定義。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>スキル一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">スキルID</th><th class="c-text">名称</th><th class="c-status">区分</th><th class="c-text">評価レベル</th><th class="c-text">必須訓練</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">SK-PICK</td><td class="c-text">ピッキング</td><td class="c-status">作業</td><td class="c-text">初級/中級/上級/熟練</td><td class="c-text">TRN-001</td></tr>
+                <tr><td class="c-text">SK-PACK</td><td class="c-text">梱包</td><td class="c-status">作業</td><td class="c-text">初級/中級/上級</td><td class="c-text">TRN-004</td></tr>
+                <tr><td class="c-text">SK-INSP</td><td class="c-text">検品</td><td class="c-status">作業</td><td class="c-text">初級/中級/上級</td><td class="c-text">TRN-007</td></tr>
+                <tr><td class="c-text">SK-FL</td><td class="c-text">フォークリフト</td><td class="c-status">機器</td><td class="c-text">有/無</td><td class="c-text">TRN-002</td></tr>
+                <tr><td class="c-text">SK-HT</td><td class="c-text">HT端末</td><td class="c-status">機器</td><td class="c-text">初級/中級/上級</td><td class="c-text">TRN-001</td></tr>
+                <tr><td class="c-text">SK-QA</td><td class="c-text">品質判定</td><td class="c-status">専門</td><td class="c-text">有/無</td><td class="c-text">TRN-007</td></tr>
+                <tr><td class="c-text">SK-HAZ</td><td class="c-text">危険物取扱</td><td class="c-status">専門</td><td class="c-text">有/無</td><td class="c-text">TRN-003</td></tr>
+                <tr><td class="c-text">SK-LEAD</td><td class="c-text">リーダー</td><td class="c-status">管理</td><td class="c-text">有/無</td><td class="c-text">TRN-005</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>レベル定義（SK-PICK ピッキング）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">レベル</th><th class="c-text">基準</th><th class="c-text">権限</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status">初級</td><td class="c-text">1人で30行/時可能</td><td class="c-text">標準SKU / 監督下</td></tr>
+                <tr><td class="c-status">中級</td><td class="c-text">1人で40行/時可能 / 誤ピック&lt;0.3%</td><td class="c-text">標準SKU / 単独</td></tr>
+                <tr><td class="c-status">上級</td><td class="c-text">1人で60行/時 / 全SKU対応</td><td class="c-text">VIP品も対応</td></tr>
+                <tr><td class="c-status">熟練</td><td class="c-text">1人で80行/時 / OJT指導可</td><td class="c-text">VIP / 危険物 / 緊急対応</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当倉庫 スキル保有者数</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">スキル</th><th class="c-text">初級</th><th class="c-text">中級</th><th class="c-text">上級</th><th class="c-text">熟練</th><th class="c-num">合計</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">SK-PICK</td><td class="c-text">3</td><td class="c-text">15</td><td class="c-text">22</td><td class="c-text">5</td><td class="c-num">45</td></tr>
+                <tr><td class="c-text">SK-PACK</td><td class="c-text">5</td><td class="c-text">22</td><td class="c-text">18</td><td class="c-text">-</td><td class="c-num">45</td></tr>
+                <tr><td class="c-text">SK-FL</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-num">12（資格者数）</td></tr>
+                <tr><td class="c-text">SK-QA</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-num">5（資格者数）</td></tr>
+                <tr><td class="c-text">SK-HAZ</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-text">-</td><td class="c-num">3（資格者数）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>単位マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>単位マスタ</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card">
+          <div class="card-header"><span>単位マスタ（U-4）</span><button class="btn primary sm" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">単位コード</th><th class="c-text">名称</th><th class="c-text">カテゴリ</th><th class="c-text">請求対応</th><th class="c-text">備考</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="text-accent text-bold c-code">case</td><td class="c-text">ケース</td><td class="c-text">個数</td><td class="c-text">✓</td><td class="c-text">1ケース = 商品個数（商品マスタで設定）</td></tr>
+                <tr><td class="text-accent text-bold c-code">piece</td><td class="c-text">ピース</td><td class="c-text">個数</td><td class="c-text">✓</td><td class="c-text">最小単位</td></tr>
+                <tr><td class="text-accent text-bold c-code">tsubo</td><td class="c-text">坪</td><td class="c-text">面積</td><td class="c-text">✓</td><td class="c-text">3.30578 m² ／ 坪貸し請求用</td></tr>
+                <tr><td class="text-accent text-bold c-code">sqm</td><td class="c-text">m²</td><td class="c-text">面積</td><td class="c-text">✓</td><td class="c-text">SI単位</td></tr>
+                <tr><td class="text-accent text-bold c-code">hour</td><td class="c-text">時間</td><td class="c-text">時間</td><td class="c-text">✓</td><td class="c-text">労務費</td></tr>
+                <tr><td class="text-accent text-bold c-code">kg</td><td class="c-text">kg</td><td class="c-text">重量</td><td class="c-text">✓</td><td class="c-text">重量制荷役料</td></tr>
+                <tr><td class="text-accent text-bold c-code">cbm</td><td class="c-text">m³</td><td class="c-text">容積</td><td class="c-text">✓</td><td class="c-text">配送容量</td></tr>
+                <tr><td class="text-accent text-bold c-code">truckload</td><td class="c-text">車両</td><td class="c-text">輸送</td><td class="c-text">✓</td><td class="c-text">1便 = 1車両</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

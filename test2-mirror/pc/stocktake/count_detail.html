@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>棚卸カウント明細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">棚卸　/　セッション ST-26060101　/　<b>カウント明細（Q-2）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">カウント vs 帳簿差異照合（Q-2）</div>
+          担当者カウント値 と システム帳簿値を1ロケごと突合。±差異は再カウント→棚卸調整へ。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>セッション</label><div class="text-mono text-accent" style="font-weight:600;">ST-26060101</div></div>
+            <div class="field"><label>対象範囲</label><div>東京DC 2F A通路</div></div>
+            <div class="field"><label>担当者</label><div>佐藤太郎 / 鈴木花子</div></div>
+            <div class="field"><label>進捗</label><div><span class="pill accent">36 / 42 行（86%）</span></div></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>カウント明細</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>ロケ</th><th>SKU</th><th>商品名</th><th>ロット</th><th class="right">帳簿</th><th class="right">カウント</th><th class="right">差異</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td class="num">A-01-01</td><td class="num">SKU-MK001-001</td><td>シャンプー300ml</td><td class="num">LOT-2605</td><td class="right num">120</td><td class="right num">120</td><td class="right num">0</td><td><span class="pill accent">一致</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="num">A-01-02</td><td class="num">SKU-MK001-002</td><td>コンディショナー300ml</td><td class="num">LOT-2605</td><td class="right num">80</td><td class="right num">77</td><td class="right num text-alert">-3</td><td><span class="pill alert">再カウント</span></td></tr>
+                <tr><td class="num">A-01-03</td><td class="num">SKU-MK001-003</td><td>冷蔵牛乳1L</td><td class="num">LOT-2605</td><td class="right num">36</td><td class="right num">36</td><td class="right num">0</td><td><span class="pill accent">一致</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="num">A-02-01</td><td class="num">SKU-AP001-005</td><td>春物ジャケット</td><td>-</td><td class="right num">50</td><td class="right num">51</td><td class="right num text-alert">+1</td><td><span class="pill alert">再カウント</span></td></tr>
+                <tr><td class="num">A-02-02</td><td class="num">SKU-AP001-006</td><td>秋物コート</td><td>-</td><td class="right num">30</td><td class="right num">30</td><td class="right num">0</td><td><span class="pill accent">一致</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>差異集計</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>一致行数</label><div class="text-mono" style="font-weight:600;">3</div></div>
+              <div class="field"><label>差異行数</label><div class="text-mono text-alert" style="font-weight:600;">2</div></div>
+              <div class="field"><label>差異合計（±）</label><div class="text-mono text-alert" style="font-weight:600;">-2</div></div>
+              <div class="field"><label>操作</label><div><button class="btn small primary" onclick="alert('「在庫調整起票」モック動作（実装は後続フェーズ）')">在庫調整起票</button></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

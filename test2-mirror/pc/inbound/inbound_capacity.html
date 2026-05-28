@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入荷能力管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>入荷能力管理（W-424 ピーク対応）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">入荷能力の事前把握と調整（W-424）</div>
+          日次・時間帯別の入荷能力 vs 予定。能力超過時は仕入先と着車予約を調整。
+          <div style="margin-top:6px; font-size:11px; color:var(--c-text-sub);">※ 能力管理専用API未実装。下表はモック。実 ASN は <a href="/pc/inbound/plans.html">入荷予定一覧</a>、計画は <a href="/pc/inbound/inbound_capacity_planning.html">能力計画</a> へ。</div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日 時間帯別 能力 vs 予定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>時間帯</th><th class="right">能力（PT）</th><th class="right">予約済</th><th class="right">空き</th><th class="right">稼働率</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td>08:00〜10:00</td><td class="right num">16</td><td class="right num">12</td><td class="right num">4</td><td class="right num">75%</td><td><span class="pill accent">余裕</span></td></tr>
+                <tr style="background:#fff9e6;"><td>10:00〜12:00</td><td class="right num">16</td><td class="right num">15</td><td class="right num">1</td><td class="right num text-alert">94%</td><td><span class="pill alert">逼迫</span></td></tr>
+                <tr><td>13:00〜15:00</td><td class="right num">16</td><td class="right num">8</td><td class="right num">8</td><td class="right num">50%</td><td><span class="pill accent">余裕</span></td></tr>
+                <tr><td>15:00〜17:00</td><td class="right num">16</td><td class="right num">10</td><td class="right num">6</td><td class="right num">62%</td><td><span class="pill accent">余裕</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>能力定義（パレット数/時）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>区分</th><th class="right">能力</th><th>説明</th></tr></thead>
+              <tbody>
+                <tr><td>バース数</td><td class="right num">4</td><td>同時受入可能</td></tr>
+                <tr><td>1便あたり平均所要</td><td class="right num">30分</td><td>到着→荷下完了</td></tr>
+                <tr><td>1時間あたり処理能力</td><td class="right num">8便</td><td>4バース×2便</td></tr>
+                <tr><td>1便平均パレット数</td><td class="right num">5</td><td>過去平均</td></tr>
+                <tr><td>時間あたり能力（PT換算）</td><td class="right num text-accent">40 PT</td><td>余裕係数 80%適用後 32 PT</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>10:00〜12:00 ピーク対応提案</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>提案</th><th>影響</th><th class="center">操作</th></tr></thead>
+              <tbody>
+                <tr><td>関東食品 09:00便を08:30に前倒し依頼</td><td>10:00枠1便分空く</td><td class="center"><button class="btn sm" onclick="proposeAction('関東食品 前倒し')">依頼</button></td></tr>
+                <tr><td>北海道乳業 11:00便を13:00に後ろ倒し依頼</td><td>10:00枠1便分空く / クール品は要追加対策</td><td class="center"><button class="btn sm" onclick="proposeAction('北海道乳業 後ろ倒し')">依頼</button></td></tr>
+                <tr><td>追加人員1名 09:00〜13:00投入</td><td>処理速度+20%</td><td class="center"><button class="btn sm" onclick="proposeAction('追加人員投入')">承認</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/pc/inbound/inbound_capacity_planning.html">能力計画</a>
+              <a class="btn" href="/pc/inbound/dock_assign.html">バース割付</a>
+              <a class="btn" href="/pc/inbound/scheduled_carriers.html">予定運送会社</a>
+              <a class="btn" href="/pc/inbound/plans.html">入荷予定一覧</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function proposeAction(label) {
+  if (!confirm(`${label} を実施しますか？`)) return;
+  alert(`${label} を依頼/承認しました（モック）。仕入先へ通知メール送信予定。`);
+}
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

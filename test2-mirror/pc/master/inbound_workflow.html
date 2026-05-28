@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入荷ワークフロー設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>入荷ワークフロー設定（S-29 荷主別フロー）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別入荷ワークフロー（S-29）</div>
+          入荷ASN受信→到着→検品→棚入れ までの各ステップの順序・スキップ可否を荷主別に設定。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>標準フロー（MK001）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">順</th><th class="c-text">ステップ</th><th class="c-code">担当</th><th class="c-text">必須</th><th class="c-num">スキップ条件</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1</td><td class="c-text">ASN受信</td><td class="c-code">EDI / システム</td><td class="c-text"><span class="pill alert">必須</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">2</td><td class="c-text">着車予約</td><td class="c-code">仕入先</td><td class="c-text"><span class="pill">推奨</span></td><td class="c-num">未予約でも受入可</td></tr>
+                <tr><td class="c-text">3</td><td class="c-text">到着受付</td><td class="c-code">入荷担当</td><td class="c-text"><span class="pill alert">必須</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">4</td><td class="c-text">温度ロガー確認</td><td class="c-code">QA</td><td class="c-text"><span class="pill">条件付き</span></td><td class="c-num">常温品はスキップ</td></tr>
+                <tr><td class="c-text">5</td><td class="c-text">外観検品</td><td class="c-code">入荷担当</td><td class="c-text"><span class="pill alert">必須</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">6</td><td class="c-text">数量検品</td><td class="c-code">入荷担当</td><td class="c-text"><span class="pill alert">必須</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">7</td><td class="c-text">品質抜き取り検品</td><td class="c-code">QA</td><td class="c-text"><span class="pill">条件付き</span></td><td class="c-num">食品以外スキップ可</td></tr>
+                <tr><td class="c-text">8</td><td class="c-text">差異処理</td><td class="c-code">マネージャー</td><td class="c-text"><span class="pill">条件付き</span></td><td class="c-num">差異なしの場合スキップ</td></tr>
+                <tr><td class="c-text">9</td><td class="c-text">荷主通知</td><td class="c-code">システム</td><td class="c-text"><span class="pill alert">必須</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">10</td><td class="c-text">棚入れ</td><td class="c-code">入荷担当</td><td class="c-text"><span class="pill alert">必須</span></td><td class="c-num">クロスドックの場合スキップ</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別カスタマイズ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-num">標準との差分</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-num">標準フロー使用</td><td class="c-text">食品は全項目必須</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-num">品質抜き取り検品省略</td><td class="c-text">外観検品のみ徹底</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-num">クロスドック分岐多用</td><td class="c-text">当日受注品は棚入れスキップ</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-num">シリアル番号記録追加</td><td class="c-text">化粧品 個別追跡</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

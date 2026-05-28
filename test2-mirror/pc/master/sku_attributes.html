@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>商品属性マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>商品属性マスタ（S-17 カテゴリ・ブランド・サイズ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">SKUに紐づく多次元属性（S-17）</div>
+          カテゴリ・ブランド・サイズ・色など、検索／分析の軸となる属性をマスタ管理。荷主別に独自属性を追加可能。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>属性定義一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">属性コード</th><th class="c-text">属性名</th><th class="c-text">型</th><th class="c-code">適用荷主</th><th class="c-num">値の数</th><th class="c-text">検索利用</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">ATTR-CAT</td><td class="c-text">カテゴリ</td><td class="c-text"><span class="pill">階層</span></td><td class="c-code">全荷主</td><td class="c-num">68</td><td class="c-text"><span class="pill accent">必須</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ATTR-BRAND</td><td class="c-text">ブランド</td><td class="c-text"><span class="pill">フラット</span></td><td class="c-code">全荷主</td><td class="c-num">142</td><td class="c-text"><span class="pill accent">必須</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ATTR-SIZE</td><td class="c-text">サイズ</td><td class="c-text"><span class="pill">フラット</span></td><td class="c-code">AP001</td><td class="c-num">12</td><td class="c-text"><span class="pill accent">必須</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ATTR-COLOR</td><td class="c-text">色</td><td class="c-text"><span class="pill">フラット</span></td><td class="c-code">AP001</td><td class="c-num">28</td><td class="c-text"><span class="pill">任意</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ATTR-TEMP</td><td class="c-text">温度帯</td><td class="c-text"><span class="pill">フラット</span></td><td class="c-code">MK001</td><td class="c-num">3</td><td class="c-text"><span class="pill accent">必須</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ATTR-EXP</td><td class="c-text">賞味期限管理</td><td class="c-text"><span class="pill">真偽</span></td><td class="c-code">MK001 / PR001</td><td class="c-num">2</td><td class="c-text"><span class="pill accent">必須</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ATTR-HAZARD</td><td class="c-text">危険物区分</td><td class="c-text"><span class="pill">フラット</span></td><td class="c-code">全荷主</td><td class="c-num">6</td><td class="c-text"><span class="pill alert">必須</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>カテゴリ階層（ATTR-CAT 抜粋）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">階層</th><th class="c-code">コード</th><th class="c-text">名称</th><th class="c-text">親</th><th class="c-num">SKU数</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">L1</td><td class="c-code">CAT-001</td><td class="c-text">食品</td><td class="c-text">-</td><td class="c-num">142</td></tr>
+                <tr><td class="c-text">L2</td><td class="c-code">CAT-001-01</td><td class="c-text">　常温食品</td><td class="c-text">CAT-001</td><td class="c-num">82</td></tr>
+                <tr><td class="c-text">L2</td><td class="c-code">CAT-001-02</td><td class="c-text">　冷蔵食品</td><td class="c-text">CAT-001</td><td class="c-num">38</td></tr>
+                <tr><td class="c-text">L2</td><td class="c-code">CAT-001-03</td><td class="c-text">　冷凍食品</td><td class="c-text">CAT-001</td><td class="c-num">22</td></tr>
+                <tr><td class="c-text">L1</td><td class="c-code">CAT-002</td><td class="c-text">アパレル</td><td class="c-text">-</td><td class="c-num">62</td></tr>
+                <tr><td class="c-text">L2</td><td class="c-code">CAT-002-01</td><td class="c-text">　メンズ</td><td class="c-text">CAT-002</td><td class="c-num">28</td></tr>
+                <tr><td class="c-text">L2</td><td class="c-code">CAT-002-02</td><td class="c-text">　レディース</td><td class="c-text">CAT-002</td><td class="c-num">34</td></tr>
+                <tr><td class="c-text">L1</td><td class="c-code">CAT-003</td><td class="c-text">化粧品</td><td class="c-text">-</td><td class="c-num">35</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

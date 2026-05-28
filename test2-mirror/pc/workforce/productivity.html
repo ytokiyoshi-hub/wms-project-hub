@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>生産性ダッシュボード — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">人員管理　/　<b>生産性ダッシュボード（K-4）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="stats">
+          <div class="stat"><div class="label">本日稼働</div><div class="value">12</div><span class="unit">名</span></div>
+          <div class="stat"><div class="label">平均効率</div><div class="value">45</div><span class="unit">行/h</span></div>
+          <div class="stat"><div class="label">総労務費</div><div class="value">58.8</div><span class="unit">千円</span></div>
+          <div class="stat"><div class="label">処理単価</div><div class="value">28</div><span class="unit">円/件</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>11指標（K-4）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>指標</th><th class="right">本日</th><th class="right">先週平均</th><th class="right">月間目標</th><th class="center">達成度</th></tr></thead>
+              <tbody>
+                <tr><td>入庫スピード</td><td class="right num">42件/h</td><td class="right num">40件/h</td><td class="right num">45件/h</td><td class="center"><span class="pill">93%</span></td></tr>
+                <tr><td>ピッキング行数</td><td class="right num">48行/h</td><td class="right num">45行/h</td><td class="right num">50行/h</td><td class="center"><span class="pill">96%</span></td></tr>
+                <tr><td>梱包スピード</td><td class="right num">25個/h</td><td class="right num">22個/h</td><td class="right num">28個/h</td><td class="center"><span class="pill">89%</span></td></tr>
+                <tr><td>誤出荷率</td><td class="right num">0.02%</td><td class="right num">0.03%</td><td class="right num">&lt;0.1%</td><td class="center"><span class="pill accent">達成</span></td></tr>
+                <tr><td>在庫差異率</td><td class="right num">0.08%</td><td class="right num">0.10%</td><td class="right num">&lt;0.2%</td><td class="center"><span class="pill accent">達成</span></td></tr>
+                <tr><td>遅延出荷率</td><td class="right num">0.5%</td><td class="right num">0.8%</td><td class="right num">&lt;1.0%</td><td class="center"><span class="pill accent">達成</span></td></tr>
+                <tr><td>労務費率</td><td class="right num">14.2%</td><td class="right num">15.0%</td><td class="right num">&lt;16%</td><td class="center"><span class="pill accent">達成</span></td></tr>
+                <tr><td>稼働率</td><td class="right num">85%</td><td class="right num">82%</td><td class="right num">90%</td><td class="center"><span class="pill">94%</span></td></tr>
+                <tr><td>残業時間</td><td class="right num">2h</td><td class="right num">3h</td><td class="right num">&lt;5h/日</td><td class="center"><span class="pill accent">達成</span></td></tr>
+                <tr><td>引当成功率</td><td class="right num">99.7%</td><td class="right num">99.5%</td><td class="right num">&gt;99%</td><td class="center"><span class="pill accent">達成</span></td></tr>
+                <tr><td>納期遵守率</td><td class="right num">98.5%</td><td class="right num">97.8%</td><td class="right num">&gt;98%</td><td class="center"><span class="pill accent">達成</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

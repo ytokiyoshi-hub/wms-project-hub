@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>監査ポリシー — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>監査ポリシー（A-10 ログ保持・暗号化）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">全社統一の監査ポリシー（A-10）</div>
+          ログ保持期間・暗号化・改ざん検知・外部監査人アクセス権の規程をシステム上で管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>監査対象カテゴリと保持期間</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">カテゴリ</th><th class="c-text">保持期間</th><th class="c-text">暗号化</th><th class="c-text">改ざん検知</th><th class="c-text">外部監査人共有</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">ログイン履歴</td><td class="c-text">3年</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-text"><span class="pill accent">ハッシュチェーン</span></td><td class="c-text">許可（マスキング）</td></tr>
+                <tr><td class="c-text">マスタ変更履歴</td><td class="c-text">5年</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-text"><span class="pill accent">ハッシュチェーン</span></td><td class="c-text">許可</td></tr>
+                <tr><td class="c-text">API呼出ログ</td><td class="c-text">13ヶ月</td><td class="c-text"><span class="pill">TLS in-transit</span></td><td class="c-text"><span class="pill">タイムスタンプ</span></td><td class="c-text">許可（個人情報マスキング）</td></tr>
+                <tr><td class="c-text">設定変更履歴</td><td class="c-text">5年</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-text"><span class="pill accent">ハッシュチェーン</span></td><td class="c-text">許可</td></tr>
+                <tr><td class="c-text">在庫変動ログ</td><td class="c-text">10年</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-text"><span class="pill accent">ハッシュチェーン</span></td><td class="c-text">許可</td></tr>
+                <tr><td class="c-text">請求・入金ログ</td><td class="c-text">10年</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-text"><span class="pill accent">ハッシュチェーン</span></td><td class="c-text">許可</td></tr>
+                <tr><td class="c-text">動画・写真</td><td class="c-text">2年</td><td class="c-text"><span class="pill">S3暗号化</span></td><td class="c-text"><span class="pill">SHA-256</span></td><td class="c-text">マネージャー承認後</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>外部監査人ロール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">監査人</th><th class="c-text">所属</th><th class="c-text">付与期間</th><th class="c-text">アクセス範囲</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">外部 監査A</td><td class="c-text">会計監査法人</td><td class="c-text">2026-04-01〜2026-06-30</td><td class="c-text">請求・入金ログ</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">外部 監査B</td><td class="c-text">セキュリティ監査</td><td class="c-text">2026-07-01〜2026-07-31</td><td class="c-text">API・設定変更</td><td class="c-status"><span class="pill">予定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>改ざん検知ステータス</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>最終整合性確認</label><div class="text-mono text-accent" style="font-weight:600;">2026-06-01 02:00 OK</div></div>
+              <div class="field"><label>監査対象レコード数</label><div class="text-mono">2,840,000</div></div>
+              <div class="field"><label>改ざん検知件数</label><div class="text-mono text-accent">0</div></div>
+              <div class="field"><label>次回確認</label><div class="text-mono">2026-06-02 02:00</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

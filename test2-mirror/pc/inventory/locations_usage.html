@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロケ稼働率 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>ロケ稼働率</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>倉庫</label><select><option>全件</option><option>WH001 東京DC</option><option>YU001 湯浅運輸</option></select></div>
+            <div class="field"><label>種別</label><select><option>全て</option><option>パレット</option><option>棚</option><option>流動棚</option><option>ハイラック</option></select></div>
+            <div class="field"><label>温度帯</label><select><option>全て</option><option>常温</option><option>冷蔵</option><option>冷凍</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="stats">
+          <div class="stat"><div class="label">総ロケ数</div><div class="value">1,200</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">使用中</div><div class="value">876</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">空き</div><div class="value">324</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">稼働率</div><div class="value">73</div><span class="unit">%</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>種別別 稼働率</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-text">種別</th><th class="c-num">総数</th><th class="c-text">使用</th><th class="c-text">空き</th><th class="c-num">稼働率</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="c-text">P パレット</td><td class="c-num">400</td><td class="c-text">320</td><td class="c-text">80</td><td class="c-num"><div style="display:flex; align-items:center; gap:8px;"><div style="flex:1; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:80%;"></div></div><span class="text-mono">80%</span></div></td></tr>
+                <tr><td class="c-text">T 棚（バラ）</td><td class="c-num">600</td><td class="c-text">450</td><td class="c-text">150</td><td class="c-num"><div style="display:flex; align-items:center; gap:8px;"><div style="flex:1; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:75%;"></div></div><span class="text-mono">75%</span></div></td></tr>
+                <tr><td class="c-text">F 流動棚</td><td class="c-num">100</td><td class="c-text">85</td><td class="c-text">15</td><td class="c-num"><div style="display:flex; align-items:center; gap:8px;"><div style="flex:1; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:85%;"></div></div><span class="text-mono">85%</span></div></td></tr>
+                <tr><td class="c-text">K 仮置き</td><td class="c-num">50</td><td class="c-text">12</td><td class="c-text">38</td><td class="c-num"><div style="display:flex; align-items:center; gap:8px;"><div style="flex:1; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:24%;"></div></div><span class="text-mono">24%</span></div></td></tr>
+                <tr><td class="c-text">H ハイラック</td><td class="c-num">30</td><td class="c-text">9</td><td class="c-text">21</td><td class="c-num"><div style="display:flex; align-items:center; gap:8px;"><div style="flex:1; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:30%;"></div></div><span class="text-mono">30%</span></div></td></tr>
+                <tr><td class="c-text">R 不適合品</td><td class="c-num">20</td><td class="c-text">0</td><td class="c-text">20</td><td class="c-num"><div style="display:flex; align-items:center; gap:8px;"><div style="flex:1; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:0%;"></div></div><span class="text-mono">0%</span></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

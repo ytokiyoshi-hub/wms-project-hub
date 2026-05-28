@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ピッカー割付 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>ピッカー割付（W-316 作業者×ウェーブ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">作業者×ウェーブ×HT端末の割付（W-316）</div>
+          作業者のスキル・現在シフト・HT端末状況から最適割付を提案。同時並行作業を制限することも可能。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>進行中ウェーブと割付状況</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">ウェーブNo</th><th class="c-text">テンプレ</th><th class="c-num">行数</th><th class="c-text">完了行</th><th class="c-text">担当ピッカー</th><th class="c-text">HT端末</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">WAVE-26060103</td><td class="c-text">WT-EC-PM</td><td class="c-num">220</td><td class="c-text">88</td><td class="c-text">佐藤太郎 / 山本健介</td><td class="c-text">HT-005 / HT-010</td><td class="c-status"><span class="pill accent">進行中</span></td></tr>
+                <tr><td class="c-code">WAVE-26060104</td><td class="c-text">WT-MK-PM</td><td class="c-num">128</td><td class="c-text">0</td><td class="c-text">未割付</td><td class="c-text">-</td><td class="c-status"><span class="pill alert">未開始</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>WAVE-26060104 割付提案</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">候補</th><th class="c-text">スキル</th><th class="c-text">現在状況</th><th class="c-text">HT端末</th><th class="c-num">予測完了時間</th><th class="c-text">推奨</th></tr></thead>
+              <tbody>>
+                <tr style="background:#f0fff0;"><td class="c-text">鈴木花子</td><td class="c-text">◎ ピック / ◎ 検品</td><td class="c-text">WAVE完了 → 待機中</td><td class="c-text">HT-006</td><td class="c-num">14:50</td><td class="c-text"><span class="pill accent">第1推奨</span></td></tr>
+                <tr><td class="c-text">田中一郎</td><td class="c-text">◎ ピック / ○ 検品</td><td class="c-text">WAVE-103 担当中</td><td class="c-text">HT-005</td><td class="c-num">15:20</td><td class="c-text"><span class="pill">代替</span></td></tr>
+                <tr><td class="c-text">伊藤裕子</td><td class="c-text">○ ピック / △ 検品</td><td class="c-text">休憩中（〜13:30）</td><td class="c-text">-</td><td class="c-num">15:45</td><td class="c-text"><span class="pill">非推奨</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>作業者別 当日生産性</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">氏名</th><th class="c-num">担当ウェーブ数</th><th class="c-num">完了行数</th><th class="c-date">時間</th><th class="c-text">行/時</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">佐藤太郎</td><td class="c-num">2</td><td class="c-num">142</td><td class="c-date">3.5h</td><td class="text-accent c-text">40.6</td><td class="c-status"><span class="pill accent">優秀</span></td></tr>
+                <tr><td class="c-text">鈴木花子</td><td class="c-num">1</td><td class="c-num">98</td><td class="c-date">2.8h</td><td class="c-text">35.0</td><td class="c-status"><span class="pill">標準</span></td></tr>
+                <tr><td class="c-text">山本健介</td><td class="c-num">2</td><td class="c-num">128</td><td class="c-date">3.5h</td><td class="c-text">36.6</td><td class="c-status"><span class="pill">標準</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">伊藤裕子</td><td class="c-num">1</td><td class="c-num">42</td><td class="c-date">2.5h</td><td class="text-alert c-text">16.8</td><td class="c-status"><span class="pill alert">新人OJT</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「自動最適化（全ウェーブ）」モック動作（実装は後続フェーズ）')">自動最適化（全ウェーブ）</button>
+          <button class="btn primary" onclick="alert('「推奨で確定」モック動作（実装は後続フェーズ）')">推奨で確定</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

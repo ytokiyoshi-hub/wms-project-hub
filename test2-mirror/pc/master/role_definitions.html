@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロール定義 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ロール定義（A-5 RBAC設定）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ロールベース権限の定義（A-5）</div>
+          ロールごとに「閲覧」「編集」「削除」「承認」の権限ビットを束ねる。ユーザーは複数ロールを兼任可。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ロール一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">ロールコード</th><th class="c-text">名称</th><th class="c-text">用途</th><th class="c-num">割当ユーザー数</th><th class="c-text">承認権限</th><th class="c-text">削除権限</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">ROLE-ADMIN</td><td class="c-text">システム管理者</td><td class="c-text">システム全般</td><td class="c-num">3</td><td class="c-text"><span class="pill accent">あり</span></td><td class="c-text"><span class="pill accent">あり</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ROLE-MGR</td><td class="c-text">マネージャー</td><td class="c-text">倉庫全般 / 例外承認</td><td class="c-num">8</td><td class="c-text"><span class="pill accent">あり</span></td><td class="c-text"><span class="pill">なし</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ROLE-LEAD</td><td class="c-text">現場リーダー</td><td class="c-text">工程管理 / ウェーブ起票</td><td class="c-num">12</td><td class="c-text"><span class="pill">なし</span></td><td class="c-text"><span class="pill">なし</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ROLE-INB</td><td class="c-text">入荷作業者</td><td class="c-text">入荷検品 / 棚入れ</td><td class="c-num">15</td><td class="c-text"><span class="pill">なし</span></td><td class="c-text"><span class="pill">なし</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ROLE-OUT</td><td class="c-text">出荷作業者</td><td class="c-text">ピッキング / 梱包</td><td class="c-num">22</td><td class="c-text"><span class="pill">なし</span></td><td class="c-text"><span class="pill">なし</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ROLE-BILL</td><td class="c-text">請求担当</td><td class="c-text">請求 / クレジット</td><td class="c-num">2</td><td class="c-text"><span class="pill accent">あり</span></td><td class="c-text"><span class="pill">なし</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">ROLE-OWNER</td><td class="c-text">荷主ポータル</td><td class="c-text">自荷主のデータ閲覧のみ</td><td class="c-num">12</td><td class="c-text"><span class="pill">なし</span></td><td class="c-text"><span class="pill">なし</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ROLE-LEAD 詳細権限</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">機能</th><th class="c-text">閲覧</th><th class="c-action">編集</th><th class="c-text">承認</th><th class="c-action">削除</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">入荷予定</td><td class="c-text">◎</td><td class="c-action">◎</td><td class="c-text">-</td><td class="c-action">-</td></tr>
+                <tr><td class="c-text">出荷指示</td><td class="c-text">◎</td><td class="c-action">◎</td><td class="c-text">-</td><td class="c-action">-</td></tr>
+                <tr><td class="c-text">ピッキングウェーブ</td><td class="c-text">◎</td><td class="c-action">◎</td><td class="c-text">-</td><td class="c-action">-</td></tr>
+                <tr><td class="c-text">マスタ（読取のみ）</td><td class="c-text">◎</td><td class="c-action">-</td><td class="c-text">-</td><td class="c-action">-</td></tr>
+                <tr><td class="c-text">例外処理</td><td class="c-text">◎</td><td class="c-action">◎</td><td class="c-text">-</td><td class="c-action">-</td></tr>
+                <tr><td class="c-text">請求</td><td class="c-text">-</td><td class="c-action">-</td><td class="c-text">-</td><td class="c-action">-</td></tr>
+                <tr><td class="c-text">監査ログ</td><td class="c-text">○</td><td class="c-action">-</td><td class="c-text">-</td><td class="c-action">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn primary" onclick="alert('「+ ロール追加」モック動作（実装は後続フェーズ）')">+ ロール追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

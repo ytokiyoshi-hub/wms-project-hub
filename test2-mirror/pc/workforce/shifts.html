@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>シフト管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">人員管理　/　<b>シフト管理</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>対象日</label><input type="date" value="2026-06-01"></div>
+            <div class="field"><label>エリア</label><select><option>全エリア</option><option>1F常温</option><option>2F常温</option><option>冷蔵</option></select></div>
+            <div class="field"><label>表示</label><select><option>日次</option><option>週次</option><option>月次</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>シフト割当 2026-06-01</span><span class="meta">12名稼働</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>氏名</th><th>エリア</th><th>担当業態</th><th>勤務時間</th><th class="right">時給</th><th class="right">予定時間</th><th class="right">労務費</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>田中 太郎</td><td>1F常温</td><td>ピッキング</td><td class="num">08:00-17:00</td><td class="right num">1,200</td><td class="right num">8h</td><td class="right num">9,600</td></tr>
+                <tr><td>佐藤 花子</td><td>1F常温</td><td>検品</td><td class="num">08:00-17:00</td><td class="right num">1,200</td><td class="right num">8h</td><td class="right num">9,600</td></tr>
+                <tr><td>鈴木 一郎</td><td>2F常温</td><td>ピッキング</td><td class="num">08:00-17:00</td><td class="right num">1,250</td><td class="right num">8h</td><td class="right num">10,000</td></tr>
+                <tr><td>高橋 春菜</td><td>冷蔵</td><td>検品+ピッキング</td><td class="num">08:00-17:00</td><td class="right num">1,300</td><td class="right num">8h</td><td class="right num">10,400</td></tr>
+                <tr><td>渡辺 大輔</td><td>1F常温</td><td>梱包</td><td class="num">09:00-18:00</td><td class="right num">1,200</td><td class="right num">8h</td><td class="right num">9,600</td></tr>
+                <tr><td>伊藤 真理</td><td>2F常温</td><td>梱包</td><td class="num">09:00-18:00</td><td class="right num">1,200</td><td class="right num">8h</td><td class="right num">9,600</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><td colspan="5" class="right"><b>合計</b></td><td class="right num"><b>48h</b></td><td class="right num"><b>58,800</b></td></tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

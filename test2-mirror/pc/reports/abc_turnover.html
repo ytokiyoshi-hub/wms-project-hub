@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ABC×回転率レポート — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">レポート　/　<b>ABC×回転率レポート（Z-6 マトリクス分析）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ABC分類 × 回転率のマトリクス（Z-6）</div>
+          SKUを「A高回転 / A低回転 / C高回転 / C低回転」など4象限に分類。デッドストック候補や移設候補の抽出に。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>4象限分布（過去30日）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th></th><th>高回転（≥10回/月）</th><th>中回転（5〜10回/月）</th><th>低回転（&lt;5回/月）</th><th>合計</th></tr></thead>
+              <tbody>
+                <tr><td><span class="pill accent">A</span></td><td class="right num">22 SKU</td><td class="right num">5 SKU</td><td class="right num">1 SKU</td><td class="right num">28</td></tr>
+                <tr><td><span class="pill">B</span></td><td class="right num">18 SKU</td><td class="right num">32 SKU</td><td class="right num">12 SKU</td><td class="right num">62</td></tr>
+                <tr><td><span class="pill">C</span></td><td class="right num">8 SKU</td><td class="right num">42 SKU</td><td class="right num">146 SKU</td><td class="right num">196</td></tr>
+                <tr style="font-weight:600;background:#f0f8ff;"><td>合計</td><td class="right num">48</td><td class="right num">79</td><td class="right num">159</td><td class="right num">286</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>A×低回転（要注意）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>SKU</th><th>商品名</th><th class="right">在庫数</th><th class="right">回転率</th><th>判断</th><th>提案</th></tr></thead>
+              <tbody>
+                <tr style="background:var(--c-alert-lt);"><td class="num">SKU-MK001-066</td><td>業務用洗剤500ml</td><td class="right num">820</td><td class="right num text-alert">3.2回</td><td>A品だが回転低い</td><td>EC連動が止まった可能性 / 荷主確認</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>C×高回転（B昇格候補）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>SKU</th><th>商品名</th><th class="right">在庫数</th><th class="right">回転率</th><th>提案</th></tr></thead>
+              <tbody>
+                <tr><td class="num">SKU-EC001-088</td><td>EC定番C</td><td class="right num">280</td><td class="right num text-accent">12.4回</td><td>Bランクへ / ピックエリア前列</td></tr>
+                <tr><td class="num">SKU-EC001-099</td><td>EC季節品</td><td class="right num">420</td><td class="right num text-accent">11.2回</td><td>Bランクへ / 季節予測加味</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>C×低回転（廃番／値下げ候補）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>SKU数</label><div class="text-mono" style="font-weight:600;">146</div></div>
+              <div class="field"><label>占有ロケ数</label><div class="text-mono" style="font-weight:600;">182</div></div>
+              <div class="field"><label>在庫金額合計</label><div class="text-mono">¥3,820,000</div></div>
+              <div class="field"><label>提案</label><div><button class="btn small primary" onclick="alert('「荷主向け廃番交渉リスト出力」モック動作（実装は後続フェーズ）')">荷主向け廃番交渉リスト出力</button></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-generic-stats.js?v=202605202324"></script>
+</body>
+</html>

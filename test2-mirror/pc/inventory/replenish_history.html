@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>補充履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>補充履歴（Q-11 補充実績）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">バラ／ピックエリア補充の実績履歴（Q-11）</div>
+          補充頻度・所要時間・補充元/先を記録。発注点・閾値の見直しに活用。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>期間</label><input type="text" value="2026-05-25 〜 2026-06-01" class="text-mono"></div>
+            <div class="field"><label>SKU</label><input type="text" placeholder="部分一致"></div>
+            <div class="field"><label>補充種別</label><select><option>全種別</option><option>ケース→バラ</option><option>長期保管→ピック</option></select></div>
+            <div class="field"><label>作業者</label><select><option>全員</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>補充履歴（最新50件）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日時</th><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-text">補充元</th><th class="c-text">補充先</th><th class="c-num">数量</th><th class="c-code">担当</th><th class="c-text">所要</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">06-01 11:08</td><td class="c-code">SKU-MK001-002</td><td class="c-text">コンディショナー300ml</td><td class="c-text">A-01-02</td><td class="c-text">P-15-08</td><td class="c-num">24 PCS</td><td class="c-code">鈴木</td><td class="c-text">5分</td></tr>
+                <tr><td class="c-date">06-01 10:32</td><td class="c-code">SKU-EC001-008</td><td class="c-text">EC専用ギフトA</td><td class="c-text">B-03-01</td><td class="c-text">P-22-04</td><td class="c-num">36 PCS</td><td class="c-code">山本</td><td class="c-text">8分</td></tr>
+                <tr><td class="c-date">06-01 09:15</td><td class="c-code">SKU-MK001-003</td><td class="c-text">冷蔵牛乳1L</td><td class="c-text">REF-01</td><td class="c-text">P-30-01</td><td class="c-num">12 PCS</td><td class="c-code">佐藤</td><td class="c-text">6分</td></tr>
+                <tr><td class="c-date">05-31 16:48</td><td class="c-code">SKU-MK001-001</td><td class="c-text">シャンプー300ml</td><td class="c-text">A-01-01</td><td class="c-text">P-15-07</td><td class="c-num">48 PCS</td><td class="c-code">田中</td><td class="c-text">10分</td></tr>
+                <tr><td class="c-date">05-31 14:22</td><td class="c-code">SKU-MK001-015</td><td class="c-text">冷蔵ヨーグルト</td><td class="c-text">REF-02</td><td class="c-text">P-30-05</td><td class="c-num">24 PCS</td><td class="c-code">佐藤</td><td class="c-text">5分</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SKU別 補充頻度（過去30日）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-num">補充回数</th><th class="c-num">補充数量</th><th class="c-text">平均間隔</th><th class="c-text">適正度</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">SKU-EC001-008</td><td class="c-text">EC専用ギフトA</td><td class="text-alert c-num">22</td><td class="c-num">792</td><td class="c-text">1.4日</td><td class="c-text"><span class="pill alert">頻度高すぎ（発注点引上推奨）</span></td></tr>
+                <tr><td class="c-code">SKU-MK001-002</td><td class="c-text">コンディショナー300ml</td><td class="c-num">14</td><td class="c-num">336</td><td class="c-text">2.1日</td><td class="c-text"><span class="pill accent">適正</span></td></tr>
+                <tr><td class="c-code">SKU-MK001-001</td><td class="c-text">シャンプー300ml</td><td class="c-num">12</td><td class="c-num">576</td><td class="c-text">2.5日</td><td class="c-text"><span class="pill accent">適正</span></td></tr>
+                <tr><td class="c-code">SKU-AP001-005</td><td class="c-text">春物ジャケット</td><td class="c-num">2</td><td class="c-num">8</td><td class="c-text">15.0日</td><td class="c-text"><span class="pill">低頻度（適正）</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

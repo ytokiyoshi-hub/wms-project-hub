@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入荷後アクション — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>入荷後アクション（W-415 自動連携処理）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">入荷完了後の自動連携アクション（W-415）</div>
+          棚入れ完了→クロスドック振分／受領通知／補充推奨更新／滞留再評価などのバッチ実行ステータス。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ASN完了時の自動アクション</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>順</th><th>アクション</th><th>説明</th><th>実行タイミング</th><th class="center">関連画面</th></tr></thead>
+              <tbody>
+                <tr><td class="num">1</td><td>クロスドック判定</td><td>引当待ち受注と紐付けて即出荷へ</td><td>検品完了直後</td><td class="center"><a class="btn sm" href="/pc/inbound/cross_dock_console.html">確認</a></td></tr>
+                <tr><td class="num">2</td><td>棚入れ指示生成</td><td>非クロスドック分を棚入れ対象に</td><td>クロスドック判定後</td><td class="center"><a class="btn sm" href="/pc/inbound/putaway.html">確認</a></td></tr>
+                <tr><td class="num">3</td><td>受領通知送信</td><td>EDI 856 / Webhook で荷主に通知</td><td>棚入れ完了</td><td class="center"><a class="btn sm" href="/pc/inbound/owner_acceptance.html">確認</a></td></tr>
+                <tr><td class="num">4</td><td>補充推奨更新</td><td>需要予測×新在庫数で再計算</td><td>棚入れ完了 + 1分</td><td class="center"><a class="btn sm" href="/pc/inventory/replenishment.html">確認</a></td></tr>
+                <tr><td class="num">5</td><td>滞留評価更新</td><td>新ロットを除外した滞留評価</td><td>棚入れ完了 + 5分</td><td class="center"><a class="btn sm" href="/pc/inventory/aging.html">確認</a></td></tr>
+                <tr><td class="num">6</td><td>ABC再計算（条件付き）</td><td>過去90日売上が±10%変動した場合のみ</td><td>棚入れ完了 + 30分</td><td class="center"><a class="btn sm" href="/pc/inventory/abc_analysis.html">確認</a></td></tr>
+                <tr><td class="num">7</td><td>荷主ポータル反映</td><td>在庫照会画面に最新数値</td><td>棚入れ完了 + 1秒</td><td class="center"><span style="color:var(--c-text-sub); font-size:11px;">portal</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の自動アクション履歴（実 API: 直近完了 ASN + 差異）</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>時刻</th><th>ASN/入荷No</th><th>アクション</th><th>結果</th><th class="center">対応</th></tr></thead>
+              <tbody id="tb"><tr><td colspan="5" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function loadData() {
+  try {
+    const [schedules, discrepancies] = await Promise.all([
+      fetch('/api/inbound-schedules').then(r => r.json()),
+      fetch('/api/discrepancies').then(r => r.json())
+    ]);
+    // 直近完了 ASN を時系列降順で
+    const completed = (schedules || []).filter(s => s.status === 'inspected' || s.status === 'received')
+      .sort((a, b) => (b.scheduled_date || '').localeCompare(a.scheduled_date || ''))
+      .slice(0, 10);
+    // 差異あり ASN を別途取得
+    const diffByAsn = {};
+    (discrepancies || []).forEach(d => { diffByAsn[d.schedule_no] = (diffByAsn[d.schedule_no] || 0) + 1; });
+
+    document.getElementById('meta').textContent = `直近完了 ${completed.length}件 / 差異あり ${Object.keys(diffByAsn).length}件`;
+    const tb = document.getElementById('tb');
+    if (completed.length === 0) {
+      tb.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--c-text-sub);">直近完了 ASN なし</td><tr>';
+      return;
+    }
+    tb.innerHTML = completed.map(s => {
+      const diffCnt = diffByAsn[s.schedule_no] || 0;
+      const hasIssue = diffCnt > 0;
+      const result = hasIssue
+        ? `<span class="pill alert">差異 ${diffCnt}件</span>`
+        : '<span class="pill accent">完了</span>';
+      const btn = hasIssue
+        ? `<a class="btn sm primary" href="/pc/inbound/discrepancy.html">差異対応</a>`
+        : `<a class="btn sm" href="/pc/inbound/owner_acceptance.html">受領確認</a>`;
+      return `
+        <tr ${hasIssue ? 'style="background:var(--c-alert-lt);"' : ''}>
+          <td class="num">${esc(s.scheduled_date)}</td>
+          <td class="num">${esc(s.schedule_no)}</td>
+          <td>クロスドック判定 / 棚入れ生成 / 受領通知</td>
+          <td>${result}</td>
+          <td class="center">${btn}</td>
+        </tr>
+      `;
+    }).join('');
+  } catch (e) {
+    document.getElementById('tb').innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+loadData();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

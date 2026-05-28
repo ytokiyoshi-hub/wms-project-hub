@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>廃棄ログ詳細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>廃棄ログ詳細（Q-25 産業廃棄物管理票）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">産業廃棄物管理票（マニフェスト）詳細（Q-25）</div>
+          廃棄物処理法対応。発生→運搬→中間処理→最終処分まで全段階のマニフェストを保持。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>マニフェスト一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">マニフェストNo</th><th class="c-text">発行日</th><th class="c-code">SKU</th><th class="c-num">廃棄区分</th><th class="c-num">数量</th><th class="c-text">運搬</th><th class="c-num">処分</th><th class="c-text">最終確認</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MNF-26052801</td><td class="c-text">2026-05-28</td><td class="c-code">SKU-MK001-099</td><td class="c-num">食品廃棄物</td><td class="c-num">24 PCS</td><td class="c-text">東京廃棄</td><td class="c-num">都内処理場</td><td class="c-text">2026-05-30</td></tr>
+                <tr><td class="c-code">MNF-26052501</td><td class="c-text">2026-05-25</td><td class="c-code">SKU-EC001-098</td><td class="c-num">一般廃棄物</td><td class="c-num">12 PCS</td><td class="c-text">東京廃棄</td><td class="c-num">都内処理場</td><td class="c-text">2026-05-27</td></tr>
+                <tr><td class="c-code">MNF-26051501</td><td class="c-text">2026-05-15</td><td class="c-code">SKU-PR001-088</td><td class="c-num">化粧品廃棄</td><td class="c-num">6 PCS</td><td class="c-text">東京廃棄</td><td class="c-num">専門処理場</td><td class="c-text">2026-05-18</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>MNF-26051501 詳細トレース</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">段階</th><th class="c-date">日時</th><th class="c-code">担当</th><th class="c-status">状況</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1. 発生</td><td class="c-date">2026-05-15 14:00</td><td class="c-code">WMS QA</td><td class="c-status"><span class="pill accent">完了</span></td><td class="c-text">限定香水 SS22 廃棄判定</td></tr>
+                <tr><td class="c-text">2. 引取</td><td class="c-date">2026-05-15 16:30</td><td class="c-code">東京廃棄</td><td class="c-status"><span class="pill accent">完了</span></td><td class="c-text">専用車両で搬出</td></tr>
+                <tr><td class="c-text">3. 中間処理</td><td class="c-date">2026-05-16 10:00</td><td class="c-code">都内処理場</td><td class="c-status"><span class="pill accent">完了</span></td><td class="c-text">焼却処理</td></tr>
+                <tr><td class="c-text">4. 最終処分</td><td class="c-date">2026-05-18 14:30</td><td class="c-code">専門処理場</td><td class="c-status"><span class="pill accent">完了</span></td><td class="c-text">処分証明書受領</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月集計</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>発行件数</label><div class="text-mono" style="font-weight:600;">3</div></div>
+              <div class="field"><label>廃棄数量合計</label><div class="text-mono" style="font-weight:600;">42 PCS</div></div>
+              <div class="field"><label>処理費用合計</label><div class="text-mono text-alert" style="font-weight:600;">¥28,800</div></div>
+              <div class="field"><label>処分証明書数</label><div class="text-mono">3</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

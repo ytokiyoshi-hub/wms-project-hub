@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="hide-from-nav" content="true">
+<title>調整理由マスタ [説明C] — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+
+.intro-variant-switcher { background:#1a3a5c; color:#fff; padding:8px 14px; font-size:12px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.intro-variant-switcher .lbl { font-weight:600; }
+.intro-variant-switcher a { color:#fff; text-decoration:none; padding:3px 10px; border:1px solid rgba(255,255,255,0.3); font-size:11px; }
+.intro-variant-switcher a.active { background:#fff; color:#1a3a5c; border-color:#fff; font-weight:600; }
+.intro-variant-switcher .sep { color:rgba(255,255,255,0.4); }
+.intro-variant-switcher .desc { color:rgba(255,255,255,0.7); font-size:11px; margin-left:auto; }
+.intro-variant-switcher .sub { margin-left:18px; padding-left:14px; border-left:1px solid rgba(255,255,255,0.3); }
+.intro-block { font-size:12px; color:#6b7280; padding:6px 10px; margin-bottom:8px; line-height:1.6; }
+.intro-block .code { color:#374151; font-family:var(--f-mono); font-weight:600; }
+.intro-block.bordered { border-left:3px solid var(--c-line-dk); padding-left:10px; }
+.intro-collapsible { font-size:11px; color:#9ca3af; margin-bottom:6px; padding:4px 10px; }
+.intro-collapsible .toggle { cursor:pointer; color:var(--c-accent); user-select:none; }
+.intro-collapsible .toggle:hover { text-decoration:underline; }
+.intro-collapsible .body { display:none; margin-top:4px; padding:6px 10px; background:#fbfbfb; border:1px solid var(--c-line); color:#6b7280; line-height:1.6; }
+.intro-collapsible.open .body { display:block; }
+
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    
+    <div class="intro-variant-switcher">
+      <span class="lbl">説明文ブロック:</span>
+      <a href="/pc/master/adjustment_reasons_intro_a.html" class="">A: 全画面に薄く常時</a><a href="/pc/master/adjustment_reasons_intro_b.html" class="">B: マスタ系のみ</a><a href="/pc/master/adjustment_reasons_intro_c.html" class="active">C: 全廃 (タイトルのみ)</a><a href="/pc/master/adjustment_reasons_intro_d.html" class="">D: 折りたたみ式</a>
+      <span class="sub">対象画面:</span>
+      <a href="/pc/master/adjustment_reasons_intro_c.html" class="active">マスタ系 (A-9 調整理由)</a>
+      <a href="/pc/audit/log_intro_c.html">非マスタ系 (監査ログ)</a>
+      <span class="desc">同じ案を 2画面 で見比べ可</span>
+    </div>
+  
+    <div class="topbar"><div class="crumb">マスタ　/　<b>調整理由マスタ</b> <span style="font-family:var(--f-mono); color:#9ca3af; margin-left:6px;">A-9</span><span class="badge">説明C</span></div></div>
+    <div class="content">
+      
+      
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card">
+          <div class="card-header"><span>調整理由</span><button class="btn primary sm" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">コード</th><th class="c-text">理由名</th><th class="c-code">区分</th><th class="c-text">備考</th><th class="c-status">承認要</th><th class="c-action">操作</th>
+              </tr></thead>
+              <tbody>
+                <tr><td class="c-code">R001</td><td class="c-text">棚卸差異</td><td class="c-code">棚卸</td><td class="c-text">定期棚卸で発覚した差異</td><td class="c-status">✓</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">R002</td><td class="c-text">破損</td><td class="c-code">商品状態</td><td class="c-text">外装破損・商品破損</td><td class="c-status">✓</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">R003</td><td class="c-text">紛失</td><td class="c-code">商品状態</td><td class="c-text">盗難・所在不明</td><td class="c-status">✓</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">R004</td><td class="c-text">入荷誤数</td><td class="c-code">入荷</td><td class="c-text">検品時の誤カウント</td><td class="c-status">✓</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">R005</td><td class="c-text">出荷誤数</td><td class="c-code">出荷</td><td class="c-text">ピッキング時の誤数</td><td class="c-status">✓</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">R006</td><td class="c-text">期限切れ</td><td class="c-code">商品状態</td><td class="c-text">賞味期限超過</td><td class="c-status">-</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">R007</td><td class="c-text">サンプル提供</td><td class="c-code">用途</td><td class="c-text">営業サンプル提供</td><td class="c-status">✓</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">R008</td><td class="c-text">自社使用</td><td class="c-code">用途</td><td class="c-text">社内使用</td><td class="c-status">✓</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">R009</td><td class="c-text">その他</td><td class="c-code">その他</td><td class="c-text">備考必須</td><td class="c-status">✓</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

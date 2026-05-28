@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ヘルプ・マニュアル — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb"><b>ヘルプ・マニュアル</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="stats">
+          <a href="javascript:void(0)" onclick="alert('作業者マニュアル (HT/PC 操作) は準備中（モック）')" style="text-decoration:none;"><div class="stat"><div class="label">作業者マニュアル</div><div class="value">👷</div><span class="unit">HT/PC 操作</span></div></a>
+          <a href="javascript:void(0)" onclick="alert('荷主マニュアル (ポータル操作) は準備中（モック）')" style="text-decoration:none;"><div class="stat"><div class="label">荷主マニュアル</div><div class="value">🏢</div><span class="unit">ポータル操作</span></div></a>
+          <a href="javascript:void(0)" onclick="alert('管理者マニュアル (マスタ管理) は準備中（モック）')" style="text-decoration:none;"><div class="stat"><div class="label">管理者マニュアル</div><div class="value">👔</div><span class="unit">マスタ管理</span></div></a>
+          <a href="javascript:void(0)" onclick="alert('運用マニュアル (業務フロー) は準備中（モック）')" style="text-decoration:none;"><div class="stat"><div class="label">運用マニュアル</div><div class="value">📚</div><span class="unit">業務フロー</span></div></a>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>主要業務フロー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>業務</th><th>関連画面</th><th>HT画面</th></tr></thead>
+              <tbody>
+                <tr><td>入荷</td><td>W-401 → W-402 → W-403 → W-404 → W-405</td><td>HT-403 → HT-406</td></tr>
+                <tr><td>出荷</td><td>W-301 → 引当 → W-303</td><td>HT-805 → HT-804 → HT-803 → HT-307 → HT-806</td></tr>
+                <tr><td>返品</td><td>W-407 → W-1003 / W-1004</td><td>HT-1001</td></tr>
+                <tr><td>棚卸</td><td>棚卸セッション</td><td>HT-701</td></tr>
+                <tr><td>荷主切替</td><td>-</td><td>HT-1101 → HT-1102 → HT-1103</td></tr>
+                <tr><td>請求</td><td>月次請求 → 請求書一覧</td><td>-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">サポート</div>
+          操作で困ったら、本マニュアル or 管理者まで。HTの物理キー（F1〜F4 / SCAN / 数字パッド / 十字キー）は画面上のボタンと完全に同じ動作。
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

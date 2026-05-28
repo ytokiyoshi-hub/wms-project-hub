@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>出荷例外処理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>出荷例外処理（W-311 エスカレ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">引当失敗・欠品・配送不可などの例外集約（W-311）</div>
+          運用例外の一元管理。担当割当→対応→クローズの追跡。SLA超過で自動エスカレ。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>未対応の出荷例外</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">検知</th><th class="c-code">出荷No</th><th class="c-text">種別</th><th class="c-code">SKU</th><th class="c-text">説明</th><th class="c-code">SLA</th><th class="c-code">担当</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">10:45</td><td class="c-code">SO-26060104</td><td class="c-text"><span class="pill alert">引当失敗</span></td><td class="c-code">SKU-MK001-022</td><td class="c-text">在庫不足（必要48 / 残32）</td><td class="c-code"><span class="pill alert">SLA超過</span></td><td class="c-code">佐藤</td><td class="c-action"><button class="btn small" onclick="alert('「対応」モック動作（実装は後続フェーズ）')">対応</button></td></tr>
+                <tr><td class="c-text">11:08</td><td class="c-code">SO-26060106</td><td class="c-text"><span class="pill alert">配送不可</span></td><td class="c-code">-</td><td class="c-text">配送先住所が郵便番号マップに存在しない</td><td class="c-code"><span class="pill">残38分</span></td><td class="c-code">鈴木</td><td class="c-action"><button class="btn small" onclick="alert('「対応」モック動作（実装は後続フェーズ）')">対応</button></td></tr>
+                <tr><td class="c-text">11:22</td><td class="c-code">SO-26060108</td><td class="c-text"><span class="pill alert">出荷止め</span></td><td class="c-code">SKU-MK001-015</td><td class="c-text">ロット出荷止め指示あり</td><td class="c-code"><span class="pill">残24分</span></td><td class="c-code">-</td><td class="c-action"><button class="btn small primary" onclick="alert('「担当割当」モック動作（実装は後続フェーズ）')">担当割当</button></td></tr>
+                <tr><td class="c-text">11:35</td><td class="c-code">SO-26060109</td><td class="c-text"><span class="pill alert">破損</span></td><td class="c-code">SKU-AP001-005</td><td class="c-text">ピック時に破損確認</td><td class="c-code"><span class="pill">残11分</span></td><td class="c-code">山本</td><td class="c-action"><button class="btn small" onclick="alert('「対応」モック動作（実装は後続フェーズ）')">対応</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>処理アクション</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">例外種別</th><th class="c-action">推奨アクション</th><th class="c-text">承認</th><th class="c-num">料金影響</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text"><span class="pill alert">引当失敗</span></td><td class="c-action">分納提案 / キャンセル / 代替SKU</td><td class="c-text">荷主回答</td><td class="c-num">欠品手数料</td></tr>
+                <tr><td class="c-text"><span class="pill alert">配送不可</span></td><td class="c-action">住所修正 / 代替便 / 拠点引取</td><td class="c-text">マネージャー</td><td class="c-num">振替料</td></tr>
+                <tr><td class="c-text"><span class="pill alert">出荷止め</span></td><td class="c-action">ロット切替 / キャンセル</td><td class="c-text">QA + 荷主</td><td class="c-num">-</td></tr>
+                <tr><td class="c-text"><span class="pill alert">破損</span></td><td class="c-action">代替ピック / 値引き出荷</td><td class="c-text">マネージャー</td><td class="c-num">破損賠償</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の例外サマリ</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>発生件数</label><div class="text-mono" style="font-weight:600;">4</div></div>
+              <div class="field"><label>SLA超過</label><div class="text-mono text-alert" style="font-weight:600;">1</div></div>
+              <div class="field"><label>クローズ</label><div class="text-mono" style="font-weight:600;">0</div></div>
+              <div class="field"><label>影響便数</label><div class="text-mono" style="font-weight:600;">2</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

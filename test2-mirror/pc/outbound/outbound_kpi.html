@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>出荷工程KPI — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>出荷工程KPI（W-349 出荷工程指標）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">出荷工程の総合KPI（W-349）</div>
+          引当・ピック・梱包・検品・引渡・積込の各段階のKPIを統合。月次経営報告。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>主要KPI（当月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">指標</th><th class="c-text">当月</th><th class="c-text">先月</th><th class="c-text">目標</th><th class="c-status">判定</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">引当成功率</td><td class="text-accent c-text">99.4%</td><td class="c-text">99.2%</td><td class="c-text">≥99%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">ピック生産性</td><td class="c-text">28.8 行/h</td><td class="c-text">27.6 行/h</td><td class="c-text">≥30 行/h</td><td class="c-status"><span class="pill">標準</span></td></tr>
+                <tr><td class="c-text">誤ピック率</td><td class="text-accent c-text">0.32%</td><td class="c-text">0.38%</td><td class="c-text">≤0.5%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">梱包生産性</td><td class="c-text">42.5 件/h</td><td class="c-text">40.0 件/h</td><td class="c-text">≥40 件/h</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">検品差戻し率</td><td class="text-accent c-text">1.30%</td><td class="c-text">1.45%</td><td class="c-text">≤1.5%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">SLA達成率</td><td class="text-accent c-text">98.4%</td><td class="c-text">98.1%</td><td class="c-text">≥98%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>段階別 LT（リードタイム）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">段階</th><th class="c-text">平均</th><th class="c-code">P75</th><th class="c-code">P90</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">受注→引当</td><td class="c-text">3分</td><td class="c-code">5分</td><td class="c-code">8分</td></tr>
+                <tr><td class="c-text">引当→ピック開始</td><td class="c-text">35分</td><td class="c-code">50分</td><td class="c-code">75分</td></tr>
+                <tr><td class="c-text">ピック→梱包</td><td class="c-text">22分</td><td class="c-code">30分</td><td class="c-code">42分</td></tr>
+                <tr><td class="c-text">梱包→引渡</td><td class="c-text">18分</td><td class="c-code">25分</td><td class="c-code">38分</td></tr>
+                <tr><td class="c-text">引渡→積込</td><td class="c-text">28分</td><td class="c-code">38分</td><td class="c-code">52分</td></tr>
+                <tr style="font-weight:600;background:#f0f8ff;"><td class="c-text">合計（受注→積込）</td><td class="c-text">106分</td><td class="c-code">148分</td><td class="c-code">215分</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>月次推移（過去6ヶ月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">月</th><th class="c-num">出荷件数</th><th class="c-num">SLA達成率</th><th class="c-num">誤出荷率</th><th class="c-text">行/h/人</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2025-12</td><td class="c-num">10,800</td><td class="c-num">97.8%</td><td class="c-num">0.08%</td><td class="c-text">25.0</td></tr>
+                <tr><td class="c-text">2026-01</td><td class="c-num">8,500</td><td class="c-num">98.2%</td><td class="c-num">0.07%</td><td class="c-text">25.5</td></tr>
+                <tr><td class="c-text">2026-02</td><td class="c-num">8,800</td><td class="c-num">98.0%</td><td class="c-num">0.08%</td><td class="c-text">26.2</td></tr>
+                <tr><td class="c-text">2026-03</td><td class="c-num">9,200</td><td class="c-num">98.1%</td><td class="c-num">0.08%</td><td class="c-text">27.0</td></tr>
+                <tr><td class="c-text">2026-04</td><td class="c-num">9,520</td><td class="c-num">98.3%</td><td class="c-num">0.07%</td><td class="c-text">27.6</td></tr>
+                <tr><td class="c-text">2026-05</td><td class="text-accent c-num">10,240</td><td class="text-accent c-num">98.4%</td><td class="text-accent c-num">0.07%</td><td class="text-accent c-text">28.8</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HT-805 出荷指示一覧 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-805 出荷指示一覧</h1>
+<p class="subtitle">ピック前の出荷指示確認 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/menu.html"><b>HT-001</b>メニュー</a>
+  <a href="/ht/pick/wave.html"><b>HT-804</b>ピック</a>
+  <a href="/ht/pick/list.html" class="active"><b>HT-805</b>出荷一覧</a>
+  <a href="/ht/packing/order.html"><b>HT-803</b>梱包</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">12:00 90%</span></div>
+      <div class="ht-header">
+        <span>出荷指示一覧</span>
+        <span class="scr-id">HT-805</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px; font-size:10px;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--c-text-sub);">担当エリア</span>
+            <span style="font-weight:600;">1F常温</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:2px;">
+            <span style="color:var(--c-text-sub);">本日割当</span>
+            <span style="font-family:var(--f-mono); font-weight:600;">5件 / 22行</span>
+          </div>
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-sub);">出荷指示</div>
+        <div id="order-list" style="border:1px solid var(--c-line); background:var(--c-base); flex:1; overflow-y:auto;">
+          <div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">読み込み中...</div>
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">F1選択 / F3詳細</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" onclick="location.href='/ht/pick/wave.html'"><span class="fn">F1</span>ピック開始</div>
+        <div class="key-lbl"><span class="fn">F2</span>並替え</div>
+        <div class="key-lbl"><span class="fn">F3</span>詳細</div>
+        <div class="key-lbl" onclick="location.href='/ht/menu.html'"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+        <div class="pkey scan">SCAN</div>
+        <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-num-grid">
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+        </div>
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-805</span>出荷指示一覧
+  <div class="desc-text">ピック前の出荷指示確認・選択でピッキング画面へ</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 90%`; };
+setClock(); setInterval(setClock, 30000);
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function loadOrders() {
+  try {
+    const orders = await fetch('/api/shipment-orders').then(r => r.json());
+    const list = document.getElementById('order-list');
+    if (!orders || orders.length === 0) {
+      list.innerHTML = '<div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">出荷指示なし</div>';
+      return;
+    }
+    list.innerHTML = orders.slice(0, 6).map((o, i) => {
+      const allocated = o.done_count >= o.line_count && o.line_count > 0;
+      const status = allocated
+        ? '<span style="color:var(--c-accent); font-weight:600;">引当済</span>'
+        : '<span style="color:var(--c-alert);">引当待ち</span>';
+      return `<div data-id="${o.id}" data-no="${esc(o.order_no)}" style="padding:6px 8px; border-bottom:1px solid var(--c-line); cursor:pointer; ${i===0?'background:var(--c-accent-lt);':''}">
+        <div class="text-mono text-bold text-accent" style="font-size:11px;">${esc(o.order_no)}</div>
+        <div style="font-size:10px; color:var(--c-text-sub); margin-top:2px;">${esc(o.customer_name || '-')}</div>
+        <div style="font-size:10px; margin-top:2px;">${o.line_count}行 / ${status}</div>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('[data-id]').forEach(el => {
+      el.addEventListener('click', () => {
+        list.querySelectorAll('[data-id]').forEach(x => x.style.background = '');
+        el.style.background = 'var(--c-accent-lt)';
+        sessionStorage.setItem('pick_order_id', el.dataset.id);
+        sessionStorage.setItem('pick_order_no', el.dataset.no);
+      });
+    });
+  } catch (e) {
+    document.getElementById('order-list').innerHTML = `<div style="padding:10px; color:var(--c-alert); font-size:9px;">読込失敗: ${esc(e.message)}</div>`;
+  }
+}
+
+function startPick() {
+  const no = sessionStorage.getItem('pick_order_no');
+  if (no) {
+    location.href = '/ht/pick/wave.html?order=' + encodeURIComponent(no);
+  } else {
+    location.href = '/ht/pick/wave.html';
+  }
+}
+document.querySelectorAll('.key-lbl.primary').forEach(el => el.addEventListener('click', startPick));
+
+loadOrders();
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>業態マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>業態マスタ（K-2）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">業態マスタ（K-2: 荷主紐付き区分）</div>
+          作業の種類を「業態」として定義。荷主×業態で時給・生産性指標・労務費を集計可能。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>業態一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">業態コード</th><th class="c-text">名称</th><th class="c-text">カテゴリ</th><th class="c-code">関連荷主</th><th class="c-num">標準単価</th><th class="c-action">操作</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="text-accent c-code">TK001</td><td class="c-text">入荷検品</td><td class="c-text">入荷</td><td class="c-code">全荷主</td><td class="c-num">200円/件</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-code">TK002</td><td class="c-text">棚入れ</td><td class="c-text">入荷</td><td class="c-code">全荷主</td><td class="c-num">125円/件</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-code">TK003</td><td class="c-text">ピッキング</td><td class="c-text">出荷</td><td class="c-code">全荷主</td><td class="c-num">27円/行</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-code">TK004</td><td class="c-text">梱包</td><td class="c-text">出荷</td><td class="c-code">全荷主</td><td class="c-num">60円/個</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-code">TK005</td><td class="c-text">EC梱包（小口）</td><td class="c-text">出荷</td><td class="c-code">EC001</td><td class="c-num">120円/個</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-code">TK006</td><td class="c-text">シリアル管理梱包</td><td class="c-text">出荷</td><td class="c-code">PR001</td><td class="c-num">180円/個</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-code">TK007</td><td class="c-text">返品検品</td><td class="c-text">返品</td><td class="c-code">全荷主</td><td class="c-num">250円/件</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-code">TK008</td><td class="c-text">棚卸</td><td class="c-text">棚卸</td><td class="c-code">全荷主</td><td class="c-num">時給制</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

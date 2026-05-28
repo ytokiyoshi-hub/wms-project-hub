@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ヤード到着受付 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>ヤード到着受付（W-421 ゲート連動）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ゲート受付→ヤード誘導（W-421）</div>
+          ゲートでの受付スキャン→ヤードスポット自動割当→ドライバーへスマホ通知。待機時間最小化。
+          <div style="margin-top:6px; font-size:11px; color:var(--c-text-sub);">※ ヤード専用API未実装。デモ画面はモック表示。受付後の入荷予定参照は <a href="/pc/inbound/plans.html">入荷予定一覧</a> へ。</div>
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>到着受付スキャン</label><input id="i-qr" type="text" placeholder="QR / 予約No" class="text-mono"></div>
+            <div class="field"><label>ドライバー名</label><input id="i-drv" type="text" placeholder="氏名"></div>
+            <div class="field"><label>車番</label><input id="i-car" type="text" placeholder="品川 100 あ ..." class="text-mono"></div>
+            <div class="field"><label>受付</label><div><button class="btn small primary" onclick="acceptArrival()">受付確定</button></div></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>ヤード現在状況（モック）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>スポット</th><th>用途</th><th>状態</th><th>到着車両</th><th>滞在時間</th><th>次の動き</th></tr></thead>
+              <tbody>
+                <tr><td class="num">Y-IN-01</td><td>カントウ運送 専用</td><td><span class="pill accent">空</span></td><td>-</td><td>-</td><td>次便受け入れ可</td></tr>
+                <tr><td class="num">Y-IN-02</td><td>大型車</td><td><span class="pill alert">使用中</span></td><td>大阪物流便 / 大阪 100 い 11-22</td><td class="num">15分</td><td>B-2バース到着15:00</td></tr>
+                <tr><td class="num">Y-IN-03</td><td>共用</td><td><span class="pill accent">空</span></td><td>-</td><td>-</td><td>受け入れ可</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の受付ログ（モック）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>時刻</th><th>仕入先</th><th>車番</th><th>ヤード</th><th>バース</th><th>所要時間</th></tr></thead>
+              <tbody>
+                <tr><td class="num">07:58</td><td>関東食品</td><td class="num">品川 100 あ 12-34</td><td class="num">Y-IN-01</td><td class="num">B-1</td><td class="num">4分</td></tr>
+                <tr><td class="num">09:05</td><td>関東食品</td><td class="num">品川 100 あ 56-78</td><td class="num">Y-IN-01</td><td class="num">B-1</td><td class="num">7分</td></tr>
+                <tr><td class="num">10:35</td><td>大阪物流便</td><td class="num">大阪 100 い 11-22</td><td class="num">Y-IN-02</td><td class="num">待機</td><td class="num">未確定</td></tr>
+                <tr><td class="num">11:00</td><td>EC物流便</td><td class="num">横浜 200 う 33-44</td><td class="num">Y-IN-03</td><td class="num">B-3</td><td class="num">5分</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/pc/inbound/carrier_arrival.html">到着車両管理</a>
+              <a class="btn" href="/pc/inbound/dock_appointment.html">バース予約</a>
+              <a class="btn" href="/pc/inbound/dock_assign.html">バース割付</a>
+              <a class="btn" href="/pc/inbound/plans.html">入荷予定一覧</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function acceptArrival() {
+  const qr = document.getElementById('i-qr').value.trim();
+  const drv = document.getElementById('i-drv').value.trim();
+  const car = document.getElementById('i-car').value.trim();
+  if (!qr && !drv && !car) { alert('スキャン値 / ドライバー名 / 車番 のいずれかを入力してください'); return; }
+  alert(`受付確定（モック動作）\nQR/予約: ${qr || '-'}\nドライバー: ${drv || '-'}\n車番: ${car || '-'}\nヤードスポット Y-IN-03 を割当`);
+  document.getElementById('i-qr').value = '';
+  document.getElementById('i-drv').value = '';
+  document.getElementById('i-car').value = '';
+}
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主ブランディング設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主ブランディング（S-12 出力物のロゴ・色）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主向けポータル／帳票のブランディング（S-12）</div>
+          荷主ポータル・請求書・荷札等にロゴ・テーマカラー・問合せ先を個別反映。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 ブランディング設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">ロゴ</th><th class="c-text">テーマカラー</th><th class="c-text">ポータル名</th><th class="c-text">問合せ</th><th class="c-text">帳票フッタ</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001 マルキ食品</td><td class="c-text"><span class="num">marki_logo.svg</span></td><td class="c-text"><span class="num" style="color:#1a3a5c;font-weight:600;">#1A3A5C</span></td><td class="c-text">マルキ食品 在庫ポータル</td><td class="c-text">logistics@marki.co.jp</td><td class="c-text">マルキ食品株式会社</td><td class="c-status"><span class="pill accent">設定済</span></td></tr>
+                <tr><td class="c-code">AP001 アパレルプレミアム</td><td class="c-text"><span class="num">ap_logo.svg</span></td><td class="c-text"><span class="num" style="color:#a8316b;font-weight:600;">#A8316B</span></td><td class="c-text">AP Premium Portal</td><td class="c-text">support@apremium.jp</td><td class="c-text">株式会社アパレルプレミアム</td><td class="c-status"><span class="pill accent">設定済</span></td></tr>
+                <tr><td class="c-code">EC001 EC太郎</td><td class="c-text"><span class="num">ec_logo.png</span></td><td class="c-text"><span class="num" style="color:#2c9a4a;font-weight:600;">#2C9A4A</span></td><td class="c-text">EC太郎 物流ダッシュボード</td><td class="c-text">ops@ec-taro.com</td><td class="c-text">EC太郎株式会社</td><td class="c-status"><span class="pill accent">設定済</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">PR001 プレミアム流通</td><td class="c-text"><span class="num text-alert">未設定</span></td><td class="c-text"><span class="num" style="color:#666;">未設定</span></td><td class="c-text"><span class="text-alert">未設定</span></td><td class="c-text"><span class="text-alert">未設定</span></td><td class="c-text"><span class="text-alert">未設定</span></td><td class="c-status"><span class="pill alert">要設定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>適用範囲</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">出力物</th><th class="c-text">説明</th><th class="c-text">ロゴ</th><th class="c-text">テーマカラー</th><th class="c-text">フッタ</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">荷主ポータル</td><td class="c-text">荷主が直接アクセスする画面</td><td class="c-text">◎ ヘッダ左</td><td class="c-text">◎ ヘッダ背景</td><td class="c-text">◯ フッタ</td></tr>
+                <tr><td class="c-text">請求書（PDF）</td><td class="c-text">月次請求書</td><td class="c-text">◎ 表紙右上</td><td class="c-text">◯ ライン色</td><td class="c-text">◎ 末尾</td></tr>
+                <tr><td class="c-text">納品書（PDF）</td><td class="c-text">出荷時の納品書</td><td class="c-text">◎ 表紙右上</td><td class="c-text">-</td><td class="c-text">◎ 末尾</td></tr>
+                <tr><td class="c-text">荷札（感熱）</td><td class="c-text">カゴ／カートン荷札</td><td class="c-text">○ 小ロゴ</td><td class="c-text">-</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">EDI応答メール</td><td class="c-text">受領通知メール</td><td class="c-text">○ 署名</td><td class="c-text">-</td><td class="c-text">○ 末尾</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn primary" onclick="alert('「+ 荷主ブランド追加」モック動作（実装は後続フェーズ）')">+ 荷主ブランド追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

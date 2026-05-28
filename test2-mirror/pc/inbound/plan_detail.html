@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="hide-from-nav" content="true">
+<title>入荷予定 詳細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+/* 見せ方B: 強弱 / 色は要対応のみ */
+.detail-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:8px; }
+.detail-cell { background:#fff; border:1px solid var(--c-line); padding:8px 12px; }
+.detail-cell .lbl { font-size:11px; color:#9ca3af; margin-bottom:3px; }
+.detail-cell .val { font-family:var(--f-mono); font-size:13px; font-weight:600; color:var(--c-text); }
+.detail-cell .val.muted { color:#9ca3af; font-weight:400; }
+.detail-cell .val.alert { color:var(--c-alert); }
+.parent-crumb { display:flex; align-items:center; gap:8px; font-size:12px; color:#6b7280; }
+.parent-crumb a { color:var(--c-accent); text-decoration:none; }
+.parent-crumb a:hover { text-decoration:underline; }
+.parent-crumb .sep { color:var(--c-line-dk); }
+/* 主役 = 明細テーブル */
+table.list-main td { padding:10px 12px; font-size:13px; }
+table.list-main th { padding:8px 12px; font-size:11px; }
+table.list-main tbody tr:hover { background:#f5f9fc; }
+/* 控えめアラート */
+.calm-alert { background:#fff; border-left:3px solid var(--c-accent); padding:6px 10px; margin-bottom:10px; font-size:12px; color:#374151; display:none; }
+.calm-alert.show { display:block; }
+.calm-alert.alert-color { border-left-color:var(--c-alert); }
+.row-mute td { color:#6b7280; }
+.row-mute .num { color:#374151; }
+.pill.silent { background:#f3f4f6; color:#9ca3af; border-color:#e5e7eb; }
+/* 右ペイン: 業務情報パネル */
+.summary-row { display:flex; padding:7px 12px; border-top:1px solid var(--c-line); align-items:center; font-size:12px; }
+.summary-row:first-child { border-top:none; }
+.summary-row .lbl { color:#6b7280; }
+.summary-row .val { margin-left:auto; font-family:var(--f-mono); font-weight:600; font-size:13px; color:#374151; }
+.summary-row .val.accent { color:var(--c-accent); }
+.summary-row .val.alert { color:var(--c-alert); }
+.summary-row .val.mute { color:#9ca3af; }
+.mini-list { font-size:11px; }
+.mini-list .row { display:flex; gap:8px; padding:5px 12px; border-top:1px dashed var(--c-line); align-items:center; }
+.mini-list .row:first-child { border-top:none; }
+.mini-list .row .code { font-family:var(--f-mono); color:#374151; font-weight:500; }
+.mini-list .row .name { color:#6b7280; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+.mini-list .row .when { margin-left:auto; font-family:var(--f-mono); color:#9ca3af; font-size:10px; }
+.mini-list .empty { padding:8px 12px; color:#9ca3af; font-size:11px; }
+.note-box { padding:8px 12px; font-size:11px; color:#374151; }
+.note-box.muted { color:#9ca3af; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb parent-crumb">
+        <a href="/">📋 トップ</a>
+        <span class="sep">/</span>
+        <a href="/pc/inbound/plans.html">入荷予定一覧 (W-401)</a>
+        <span class="sep">/</span>
+        <b id="crumb-no">詳細</b>
+        <span class="badge">小画面（W-401-D 子画面）</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+
+          <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <a class="btn" href="/pc/inbound/plans.html">← 一覧へ戻る</a>
+            <span style="margin-left:auto;"></span>
+            <button class="btn" onclick="reload()">再読込</button>
+            <button class="btn primary" onclick="location.href='/ht/inspect/asn.html'">HT 検品へ</button>
+            <button class="btn" id="btn-delete" onclick="deleteSchedule()" style="display:none; background:var(--c-alert-lt); color:var(--c-alert);">削除（planned のみ）</button>
+          </div>
+
+          <!-- 控えめアラート: 推奨次アクションがある時だけ -->
+          <div id="suggestion-bar" class="calm-alert"></div>
+
+          <div class="card">
+            <div class="card-header"><span>ヘッダ情報</span><span class="meta" id="head-status">-</span></div>
+            <div class="card-body">
+              <div class="detail-grid" id="head-grid">
+                <div class="detail-cell"><div class="lbl">入荷No</div><div class="val" id="d-schedule_no">-</div></div>
+                <div class="detail-cell"><div class="lbl">ASN No</div><div class="val" id="d-asn_no">-</div></div>
+                <div class="detail-cell"><div class="lbl">荷主</div><div class="val" id="d-owner">-</div></div>
+                <div class="detail-cell"><div class="lbl">仕入先</div><div class="val" id="d-supplier">-</div></div>
+                <div class="detail-cell"><div class="lbl">予定日</div><div class="val" id="d-scheduled_date">-</div></div>
+                <div class="detail-cell"><div class="lbl">倉庫</div><div class="val" id="d-warehouse_code">-</div></div>
+                <div class="detail-cell"><div class="lbl">検品方式</div><div class="val" id="d-inspection_method">-</div></div>
+                <div class="detail-cell"><div class="lbl">種別</div><div class="val" id="d-order_type">-</div></div>
+                <div class="detail-cell"><div class="lbl">RMA No</div><div class="val" id="d-rma_no">-</div></div>
+                <div class="detail-cell"><div class="lbl">登録日時</div><div class="val" id="d-created_at">-</div></div>
+                <div class="detail-cell" style="grid-column:span 2;"><div class="lbl">備考</div><div class="val muted" id="d-note">-</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span style="font-weight:700; font-size:13px;">明細</span><span class="meta" id="line-meta" style="font-size:11px; color:#9ca3af;">-</span></div>
+            <div class="card-body flush">
+              <table class="list list-full">
+                <thead><tr>
+                  <th class="c-num">#</th>
+                  <th class="c-code">商品コード</th>
+                  <th class="c-text" style="width:180px;">商品名</th>
+                  <th class="c-code">ロット</th>
+                  <th class="c-num">予定数</th>
+                  <th class="c-num">検品数</th>
+                  <th class="c-num">差異</th>
+                  <th class="c-code">ロケ</th>
+                  <th class="c-status">状態</th>
+                  <th class="c-action">操作</th>
+                </tr></thead>
+                <tbody id="tb-lines"><tr><td colspan="10" style="text-align:center; padding:24px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span>関連業務画面（子画面の動線）</span></div>
+            <div class="card-body">
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/plans.html">入荷予定一覧（親）</a>
+                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/actuals.html">入荷実績一覧</a>
+                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/discrepancy.html">差異処理</a>
+                <a class="btn" style="flex:1; text-align:center;" href="/pc/inbound/putaway.html">棚入れ指示</a>
+                <a class="btn" style="flex:1; text-align:center;" href="/ht/inspect/asn.html">HT 検品（ASN選択）</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 右ペイン: 補助情報パネル (320px sticky) -->
+        <div class="right-pane">
+
+          <!-- 状態サマリ -->
+          <div class="card">
+            <div class="card-header"><span>状態サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">この伝票の進捗</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">明細行数</span><span class="val" id="s-total">-</span></div>
+              <div class="summary-row"><span class="lbl">検品済</span><span class="val accent" id="s-inspected">-</span></div>
+              <div class="summary-row"><span class="lbl">未検品</span><span class="val" id="s-planned">-</span></div>
+              <div class="summary-row"><span class="lbl">差異あり行</span><span class="val alert" id="s-discrep">-</span></div>
+              <div class="summary-row"><span class="lbl">予定数合計</span><span class="val mute" id="s-expsum">-</span></div>
+              <div class="summary-row"><span class="lbl">検品数合計</span><span class="val mute" id="s-inssum">-</span></div>
+            </div>
+          </div>
+
+          <!-- 関連伝票 (モック) -->
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連伝票</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:6px 12px;">
+              <div style="font-size:10px; color:#9ca3af; margin-bottom:4px;">同ASN の他入荷予定</div>
+            </div>
+            <div class="mini-list" id="related-same-asn">
+              <div class="empty">該当なし</div>
+            </div>
+            <div class="card-body" style="padding:6px 12px; border-top:1px solid var(--c-line);">
+              <div style="font-size:10px; color:#9ca3af; margin-bottom:4px;">この入荷から引当予定の出荷</div>
+            </div>
+            <div class="mini-list" id="related-outbound">
+              <div class="row">
+                <span class="code">SO-26060201</span>
+                <span class="name">明日出荷 / AP001</span>
+                <span class="when">明日</span>
+              </div>
+              <div class="row">
+                <span class="code">SO-26060301</span>
+                <span class="name">06-03 出荷 / MK001</span>
+                <span class="when">06-03</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 最近の操作履歴 (モック) -->
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の操作履歴</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row">
+                <span class="code">山田</span>
+                <span class="name">予定登録</span>
+                <span class="when">14:35</span>
+              </div>
+              <div class="row">
+                <span class="code">佐藤</span>
+                <span class="name">ASN紐付</span>
+                <span class="when">15:02</span>
+              </div>
+              <div class="row">
+                <span class="code">田中</span>
+                <span class="name">検品開始 (HT)</span>
+                <span class="when">明日 09:15</span>
+              </div>
+              <div class="row">
+                <span class="code">田中</span>
+                <span class="name">明細#1 検品済</span>
+                <span class="when">明日 09:22</span>
+              </div>
+              <div class="row">
+                <span class="code">田中</span>
+                <span class="name">明細#2 差異検出</span>
+                <span class="when">明日 09:28</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 注記 -->
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>注記</span></div>
+            <div class="note-box" id="note-box">
+              <span class="muted">-</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const params = new URLSearchParams(location.search);
+const scheduleId = params.get('id');
+const STATUS_LABEL = {
+  planned: '<span class="pill silent">到着待ち</span>',
+  inspecting: '<span class="pill silent">入荷中</span>',
+  inspected: '<span class="pill silent">検品済</span>',
+  completed: '<span class="pill silent">完了</span>',
+};
+
+async function reload() {
+  if (!scheduleId) {
+    document.getElementById('crumb-no').textContent = 'ID未指定';
+    document.getElementById('tb-lines').innerHTML = '<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--c-alert);">?id= を URL に付けて開いてください。例: /pc/inbound/plan_detail.html?id=1</td></tr>';
+    return;
+  }
+  try {
+    const d = await fetch(`/api/inbound-schedules/${scheduleId}`).then(r => r.json());
+    if (!d || d.error) {
+      document.getElementById('crumb-no').textContent = `エラー`;
+      document.getElementById('tb-lines').innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--c-alert);">${esc(d?.error || '取得失敗')}</td></tr>`;
+      return;
+    }
+    document.getElementById('crumb-no').textContent = d.schedule_no;
+    document.title = `${d.schedule_no} 入荷予定 詳細 — WMS テストサイト2`;
+    document.getElementById('head-status').innerHTML = STATUS_LABEL[d.status] || `<span class="pill">${esc(d.status)}</span>`;
+
+    const set = (k, v) => { const el = document.getElementById('d-' + k); if (el) el.textContent = v ?? '-'; };
+    set('schedule_no', d.schedule_no);
+    set('asn_no', d.asn_no || '-');
+    set('owner', `${d.owner_code || ''} ${d.owner_name || ''}`.trim());
+    set('supplier', d.supplier_name || '-');
+    set('scheduled_date', d.scheduled_date);
+    set('warehouse_code', d.warehouse_code || '-');
+    set('inspection_method', d.inspection_method || 'standard');
+    set('order_type', d.order_type === 'return' ? '返品入荷' : '通常入荷');
+    set('rma_no', d.rma_no || '-');
+    set('created_at', d.created_at);
+    set('note', d.note || '-');
+
+    // 注記 (右パネル)
+    const noteBox = document.getElementById('note-box');
+    if (d.note && d.note.trim()) {
+      noteBox.textContent = d.note;
+      noteBox.classList.remove('muted');
+    } else {
+      noteBox.innerHTML = '<span class="muted">-</span>';
+    }
+
+    // 削除ボタン: planned のみ表示
+    document.getElementById('btn-delete').style.display = d.status === 'planned' ? 'inline-block' : 'none';
+
+    const lines = d.lines || [];
+    document.getElementById('line-meta').textContent = `${lines.length}行`;
+
+    // 状態サマリ (右パネル)
+    const totalLines = lines.length;
+    const inspected = lines.filter(l => l.inspected_qty != null).length;
+    const planned = totalLines - inspected;
+    const discrepLines = lines.filter(l => l.inspected_qty != null && l.inspected_qty !== l.expected_qty).length;
+    const expSum = lines.reduce((s, l) => s + (l.expected_qty || 0), 0);
+    const insSum = lines.reduce((s, l) => s + (l.inspected_qty || 0), 0);
+    document.getElementById('s-total').textContent = totalLines;
+    document.getElementById('s-inspected').textContent = inspected;
+    document.getElementById('s-planned').textContent = planned;
+    document.getElementById('s-discrep').textContent = discrepLines;
+    document.getElementById('s-expsum').textContent = expSum.toLocaleString();
+    document.getElementById('s-inssum').textContent = insSum.toLocaleString();
+
+    // 関連伝票: 同ASN (実APIで取れるなら絞り込み、なければモック)
+    if (d.asn_no) {
+      try {
+        const all = await fetch(`/api/inbound-schedules?asn_no=${encodeURIComponent(d.asn_no)}`).then(r => r.json()).catch(() => []);
+        const others = (Array.isArray(all) ? all : []).filter(x => String(x.id) !== String(scheduleId));
+        const el = document.getElementById('related-same-asn');
+        if (others.length === 0) {
+          el.innerHTML = '<div class="empty">他予定なし</div>';
+        } else {
+          el.innerHTML = others.slice(0, 3).map(o => `
+            <div class="row">
+              <span class="code"><a href="/pc/inbound/plan_detail.html?id=${o.id}" style="color:var(--c-accent); text-decoration:none;">${esc(o.schedule_no)}</a></span>
+              <span class="name">${esc(o.owner_code || '')} ${esc(o.scheduled_date || '')}</span>
+              <span class="when">${esc(o.status)}</span>
+            </div>`).join('');
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    // 控えめアラート: 行動が要るときだけ
+    const bar = document.getElementById('suggestion-bar');
+    bar.classList.remove('show', 'alert-color');
+    if (discrepLines > 0) {
+      bar.innerHTML = `差異が <b>${discrepLines} 行</b> あります → <a href="/pc/inbound/discrepancy.html" style="color:var(--c-accent); font-weight:600;">差異処理画面で対応 →</a>`;
+      bar.classList.add('show', 'alert-color');
+    } else if (planned > 0 && d.status === 'planned') {
+      bar.innerHTML = `未検品 ${planned} 行 → <a href="/ht/inspect/asn.html" style="color:var(--c-accent); font-weight:600;">HT 検品開始 →</a>`;
+      bar.classList.add('show');
+    } else if (inspected > 0 && inspected === totalLines && discrepLines === 0) {
+      bar.innerHTML = `全 ${totalLines} 行 検品完了・差異なし → <a href="/pc/inbound/putaway.html" style="color:var(--c-accent); font-weight:600;">棚入れへ →</a>`;
+      bar.classList.add('show');
+    }
+    const tb = document.getElementById('tb-lines');
+    if (lines.length === 0) {
+      tb.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--c-text-sub);">明細なし</td></tr>';
+    } else {
+      tb.innerHTML = lines.map((l, i) => {
+        const diff = (l.inspected_qty == null) ? null : (l.inspected_qty - l.expected_qty);
+        const hasDiff = diff != null && diff !== 0;
+        const diffStr = diff == null ? '-' : (diff > 0 ? '+' + diff : diff);
+        const lineStatusPill = ({
+          planned: '<span class="pill silent">未検品</span>',
+          inspecting: '<span class="pill silent">検品中</span>',
+          inspected: '<span class="pill silent">検品済</span>',
+          completed: '<span class="pill silent">完了</span>',
+          discrepancy: '<span class="pill alert">差異あり</span>',
+        })[l.status] || `<span class="pill silent">${esc(l.status)}</span>`;
+        return `
+          <tr class="${hasDiff ? '' : 'row-mute'}">
+            <td class="c-num">${i + 1}</td>
+            <td class="c-code"><a href="/pc/inbound/plan_line_detail.html?schedule_id=${scheduleId}&line_id=${l.id}" style="color:var(--c-accent); font-weight:600;">${esc(l.product_code)}</a></td>
+            <td class="c-text" style="width:180px;">${esc(l.product_name || '-')}</td>
+            <td class="c-code">${esc(l.lot_no || '-')}</td>
+            <td class="c-num">${l.expected_qty}</td>
+            <td class="c-num">${l.inspected_qty ?? '-'}</td>
+            <td class="c-num ${hasDiff ? 'text-alert' : ''}">${diffStr}</td>
+            <td class="c-code">${esc(l.putaway_location || '-')}</td>
+            <td class="c-status">${lineStatusPill}</td>
+            <td class="c-action"><a class="btn sm" href="/pc/inbound/plan_line_detail.html?schedule_id=${scheduleId}&line_id=${l.id}">詳細</a></td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (e) {
+    document.getElementById('tb-lines').innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--c-alert);">通信エラー: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+async function deleteSchedule() {
+  const schedNo = document.getElementById('d-schedule_no').textContent;
+  if (!confirm(`入荷予定 ${schedNo} を削除しますか？\n(status=planned のみ削除可・明細とタスクも削除されます)`)) return;
+  try {
+    const res = await fetch(`/api/inbound-schedules/${scheduleId}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(`削除失敗: ${err.error || res.status}`);
+      return;
+    }
+    alert(`削除しました: ${schedNo}\n一覧へ戻ります`);
+    location.href = '/pc/inbound/plans.html';
+  } catch (e) { alert('通信エラー: ' + e.message); }
+}
+
+reload();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

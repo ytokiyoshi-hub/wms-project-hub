@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>郵便番号方面マップ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>郵便番号方面マップ（QA-3）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">郵便番号 → 方面 マッピング（QA-3 確定）</div>
+          出荷先住所から方面を自動判定。region_code が方面マスタと紐付く。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>郵便番号</label><input id="f-zip" placeholder="100-0001"></div>
+            <div class="field"><label>判定結果</label><div id="result" class="text-mono">郵便番号を入力</div></div>
+          </div>
+        </div></div>
+        <div class="card">
+          <div class="card-header"><span>マッピング一覧</span><span class="meta">サンプル</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">郵便番号範囲</th><th class="c-code">方面コード</th><th class="c-text">方面名</th><th class="c-text">担当業者</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">100-0001 〜 184-9999</td><td class="c-code">RG001</td><td class="c-text">東京西エリア</td><td class="c-text">ヤマト運輸</td></tr>
+                <tr><td class="c-text">110-0001 〜 134-9999</td><td class="c-code">RG002</td><td class="c-text">東京東エリア</td><td class="c-text">佐川急便</td></tr>
+                <tr><td class="c-text">210-0001 〜 259-9999</td><td class="c-code">RG003</td><td class="c-text">神奈川エリア</td><td class="c-text">福山通運</td></tr>
+                <tr><td class="c-text">260-0001 〜 299-9999</td><td class="c-code">RG004</td><td class="c-text">千葉エリア</td><td class="c-text">西濃運輸</td></tr>
+                <tr><td class="c-text">330-0001 〜 369-9999</td><td class="c-code">RG005</td><td class="c-text">埼玉エリア</td><td class="c-text">ヤマト運輸</td></tr>
+                <tr><td class="c-text">その他</td><td class="c-code">RG006</td><td class="c-text">全国（翌朝便）</td><td class="c-text">ヤマト運輸</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('f-zip').addEventListener('input', (e) => {
+  const v = e.target.value.replace('-','');
+  if (!v) { document.getElementById('result').textContent = '郵便番号を入力'; return; }
+  const n = parseInt(v.slice(0,3), 10);
+  let result = 'RG006 全国（翌朝便）';
+  if (n >= 100 && n <= 184) result = 'RG001 東京西エリア (ヤマト運輸)';
+  else if (n >= 110 && n <= 134) result = 'RG002 東京東エリア (佐川急便)';
+  else if (n >= 210 && n <= 259) result = 'RG003 神奈川エリア (福山通運)';
+  else if (n >= 260 && n <= 299) result = 'RG004 千葉エリア (西濃運輸)';
+  else if (n >= 330 && n <= 369) result = 'RG005 埼玉エリア (ヤマト運輸)';
+  document.getElementById('result').textContent = result;
+});
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

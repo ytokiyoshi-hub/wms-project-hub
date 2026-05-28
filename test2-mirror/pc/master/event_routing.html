@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>イベントルーティング — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>イベントルーティング（X-12 内部イベント分配）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">内部イベントの宛先振分（X-12）</div>
+          WMS内部イベント（入荷確定/出荷確定/差異検出など）をどのコンシューマー（社内通知 / 荷主Webhook / 監査ログ等）に流すかの設定。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>イベント×コンシューマー対応</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">イベント</th><th class="c-text">内部監査</th><th class="c-text">社内通知</th><th class="c-code">荷主Webhook</th><th class="c-text">ERP連携</th><th class="c-text">BI連携</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">入荷確定</td><td class="c-text">◎</td><td class="c-text">○（差異時）</td><td class="c-code">◎</td><td class="c-text">◎</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">棚入れ完了</td><td class="c-text">◎</td><td class="c-text">-</td><td class="c-code">○（在庫照会連動）</td><td class="c-text">-</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">引当完了</td><td class="c-text">◎</td><td class="c-text">-</td><td class="c-code">-</td><td class="c-text">-</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">ピック完了</td><td class="c-text">◎</td><td class="c-text">-</td><td class="c-code">-</td><td class="c-text">-</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">出荷確定</td><td class="c-text">◎</td><td class="c-text">○（VIP）</td><td class="c-code">◎</td><td class="c-text">◎</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">配達完了</td><td class="c-text">◎</td><td class="c-text">-</td><td class="c-code">◎</td><td class="c-text">-</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">差異検出</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-code">◎</td><td class="c-text">-</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">SLA違反</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-code">◎</td><td class="c-text">-</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">温度逸脱</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-code">◎</td><td class="c-text">-</td><td class="c-text">◎</td></tr>
+                <tr><td class="c-text">マスタ変更</td><td class="c-text">◎</td><td class="c-text">-</td><td class="c-code">-</td><td class="c-text">○（鉱大変更時）</td><td class="c-text">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>イベントスループット（直近24時間）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">イベント</th><th class="c-num">発火数</th><th class="c-text">平均処理</th><th class="c-text">失敗</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">入荷確定</td><td class="c-num">142</td><td class="c-text">220ms</td><td class="c-text">0</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">出荷確定</td><td class="c-num">9,580</td><td class="c-text">180ms</td><td class="c-text">2</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">配達完了</td><td class="c-num">8,420</td><td class="c-text">120ms</td><td class="c-text">0</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">差異検出</td><td class="c-num">12</td><td class="c-text">280ms</td><td class="c-text">0</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">SLA違反</td><td class="c-num">3</td><td class="c-text">340ms</td><td class="c-text">0</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">マスタ変更</td><td class="c-num">28</td><td class="c-text">42ms</td><td class="c-text">0</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>取引先セグメント — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>取引先セグメント（S-60 業態別分類）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">取引先の業態別セグメント（S-60）</div>
+          卸 / 小売 / EC / 業務用 / 個人 など業態別に分類。納品ルール・梱包基準を業態単位で標準化。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>セグメント定義</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">セグメント</th><th class="c-text">説明</th><th class="c-num">取引先数</th><th class="c-text">納品基準</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text"><span class="pill accent">卸（B2B大口）</span></td><td class="c-text">1便あたり10PT以上</td><td class="c-num">12</td><td class="c-text">パレット単位 / 平日営業時間</td></tr>
+                <tr><td class="c-text"><span class="pill accent">小売（B2B）</span></td><td class="c-text">店舗向け配送</td><td class="c-num">42</td><td class="c-text">カートン単位 / 営業時間内</td></tr>
+                <tr><td class="c-text"><span class="pill">EC顧客（B2C）</span></td><td class="c-text">EC個人顧客</td><td class="c-num">数千（API動的）</td><td class="c-text">カートン単位 / 24h配送</td></tr>
+                <tr><td class="c-text"><span class="pill">業務用</span></td><td class="c-text">飲食店・施設等</td><td class="c-num">28</td><td class="c-text">カートン or パレット</td></tr>
+                <tr><td class="c-text"><span class="pill">社内</span></td><td class="c-text">営業課・自社販売</td><td class="c-num">5</td><td class="c-text">専用車</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>セグメント別 標準納品ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">セグメント</th><th class="c-text">梱包単位</th><th class="c-num">納品時間</th><th class="c-text">事前連絡</th><th class="c-text">受領</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">卸（B2B大口）</td><td class="c-text">パレット</td><td class="c-num">08:00-17:00</td><td class="c-text">不要（定期便）</td><td class="c-text">受付印</td></tr>
+                <tr><td class="c-text">小売（B2B）</td><td class="c-text">カートン</td><td class="c-num">10:00-16:00</td><td class="c-text">定期連絡</td><td class="c-text">受付印</td></tr>
+                <tr><td class="c-text">EC顧客（B2C）</td><td class="c-text">カートン</td><td class="c-num">日中</td><td class="c-text">運送会社まかせ</td><td class="c-text">サイン / 写真</td></tr>
+                <tr><td class="c-text">業務用</td><td class="c-text">カートン or パレット</td><td class="c-num">指定</td><td class="c-text">納品書ファックス</td><td class="c-text">受付印</td></tr>
+                <tr><td class="c-text">社内</td><td class="c-text">カゴ車</td><td class="c-num">指定</td><td class="c-text">不要</td><td class="c-text">担当サイン</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

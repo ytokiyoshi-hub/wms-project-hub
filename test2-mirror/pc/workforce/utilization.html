@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>人員稼働率 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.bar-util { height:14px; background:var(--c-accent); border-radius:3px; }
+.bar-util.over { background:var(--c-alert, #c00000); }
+.bar-util.low { background:#999; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">人員管理　/　<b>人員稼働率（H-9 稼働分析）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">作業者の稼働率分析（H-9）</div>
+          勤務時間に対する実作業時間の割合。70-85%が適正、過剰／過少を可視化。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当週 作業者別 稼働率</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>氏名</th><th class="right">勤務時間</th><th class="right">作業時間</th><th>稼働率</th><th class="right">%</th><th>判定</th></tr></thead>
+              <tbody>
+                <tr><td>佐藤太郎</td><td class="right num">38.0h</td><td class="right num">32.5h</td><td><div class="bar-util" style="width:85%;"></div></td><td class="right num">85.5%</td><td><span class="pill accent">適正</span></td></tr>
+                <tr><td>鈴木花子</td><td class="right num">37.5h</td><td class="right num">30.2h</td><td><div class="bar-util" style="width:80%;"></div></td><td class="right num">80.5%</td><td><span class="pill accent">適正</span></td></tr>
+                <tr><td>田中一郎</td><td class="right num">40.0h</td><td class="right num">29.8h</td><td><div class="bar-util" style="width:74%;"></div></td><td class="right num">74.5%</td><td><span class="pill">標準</span></td></tr>
+                <tr><td>山本健介</td><td class="right num">42.0h</td><td class="right num">38.5h</td><td><div class="bar-util over" style="width:92%;"></div></td><td class="right num text-alert">91.7%</td><td><span class="pill alert">過剰</span></td></tr>
+                <tr><td>伊藤裕子</td><td class="right num">32.0h</td><td class="right num">19.8h</td><td><div class="bar-util low" style="width:62%;"></div></td><td class="right num text-alert">61.9%</td><td><span class="pill alert">新人OJT</span></td></tr>
+                <tr><td>派遣A社 5名</td><td class="right num">182.0h</td><td class="right num">150.0h</td><td><div class="bar-util" style="width:82%;"></div></td><td class="right num">82.4%</td><td><span class="pill accent">適正</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>工程別 稼働率</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>工程</th><th class="right">必要人時</th><th class="right">実績人時</th><th class="right">過不足</th><th class="right">稼働率</th><th>判定</th></tr></thead>
+              <tbody>
+                <tr><td>入荷検品</td><td class="right num">42.0h</td><td class="right num">38.5h</td><td class="right num">-3.5h</td><td class="right num">91.7%</td><td><span class="pill accent">適正</span></td></tr>
+                <tr><td>棚入れ</td><td class="right num">32.0h</td><td class="right num">28.0h</td><td class="right num">-4.0h</td><td class="right num">87.5%</td><td><span class="pill accent">適正</span></td></tr>
+                <tr><td>出荷ピック</td><td class="right num">85.0h</td><td class="right num">88.0h</td><td class="right num text-alert">+3.0h</td><td class="right num text-alert">103.5%</td><td><span class="pill alert">過剰</span></td></tr>
+                <tr><td>梱包・出荷</td><td class="right num">62.0h</td><td class="right num">58.0h</td><td class="right num">-4.0h</td><td class="right num">93.5%</td><td><span class="pill">高稼働</span></td></tr>
+                <tr><td>EC仕分け</td><td class="right num">48.0h</td><td class="right num">42.0h</td><td class="right num">-6.0h</td><td class="right num">87.5%</td><td><span class="pill accent">適正</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>提案</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>対象</th><th>提案</th><th>影響</th></tr></thead>
+              <tbody>
+                <tr><td>山本健介</td><td>過剰稼働 → 来週は早番固定</td><td>労務リスク回避</td></tr>
+                <tr><td>出荷ピック工程</td><td>+1名 増員 or 派遣追加</td><td>残業削減</td></tr>
+                <tr><td>伊藤裕子</td><td>OJT継続、スキル評価更新</td><td>育成期間内</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

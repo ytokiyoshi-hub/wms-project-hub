@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>配送タリフゾーン — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>配送タリフゾーン（S-15 運送会社別ゾーニング）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">運送会社別の配送ゾーン定義（S-15）</div>
+          運送会社ごとに「ゾーンA/B/C…」を独自に持つ。郵便番号→ゾーン変換テーブルで料金計算と紐付け。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>運送会社別 ゾーン定義（東京DC発）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">運送会社</th><th class="c-text">ゾーン</th><th class="c-text">方面</th><th class="c-text">距離目安</th><th class="c-num">配達日数</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">カントウ運送</td><td class="c-text"><span class="pill accent">Zone-A</span></td><td class="c-text">東京23区</td><td class="c-text">~30km</td><td class="c-num">当日</td><td class="c-text">近距離</td></tr>
+                <tr><td class="c-code">カントウ運送</td><td class="c-text"><span class="pill accent">Zone-B</span></td><td class="c-text">東京多摩 / 神奈川県</td><td class="c-text">~80km</td><td class="c-num">当日〜翌日</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">カントウ運送</td><td class="c-text"><span class="pill">Zone-C</span></td><td class="c-text">埼玉 / 千葉</td><td class="c-text">~100km</td><td class="c-num">翌日</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">カントウ運送</td><td class="c-text"><span class="pill">Zone-D</span></td><td class="c-text">北関東 / 山梨</td><td class="c-text">~200km</td><td class="c-num">翌日</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">ヤマト系</td><td class="c-text"><span class="pill accent">関東</span></td><td class="c-text">1都6県</td><td class="c-text">-</td><td class="c-num">翌日</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">ヤマト系</td><td class="c-text"><span class="pill">中部</span></td><td class="c-text">愛知 / 静岡など</td><td class="c-text">-</td><td class="c-num">翌日</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">佐川系</td><td class="c-text"><span class="pill accent">関東圏</span></td><td class="c-text">1都6県</td><td class="c-text">-</td><td class="c-num">翌日</td><td class="c-text">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>郵便番号→ゾーン変換例</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">郵便番号レンジ</th><th class="c-text">地名</th><th class="c-code">カントウ運送</th><th class="c-text">ヤマト系</th><th class="c-text">佐川系</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">100-0001〜199-9999</td><td class="c-text">東京23区</td><td class="c-code"><span class="pill accent">Zone-A</span></td><td class="c-text"><span class="pill accent">関東</span></td><td class="c-text"><span class="pill accent">関東圏</span></td></tr>
+                <tr><td class="c-text">200-0001〜229-9999</td><td class="c-text">神奈川県</td><td class="c-code"><span class="pill accent">Zone-B</span></td><td class="c-text"><span class="pill accent">関東</span></td><td class="c-text"><span class="pill accent">関東圏</span></td></tr>
+                <tr><td class="c-text">300-0001〜319-9999</td><td class="c-text">茨城県</td><td class="c-code"><span class="pill">Zone-D</span></td><td class="c-text"><span class="pill accent">関東</span></td><td class="c-text"><span class="pill accent">関東圏</span></td></tr>
+                <tr><td class="c-text">350-0001〜369-9999</td><td class="c-text">埼玉県</td><td class="c-code"><span class="pill">Zone-C</span></td><td class="c-text"><span class="pill accent">関東</span></td><td class="c-text"><span class="pill accent">関東圏</span></td></tr>
+                <tr><td class="c-text">400-0001〜409-9999</td><td class="c-text">山梨県</td><td class="c-code"><span class="pill">Zone-D</span></td><td class="c-text"><span class="pill">中部</span></td><td class="c-text"><span class="pill">関東圏</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「CSVインポート」モック動作（実装は後続フェーズ）')">CSVインポート</button>
+          <button class="btn primary" onclick="alert('「+ ゾーン追加」モック動作（実装は後続フェーズ）')">+ ゾーン追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

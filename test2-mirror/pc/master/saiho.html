@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>再保利用控除マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>再保利用控除（M-6）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">再保利用控除設定（M-6）</div>
+          荷主×再保倉庫の関係で、再保倉庫を利用した在庫の控除設定。控除率・対象期間を荷主ごと管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>再保控除設定</span><button class="btn primary sm" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-text">設定ID</th><th class="c-code">荷主</th><th class="c-text">再保倉庫</th><th class="c-text">対象</th><th class="c-num">控除率</th><th class="c-text">有効期間</th><th class="c-action">操作</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="text-accent c-text">SAI001</td><td class="c-code">MK001</td><td class="c-text">YU001 湯浅運輸</td><td class="c-text">保管料</td><td class="c-num">15%</td><td class="c-text">2026-04-01 〜</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-text">SAI002</td><td class="c-code">MK001</td><td class="c-text">YU001 湯浅運輸</td><td class="c-text">荷役料</td><td class="c-num">10%</td><td class="c-text">2026-04-01 〜</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent c-text">SAI003</td><td class="c-code">EC001</td><td class="c-text">YU001 湯浅運輸</td><td class="c-text">保管料</td><td class="c-num">12%</td><td class="c-text">2026-04-01 〜</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

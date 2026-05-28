@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>温度アラート設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>温度アラート設定（S-22 閾値とエスカレ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">温度センサーアラートの閾値とエスカレ（S-22）</div>
+          ゾーン別に「警告／重大／緊急」の三段階閾値を設定。発報先と継続時間を制御。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>センサー別アラート設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">センサー</th><th class="c-text">設置場所</th><th class="c-num">温度帯</th><th class="c-text">警告閾値</th><th class="c-text">重大閾値</th><th class="c-text">緊急閾値</th><th class="c-text">継続</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">SNS-001</td><td class="c-text">1F A通路</td><td class="c-num"><span class="pill">常温</span></td><td class="c-text">15℃ / 25℃</td><td class="c-text">12℃ / 28℃</td><td class="c-text">10℃ / 30℃</td><td class="c-text">5分</td></tr>
+                <tr><td class="c-text">SNS-REF1</td><td class="c-text">冷蔵庫1</td><td class="c-num"><span class="pill accent">チルド</span></td><td class="c-text">2℃ / 8℃</td><td class="c-text">1℃ / 9℃</td><td class="c-text">0℃ / 10℃</td><td class="c-text">3分</td></tr>
+                <tr><td class="c-text">SNS-FRZ1</td><td class="c-text">冷凍庫1</td><td class="c-num"><span class="pill alert">冷凍</span></td><td class="c-text">-25℃ / -18℃</td><td class="c-text">-26℃ / -16℃</td><td class="c-text">-30℃ / -14℃</td><td class="c-text">5分</td></tr>
+                <tr><td class="c-text">SNS-003</td><td class="c-text">3F D通路</td><td class="c-num"><span class="pill">定温</span></td><td class="c-text">15℃ / 22℃</td><td class="c-text">13℃ / 24℃</td><td class="c-text">10℃ / 26℃</td><td class="c-text">5分</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>レベル別 エスカレ先</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">レベル</th><th class="c-text">第1通知</th><th class="c-text">第2通知（10分後）</th><th class="c-text">第3通知（30分後）</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status"><span class="pill">警告</span></td><td class="c-text">現場リーダー（LINE）</td><td class="c-text">メール追加</td><td class="c-text">-</td></tr>
+                <tr><td class="c-status"><span class="pill alert">重大</span></td><td class="c-text">現場リーダー + マネージャー</td><td class="c-text">営業 + QA 追加</td><td class="c-text">本社 通知</td></tr>
+                <tr><td class="c-status"><span class="pill alert">緊急</span></td><td class="c-text">全マネージャー + 営業部長（即時SMS）</td><td class="c-text">本社（SMS）</td><td class="c-text">外部委託メンテ業者（電話）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月発報履歴</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">発報日時</th><th class="c-text">センサー</th><th class="c-status">レベル</th><th class="c-num">温度</th><th class="c-text">原因</th><th class="c-num">対応時間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">2026-05-28 14:08</td><td class="c-text">SNS-REF1</td><td class="c-status"><span class="pill">警告</span></td><td class="c-num">9.2℃</td><td class="c-text">ドア開放（補充作業）</td><td class="c-num">8分</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">2026-05-22 03:30</td><td class="c-text">SNS-FRZ1</td><td class="c-status"><span class="pill alert">重大</span></td><td class="c-num">-15.8℃</td><td class="c-text">霜取り運転 不調</td><td class="c-num">42分</td></tr>
+                <tr><td class="c-date">2026-05-15 16:50</td><td class="c-text">SNS-001</td><td class="c-status"><span class="pill">警告</span></td><td class="c-num">26.2℃</td><td class="c-text">外気温高 / 入口開放</td><td class="c-num">15分</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

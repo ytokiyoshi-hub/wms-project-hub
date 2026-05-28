@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>梱包材マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>梱包材マスタ</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>梱包材コード/名称</label><input id="f-q"></div>
+            <div class="field"><label>荷主区分</label><select><option>全て</option><option>共用</option><option>専用</option></select></div>
+            <div class="field"><label>在庫状態</label><select><option>全て</option><option>正常</option><option>発注点以下</option></select></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <button class="btn primary" onclick="alert('「検索」モック動作（実装は後続フェーズ）')">検索</button>
+            <button class="btn primary" style="margin-left:auto;" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button>
+          </div>
+        </div></div>
+  
+        <div class="note-box warn">
+          <div class="text-bold text-alert" style="margin-bottom:4px;">発注点以下 1件</div>
+          梱包材-002 中段ボール（共用）が発注点を割っています。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>梱包材一覧</span><span class="meta">5件</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">コード</th><th class="c-text">名称</th><th class="c-text">種別</th><th class="c-num">サイズ(WxDxH mm)</th><th class="c-text">最大積載</th><th class="c-num">荷主区分</th><th class="c-num">在庫</th><th class="c-text">発注点</th><th class="c-action">操作</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="text-accent text-bold c-code">MAT001</td><td class="c-text">小段ボール</td><td class="c-text">段ボール</td><td class="c-num">300x200x150</td><td class="c-text">5kg</td><td class="c-num">共用</td><td class="c-num">480</td><td class="c-text">100</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="text-accent text-bold c-code">MAT002</td><td class="c-text">中段ボール</td><td class="c-text">段ボール</td><td class="c-num">400x300x250</td><td class="c-text">10kg</td><td class="c-num">共用</td><td class="text-alert c-num">85</td><td class="c-text">100</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button> <button class="btn danger sm" onclick="alert('「発注!」モック動作（実装は後続フェーズ）')">発注!</button></td></tr>
+                <tr><td class="text-accent text-bold c-code">MAT003</td><td class="c-text">大段ボール</td><td class="c-text">段ボール</td><td class="c-num">500x400x350</td><td class="c-text">20kg</td><td class="c-num">共用</td><td class="c-num">320</td><td class="c-text">80</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent text-bold c-code">MAT004</td><td class="c-text">MK001専用ボックス</td><td class="c-text">専用箱</td><td class="c-num">350x250x200</td><td class="c-text">8kg</td><td class="c-num">MK001 専用</td><td class="c-num">220</td><td class="c-text">50</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="text-accent text-bold c-code">MAT005</td><td class="c-text">緩衝材エアパック</td><td class="c-text">緩衝材</td><td class="c-num">600x400x10</td><td class="c-text">-</td><td class="c-num">共用</td><td class="c-num">12000</td><td class="c-text">2000</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

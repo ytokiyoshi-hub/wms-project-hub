@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>引当処理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>引当処理</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">FIFO引当（賞味期限先入先出）</div>
+          ロット賞味期限の古い順から自動引当。引当除外ロケ（仮置き=K / 不適合品=R）は対象外。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>引当待ち出荷指示</span><span class="meta" id="meta-count">-件</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">出荷No</th><th class="c-code">荷主</th><th class="c-text">出荷先</th><th class="c-text">予定日</th><th class="c-num">明細数</th><th class="c-text">引当状況</th><th class="c-action" style="width:200px;">操作</th>
+              </tr></thead>
+              <tbody id="orders-tbody">
+                <tr><td colspan="7" style="text-align:center; padding:14px; color:var(--c-text-sub);">読み込み中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>引当結果プレビュー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">出荷No</th><th class="c-text">商品</th><th class="c-num">必要数</th><th class="c-code">引当ロケ</th><th class="c-code">ロット</th><th class="c-date">賞味期限</th><th class="c-num">引当数</th><th class="c-status">優先度</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SO-26060101</td><td class="c-text">SKU-MK001-001</td><td class="c-num">12</td><td class="c-code">3AP-02-001</td><td class="c-code">L260518-01</td><td class="c-date">2027-05-18</td><td class="c-num">12</td><td class="c-status">1</td></tr>
+                <tr><td class="c-code">SO-26060101</td><td class="c-text">SKU-MK001-002</td><td class="c-num">8</td><td class="c-code">3AT-01-001</td><td class="c-code">L260520-02</td><td class="c-date">2027-05-20</td><td class="c-num">8</td><td class="c-status">1</td></tr>
+                <tr><td class="c-code">SO-26060102</td><td class="c-text">SKU-EC001-001</td><td class="c-num">24</td><td class="c-code">4FE-01-001</td><td class="c-code">L260601-01</td><td class="c-date">2026-12-15</td><td class="c-num">24</td><td class="c-status">1</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function loadOrders() {
+  try {
+    const orders = await fetch('/api/shipment-orders').then(r => r.json());
+    const pending = (orders || []).filter(o => o.done_count < o.line_count);
+    document.getElementById('meta-count').textContent = `${pending.length}件`;
+    const tbody = document.getElementById('orders-tbody');
+    if (pending.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:14px; color:var(--c-text-sub);">引当待ちなし</td></tr>';
+      return;
+    }
+    tbody.innerHTML = pending.map(o => {
+      const status = o.done_count === 0 ? '<span class="pill">未引当</span>' : `<span class="pill accent">部分(${o.done_count}/${o.line_count})</span>`;
+      return `<tr>
+        <td class="num">${esc(o.order_no)}</td>
+        <td class="num">${esc(o.owner_code)}</td>
+        <td>${esc(o.dest_name || '-')}</td>
+        <td class="num">${esc(o.scheduled_date || '-')}</td>
+        <td class="right num">${o.line_count || 0}</td>
+        <td class="center">${status}</td>
+        <td class="center">
+          <button class="btn primary sm" onclick="allocate(${o.id}, '${esc(o.order_no)}')">FIFO引当</button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    document.getElementById('orders-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center; padding:14px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+async function allocate(id, no) {
+  if (!confirm(`${no} のFIFO引当を実行しますか？`)) return;
+  try {
+    const res = await fetch(`/api/shipment-orders/${id}/allocate`, { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(`引当失敗: ${err.error || res.status}`);
+      return;
+    }
+    const data = await res.json().catch(() => ({}));
+    alert(`引当完了: ${data.allocated_lines ?? '-'}行 / ${data.message ?? ''}`);
+    await loadOrders();
+  } catch (e) {
+    alert(`引当エラー: ${e.message}`);
+  }
+}
+
+loadOrders();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

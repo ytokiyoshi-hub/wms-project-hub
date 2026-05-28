@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>生産性レポート — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">レポート　/　<b>生産性レポート（K-4 11指標）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="stats">
+          <div class="stat"><div class="label">入庫スピード</div><div class="value">42</div><span class="unit">件/h</span></div>
+          <div class="stat"><div class="label">ピッキング</div><div class="value">48</div><span class="unit">行/h</span></div>
+          <div class="stat"><div class="label">梱包</div><div class="value">25</div><span class="unit">個/h</span></div>
+          <div class="stat"><div class="label">誤出荷率</div><div class="value">0.02</div><span class="unit">%</span></div>
+          <div class="stat"><div class="label">在庫差異</div><div class="value">0.08</div><span class="unit">%</span></div>
+          <div class="stat"><div class="label">遅延率</div><div class="value">0.5</div><span class="unit">%</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>作業者別 生産性</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>氏名</th><th>エリア</th><th class="right">勤務時間</th><th class="right">処理件数</th><th class="right">時間当たり</th><th class="right">時給</th><th class="right">単価</th><th class="right">指標</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>田中 太郎</td><td>1F常温</td><td class="right num">8h</td><td class="right num">385</td><td class="right num">48行/h</td><td class="right num">1,200</td><td class="right num">25円/行</td><td class="right num text-accent">A</td></tr>
+                <tr><td>佐藤 花子</td><td>1F常温</td><td class="right num">8h</td><td class="right num">320</td><td class="right num">40行/h</td><td class="right num">1,200</td><td class="right num">30円/行</td><td class="right num">B</td></tr>
+                <tr><td>鈴木 一郎</td><td>2F常温</td><td class="right num">8h</td><td class="right num">410</td><td class="right num">51行/h</td><td class="right num">1,250</td><td class="right num">24円/行</td><td class="right num text-accent">A</td></tr>
+                <tr><td>高橋 春菜</td><td>冷蔵</td><td class="right num">8h</td><td class="right num">280</td><td class="right num">35行/h</td><td class="right num">1,300</td><td class="right num">37円/行</td><td class="right num">B</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>業態別 実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>業態</th><th class="right">処理件数</th><th class="right">所要時間</th><th class="right">人員</th><th class="right">単価</th></tr></thead>
+              <tbody>
+                <tr><td>入荷検品</td><td class="right num">52</td><td class="right num">8h</td><td class="right num">2名</td><td class="right num">200円/件</td></tr>
+                <tr><td>棚入れ</td><td class="right num">48</td><td class="right num">6h</td><td class="right num">2名</td><td class="right num">125円/件</td></tr>
+                <tr><td>ピッキング</td><td class="right num">1,395</td><td class="right num">32h</td><td class="right num">4名</td><td class="right num">27円/行</td></tr>
+                <tr><td>梱包</td><td class="right num">280</td><td class="right num">14h</td><td class="right num">2名</td><td class="right num">60円/個</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

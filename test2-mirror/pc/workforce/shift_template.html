@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>シフトテンプレート — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">人員管理　/　<b>シフトテンプレート（H-3 標準勤務パターン）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">繰り返し勤務パターンの定義（H-3）</div>
+          早番・遅番・夜勤などの定型パターンを登録しシフト作成時に流し込み。曜日別の必要人員も保持。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>テンプレート一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>コード</th><th>名称</th><th>開始</th><th>終了</th><th class="right">休憩</th><th class="right">標準時間</th><th>適用業務</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td class="num">SHIFT-A</td><td>早番（A）</td><td class="num">07:00</td><td class="num">15:30</td><td class="right num">60分</td><td class="right num">7.5h</td><td>入荷検品 / 棚入れ</td><td><span class="pill accent">有効</span></td></tr>
+                <tr><td class="num">SHIFT-B</td><td>遅番（B）</td><td class="num">10:00</td><td class="num">19:00</td><td class="right num">60分</td><td class="right num">8.0h</td><td>出荷ピック / 検品</td><td><span class="pill accent">有効</span></td></tr>
+                <tr><td class="num">SHIFT-C</td><td>夜勤（C）</td><td class="num">22:00</td><td class="num">06:00</td><td class="right num">60分</td><td class="right num">7.0h</td><td>EC仕分け</td><td><span class="pill accent">有効</span></td></tr>
+                <tr><td class="num">SHIFT-S</td><td>土曜短時間</td><td class="num">09:00</td><td class="num">13:00</td><td class="right num">0分</td><td class="right num">4.0h</td><td>軽作業</td><td><span class="pill accent">有効</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="num">SHIFT-X</td><td>繁忙期増員</td><td class="num">06:00</td><td class="num">22:00</td><td class="right num">120分</td><td class="right num">14.0h</td><td>全工程</td><td><span class="pill alert">期間限定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>曜日別 標準必要人員</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>業務</th><th class="right">月</th><th class="right">火</th><th class="right">水</th><th class="right">木</th><th class="right">金</th><th class="right">土</th><th class="right">日</th></tr></thead>
+              <tbody>
+                <tr><td>入荷検品</td><td class="right num">4</td><td class="right num">4</td><td class="right num">4</td><td class="right num">5</td><td class="right num">5</td><td class="right num">3</td><td class="right num">0</td></tr>
+                <tr><td>棚入れ</td><td class="right num">3</td><td class="right num">3</td><td class="right num">3</td><td class="right num">4</td><td class="right num">4</td><td class="right num">2</td><td class="right num">0</td></tr>
+                <tr><td>出荷ピック</td><td class="right num">8</td><td class="right num">8</td><td class="right num">8</td><td class="right num">10</td><td class="right num">10</td><td class="right num">6</td><td class="right num">2</td></tr>
+                <tr><td>梱包・出荷</td><td class="right num">6</td><td class="right num">6</td><td class="right num">6</td><td class="right num">8</td><td class="right num">8</td><td class="right num">5</td><td class="right num">2</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+/* テストサイト2 共通CSS — wms-project-hub モック準拠 (Phase 0 試案) */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --c-base:#fff;
+  --c-bg:#f4f5f7;
+  --c-line:#d8dde3;
+  --c-line-dk:#9aa3ad;
+  --c-text:#1a1f29;
+  --c-text-sub:#6c7280;
+  --c-text-mute:#9ca3af;
+  --c-accent:#1a3a5c;
+  --c-accent-dk:#0f2540;
+  --c-accent-lt:#e8eef5;
+  --c-alert:#b8002e;
+  --c-alert-lt:#fbe9ed;
+  --f-base:'Noto Sans JP', sans-serif;
+  --f-mono:'Roboto Mono', monospace;
+}
+
+html, body { font-family: var(--f-base); color: var(--c-text); background: var(--c-bg); line-height: 1.6; height: 100vh; overflow: hidden; }
+
+/* === PC レイアウト === */
+.layout { display: flex; height: 100vh; overflow: hidden; }
+
+.sidebar { width: 220px; background: var(--c-accent); color: #fff; flex-shrink: 0; display: flex; flex-direction: column; }
+.sidebar .logo { padding: 18px; border-bottom: 1px solid var(--c-accent-dk); font-size: 15px; font-weight: 600; }
+.sidebar .logo small { display: block; font-size: 11px; font-weight: 400; color: #b5c1d1; margin-top: 4px; }
+.sidebar nav { flex: 1; padding: 8px 0; overflow-y: auto; }
+.sidebar nav .group { padding: 14px 18px 6px; font-size: 10px; color: #8da2bf; letter-spacing: 0.1em; font-weight: 500; }
+.sidebar nav a { display: flex; align-items: center; padding: 9px 18px; color: #d6dee9; text-decoration: none; font-size: 13px; border-left: 3px solid transparent; }
+.sidebar nav a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.sidebar nav a.active { background: var(--c-accent-dk); color: #fff; border-left-color: #fff; font-weight: 500; }
+.sidebar .sb-footer { padding: 12px 18px; border-top: 1px solid var(--c-accent-dk); font-size: 11px; color: #8da2bf; }
+
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar { background: var(--c-base); height: 48px; border-bottom: 1px solid var(--c-line); display: flex; align-items: center; padding: 0 20px; flex-shrink: 0; }
+.topbar .crumb { font-size: 13px; color: var(--c-text-sub); flex: 1; }
+.topbar .crumb b { color: var(--c-text); font-weight: 600; }
+.topbar .badge { display: inline-block; background: var(--c-alert); color: #fff; font-size: 10px; padding: 2px 8px; margin-left: 8px; font-weight: 600; letter-spacing: 0.05em; }
+.content { flex: 1; padding: 20px; overflow-y: auto; background: var(--c-bg); }
+
+/* === カード === */
+.card { background: var(--c-base); border: 1px solid var(--c-line); margin-bottom: 14px; }
+.card-header { padding: 11px 16px; border-bottom: 1px solid var(--c-line); display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: var(--c-text); }
+.card-header .meta { font-size: 11px; font-weight: 400; color: var(--c-text-sub); }
+.card-body { padding: 14px 16px; }
+.card-body.flush { padding: 0; }
+
+/* === ボタン === */
+.btn { border: 1px solid var(--c-line-dk); background: var(--c-base); color: var(--c-text); padding: 6px 14px; font-size: 12px; font-family: var(--f-base); font-weight: 500; cursor: pointer; line-height: 1.4; }
+.btn:hover { background: var(--c-bg); }
+.btn.primary { background: var(--c-accent); color: #fff; border-color: var(--c-accent); }
+.btn.primary:hover { background: var(--c-accent-dk); }
+.btn.danger { background: var(--c-alert); color: #fff; border-color: var(--c-alert); }
+.btn.sm { padding: 3px 10px; font-size: 11px; }
+.btn.lg { padding: 10px 20px; font-size: 14px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* === pill === */
+/* === バッジ/pill（型）===
+   ステータス・区分バッジは「文字数によって枠サイズが変わらない」よう統一。
+   min-width で 1文字「休」も 4文字「創立記念」も同じ枠リズム。
+   同一列内 (c-status) では同じ幅で並ぶ → 縦のエッジが揃う。 */
+.pill {
+  display: inline-block;
+  min-width: 60px;        /* 1文字でも常にこの幅以上 */
+  padding: 2px 10px;      /* 上下も少し増やして枠の縦も統一 */
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--c-line-dk);
+  background: var(--c-bg);
+  color: var(--c-text-sub);
+  line-height: 1.6;
+  text-align: center;      /* 文字数差は中央寄せで吸収 */
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+.pill.alert  { background: var(--c-alert-lt);  border-color: var(--c-alert);  color: var(--c-alert); }
+.pill.accent { background: var(--c-accent-lt); border-color: var(--c-accent); color: var(--c-accent); }
+.pill.silent { background: #f3f4f6; border-color: #e5e7eb; color: #9ca3af; }
+/* 一覧の c-status 列内ではバッジを 100% 幅にしてエッジを完全に揃える */
+table.list td.c-status .pill { display: block; min-width: 0; }
+/* 1行 (インライン) バッジを使いたい時の修飾子 */
+.pill.inline { display: inline-block; min-width: 60px; }
+
+/* === テーブル === */
+/* 原則: 表は画面全幅に引き伸ばさない。
+   各列幅は中身が必要な幅・余白は表の右側に自然に残る。
+   旧 width:100% は廃止 (テキスト列が無理に伸びる問題を回避)。 */
+table.list { width: auto; max-width: 100%; border-collapse: collapse; font-size: 12px; }
+table.list th, table.list td { border-bottom: 1px solid var(--c-line); padding: 10px 20px; text-align: left; vertical-align: middle; }
+table.list thead th { background: var(--c-bg); font-weight: 600; color: var(--c-text-sub); font-size: 11px; border-bottom: 1px solid var(--c-line-dk); border-top: 1px solid var(--c-line); }
+table.list tbody tr:hover { background: var(--c-bg); }
+table.list tbody tr[onclick]:hover, table.list tbody tr.clickable:hover { cursor: pointer; }
+table.list .right { text-align: right; }
+table.list .center { text-align: center; }
+table.list .num { font-family: var(--f-mono); font-weight: 500; }
+
+/* === 共通テーブル「列幅の法則」（型・最終確定 2026-05-20）===
+   原則:
+   - 各列の幅は中身が必要な幅。表全体は画面全幅に伸ばさない。
+   - **th (ヘッダ) は同じ列の td (データ) と同じ揃え** → ヘッダがデータの真上に乗る。
+   - 列タイプ別揃え:
+     c-code = 左 / c-num = 右 / c-date = 左 / c-status = 中央 / c-action = 中央 / c-text = 左
+   - 余った横幅は表の右側に「ただの余白」として残る (引き伸ばさない)。 */
+table.list th.c-code   { text-align: left; }
+table.list th.c-num    { text-align: right; }
+table.list th.c-date   { text-align: left; }
+table.list th.c-text   { text-align: left; }
+table.list th.c-status { text-align: center; }
+table.list th.c-action { text-align: center; }
+/* td (データ) */
+table.list td.c-code   { font-family: var(--f-mono); font-weight: 500; text-align: left;  white-space: nowrap; }
+table.list td.c-num    { font-family: var(--f-mono); font-weight: 500; text-align: right; white-space: nowrap; }
+table.list td.c-date   { font-family: var(--f-mono);                   text-align: left;  white-space: nowrap; }
+table.list td.c-status { text-align: center; white-space: nowrap; }
+table.list td.c-action { text-align: center; white-space: nowrap; }
+table.list td.c-text   { text-align: left;   max-width: 360px; white-space: normal; word-break: break-word; }
+/* th も c-code 等の font-family/wrap は td と同じく適用 (列幅は中身で決まるため) */
+table.list th.c-code, table.list th.c-num, table.list th.c-date,
+table.list th.c-status, table.list th.c-action { white-space: nowrap; }
+
+/* === テーブル全幅修飾子 (型) ===
+   list-full = table-layout:fixed + 全列固定幅 → 列の余白が等間隔。
+   - c-text も固定幅 320px (商品名・備考など長文列の標準)
+   - 余った余白はテーブル右側に残る (全幅は基本維持)
+   - 中身が固定幅を超えたら自然折り返し
+   使い方: <table class="list list-full"> */
+table.list.list-full { width: 100%; table-layout: auto; }
+table.list.list-full th.c-code,   table.list.list-full td.c-code   { width: 120px; }
+table.list.list-full th.c-num,    table.list.list-full td.c-num    { width:  80px; }
+table.list.list-full th.c-date,   table.list.list-full td.c-date   { width: 160px; }
+table.list.list-full th.c-status, table.list.list-full td.c-status { width:  80px; }
+table.list.list-full th.c-action, table.list.list-full td.c-action { width: 100px; }
+table.list.list-full th.c-text,   table.list.list-full td.c-text   { width: 320px; max-width: none; }
+
+/* === 一覧フォーマット 単一テーブル版 (修飾子) ===
+   2ペイン構造を持たない単一テーブル画面 (master / audit 等) で使う。
+   テーブルもカードも中身の幅で固める → データ間の空きが padding 一定で完全均等。
+   使い方: <div class="card fit"> + <table class="list list-compact"> */
+table.list.list-compact { width: auto; table-layout: auto; }
+.card.fit { display: inline-block; width: auto; vertical-align: top; }
+
+/* === 右パネル内テーブル専用 (修飾子) ===
+   .right-pane / .side-panel (320px 幅) の中で table.list を幅いっぱいに広げる。
+   list-full は固定列幅合計が 320px を超えるため使えない → 列幅を自動に。
+   使い方: <table class="list list-panel"> */
+table.list.list-panel { width: 100%; table-layout: auto; }
+table.list.list-panel th, table.list.list-panel td { padding: 6px 8px; font-size: 11px; white-space: nowrap; }
+.right-pane table.list th[class*="c-"], .right-pane table.list td[class*="c-"],
+.side-panel  table.list th[class*="c-"], .side-panel  table.list td[class*="c-"] { width: auto; }
+
+/* === 2ペインレイアウト (左=一覧, 右=詳細/業務情報パネル) ===
+   layout_c.html を見本に共通化。products.html 等のマスタ画面で流用。
+   使い方: <div class="two-pane"><div class="left-pane">…</div><div class="right-pane">…</div></div> */
+.two-pane { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 14px; align-items: stretch; }
+.two-pane .left-pane { min-width: 0; }
+.two-pane .right-pane { position: sticky; top: 14px; }
+
+/* === ダッシュ用カード並び grid (auto-fit) ===
+   カード最小幅 450px・画面幅に応じて自動で列数決定 (工程管理ダッシュ=3-4列 / 縦長ダッシュ=2列 / 狭い画面=1列)
+   使い方: <div class="dashboard-grid">…cards…</div> */
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 14px; }
+
+/* === ダッシュボード共通修飾子 (.dashboard-compact) ===
+   工程管理ダッシュ (pc/dashboard.html) で確定した構造を全 ④ダッシュ画面に展開:
+   - 縦の余白は通常レベル (他ページと同程度)
+   - 横は内部 grid で 3列・2列・カード並列 等を自由に。横スクロール無しを目標
+   - table.list は内部幅で auto レイアウト (列固定幅を解除)
+   使い方: <div class="content dashboard-compact"> */
+.dashboard-compact .stat { padding: 10px 12px; }
+.dashboard-compact .stat .value { font-size: 22px; }
+.dashboard-compact .stats { gap: 12px; margin-bottom: 14px; }
+.dashboard-compact .card-body { line-height: 1.5; }
+.dashboard-compact table.list th, .dashboard-compact table.list td { padding: 8px 10px; font-size: 12px; white-space: normal; }
+/* ダッシュ系では list-full の固定列幅を解除 (内部 grid のカード幅に合わせる) */
+.dashboard-compact table.list.list-full { table-layout: auto; }
+.dashboard-compact table.list.list-full th, .dashboard-compact table.list.list-full td { width: auto; }
+
+/* === 右パネル共通スタイル (summary-row / mini-list / related-note) === */
+.right-pane .summary-row { display: flex; padding: 7px 12px; border-top: 1px solid var(--c-line); align-items: center; font-size: 12px; }
+.right-pane .summary-row:first-child { border-top: none; }
+.right-pane .summary-row .lbl { color: #6b7280; }
+.right-pane .summary-row .val { margin-left: auto; font-family: var(--f-mono); font-weight: 600; font-size: 13px; color: #374151; }
+.right-pane .summary-row .val.accent { color: var(--c-accent); }
+.right-pane .summary-row .val.alert { color: var(--c-alert); }
+.right-pane .summary-row .val.mute { color: #9ca3af; }
+.right-pane .mini-list { font-size: 11px; }
+.right-pane .mini-list .row { display: flex; gap: 8px; padding: 5px 12px; border-top: 1px dashed var(--c-line); align-items: center; }
+.right-pane .mini-list .row:first-child { border-top: none; }
+.right-pane .mini-list .row .code { font-family: var(--f-mono); color: #374151; font-weight: 500; }
+.right-pane .mini-list .row .name { color: #6b7280; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.right-pane .mini-list .row .when { margin-left: auto; font-family: var(--f-mono); color: #9ca3af; font-size: 10px; }
+.right-pane .mini-list .empty { padding: 8px 12px; color: #9ca3af; font-size: 11px; }
+
+/* === フォーム === */
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.field label { font-size: 11px; color: var(--c-text-sub); font-weight: 500; }
+.field input, .field select, .field textarea { border: 1px solid var(--c-line-dk); padding: 7px 10px; font-size: 13px; background: var(--c-base); font-family: var(--f-base); color: var(--c-text); }
+.field input:focus, .field select:focus { outline: 2px solid var(--c-accent); outline-offset: -1px; border-color: var(--c-accent); }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+
+/* === 検索フィルタ専用 (型) ===
+   原則: フィールドは中身相応の幅・左詰め・伸ばさない。
+   登録フォーム (.form-row) と混ぜない (絞り込み入力≠データ入力)。 */
+.filter-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; }
+.filter-row .field { margin-bottom: 0; min-width: 0; flex: 0 0 auto; }
+.filter-row .field input, .filter-row .field select { width: 200px; box-sizing: border-box; }
+.filter-row .field input[type="date"] { width: 160px; }
+.filter-row .field.wide input, .filter-row .field.wide select { width: 280px; } /* 任意の広め指定 */
+.filter-row .field.narrow input, .filter-row .field.narrow select { width: 120px; } /* 任意の狭め指定 */
+
+/* === stat カード (ダッシュボード共通KPI 型) ===
+   見せ方B 準拠: 普段グレー / 要対応のみ accent (青) or alert (赤)
+   微小なラベル + 大きい数字 + 小さい単位 */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 18px; }
+.stat { background: var(--c-base); border: 1px solid var(--c-line); padding: 14px 16px; }
+.stat .label { font-size: 11px; color: var(--c-text-sub); font-weight: 500; margin-bottom: 6px; }
+.stat .value { font-size: 26px; font-weight: 600; color: var(--c-text); font-family: var(--f-mono); line-height: 1.1; }
+.stat .value.accent { color: var(--c-accent); }
+.stat .value.alert  { color: var(--c-alert); }
+.stat .value.mute   { color: var(--c-text-sub); }
+.stat .unit { font-size: 12px; color: var(--c-text-sub); font-weight: 500; margin-left: 4px; }
+.stat .delta { font-size: 11px; font-family: var(--f-mono); color: var(--c-text-sub); margin-top: 6px; }
+.stat .delta.up { color: var(--c-accent); }
+.stat .delta.down { color: var(--c-alert); }
+
+/* === note === */
+.note-box { background: var(--c-accent-lt); border-left: 3px solid var(--c-accent); padding: 10px 14px; font-size: 12px; color: var(--c-text); line-height: 1.7; margin-bottom: 14px; }
+.note-box.warn { background: var(--c-alert-lt); border-left-color: var(--c-alert); }
+
+/* === HT (4インチ / 3インチ 共通) === */
+.ht-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--c-base); display: flex; flex-direction: column; }
+.ht-shell.ht-3 { max-width: 320px; font-size: 12px; }
+.ht-header { background: var(--c-accent); color: #fff; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.ht-header .title { font-size: 14px; font-weight: 600; }
+.ht-header .scr-id { font-family: var(--f-mono); font-size: 10px; opacity: 0.7; }
+.ht-body { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+.ht-statusbar { background: #1a1c22; color: #c8ccd4; padding: 4px 8px; font-size: 10px; font-family: var(--f-mono); display: flex; justify-content: space-between; flex-shrink: 0; }
+.ht-keypad { background: #2a2d35; padding: 8px; display: flex; gap: 6px; flex-shrink: 0; }
+.ht-keypad button { flex: 1; background: #1a1c22; color: #fff; border: 1px solid #555; padding: 8px 0; font-size: 11px; font-family: var(--f-mono); font-weight: 600; }
+.ht-keypad button.scan { background: var(--c-alert); flex: 2; }
+.ht-keypad button.confirm { background: var(--c-accent); }
+
+.ht-step-progress { display: flex; border: 1px solid var(--c-line-dk); margin-bottom: 8px; }
+.ht-step-progress .step { flex: 1; padding: 6px 4px; text-align: center; font-size: 11px; color: var(--c-text-sub); border-right: 1px solid var(--c-line-dk); background: var(--c-bg); }
+.ht-step-progress .step:last-child { border-right: none; }
+.ht-step-progress .step.done { background: var(--c-text-sub); color: #fff; }
+.ht-step-progress .step.current { background: var(--c-accent); color: #fff; font-weight: 600; }
+
+.ht-info-row { background: var(--c-bg); padding: 8px 10px; font-size: 11px; }
+.ht-info-row .lbl { color: var(--c-text-sub); }
+.ht-info-row .val { font-family: var(--f-mono); font-weight: 600; color: var(--c-text); }
+
+.ht-input-big { width: 100%; border: 2px solid var(--c-accent); padding: 10px 12px; font-size: 16px; font-family: var(--f-mono); font-weight: 600; text-align: center; }
+.ht-msg { background: #1a1c22; color: #ffd966; text-align: center; padding: 8px; font-size: 11px; font-family: var(--f-mono); margin-top: auto; }
+
+.text-mono { font-family: var(--f-mono); }
+.text-accent { color: var(--c-accent); }
+.text-alert { color: var(--c-alert); }
+.text-bold { font-weight: 600; }
+.muted { color: var(--c-text-sub); }
+
+/* ===================================================================
+ * === MORIKA THEME OVERRIDE — START =================================
+ * MORIKA Logi Cloud のデザイン(navy)をこのサイトに反映する上書きブロック。
+ *
+ * 【元に戻す方法（どちらか）】
+ *   A) この START 〜 END の間（このブロック）を丸ごと削除する
+ *   B) cp test2.css.morika-backup test2.css で元ファイルに完全復元する
+ *
+ * 追加日: 2026-05-27 / MORIKA design-system navy テーマ準拠
+ * =================================================================== */
+:root {
+  --c-base: #ffffff;       /* surface */
+  --c-bg: #f8fafc;         /* surfaceMuted (slate-50) */
+  --c-line: #a8b1bd;       /* border (slate-400寄り・はっきり見える罫線) */
+  --c-line-dk: #64748b;    /* 強めの罫線 (slate-500・thead 階層感を強調) */
+  --c-text: #0f172a;       /* text (slate-900) */
+  --c-text-sub: #64748b;   /* textMuted (slate-500) */
+  --c-text-mute: #94a3b8;  /* slate-400 */
+  --c-accent: #1a3d6e;     /* MORIKA ブランドネイビー */
+  --c-accent-dk: #132e52;  /* hover/active 用の濃いネイビー */
+  --c-accent-lt: #e8eef5;  /* brandTint */
+  --c-alert: #be123c;      /* danger (rose-700) */
+  --c-alert-lt: #fff1f2;   /* danger 薄 (rose-50) */
+  --f-base: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
+  --f-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --ds-radius: 6px;
+  --ds-radius-sm: 4px;
+}
+
+/* MORIKA は角丸あり。主要パーツに適用（HT端末モック .ht-* は素のまま） */
+.card { border-radius: var(--ds-radius); }
+.card-header { border-radius: var(--ds-radius) var(--ds-radius) 0 0; }
+.stat { border-radius: var(--ds-radius); }
+.note-box { border-radius: 0 var(--ds-radius) var(--ds-radius) 0; }
+.btn { border-radius: var(--ds-radius); }
+.btn.sm { border-radius: var(--ds-radius-sm); }
+.pill { border-radius: var(--ds-radius-sm); }
+.field input, .field select, .field textarea { border-radius: var(--ds-radius-sm); }
+.topbar .badge { border-radius: var(--ds-radius-sm); }
+
+/* --- レイアウト: MORIKA の「白サイドバー＋ネイビーのアクティブ」化（最大の見た目変化）--- */
+.sidebar { background: #ffffff; color: var(--c-text); border-right: 1px solid var(--c-line); width: 240px; }
+.sidebar .logo { color: var(--c-text); border-bottom: 1px solid var(--c-line); }
+.sidebar .logo small { color: var(--c-text-sub); }
+.sidebar nav .group { color: var(--c-text-mute); text-transform: uppercase; }
+.sidebar nav a { color: var(--c-text-sub); border-left: 3px solid transparent; }
+.sidebar nav a:hover { background: #f1f5f9; color: var(--c-text); }
+.sidebar nav a.active { background: var(--c-accent-lt); color: var(--c-accent); border-left-color: var(--c-accent); font-weight: 600; }
+.sidebar .sb-footer { color: var(--c-text-sub); border-top: 1px solid var(--c-line); }
+
+/* --- サイドバーのフォントサイズを MORIKA に合わせる --- */
+.sidebar .logo { font-size: 14px; font-weight: 700; }
+.sidebar .logo small { font-size: 11px; }
+.sidebar nav .group { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; }
+.sidebar nav a { font-size: 14px; }
+.sidebar .sb-footer { font-size: 11px; }
+
+/* --- トップバー: 白地＋細い下罫線 --- */
+.topbar { background: #ffffff; border-bottom: 1px solid var(--c-line); }
+.topbar .badge { background: var(--c-accent); }
+
+/* --- カードヘッダ: 白地＋下罫線（MORIKA風）--- */
+.card-header { background: #ffffff; }
+
+/* --- バッジ/pill: MORIKA のソフトトーン（枠線なし・淡い背景・丸み）--- */
+.pill { border: none; background: #f1f5f9; color: var(--c-text-sub); }
+.pill.accent { background: var(--c-accent-lt); color: var(--c-accent); border-color: transparent; }
+.pill.alert { background: var(--c-alert-lt); color: var(--c-alert); border-color: transparent; }
+.pill.silent { background: #f3f4f6; color: #94a3b8; border-color: transparent; }
+
+/* --- テーブル: MORIKA の全グリッド（縦罫線あり・Excelライク）--- */
+table.list { border: 1px solid var(--c-line); }
+table.list th, table.list td { border: 1px solid var(--c-line); }
+table.list thead th { background: var(--c-bg); border-color: var(--c-line); }
+
+/* --- 項目名（ヘッダ）を中央揃え（列別指定に勝つ強さで）--- */
+table.list thead th,
+table.list thead th.c-code,
+table.list thead th.c-num,
+table.list thead th.c-date,
+table.list thead th.c-text,
+table.list thead th.c-status,
+table.list thead th.c-action { text-align: center; }
+
+/* --- 2カラム: 右ペインの幅を適正化（320px → 220px）。全ページ共通で統一 --- */
+.two-pane { grid-template-columns: minmax(0, 1fr) 220px; }
+/* === MORIKA THEME OVERRIDE — END === */

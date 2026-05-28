@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>出荷指示ボード — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.board { display:grid; grid-template-columns: repeat(5, 1fr); gap:14px; }
+.board-col { background:#f8f9fb; border-radius:8px; padding:10px; min-height:240px; }
+.board-col h4 { margin:0 0 8px 0; font-size:13px; font-weight:600; color:var(--c-text); display:flex; justify-content:space-between; align-items:center; }
+.board-col h4 .count { font-family:'Roboto Mono',monospace; color:var(--c-accent); font-size:12px; }
+.card-mini { background:#fff; border:1px solid var(--c-border); border-radius:6px; padding:8px; margin-bottom:6px; font-size:12px; cursor:grab; }
+.card-mini .num { font-family:'Roboto Mono',monospace; font-weight:600; color:var(--c-accent); font-size:11px; }
+.card-mini .meta { color:var(--c-text-sub); font-size:11px; margin-top:2px; }
+.card-mini.alert { border-left:3px solid var(--c-alert); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>出荷指示ボード（W-301-B カンバン表示）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="note-box">
+        <div class="text-bold text-accent" style="margin-bottom:4px;">工程別かんばん表示（W-301-B）</div>
+        受領→引当→ピッキング→検品→出荷待ちの5工程を可視化。リアルタイム件数を表示。
+      </div>
+
+      <div class="board">
+        <div class="board-col">
+          <h4>受領 <span class="count">12</span></h4>
+          <div class="card-mini"><div class="num">SO-26060101</div><div>マルキ食品</div><div class="meta">13:30便 / 5行</div></div>
+          <div class="card-mini"><div class="num">SO-26060102</div><div>営業課A</div><div class="meta">15:00便 / 3行</div></div>
+          <div class="card-mini"><div class="num">SO-26060103</div><div>EC太郎</div><div class="meta">通常 / 2行</div></div>
+        </div>
+        <div class="board-col">
+          <h4>引当中 <span class="count">8</span></h4>
+          <div class="card-mini alert"><div class="num">SO-26060104</div><div>関西流通</div><div class="meta">引当失敗1件</div></div>
+          <div class="card-mini"><div class="num">SO-26060105</div><div>九州ロジ</div><div class="meta">処理中</div></div>
+        </div>
+        <div class="board-col">
+          <h4>ピック中 <span class="count">15</span></h4>
+          <div class="card-mini"><div class="num">SO-26060106</div><div>北海便</div><div class="meta">WAVE-3 / 60%</div></div>
+          <div class="card-mini"><div class="num">SO-26060107</div><div>東京西センター</div><div class="meta">WAVE-3 / 30%</div></div>
+          <div class="card-mini"><div class="num">SO-26060108</div><div>横浜EC物流</div><div class="meta">WAVE-2 / 80%</div></div>
+        </div>
+        <div class="board-col">
+          <h4>検品中 <span class="count">6</span></h4>
+          <div class="card-mini"><div class="num">SO-26060109</div><div>東京食品センター</div><div class="meta">残2行</div></div>
+        </div>
+        <div class="board-col">
+          <h4>出荷待ち <span class="count">4</span></h4>
+          <div class="card-mini"><div class="num">SO-26060110</div><div>営業課B</div><div class="meta">13:30便 待機</div></div>
+          <div class="card-mini"><div class="num">SO-26060111</div><div>EC太郎</div><div class="meta">引渡レーン3</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

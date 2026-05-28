@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>イベントリプレイ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>イベントリプレイ（X-13 再送機構）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">過去イベントの再送（X-13）</div>
+          荷主システム側障害で受信できなかったイベントを期間指定で再送。冪等性キーで重複処理を防止。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>イベント種別</label><select><option>出荷確定</option><option>入荷確定</option><option>在庫変動</option></select></div>
+            <div class="field"><label>対象荷主</label><select><option>EC001 EC太郎</option></select></div>
+            <div class="field"><label>期間</label><input type="text" value="2026-05-29 06:00 〜 12:00" class="text-mono"></div>
+            <div class="field"><label>対象件数</label><div class="text-mono text-accent" style="font-weight:600;">128 イベント</div></div>
+          </div>
+          <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+            <button class="btn" onclick="alert('「プレビュー」モック動作（実装は後続フェーズ）')">プレビュー</button>
+            <button class="btn primary" onclick="alert('「再送実行」モック動作（実装は後続フェーズ）')">再送実行</button>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去のリプレイ履歴</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">リプレイNo</th><th class="c-date">実行日時</th><th class="c-text">対象</th><th class="c-num">対象件数</th><th class="c-text">成功</th><th class="c-text">失敗</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">RPL-26052801</td><td class="c-date">2026-05-28 14:30</td><td class="c-text">EC001 出荷確定</td><td class="c-num">42</td><td class="c-text">42</td><td class="c-text">0</td><td class="c-status"><span class="pill accent">完了</span></td></tr>
+                <tr><td class="c-code">RPL-26051501</td><td class="c-date">2026-05-15 09:00</td><td class="c-text">MK001 入荷確定</td><td class="c-num">18</td><td class="c-text">18</td><td class="c-text">0</td><td class="c-status"><span class="pill accent">完了</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">RPL-26050501</td><td class="c-date">2026-05-05 18:00</td><td class="c-text">PR001 在庫変動</td><td class="c-num">280</td><td class="c-text">275</td><td class="c-text">5</td><td class="c-status"><span class="pill alert">部分失敗</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>冪等性</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">説明</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">冪等性キー</td><td class="c-text">イベントID（UUID v4）/ 7日間保持</td></tr>
+                <tr><td class="c-text">重複検知</td><td class="c-text">荷主側で同IDの受信は無視（HTTP 200 で応答）</td></tr>
+                <tr><td class="c-text">並び順保証</td><td class="c-text">イベント発生時刻順に送信（オフセット指定可）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

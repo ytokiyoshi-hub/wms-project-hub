@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>温度帯マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>温度帯マスタ（S-19 保管温度区分）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">商品×ロケの温度帯管理（S-19）</div>
+          常温・チルド・冷凍などの温度帯定義。SKUに必須温度帯を紐付け、誤格納を防止。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>温度帯定義</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-text">名称</th><th class="c-text">下限</th><th class="c-text">上限</th><th class="c-text">推奨</th><th class="c-text">許容変動</th><th class="c-text">適用カテゴリ</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">TMP-AMB</td><td class="c-text">常温</td><td class="c-text">15℃</td><td class="c-text">25℃</td><td class="c-text">20℃</td><td class="c-text">±5℃</td><td class="c-text">常温食品 / 雑貨</td></tr>
+                <tr><td class="c-code">TMP-CHL</td><td class="c-text">チルド</td><td class="c-text">2℃</td><td class="c-text">8℃</td><td class="c-text">5℃</td><td class="c-text">±2℃</td><td class="c-text">冷蔵食品</td></tr>
+                <tr><td class="c-code">TMP-FRZ</td><td class="c-text">冷凍</td><td class="c-text">-25℃</td><td class="c-text">-18℃</td><td class="c-text">-20℃</td><td class="c-text">±3℃</td><td class="c-text">冷凍食品</td></tr>
+                <tr><td class="c-code">TMP-COL</td><td class="c-text">定温（化粧品）</td><td class="c-text">15℃</td><td class="c-text">22℃</td><td class="c-text">18℃</td><td class="c-text">±2℃</td><td class="c-text">化粧品 / 医薬部外品</td></tr>
+                <tr><td class="c-code">TMP-CTR</td><td class="c-text">制御温度（医薬）</td><td class="c-text">2℃</td><td class="c-text">8℃</td><td class="c-text">5℃</td><td class="c-text">±0.5℃</td><td class="c-text">医薬品（一部）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ロケ別 温度帯割当</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">ロケ範囲</th><th class="c-num">温度帯</th><th class="c-num">ロケ数</th><th class="c-text">センサー</th><th class="c-num">現在温度</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">1F A通路 / B通路</td><td class="c-num"><span class="pill">常温</span></td><td class="c-num">220</td><td class="c-text">SNS-001</td><td class="c-num">21.2℃</td></tr>
+                <tr><td class="c-code">1F C通路</td><td class="c-num"><span class="pill">常温</span></td><td class="c-num">180</td><td class="c-text">SNS-002</td><td class="c-num">20.8℃</td></tr>
+                <tr><td class="c-code">冷蔵庫1 REF-01〜10</td><td class="c-num"><span class="pill accent">チルド</span></td><td class="c-num">36</td><td class="c-text">SNS-REF1</td><td class="text-accent c-num">4.8℃</td></tr>
+                <tr><td class="c-code">冷凍庫1 FRZ-01〜04</td><td class="c-num"><span class="pill alert">冷凍</span></td><td class="c-num">16</td><td class="c-text">SNS-FRZ1</td><td class="text-alert c-num">-19.5℃</td></tr>
+                <tr><td class="c-code">3F D通路</td><td class="c-num"><span class="pill">定温</span></td><td class="c-num">42</td><td class="c-text">SNS-003</td><td class="c-num">18.5℃</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>誤格納検知（過去30日）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>検知件数</label><div class="text-mono" style="font-weight:600;">5</div></div>
+              <div class="field"><label>主因（チルド→常温）</label><div class="text-mono text-alert" style="font-weight:600;">3</div></div>
+              <div class="field"><label>主因（常温→冷凍）</label><div class="text-mono">2</div></div>
+              <div class="field"><label>影響なし（即時是正）</label><div class="text-mono">5</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

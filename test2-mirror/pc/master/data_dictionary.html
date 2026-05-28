@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>データ辞書 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>データ辞書（X-14 用語統一）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">全社統一データ辞書（X-14）</div>
+          WMS / 荷主システム / ERP / TMS 間の用語統一。荷主との打合せ時の混乱防止と監査対応。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>主要用語</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">WMS用語</th><th class="c-text">業界呼称</th><th class="c-text">英語</th><th class="c-text">説明</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">SKU</td><td class="c-text">商品 / 品番</td><td class="c-text">Stock Keeping Unit</td><td class="c-text">在庫管理の最小単位</td></tr>
+                <tr><td class="c-text">ロケ</td><td class="c-text">棚番 / ビン</td><td class="c-text">Location</td><td class="c-text">保管場所</td></tr>
+                <tr><td class="c-text">ASN</td><td class="c-text">入荷予定 / 事前出荷通知</td><td class="c-text">Advanced Shipping Notice</td><td class="c-text">仕入先からの入荷予定情報</td></tr>
+                <tr><td class="c-text">SO</td><td class="c-text">出荷指示 / 受注</td><td class="c-text">Shipping Order</td><td class="c-text">顧客出荷指示書</td></tr>
+                <tr><td class="c-text">ウェーブ</td><td class="c-text">波 / バッチ</td><td class="c-text">Wave</td><td class="c-text">ピッキング作業の束</td></tr>
+                <tr><td class="c-text">カゴ</td><td class="c-text">容器 / ケージ</td><td class="c-text">Container</td><td class="c-text">輸送用台車</td></tr>
+                <tr><td class="c-text">FIFO</td><td class="c-text">先入先出</td><td class="c-text">First-In First-Out</td><td class="c-text">古いロットから出庫</td></tr>
+                <tr><td class="c-text">FEFO</td><td class="c-text">先期限先出</td><td class="c-text">First-Expired First-Out</td><td class="c-text">賞味期限が近いロットから出庫</td></tr>
+                <tr><td class="c-text">クロスドック</td><td class="c-text">通過型 / スルー型</td><td class="c-text">Cross-Docking</td><td class="c-text">入荷→棚入れ省略→即出荷</td></tr>
+                <tr><td class="c-text">LPN</td><td class="c-text">ライセンスプレート / SSCC</td><td class="c-text">License Plate Number</td><td class="c-text">パレット/カゴの一意ID</td></tr>
+                <tr><td class="c-text">POD</td><td class="c-text">配達証明</td><td class="c-text">Proof of Delivery</td><td class="c-text">受領サイン・写真</td></tr>
+                <tr><td class="c-text">SLA</td><td class="c-text">サービス品質保証</td><td class="c-text">Service Level Agreement</td><td class="c-text">契約上の品質基準</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>用語マッピング（荷主×WMS）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-code">SKU呼称</th><th class="c-code">ロケ呼称</th><th class="c-text">ASN呼称</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-code">商品コード</td><td class="c-code">棚番</td><td class="c-text">納品予定</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-code">品番</td><td class="c-code">ロケーション</td><td class="c-text">入荷予定書</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-code">SKU</td><td class="c-code">BIN</td><td class="c-text">ASN</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-code">製品番号</td><td class="c-code">収納場所</td><td class="c-text">納品連絡</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主KPIカード設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主KPIカード設定（S-58 ポータル指標）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主ポータルに表示するKPIカード設定（S-58）</div>
+          荷主が見るダッシュボードの上段KPIカード4枚を荷主別に選択可能。重要視する指標を強調。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 表示カード設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">カード1</th><th class="c-text">カード2</th><th class="c-text">カード3</th><th class="c-text">カード4</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">当日出荷件数</td><td class="c-text">SLA達成率</td><td class="c-text">在庫精度</td><td class="c-text">賞味期限切迫数</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">当日出荷件数</td><td class="c-text">誤梱包率</td><td class="c-text">在庫評価額</td><td class="c-text">滞留在庫率</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">当日出荷件数</td><td class="c-text">当日EC即日達成率</td><td class="c-text">返品率</td><td class="c-text">顧客苦情件数</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-text">当日出荷件数</td><td class="c-text">誤出荷率</td><td class="c-text">在庫評価額</td><td class="c-text">セキュリティ立入ログ</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>選択可能なKPI（標準セット）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">分類</th><th class="c-code">KPI</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">出荷</td><td class="c-code">当日出荷件数 / 翌日出荷件数 / 当日出荷達成率 / EC即日達成率 / 月累計出荷件数</td></tr>
+                <tr><td class="c-text">品質</td><td class="c-code">誤出荷率 / 誤梱包率 / 顧客苦情件数 / 返品率</td></tr>
+                <tr><td class="c-text">在庫</td><td class="c-code">在庫精度 / 在庫評価額 / 滞留在庫率 / 賞味期限切迫数 / 回転率</td></tr>
+                <tr><td class="c-text">サービス</td><td class="c-code">SLA達成率 / SLA違反件数 / 差異対応LT</td></tr>
+                <tr><td class="c-text">請求</td><td class="c-code">当月請求額 / 入金状況</td></tr>
+                <tr><td class="c-text">監査</td><td class="c-code">セキュリティ立入ログ / マスタ変更数</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>プレビュー（MK001 ポータルトップ）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>当日出荷件数</label><div class="text-mono text-accent" style="font-weight:600;">82件</div></div>
+              <div class="field"><label>SLA達成率</label><div class="text-mono text-accent" style="font-weight:600;">98.9%</div></div>
+              <div class="field"><label>在庫精度</label><div class="text-mono">99.6%</div></div>
+              <div class="field"><label>賞味期限切迫数</label><div class="text-mono text-alert" style="font-weight:600;">3 SKU</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

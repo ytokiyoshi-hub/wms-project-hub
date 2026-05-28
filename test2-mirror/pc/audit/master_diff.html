@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>マスタ差分監査 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>マスタ差分監査（A-16 期初・期末比較）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">マスタの期初・期末差分監査（A-16）</div>
+          年度・四半期初の状態と期末の状態の差分を一覧。マスタ管理の妥当性を監査人に提供。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>差分集計（2026年4-5月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">マスタ</th><th class="c-num">期初件数</th><th class="c-num">期末件数</th><th class="c-text">追加</th><th class="c-text">更新</th><th class="c-action">削除</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">商品（SKU）</td><td class="c-num">280</td><td class="c-num">286</td><td class="c-text">8</td><td class="c-text">22</td><td class="c-action">2</td></tr>
+                <tr><td class="c-text">ロケ</td><td class="c-num">1,066</td><td class="c-num">1,066</td><td class="c-text">0</td><td class="c-text">8</td><td class="c-action">0</td></tr>
+                <tr><td class="c-text">料金単価</td><td class="c-num">42</td><td class="c-num">42</td><td class="c-text">0</td><td class="c-text">5</td><td class="c-action">0</td></tr>
+                <tr><td class="c-text">取引先</td><td class="c-num">82</td><td class="c-num">85</td><td class="c-text">3</td><td class="c-text">2</td><td class="c-action">0</td></tr>
+                <tr><td class="c-text">ユーザー</td><td class="c-num">68</td><td class="c-num">68</td><td class="c-text">2</td><td class="c-text">5</td><td class="c-action">2</td></tr>
+                <tr><td class="c-text">荷主契約</td><td class="c-num">4</td><td class="c-num">4</td><td class="c-text">0</td><td class="c-text">1</td><td class="c-action">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>重要な変更（営業会議で確認済）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">変更日</th><th class="c-text">マスタ</th><th class="c-text">変更内容</th><th class="c-text">承認者</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2026-05-30</td><td class="c-text">料金単価</td><td class="c-text">MK001 入庫単価 ¥38 → ¥40</td><td class="c-text">営業部長</td></tr>
+                <tr><td class="c-text">2026-05-22</td><td class="c-text">荷主契約</td><td class="c-text">MK001 請求方式 2期制 → 3期制</td><td class="c-text">営業部長</td></tr>
+                <tr><td class="c-text">2026-04-28</td><td class="c-text">API レート</td><td class="c-text">EC001 レート上限 300 → 600/分</td><td class="c-text">営業</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>未承認変更検知（権限超過）</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>検知件数</label><div class="text-mono text-accent" style="font-weight:600;">0</div></div>
+              <div class="field"><label>判定</label><div><span class="pill accent">適切</span></div></div>
+              <div class="field"><label>監査人意見</label><div class="text-mono">適正に運用</div></div>
+              <div class="field"><label>操作</label><div><button class="btn small" onclick="alert('「PDF出力（監査人提出用）」モック動作（実装は後続フェーズ）')">PDF出力（監査人提出用）</button></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

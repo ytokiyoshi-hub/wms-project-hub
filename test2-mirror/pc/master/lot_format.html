@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロット採番ルール — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ロット採番ルール（S-18 ロットNo フォーマット）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主×カテゴリ別 ロット採番フォーマット（S-18）</div>
+          入荷時にロットNo自動採番、または仕入先指定ロットを取り込み。書式は{YY}{MM}{連番}など可変。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>採番ルール一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">ルールコード</th><th class="c-code">適用荷主</th><th class="c-text">適用カテゴリ</th><th class="c-text">フォーマット</th><th class="c-text">採番元</th><th class="c-text">例</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">LOT-MK-FOOD</td><td class="c-code">MK001</td><td class="c-text">食品</td><td class="c-text">LOT-{YY}{MM}{####}</td><td class="c-text">自動採番</td><td class="c-text">LOT-26060001</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">LOT-MK-CHIL</td><td class="c-code">MK001</td><td class="c-text">冷蔵食品</td><td class="c-text">LOT-{YYYY}{MM}{DD}-{##}</td><td class="c-text">仕入先ロット取込 OR 自動採番</td><td class="c-text">LOT-20260601-01</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">LOT-AP-DEF</td><td class="c-code">AP001</td><td class="c-text">全カテゴリ</td><td class="c-text">{ASN}-{##}</td><td class="c-text">ASN番号からの派生</td><td class="c-text">ASN-26060101-01</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">LOT-EC-DEF</td><td class="c-code">EC001</td><td class="c-text">全カテゴリ</td><td class="c-text">L{YYMMDD}-{####}</td><td class="c-text">自動採番</td><td class="c-text">L260601-0042</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">LOT-PR-EXP</td><td class="c-code">PR001</td><td class="c-text">化粧品</td><td class="c-text">{BRAND}-{LOT_VENDOR}</td><td class="c-text">仕入先ロット必須</td><td class="c-text">PR-2604A</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>採番カウンター（自動採番用）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ルール</th><th class="c-text">現在キー</th><th class="c-code">最終番号</th><th class="c-text">リセット</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">LOT-MK-FOOD</td><td class="c-text">2606</td><td class="c-code">0042</td><td class="c-text">月次リセット</td></tr>
+                <tr><td class="c-text">LOT-EC-DEF</td><td class="c-text">260601</td><td class="c-code">0142</td><td class="c-text">日次リセット</td></tr>
+                <tr><td class="c-text">LOT-AP-DEF</td><td class="c-text">ASN-26060101</td><td class="c-code">03</td><td class="c-text">ASNごと</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ロット書式バリデーション</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-num">変数</th><th class="c-text">説明</th><th class="c-text">例</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-num">{YY}</td><td class="c-text">年下2桁</td><td class="c-text">26</td></tr>
+                <tr><td class="c-num">{YYYY}</td><td class="c-text">年4桁</td><td class="c-text">2026</td></tr>
+                <tr><td class="c-num">{MM}</td><td class="c-text">月（ゼロ埋め）</td><td class="c-text">06</td></tr>
+                <tr><td class="c-num">{DD}</td><td class="c-text">日（ゼロ埋め）</td><td class="c-text">01</td></tr>
+                <tr><td class="c-num">{####}</td><td class="c-text">4桁連番</td><td class="c-text">0042</td></tr>
+                <tr><td class="c-num">{ASN}</td><td class="c-text">ASN番号</td><td class="c-text">ASN-26060101</td></tr>
+                <tr><td class="c-num">{LOT_VENDOR}</td><td class="c-text">仕入先指定ロット</td><td class="c-text">2604A</td></tr>
+                <tr><td class="c-num">{BRAND}</td><td class="c-text">ブランドコード</td><td class="c-text">PR</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

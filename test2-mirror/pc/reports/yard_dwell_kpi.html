@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ヤード滞留KPI — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">レポート　/　<b>ヤード滞留KPI（R-21 ドライバー待機）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ヤード滞留時間KPI（R-21）</div>
+          ドライバー待機時間 = 物流業界の重要KPI。法規制対応（2024年問題）と運送会社との関係維持に必須。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>滞留時間集計（当月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>区分</th><th class="right">平均</th><th class="right">P75</th><th class="right">P90</th><th class="right">最大</th><th>目標</th><th>判定</th></tr></thead>
+              <tbody>
+                <tr><td>到着→バース着</td><td class="right num">12分</td><td class="right num">18分</td><td class="right num">25分</td><td class="right num">42分</td><td class="num">≤15分</td><td><span class="pill accent">達成</span></td></tr>
+                <tr><td>バース着→荷下開始</td><td class="right num">10分</td><td class="right num">15分</td><td class="right num">22分</td><td class="right num">38分</td><td class="num">≤10分</td><td><span class="pill">達成</span></td></tr>
+                <tr><td>荷下開始→完了</td><td class="right num">38分</td><td class="right num">55分</td><td class="right num">82分</td><td class="right num">120分</td><td class="num">≤60分</td><td><span class="pill accent">達成</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>合計（到着→完了）</td><td class="right num">60分</td><td class="right num">88分</td><td class="right num">128分</td><td class="right num text-alert">180分</td><td class="num">≤90分</td><td><span class="pill alert">P90で未達</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>滞留時間×運送会社</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>運送会社</th><th class="right">便数</th><th class="right">平均滞留</th><th class="right">120分超え件数</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td>カントウ運送</td><td class="right num">42</td><td class="right num text-accent">52分</td><td class="right num">0</td><td><span class="pill accent">優良</span></td></tr>
+                <tr><td>自社便</td><td class="right num">28</td><td class="right num text-accent">48分</td><td class="right num">0</td><td><span class="pill accent">優良</span></td></tr>
+                <tr><td>札幌ロジ</td><td class="right num">12</td><td class="right num">82分</td><td class="right num">2</td><td><span class="pill">標準</span></td></tr>
+                <tr><td>EC物流</td><td class="right num">22</td><td class="right num">68分</td><td class="right num">1</td><td><span class="pill">標準</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>大型コンテナ便</td><td class="right num">3</td><td class="right num text-alert">155分</td><td class="right num text-alert">2</td><td><span class="pill alert">要改善</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>改善対策</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>原因</th><th>対策</th><th>期待効果</th></tr></thead>
+              <tbody>
+                <tr><td>バース満杯時の到着集中</td><td>着車予約徹底 / 時間帯分散</td><td>到着→バース着 -5分</td></tr>
+                <tr><td>大型コンテナ便の荷下時間長</td><td>専用ヤード設置 / 人員追加</td><td>荷下完了 -30分</td></tr>
+                <tr><td>札幌ロジ 温度確認時間長</td><td>事前温度ログ電子化</td><td>荷下開始 -10分</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-generic-stats.js?v=202605202324"></script>
+</body>
+</html>

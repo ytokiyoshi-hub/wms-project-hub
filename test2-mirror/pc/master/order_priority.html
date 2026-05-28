@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>受注優先度ルール — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>受注優先度ルール（S-28 ピック順位）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">受注の引当・ピック優先度（S-28）</div>
+          SLA期限の近さ・荷主重要度・締切超過リスクを総合スコア化。リスト上位から自動引当・ピック開始。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>優先度スコアリング</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">因子</th><th class="c-text">重み</th><th class="c-text">説明</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">SLA期限まで残時間</td><td class="text-accent c-text">×40</td><td class="c-text">残時間が短いほど高スコア</td></tr>
+                <tr><td class="c-text">荷主重要度</td><td class="c-text">×20</td><td class="c-text">A（最重要）/B/C/D</td></tr>
+                <tr><td class="c-text">金額</td><td class="c-text">×10</td><td class="c-text">大口は前倒し</td></tr>
+                <tr><td class="c-text">分納既発生</td><td class="text-alert c-text">×30</td><td class="c-text">過去に分納→今回は完納優先</td></tr>
+                <tr><td class="c-text">VIP顧客</td><td class="c-text">×20</td><td class="c-text">個別フラグ</td></tr>
+                <tr><td class="c-text">クール便</td><td class="c-text">×15</td><td class="c-text">時間制約あり</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日のリアルタイム優先度（出荷指示）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">順</th><th class="c-code">SO番号</th><th class="c-code">荷主</th><th class="c-text">スコア</th><th class="c-text">主要因</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1</td><td class="c-code">SO-26060104</td><td class="c-code">MK001</td><td class="text-alert c-text">98.5</td><td class="c-text">SLA残90分 + 分納既発生</td><td class="c-status"><span class="pill alert">即時着手</span></td></tr>
+                <tr><td class="c-text">2</td><td class="c-code">SO-26060108</td><td class="c-code">EC001</td><td class="c-text">82.0</td><td class="c-text">SLA残120分</td><td class="c-status"><span class="pill">高</span></td></tr>
+                <tr><td class="c-text">3</td><td class="c-code">SO-26060115</td><td class="c-code">MK001</td><td class="c-text">75.5</td><td class="c-text">SLA残180分</td><td class="c-status"><span class="pill">高</span></td></tr>
+                <tr><td class="c-text">4</td><td class="c-code">SO-26060125</td><td class="c-code">PR001</td><td class="c-text">68.0</td><td class="c-text">VIP顧客フラグ</td><td class="c-status"><span class="pill">中</span></td></tr>
+                <tr><td class="c-text">5</td><td class="c-code">SO-26060128</td><td class="c-code">AP001</td><td class="c-text">42.0</td><td class="c-text">SLA残4h</td><td class="c-status"><span class="pill">標準</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主重要度設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">重要度</th><th class="c-text">基準</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001 マルキ食品</td><td class="c-text"><span class="pill alert">A 最重要</span></td><td class="c-text">月¥1M超え / 食品で時間制約</td></tr>
+                <tr><td class="c-code">EC001 EC太郎</td><td class="c-text"><span class="pill accent">A 最重要</span></td><td class="c-text">月¥2.8M超え / EC即日</td></tr>
+                <tr><td class="c-code">AP001 アパレル</td><td class="c-text"><span class="pill">B 重要</span></td><td class="c-text">月¥1.5M / 翌日</td></tr>
+                <tr><td class="c-code">PR001 プレミアム流通</td><td class="c-text"><span class="pill">C 標準</span></td><td class="c-text">月¥0.8M</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

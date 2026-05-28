@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ピッカー個別評価 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">人員管理　/　<b>ピッカー個別評価（H-14 個人パフォーマンス）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ピッカー個別の評価指標（H-14）</div>
+          個人別のピック速度・誤ピック率・休憩取得率・ヒヤリハット報告数を統合評価。月次面談用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月 個別評価</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>氏名</th><th class="right">行/h</th><th class="right">誤ピック率</th><th class="right">出勤率</th><th class="right">休憩率</th><th>総合評価</th></tr></thead>
+              <tbody>
+                <tr><td>佐藤太郎</td><td class="right num text-accent">42.5</td><td class="right num text-accent">0.05%</td><td class="right num">100%</td><td class="right num">10%</td><td><span class="pill accent">A（優秀）</span></td></tr>
+                <tr><td>鈴木花子</td><td class="right num">35.2</td><td class="right num">0.18%</td><td class="right num">95%</td><td class="right num">11%</td><td><span class="pill accent">B（良好）</span></td></tr>
+                <tr><td>田中一郎</td><td class="right num">32.5</td><td class="right num">0.22%</td><td class="right num">100%</td><td class="right num">12%</td><td><span class="pill">B（良好）</span></td></tr>
+                <tr><td>山本健介</td><td class="right num">38.5</td><td class="right num text-accent">0.08%</td><td class="right num">100%</td><td class="right num">10%</td><td><span class="pill accent">A（優秀）</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>伊藤裕子</td><td class="right num text-alert">16.8</td><td class="right num text-alert">1.30%</td><td class="right num">82%</td><td class="right num">15%</td><td><span class="pill alert">D（要OJT）</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>佐藤太郎 詳細</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>過去6ヶ月平均</label><div class="text-mono text-accent" style="font-weight:600;">42.0 行/h</div></div>
+              <div class="field"><label>当月</label><div class="text-mono text-accent" style="font-weight:600;">42.5 行/h（+1.2%）</div></div>
+              <div class="field"><label>ヒヤリハット報告</label><div class="text-mono">2件（積極報告）</div></div>
+              <div class="field"><label>OJT指導</label><div class="text-mono">伊藤裕子の指導担当</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>伊藤裕子 改善計画</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>項目</th><th>現状</th><th>3ヶ月後目標</th><th>対策</th></tr></thead>
+              <tbody>
+                <tr><td>ピック速度</td><td class="num">16.8 行/h</td><td class="num">25.0 行/h</td><td>佐藤OJT継続</td></tr>
+                <tr><td>誤ピック率</td><td class="num text-alert">1.30%</td><td class="num">0.50%以下</td><td>HT 2回確認機能ON</td></tr>
+                <tr><td>出勤率</td><td class="num">82%</td><td class="num">95%</td><td>体調管理 / 上長面談</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>リリースノート — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.release-block { border-left:4px solid var(--c-accent); padding:14px 16px; margin-bottom:18px; background:#f9fafb; border-radius:0 6px 6px 0; }
+.release-block.minor { border-left-color:var(--c-text-sub); }
+.release-block h4 { margin:0 0 8px 0; font-size:15px; }
+.release-block h4 .ver { font-family:'Roboto Mono',monospace; color:var(--c-accent); margin-right:8px; }
+.release-block h4 .date { font-family:'Roboto Mono',monospace; color:var(--c-text-sub); font-size:12px; margin-left:8px; font-weight:400; }
+.release-block ul { margin:8px 0 0 0; padding-left:18px; font-size:13px; line-height:1.7; }
+.tag { display:inline-block; font-size:11px; padding:1px 8px; border-radius:10px; margin-right:6px; }
+.tag.feat { background:#e7f3ff; color:#0066cc; }
+.tag.fix { background:#fff3e0; color:#c25400; }
+.tag.break { background:#ffe6e6; color:#c00000; }
+.tag.improve { background:#e8f5e9; color:#2c9a4a; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ヘルプ　/　<b>リリースノート</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="note-box">
+        <div class="text-bold text-accent" style="margin-bottom:4px;">バージョン更新履歴</div>
+        新機能・改善・修正・破壊的変更を時系列で記録。Phase 1〜の主要機能進捗。
+      </div>
+
+      <div class="release-block">
+        <h4><span class="ver">v1.4.0</span> 出荷指示ボード追加 <span class="date">2026-06-01</span></h4>
+        <ul>
+          <li><span class="tag feat">FEAT</span>W-301-B 出荷指示ボード（カンバン表示）追加</li>
+          <li><span class="tag feat">FEAT</span>W-310 出荷締切タイマー</li>
+          <li><span class="tag improve">IMPROVE</span>サイドバー折りたたみ機能をlocalStorageで永続化</li>
+        </ul>
+      </div>
+
+      <div class="release-block">
+        <h4><span class="ver">v1.3.0</span> 在庫分析強化 <span class="date">2026-05-28</span></h4>
+        <ul>
+          <li><span class="tag feat">FEAT</span>Z-2 ABC分析画面</li>
+          <li><span class="tag feat">FEAT</span>Z-3 滞留在庫検出</li>
+          <li><span class="tag feat">FEAT</span>Q-3 スナップショット差分照合</li>
+          <li><span class="tag fix">FIX</span>FIFO引当でFEFOが優先されない不具合修正</li>
+        </ul>
+      </div>
+
+      <div class="release-block">
+        <h4><span class="ver">v1.2.0</span> HT忠実再現 <span class="date">2026-05-20</span></h4>
+        <ul>
+          <li><span class="tag feat">FEAT</span>KEYENCE BT-A2000 デバイスフレーム + 物理キーパッド</li>
+          <li><span class="tag feat">FEAT</span>HT-403 検品 / HT-406 棚入れ / HT-804 ピッキング / HT-1001 返品</li>
+          <li><span class="tag improve">IMPROVE</span>HT端末でのスキャン操作を /js/ht-keypad.js で統一化</li>
+        </ul>
+      </div>
+
+      <div class="release-block">
+        <h4><span class="ver">v1.1.0</span> 請求機能 <span class="date">2026-05-15</span></h4>
+        <ul>
+          <li><span class="tag feat">FEAT</span>3期制/2期制/坪貸し 請求方式</li>
+          <li><span class="tag feat">FEAT</span>B-6 請求差異対応</li>
+          <li><span class="tag break">BREAK</span>料金単価マスタの構造変更（owner_id + service_type）</li>
+        </ul>
+      </div>
+
+      <div class="release-block minor">
+        <h4><span class="ver">v1.0.0</span> Phase 1 リリース <span class="date">2026-05-01</span></h4>
+        <ul>
+          <li><span class="tag feat">FEAT</span>マスタ系 40画面 / 入荷 8画面 / 出荷 14画面 / 在庫 17画面</li>
+          <li><span class="tag feat">FEAT</span>4アンカー荷主（MK001/AP001/EC001/PR001）対応</li>
+          <li><span class="tag feat">FEAT</span>港8778 で起動 / SQLite データ永続化</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

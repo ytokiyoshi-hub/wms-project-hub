@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>保険マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>保険マスタ（S-46 倉庫保険・賠償）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">倉庫業者賠償責任保険等の管理（S-46）</div>
+          在庫評価額に対する保険補償・荷主への保証範囲・保険料按分を管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>加入保険一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">保険No</th><th class="c-text">種別</th><th class="c-text">保険会社</th><th class="c-text">補償上限</th><th class="c-text">保険料/年</th><th class="c-text">有効期間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">INS-001</td><td class="c-text"><span class="pill">倉庫業者賠償</span></td><td class="c-text">大手損害保険</td><td class="c-text">¥500,000,000</td><td class="c-text">¥1,800,000</td><td class="c-text">2026-04-01〜2027-03-31</td></tr>
+                <tr><td class="c-code">INS-002</td><td class="c-text"><span class="pill alert">火災保険</span></td><td class="c-text">大手損害保険</td><td class="c-text">¥1,000,000,000</td><td class="c-text">¥3,600,000</td><td class="c-text">2026-04-01〜2027-03-31</td></tr>
+                <tr><td class="c-code">INS-003</td><td class="c-text"><span class="pill">運送保険</span></td><td class="c-text">運送保険会社</td><td class="c-text">¥50,000,000/便</td><td class="c-text">¥1,200,000</td><td class="c-text">2026-04-01〜2027-03-31</td></tr>
+                <tr><td class="c-code">INS-004</td><td class="c-text"><span class="pill alert">サイバー</span></td><td class="c-text">サイバー保険専門</td><td class="c-text">¥100,000,000</td><td class="c-text">¥800,000</td><td class="c-text">2026-04-01〜2027-03-31</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 補償上限</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-num">現在在庫評価額</th><th class="c-text">補償範囲</th><th class="c-num">超過分</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-num">¥3,580,000</td><td class="text-accent c-text">¥100,000,000</td><td class="c-num">-</td><td class="c-text">余裕大</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-num">¥8,250,000</td><td class="text-accent c-text">¥100,000,000</td><td class="c-num">-</td><td class="c-text">余裕大</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-num">¥5,820,000</td><td class="text-accent c-text">¥100,000,000</td><td class="c-num">-</td><td class="c-text">余裕大</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-num">¥2,180,000</td><td class="text-accent c-text">¥50,000,000</td><td class="c-num">-</td><td class="c-text">VIP化粧品 / 保証強化</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去5年の保険請求実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">請求No</th><th class="c-date">発生日</th><th class="c-text">事案</th><th class="c-text">請求額</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">CLM-2022-01</td><td class="c-date">2022-08-15</td><td class="c-text">台風で倉庫一部浸水（在庫毀損）</td><td class="c-text">¥8,200,000</td><td class="c-status"><span class="pill accent">補償済</span></td></tr>
+                <tr><td class="c-code">CLM-2024-01</td><td class="c-date">2024-11-22</td><td class="c-text">運送中破損（VIP化粧品）</td><td class="c-text">¥1,500,000</td><td class="c-status"><span class="pill accent">補償済</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

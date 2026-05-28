@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>インシデント対応テンプレ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>インシデント対応テンプレ（S-36 災害・障害対応）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">災害・障害発生時の対応標準フロー（S-36）</div>
+          地震・停電・ITシステム障害・労務インシデント等の対応フォーマット。BCP対応の起点。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>インシデント分類</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-text">分類</th><th class="c-text">例</th><th class="c-text">緊急度</th><th class="c-text">テンプレ</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">INC-DSR</td><td class="c-text">災害</td><td class="c-text">地震・台風・水害</td><td class="c-text"><span class="pill alert">最高</span></td><td class="c-text">BCP-001</td></tr>
+                <tr><td class="c-code">INC-PWR</td><td class="c-text">停電</td><td class="c-text">計画停電・突発停電</td><td class="c-text"><span class="pill alert">高</span></td><td class="c-text">BCP-002</td></tr>
+                <tr><td class="c-code">INC-SYS</td><td class="c-text">システム障害</td><td class="c-text">WMS停止・DB障害</td><td class="c-text"><span class="pill alert">高</span></td><td class="c-text">BCP-003</td></tr>
+                <tr><td class="c-code">INC-FRE</td><td class="c-text">火災</td><td class="c-text">倉庫火災</td><td class="c-text"><span class="pill alert">最高</span></td><td class="c-text">BCP-004</td></tr>
+                <tr><td class="c-code">INC-LBR</td><td class="c-text">労務</td><td class="c-text">労災・ハラスメント</td><td class="c-text"><span class="pill">中</span></td><td class="c-text">BCP-005</td></tr>
+                <tr><td class="c-code">INC-SEC</td><td class="c-text">セキュリティ</td><td class="c-text">不正アクセス・情報漏洩</td><td class="c-text"><span class="pill alert">高</span></td><td class="c-text">BCP-006</td></tr>
+                <tr><td class="c-code">INC-PND</td><td class="c-text">感染症</td><td class="c-text">パンデミック対応</td><td class="c-text"><span class="pill">中</span></td><td class="c-text">BCP-007</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>INC-SYS（システム障害） 標準フロー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">順</th><th class="c-text">ステップ</th><th class="c-code">担当</th><th class="c-code">SLA</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1</td><td class="c-text">障害検知・確認</td><td class="c-code">システム管理者</td><td class="c-code">即時</td></tr>
+                <tr><td class="c-text">2</td><td class="c-text">本社・営業部長へ第一報</td><td class="c-code">システム管理者</td><td class="c-code">15分以内</td></tr>
+                <tr><td class="c-text">3</td><td class="c-text">関係荷主への第一報（影響あれば）</td><td class="c-code">営業</td><td class="c-code">30分以内</td></tr>
+                <tr><td class="c-text">4</td><td class="c-text">外部委託保守へエスカレ</td><td class="c-code">システム管理者</td><td class="c-code">30分以内</td></tr>
+                <tr><td class="c-text">5</td><td class="c-text">手動運用（紙運用）へ切替</td><td class="c-code">マネージャー</td><td class="c-code">1時間以内</td></tr>
+                <tr><td class="c-text">6</td><td class="c-text">復旧作業・進捗共有</td><td class="c-code">システム管理者</td><td class="c-code">2時間毎</td></tr>
+                <tr><td class="c-text">7</td><td class="c-text">復旧確認・通常運用復帰</td><td class="c-code">マネージャー</td><td class="c-code">復旧後</td></tr>
+                <tr><td class="c-text">8</td><td class="c-text">事後報告書作成</td><td class="c-code">システム管理者</td><td class="c-code">5営業日以内</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去のインシデント記録</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">事案No</th><th class="c-date">発生日</th><th class="c-text">分類</th><th class="c-text">概要</th><th class="c-num">解消時間</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">INC-2025-08</td><td class="c-date">2025-08-22</td><td class="c-text">INC-PWR</td><td class="c-text">関東圏停電（30分）</td><td class="c-num">45分</td><td class="c-status"><span class="pill accent">解消・報告書済</span></td></tr>
+                <tr><td class="c-code">INC-2025-11</td><td class="c-date">2025-11-15</td><td class="c-text">INC-SYS</td><td class="c-text">EDI連携DBロック</td><td class="c-num">2時間</td><td class="c-status"><span class="pill accent">解消・報告書済</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

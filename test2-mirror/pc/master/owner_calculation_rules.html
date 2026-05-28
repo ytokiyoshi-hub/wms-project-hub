@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主計算ルール — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主計算ルール（B-19 個別計算式）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別の特殊計算ルール（B-19）</div>
+          標準計算とは異なる荷主独自の計算式（端数処理 / 端日按分 / 控除）を管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>計算ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ルールID</th><th class="c-code">荷主</th><th class="c-text">項目</th><th class="c-text">計算式</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">CR-MK-01</td><td class="c-code">MK001</td><td class="c-text">3期制端数処理</td><td class="c-text">各期 ROUND_UP（PCS×日×単価）/円単位</td></tr>
+                <tr><td class="c-text">CR-AP-01</td><td class="c-code">AP001</td><td class="c-text">坪貸し端日按分</td><td class="c-text">月初/月末入退去は 日数 ÷ 月日数 で按分</td></tr>
+                <tr><td class="c-text">CR-EC-01</td><td class="c-code">EC001</td><td class="c-text">階段料金端数</td><td class="c-text">各Tier ROUND（円単位、切り捨て）</td></tr>
+                <tr><td class="c-text">CR-EC-02</td><td class="c-code">EC001</td><td class="c-text">欠品手数料控除</td><td class="c-text">引当失敗1件あたり -¥1,000</td></tr>
+                <tr><td class="c-text">CR-PR-01</td><td class="c-code">PR001</td><td class="c-text">VIP割増</td><td class="c-text">VIP顧客向け出荷は +20%</td></tr>
+                <tr><td class="c-text">CR-ALL-01</td><td class="c-code">全荷主</td><td class="c-text">消費税</td><td class="c-text">10%（軽減税率8%対応：食品ロットフラグで判定）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>計算例（MK001 3期制）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">計算</th><th class="c-status">結果</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">第1期 最大在庫</td><td class="c-text">8,540 PCS</td><td class="c-status">8,540</td></tr>
+                <tr><td class="c-text">第1期 日数</td><td class="c-text">10日</td><td class="c-status">10</td></tr>
+                <tr><td class="c-text">単価</td><td class="c-text">¥0.85/PCS×日</td><td class="c-status">¥0.85</td></tr>
+                <tr><td class="c-text">計算前金額</td><td class="c-text">8,540 × 10 × 0.85</td><td class="c-status">¥72,590</td></tr>
+                <tr><td class="c-text">端数処理（ROUND_UP 円単位）</td><td class="c-text">CR-MK-01 適用</td><td class="text-accent c-status">¥72,590</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>計算ルール監査ログ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">変更日</th><th class="c-text">ルール</th><th class="c-text">変更内容</th><th class="c-text">変更者</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2026-04-01</td><td class="c-text">CR-EC-02</td><td class="c-text">欠品手数料 -¥800 → -¥1,000</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-text">2025-12-15</td><td class="c-text">CR-AP-01</td><td class="c-text">坪貸し端日按分ルール新設</td><td class="c-text">マネージャー</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>損失サマリ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>損失サマリ（Q-34 ロス分析）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">在庫ロス・損失の集計（Q-34）</div>
+          盗難 / 破損 / 廃棄 / 紛失 / 棚卸差異等の損失を分類集計。改善KPIにも利用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月損失サマリ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">分類</th><th class="c-num">件数</th><th class="c-num">数量</th><th class="c-text">損失額</th><th class="c-text">責任</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">期限切れ廃棄</td><td class="c-num">3</td><td class="c-num">42 PCS</td><td class="c-text">¥28,800</td><td class="c-text">荷主</td></tr>
+                <tr><td class="c-text">運送中破損</td><td class="c-num">2</td><td class="c-num">3 PCS</td><td class="c-text">¥820,000</td><td class="c-text">運送会社（保険請求中）</td></tr>
+                <tr><td class="c-text">WMS破損</td><td class="c-num">1</td><td class="c-num">1 PCS</td><td class="c-text">¥18,200</td><td class="c-text">WMS（賠償済）</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">棚卸差異（要因不明）</td><td class="c-num">1</td><td class="c-num">3 PCS</td><td class="c-text">¥3,200</td><td class="c-text">調査中</td></tr>
+                <tr><td class="c-text">サンプル提供未記録</td><td class="c-num">1</td><td class="c-num">2 PCS</td><td class="c-text">¥4,500</td><td class="c-text">マスタ修正</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去6ヶ月 推移</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">月</th><th class="c-text">損失額</th><th class="c-text">対売上比</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2025-12</td><td class="c-text">¥185,000</td><td class="c-text">0.85%</td></tr>
+                <tr><td class="c-text">2026-01</td><td class="c-text">¥98,000</td><td class="c-text">0.52%</td></tr>
+                <tr><td class="c-text">2026-02</td><td class="c-text">¥125,000</td><td class="c-text">0.62%</td></tr>
+                <tr><td class="c-text">2026-03</td><td class="c-text">¥82,000</td><td class="c-text">0.45%</td></tr>
+                <tr><td class="c-text">2026-04</td><td class="c-text">¥218,000</td><td class="c-text">1.08%</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">2026-05</td><td class="text-alert c-text">¥874,700</td><td class="text-alert c-text">4.10%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月損失額の主要因</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">事案</th><th class="c-num">金額</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">CLM-2026-01 運送中破損（VIP化粧品）</td><td class="text-alert c-num">¥820,000</td><td class="c-text">保険査定中（補償見込み）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

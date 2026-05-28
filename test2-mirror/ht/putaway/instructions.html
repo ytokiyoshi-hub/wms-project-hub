@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT-406-1 棚入れ：指示確認 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-406 棚入れ作業</h1>
+<p class="subtitle">棚入れ指示に従いロケコードをスキャンして在庫加算 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/inspect/asn.html"><b>HT-403-1</b>ASN選択</a>
+  <a href="/ht/inspect/scan.html"><b>HT-403-2</b>スキャン</a>
+  <a href="/ht/inspect/done.html"><b>HT-403-3</b>完了</a>
+  <a href="/ht/putaway/instructions.html" class="active"><b>HT-406-1</b>棚入れ指示</a>
+  <a href="/ht/putaway/location.html"><b>HT-406-2</b>ロケスキャン</a>
+  <a href="/ht/putaway/done.html"><b>HT-406-3</b>棚入れ完了</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WMS-HT v0.2</span><span id="clock">--:-- ████</span></div>
+      <div class="ht-header">
+        <span>棚入れ：指示確認</span>
+        <span class="scr-id">SCR-406-1</span>
+      </div>
+      <div class="ht-body">
+        <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">棚入れ指示</div>
+        <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent); margin-bottom:8px;" id="put-no">PUT-...</div>
+
+        <div style="border:1px solid var(--c-line); padding:8px; background:var(--c-base);">
+          <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent);" id="sku-code">-</div>
+          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="sku-name">読込中</div>
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">ロット: <span id="lot-no" style="font-family:var(--f-mono);">-</span></div>
+
+          <div style="height:1px; background:var(--c-line); margin:6px 0;"></div>
+
+          <div style="font-size:9px; color:var(--c-text-sub);">数量: <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-text); font-size:11px;" id="put-qty">- ケース</span></div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:6px;">棚入れ先:</div>
+          <div style="border:1px solid var(--c-accent); padding:6px; text-align:center; margin-top:4px; background:var(--c-accent-lt);">
+            <div style="font-size:18px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent); letter-spacing:2px;" id="put-loc">-</div>
+          </div>
+
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:6px;">ロケ方式: <span style="color:var(--c-text);">推奨ロケ</span></div>
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-mute);">荷主: <span id="put-owner">-</span></div>
+
+        <div style="background:#1a1c22; color:#ffd966; text-align:center; padding:6px; font-size:9px; font-family:var(--f-mono); margin-top:auto;">▼ 商品バーコードをスキャン</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl" onclick="history.back()"><span class="fn">F1</span>戻る</div>
+        <div class="key-lbl"><span class="fn">F2</span>指示一覧</div>
+        <div class="key-lbl primary" onclick="location.href='/ht/putaway/location.html'"><span class="fn">F3</span>確認</div>
+        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F4</span>メニュー</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+        <div class="pkey scan" onclick="location.href='/ht/putaway/location.html'">SCAN</div>
+        <div class="pkey f1" onclick="location.href='/ht/putaway/location.html'">F3</div><div class="pkey f1">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-num-grid">
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+        </div>
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-406-1</span>棚入れ STEP1
+  <div class="desc-text">指示内容を確認して商品バーコードをスキャンしてください</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} ████`; };
+setClock(); setInterval(setClock, 30000);
+
+// 棚入れ先のデフォルトマップ（SKU → 推奨ロケ。棚入れシナリオで使う）
+const PUTAWAY_LOC_MAP = {
+  'SKU-MK001-001': '3AP-02-001',
+  'SKU-MK001-002': '3AT-01-001',
+  'SKU-MK001-003': '4AC-01-001',
+  'SKU-AP001-001': '3BT-01-001',
+  'SKU-AP001-002': '3BT-01-002',
+  'SKU-EC001-001': '4FE-01-001',
+};
+
+(async () => {
+  const today = new Date().toISOString().slice(2,10).replace(/-/g,'');
+  document.getElementById('put-no').textContent = `PUT-${today}-001`;
+  try {
+    const pending = await fetch('/api/putaway/pending').then(r => r.json());
+    const items = pending || [];
+    if (items.length === 0) {
+      document.getElementById('sku-code').textContent = '棚入れ対象なし';
+      document.getElementById('sku-name').textContent = '検品未済のため';
+      return;
+    }
+    // 先頭の inspected line を対象に
+    const item = items[0];
+    document.getElementById('sku-code').textContent = item.product_code;
+    document.getElementById('sku-name').textContent = item.product_name || item.product_code;
+    document.getElementById('put-qty').textContent = `${item.inspected_qty} ケース`;
+    document.getElementById('put-owner').textContent = item.owner_code || '-';
+    document.getElementById('lot-no').textContent = item.lot_no || '(なし)';
+    const recoLoc = PUTAWAY_LOC_MAP[item.product_code] || '3AP-02-001';
+    document.getElementById('put-loc').textContent = recoLoc;
+    // 次画面に引き渡し
+    sessionStorage.setItem('put_line_id', String(item.id));
+    sessionStorage.setItem('put_target_sku', item.product_code);
+    sessionStorage.setItem('put_target_qty', String(item.inspected_qty));
+    sessionStorage.setItem('put_target_loc', recoLoc);
+    sessionStorage.setItem('put_pending_total', String(items.length));
+  } catch (e) {
+    document.getElementById('sku-name').textContent = `読込失敗: ${e.message}`;
+  }
+})();
+</script>
+</body>
+</html>

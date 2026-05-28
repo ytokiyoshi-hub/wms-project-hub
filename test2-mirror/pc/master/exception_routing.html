@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>例外エスカレ設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>例外エスカレ設定（A-7 通知ルーティング）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">例外×経過時間 → エスカレ先（A-7）</div>
+          例外発生から無対応で何分経過したらどこに通知するか、段階的エスカレ設定を定義。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>例外種別×エスカレ階段</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">例外種別</th><th class="c-text">初回</th><th class="c-num">+15分</th><th class="c-num">+30分</th><th class="c-num">+60分</th><th class="c-num">+120分</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text"><span class="pill alert">引当失敗</span></td><td class="c-text">担当ピッカー</td><td class="c-num">現場リーダー</td><td class="c-num">マネージャー</td><td class="c-num">営業 + 荷主</td><td class="c-num">営業部長</td></tr>
+                <tr><td class="c-text"><span class="pill alert">配送不可</span></td><td class="c-text">マネージャー</td><td class="c-num">営業 + 顧客サポート</td><td class="c-num">営業部長</td><td class="c-num">本社</td><td class="c-num">-</td></tr>
+                <tr><td class="c-text"><span class="pill alert">出荷止め</span></td><td class="c-text">QA + 担当</td><td class="c-num">マネージャー</td><td class="c-num">荷主</td><td class="c-num">営業</td><td class="c-num">-</td></tr>
+                <tr><td class="c-text"><span class="pill alert">温度逸脱</span></td><td class="c-text">QA + マネージャー（即時）</td><td class="c-num">営業 + 荷主</td><td class="c-num">本社</td><td class="c-num">-</td><td class="c-num">-</td></tr>
+                <tr><td class="c-text"><span class="pill alert">EDI連携失敗</span></td><td class="c-text">システム管理者</td><td class="c-num">マネージャー</td><td class="c-num">外部委託保守</td><td class="c-num">-</td><td class="c-num">-</td></tr>
+                <tr><td class="c-text"><span class="pill alert">SLA超過</span></td><td class="c-text">担当 + 現場リーダー</td><td class="c-num">マネージャー</td><td class="c-num">営業</td><td class="c-num">営業部長</td><td class="c-num">本社</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>通知チャネル設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">受信者</th><th class="c-num">営業時間内</th><th class="c-num">営業時間外（22-06時）</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">担当ピッカー</td><td class="c-num">HT 画面通知</td><td class="c-num">受信せず</td></tr>
+                <tr><td class="c-text">現場リーダー</td><td class="c-num">メール + LINE</td><td class="c-num">LINE のみ</td></tr>
+                <tr><td class="c-text">マネージャー</td><td class="c-num">メール + LINE</td><td class="c-num">メール + LINE + SMS</td></tr>
+                <tr><td class="c-text">営業</td><td class="c-num">メール + LINE</td><td class="c-num">メール</td></tr>
+                <tr><td class="c-text">営業部長</td><td class="c-num">メール + LINE</td><td class="c-num">メール + SMS（緊急のみ）</td></tr>
+                <tr><td class="c-text">本社</td><td class="c-num">メール</td><td class="c-num">メール</td></tr>
+                <tr><td class="c-text">システム管理者</td><td class="c-num">Slack + メール</td><td class="c-num">Slack + メール + SMS</td></tr>
+                <tr><td class="c-text">外部委託保守</td><td class="c-num">電話 + メール</td><td class="c-num">電話 + メール</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>エスカレ発動実績（直近30日）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>初回発動</label><div class="text-mono" style="font-weight:600;">85件</div></div>
+              <div class="field"><label>1段階エスカレ</label><div class="text-mono" style="font-weight:600;">28件</div></div>
+              <div class="field"><label>2段階エスカレ</label><div class="text-mono text-alert" style="font-weight:600;">8件</div></div>
+              <div class="field"><label>本社まで到達</label><div class="text-mono text-alert" style="font-weight:600;">2件</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

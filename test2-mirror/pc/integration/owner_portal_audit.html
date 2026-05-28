@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主ポータルアクセス監査 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>荷主ポータルアクセス監査（A-15 荷主ログ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主ユーザーのポータルアクセス全件記録（A-15）</div>
+          荷主の担当者が自社情報のみアクセスしていることを監査。他荷主データ閲覧の検知。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月の荷主アクセス統計</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-num">アクセス回数</th><th class="c-code">ユニークユーザー</th><th class="c-text">ダウンロード</th><th class="c-text">不正検知</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-num">820</td><td class="c-code">3</td><td class="c-text">42</td><td class="text-accent c-text">0</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-num">425</td><td class="c-code">2</td><td class="c-text">28</td><td class="text-accent c-text">0</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-num">12,420</td><td class="c-code">8</td><td class="c-text">680</td><td class="text-accent c-text">0</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-num">120</td><td class="c-code">2</td><td class="c-text">8</td><td class="text-accent c-text">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>不正アクセス検知（過去30日）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日時</th><th class="c-code">ユーザー</th><th class="c-text">事象</th><th class="c-text">処置</th></tr></thead>
+              <tbody>>
+                <tr><td colspan="4" style="text-align:center; color:var(--c-text-sub);">検知件数: 0（全件適正アクセス）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>監査チェック項目</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">説明</th><th class="c-text">実装</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">他荷主データ閲覧試行</td><td class="c-text">URL書換・パラメータ操作</td><td class="c-text"><span class="pill accent">検知</span></td></tr>
+                <tr><td class="c-text">大量データ一括取得</td><td class="c-text">1分間に10,000件超</td><td class="c-text"><span class="pill accent">検知</span></td></tr>
+                <tr><td class="c-text">異常時間帯アクセス</td><td class="c-text">02:00〜04:00（メンテ時間）</td><td class="c-text"><span class="pill accent">記録</span></td></tr>
+                <tr><td class="c-text">連続失敗ログイン</td><td class="c-text">5回連続失敗</td><td class="c-text"><span class="pill accent">アカウントロック</span></td></tr>
+                <tr><td class="c-text">未承認IPからのAPI</td><td class="c-text">許可IP外</td><td class="c-text"><span class="pill accent">403拒否</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

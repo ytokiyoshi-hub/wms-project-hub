@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主物量割引 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主物量割引（B-16 年間契約割引）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">年間取引額に応じた追加割引（B-16）</div>
+          Tier料金とは別軸で、年間取引額の閾値超過時に追加割引を適用。営業戦略のインセンティブ。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 年間割引設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">年間閾値</th><th class="c-text">追加割引</th><th class="c-text">現在年累計</th><th class="c-num">達成率</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">¥10,000,000</td><td class="text-accent c-text">-2%</td><td class="c-text">¥8,420,000</td><td class="c-num">84.2%</td><td class="c-status"><span class="pill">未達成（年度内予測達成）</span></td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">¥15,000,000</td><td class="text-accent c-text">-3%</td><td class="c-text">¥12,580,000</td><td class="c-num">83.9%</td><td class="c-status"><span class="pill">未達成（達成見込み）</span></td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">¥25,000,000</td><td class="text-accent c-text">-5%</td><td class="text-accent c-text">¥28,420,000</td><td class="text-accent c-num">113.7%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-text">¥8,000,000</td><td class="text-accent c-text">-2%</td><td class="c-text">¥6,820,000</td><td class="c-num">85.3%</td><td class="c-status"><span class="pill">未達成（達成見込み）</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>EC001 適用割引</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>年間取引額（YTD）</label><div class="text-mono text-accent" style="font-weight:600;">¥28,420,000</div></div>
+              <div class="field"><label>閾値超過</label><div class="text-mono">¥3,420,000</div></div>
+              <div class="field"><label>追加割引率</label><div class="text-mono text-accent" style="font-weight:600;">-5%</div></div>
+              <div class="field"><label>当月控除額</label><div class="text-mono text-accent" style="font-weight:600;">¥142,000</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去3年実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">年度</th><th class="c-text">EC001 取引額</th><th class="c-text">適用割引</th><th class="c-text">追加割引額</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2023</td><td class="c-text">¥22,000,000</td><td class="c-text">適用なし</td><td class="c-text">¥0</td></tr>
+                <tr><td class="c-text">2024</td><td class="c-text">¥28,000,000</td><td class="text-accent c-text">-3%</td><td class="c-text">¥90,000</td></tr>
+                <tr><td class="c-text">2025</td><td class="c-text">¥34,000,000</td><td class="text-accent c-text">-5%</td><td class="c-text">¥450,000</td></tr>
+                <tr><td class="c-text">2026 YTD</td><td class="c-text">¥28,420,000</td><td class="text-accent c-text">-5%</td><td class="c-text">¥142,000（進行中）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

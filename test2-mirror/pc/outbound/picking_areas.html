@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>エリア進捗 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>エリア進捗（C-2/C-3）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card">
+          <div class="card-header"><span>本日のエリア別進捗</span><span class="meta">12 ウェーブ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-text">エリア</th><th class="c-text">方式</th><th class="c-code">担当</th><th class="c-text">割当</th><th class="c-text">完了</th><th class="c-text">進捗</th><th class="c-text">締切</th><th class="c-status">状態</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1F常温</td><td class="c-text">並行</td><td class="c-code">田中、佐藤</td><td class="c-text">22</td><td class="c-text">13</td><td class="c-text"><div style="display:flex; align-items:center; gap:6px;"><div style="width:120px; height:8px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:59%;"></div></div><span class="text-mono">59%</span></div></td><td class="c-text">15:00</td><td class="c-status"><span class="pill accent">進行中</span></td></tr>
+                <tr><td class="c-text">2F常温</td><td class="c-text">並行</td><td class="c-code">鈴木</td><td class="c-text">8</td><td class="c-text">8</td><td class="c-text"><div style="display:flex; align-items:center; gap:6px;"><div style="width:120px; height:8px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:100%;"></div></div><span class="text-mono accent">100%</span></div></td><td class="c-text">15:00</td><td class="c-status"><span class="pill accent">完了</span></td></tr>
+                <tr><td class="c-text">3F常温</td><td class="c-text">リレー</td><td class="c-code">渡辺→伊藤</td><td class="c-text">15</td><td class="c-text">9</td><td class="c-text"><div style="display:flex; align-items:center; gap:6px;"><div style="width:120px; height:8px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:60%;"></div></div><span class="text-mono">60%</span></div></td><td class="c-text">17:00</td><td class="c-status"><span class="pill accent">進行中</span></td></tr>
+                <tr><td class="c-text">冷蔵</td><td class="c-text">並行</td><td class="c-code">高橋</td><td class="c-text">3</td><td class="c-text">0</td><td class="c-text"><div style="display:flex; align-items:center; gap:6px;"><div style="width:120px; height:8px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:0%;"></div></div><span class="text-mono">0%</span></div></td><td class="c-text">15:00</td><td class="c-status"><span class="pill alert">未着手</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>応援要請</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">要請エリア</th><th class="c-text">理由</th><th class="c-num">必要人数</th><th class="c-status">状態</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">冷蔵エリア</td><td class="c-text">1人で3指示・残時間2h・厳しい</td><td class="c-num">+1名</td><td class="c-status"><span class="pill alert">対応必要</span></td><td class="c-action"><button class="btn primary sm" onclick="alert('「応援割当」モック動作（実装は後続フェーズ）')">応援割当</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

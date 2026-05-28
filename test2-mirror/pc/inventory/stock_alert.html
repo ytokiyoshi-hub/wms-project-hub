@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫アラート設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>在庫アラート設定（Q-15 監視ルール）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">在庫数・期限・滞留に関する監視ルール（Q-15）</div>
+          SKU別／カテゴリ別に閾値を設定。日次バッチでチェック→該当時にアラート発報。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>アラートルール一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ルール名</th><th class="c-num">条件</th><th class="c-text">対象</th><th class="c-text">通知先</th><th class="c-text">頻度</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">低在庫</td><td class="c-num">在庫 ≤ 安全在庫</td><td class="c-text">全SKU</td><td class="c-text">現場リーダー</td><td class="c-text">日次06:00</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">賞味期限切迫</td><td class="c-num">残14日以内</td><td class="c-text">食品全SKU</td><td class="c-text">QA + 荷主</td><td class="c-text">日次06:00</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">賞味期限間近（重大）</td><td class="c-num">残3日以内</td><td class="c-text">食品全SKU</td><td class="c-text">QA + マネージャー + 荷主</td><td class="c-text">日次06:00 + 即時</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">滞留検知</td><td class="c-num">出荷ゼロ90日以上</td><td class="c-text">全SKU</td><td class="c-text">荷主担当</td><td class="c-text">週次（月）</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">異常出荷量</td><td class="c-num">過去7日平均×3倍超</td><td class="c-text">全SKU</td><td class="c-text">マネージャー</td><td class="c-text">日次18:00</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">ロット止め近接</td><td class="c-num">出荷止めロット引当抽出</td><td class="c-text">全SKU</td><td class="c-text">QA</td><td class="c-text">即時</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">温度逸脱</td><td class="c-num">センサー値が閾値超え</td><td class="c-text">冷蔵/冷凍</td><td class="c-text">QA + マネージャー</td><td class="c-text">即時</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月アラート発生件数</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ルール</th><th class="c-num">発生件数</th><th class="c-num">解消件数</th><th class="c-text">残対応</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">低在庫</td><td class="c-num">28</td><td class="c-num">26</td><td class="text-alert c-text">2</td></tr>
+                <tr><td class="c-text">賞味期限切迫</td><td class="c-num">12</td><td class="c-num">8</td><td class="c-text">4</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">賞味期限間近（重大）</td><td class="c-num">3</td><td class="c-num">2</td><td class="text-alert c-text">1</td></tr>
+                <tr><td class="c-text">滞留検知</td><td class="c-num">5</td><td class="c-num">3</td><td class="c-text">2</td></tr>
+                <tr><td class="c-text">異常出荷量</td><td class="c-num">8</td><td class="c-num">8</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">温度逸脱</td><td class="c-num">3</td><td class="c-num">3</td><td class="c-text">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「今すぐ全ルール実行」モック動作（実装は後続フェーズ）')">今すぐ全ルール実行</button>
+          <button class="btn primary" onclick="alert('「+ ルール追加」モック動作（実装は後続フェーズ）')">+ ルール追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLA指標定義 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>SLA指標定義（S-55 計測式）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">SLA指標の計測式定義（S-55）</div>
+          各SLA指標の母数・分子・除外条件を明確に定義。荷主との誤解を防ぐドキュメント。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>指標定義</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">指標</th><th class="c-text">分子</th><th class="c-num">母数</th><th class="c-text">除外</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">当日出荷達成率</td><td class="c-text">SLA時間内に出荷完了したSO</td><td class="c-num">当日出荷対象SO</td><td class="c-text">キャンセル・分納（後送分）</td></tr>
+                <tr><td class="c-text">翌日出荷達成率</td><td class="c-text">翌日13:30便で出荷完了したSO</td><td class="c-num">翌日出荷対象SO</td><td class="c-text">キャンセル・天候障害</td></tr>
+                <tr><td class="c-text">誤出荷率</td><td class="c-text">顧客クレーム確定の誤出荷件数</td><td class="c-num">出荷総件数</td><td class="c-text">顧客誤注文起因</td></tr>
+                <tr><td class="c-text">誤梱包率</td><td class="c-text">抜き取り検品で発覚した誤梱包</td><td class="c-num">抜き取り検品件数</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">差異対応SLA</td><td class="c-text">検知から24h以内に荷主回答</td><td class="c-num">差異検出件数</td><td class="c-text">荷主側回答待ち超過</td></tr>
+                <tr><td class="c-text">欠品率</td><td class="c-text">引当失敗で分納or取消</td><td class="c-num">受注件数</td><td class="c-text">顧客都合キャンセル</td></tr>
+                <tr><td class="c-text">在庫精度</td><td class="c-text">カウント一致SKU数</td><td class="c-num">カウント対象SKU数</td><td class="c-text">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>除外条件の詳細</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-num">除外条件</th><th class="c-text">説明</th><th class="c-text">適用例</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-num">天候障害</td><td class="c-text">気象庁警報レベル以上</td><td class="c-text">台風 / 大雪</td></tr>
+                <tr><td class="c-num">運送会社障害</td><td class="c-text">運送会社申告書類あり</td><td class="c-text">大規模システム障害</td></tr>
+                <tr><td class="c-num">不可抗力</td><td class="c-text">地震・火災等</td><td class="c-text">BCP対応中</td></tr>
+                <tr><td class="c-num">荷主側遅延</td><td class="c-text">仕入先入荷遅延起因</td><td class="c-text">ASN到着大幅遅延</td></tr>
+                <tr><td class="c-num">システムメンテ</td><td class="c-text">事前告知済メンテ時間</td><td class="c-text">03:00-04:00定例</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>レポート出力</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>レポート種別</label><select><option>月次SLAレポート</option><option>四半期サマリ</option></select></div>
+              <div class="field"><label>対象荷主</label><select><option>全荷主</option></select></div>
+              <div class="field"><label>含める指標</label><div class="text-mono">全指標</div></div>
+              <div class="field"><label>操作</label><div><button class="btn small primary" onclick="alert('「PDFエクスポート」モック動作（実装は後続フェーズ）')">PDFエクスポート</button></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

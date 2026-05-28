@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="hide-from-nav" content="true">
+<title>③登録フォーム 見本 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+/* 見せ方B: 強弱 / 色は要対応のみ */
+.form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+.form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+.required-mark { color:var(--c-alert); margin-left:2px; font-weight:700; }
+.help-note { font-size:11px; color:#9ca3af; margin-top:4px; }
+.bar-actions { position:sticky; bottom:0; background:#fff; border-top:1px solid var(--c-line); padding:10px 14px; margin:14px -14px -14px -14px; display:flex; gap:8px; justify-content:flex-end; }
+/* 右ペイン: 業務情報パネル */
+.summary-row { display:flex; padding:7px 12px; border-top:1px solid var(--c-line); align-items:center; font-size:12px; }
+.summary-row:first-child { border-top:none; }
+.summary-row .lbl { color:#6b7280; }
+.summary-row .val { margin-left:auto; font-family:var(--f-mono); font-weight:600; font-size:13px; color:#374151; }
+.summary-row .val.accent { color:var(--c-accent); }
+.summary-row .val.mute { color:#9ca3af; }
+.summary-row .val.alert { color:var(--c-alert); }
+.recent-row { padding:5px 12px; border-top:1px dashed var(--c-line); font-size:11px; }
+.recent-row:first-child { border-top:none; }
+.recent-row .top { display:flex; gap:8px; align-items:center; }
+.recent-row .code { font-family:var(--f-mono); color:#374151; font-weight:500; }
+.recent-row .name { color:#6b7280; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.recent-row .when { margin-left:auto; font-family:var(--f-mono); color:#9ca3af; font-size:10px; }
+.related-note { padding:8px 12px; font-size:11px; color:#6b7280; border-top:1px solid var(--c-line); }
+.related-note .key { font-family:var(--f-mono); color:#374151; font-weight:500; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">
+        <a href="/pc/format-samples/index.html" style="color:var(--c-accent); text-decoration:none;">📐 フォーマット見本</a>
+        <span style="color:var(--c-line-dk); margin:0 6px;">/</span>
+        <b>③ 登録フォーム 見本</b>
+        <span class="badge">フォーム型</span>
+      </div>
+    </div>
+    <div class="content">
+
+      <div class="two-pane">
+
+        <!-- 左ペイン: フォーム本体 -->
+        <div class="left-pane">
+
+          <div class="card">
+            <div class="card-header"><span>① ヘッダ情報</span><span class="meta" style="font-size:11px; color:#9ca3af;">必須項目: 荷主 / 予定日</span></div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="field">
+                  <label>荷主<span class="required-mark">*</span></label>
+                  <select id="f-owner"><option value="">選択してください</option><option value="MK001">MK001 まるか食品</option><option value="AP001">AP001 アパレル太郎</option></select>
+                  <div class="help-note">どの荷主の入荷かを選択</div>
+                </div>
+                <div class="field">
+                  <label>入荷種別</label>
+                  <select id="f-type"><option value="normal">通常入荷</option><option value="return">返品入荷</option></select>
+                  <div class="help-note">返品の場合は RMA番号 自動採番</div>
+                </div>
+                <div class="field">
+                  <label>予定日<span class="required-mark">*</span></label>
+                  <input type="date" id="f-date">
+                  <div class="help-note">既定値=翌日</div>
+                </div>
+                <div class="field">
+                  <label>ASN番号</label>
+                  <input id="f-asn" placeholder="ASN-XXXXXX">
+                  <div class="help-note">事前通知 ASN を入力 (任意)</div>
+                </div>
+              </div>
+              <div class="form-row" style="margin-top:14px;">
+                <div class="field" style="grid-column:span 2;"><label>仕入先</label><input id="f-supplier" placeholder="例: 関東食品㈱"></div>
+                <div class="field" style="grid-column:span 2;"><label>備考</label><input id="f-note" placeholder="任意"></div>
+              </div>
+              <div class="form-row" style="margin-top:14px;">
+                <div class="field"><label>温度帯</label><select id="f-temp"><option>常温</option><option>冷蔵</option><option>冷凍</option></select></div>
+                <div class="field"><label>到着予定時刻</label><input type="time" id="f-time"></div>
+                <div class="field">
+                  <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" id="f-urgent"> 緊急扱い</label>
+                  <div class="help-note">優先順位を上げる</div>
+                </div>
+                <div class="field">
+                  <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" id="f-notify"> 入荷時に通知</label>
+                  <div class="help-note">該当ユーザにメール送信</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>② 明細</span><button class="btn sm primary" onclick="addLine()">+ 行追加</button></div>
+            <div class="card-body flush">
+              <table class="list list-full">
+                <thead><tr>
+                  <th class="c-num">No</th>
+                  <th class="c-code">商品コード<span class="required-mark">*</span></th>
+                  <th class="c-text">商品名</th>
+                  <th class="c-num">予定数<span class="required-mark">*</span></th>
+                  <th class="c-code">単位</th>
+                  <th class="c-code">ロット</th>
+                  <th class="c-action">削除</th>
+                </tr></thead>
+                <tbody id="tb-lines"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>③ 確認 → 登録</span></div>
+            <div class="card-body">
+              <div style="background:var(--c-bg); padding:10px; border:1px solid var(--c-line); font-size:12px; color:var(--c-text-sub);">
+                「登録」を押すと、確認ダイアログ → POST → 成功時に一覧へ自動遷移。失敗時はエラーメッセージを表示。
+              </div>
+              <div class="bar-actions">
+                <button class="btn" onclick="alert('キャンセル モック動作')">キャンセル</button>
+                <button class="btn primary" onclick="alert('登録 モック動作')">登録</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右ペイン: 業務情報パネル -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>入力中のサマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">リアルタイム反映</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">明細行数</span><span class="val accent" id="sum-lines">0行</span></div>
+              <div class="summary-row"><span class="lbl">予定数合計</span><span class="val" id="sum-qty">0</span></div>
+              <div class="summary-row"><span class="lbl">必須項目</span><span class="val alert" id="sum-required">未入力 2件</span></div>
+              <div class="summary-row"><span class="lbl">バリデーション</span><span class="val mute" id="sum-validation">未実行</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:11px; color:#9ca3af;">選択中の荷主</span></div>
+            <div class="related-note">
+              <div class="key">MK001 まるか食品</div>
+              <div style="margin-top:4px;">直近30日の入荷: 12件 / 平均処理日数 1.2日 / SLA達成率 98.3%</div>
+            </div>
+            <div class="related-note">
+              <div class="key">JAN書式</div>
+              <div style="margin-top:4px;">strict (8/13桁数字のみ) — 厳格モード</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の入力履歴</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="recent-row">
+                <div class="top">
+                  <span class="code">IN-26052001</span>
+                  <span class="name">通常入荷 / MK001</span>
+                  <span class="when">14:35</span>
+                </div>
+              </div>
+              <div class="recent-row">
+                <div class="top">
+                  <span class="code">IN-26052002</span>
+                  <span class="name">返品入荷 / AP001</span>
+                  <span class="when">11:02</span>
+                </div>
+              </div>
+              <div class="recent-row">
+                <div class="top">
+                  <span class="code">IN-26051901</span>
+                  <span class="name">通常入荷 / MK001</span>
+                  <span class="when">昨日 16:48</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let lines = [];
+function addLine() {
+  lines.push({ code: '', name: '', qty: 0, unit: 'ケース', lot: '' });
+  renderLines();
+  updateSummary();
+}
+function delLine(i) { lines.splice(i, 1); renderLines(); updateSummary(); }
+function updateLine(i, field, value) {
+  if (field === 'qty') value = Number(value) || 0;
+  lines[i][field] = value;
+  updateSummary();
+}
+function renderLines() {
+  const tb = document.getElementById('tb-lines');
+  if (lines.length === 0) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:#9ca3af;">「+ 行追加」で明細を追加</td></tr>';
+    return;
+  }
+  tb.innerHTML = lines.map((l, i) => `
+    <tr>
+      <td class="c-num">${i + 1}</td>
+      <td class="c-code"><input value="${escapeHtml(l.code)}" placeholder="S-XXXXX" oninput="updateLine(${i}, 'code', this.value)" style="width:100%; border:none; background:transparent; font-family:var(--f-mono); font-size:12px;"></td>
+      <td class="c-text"><input value="${escapeHtml(l.name)}" placeholder="商品名" oninput="updateLine(${i}, 'name', this.value)" style="width:100%; border:none; background:transparent; font-size:12px;"></td>
+      <td class="c-num"><input type="number" value="${l.qty || ''}" placeholder="0" oninput="updateLine(${i}, 'qty', this.value)" style="width:100%; border:none; background:transparent; text-align:right; font-family:var(--f-mono); font-size:12px;"></td>
+      <td class="c-code">${escapeHtml(l.unit)}</td>
+      <td class="c-code"><input value="${escapeHtml(l.lot)}" placeholder="任意" oninput="updateLine(${i}, 'lot', this.value)" style="width:100%; border:none; background:transparent; font-family:var(--f-mono); font-size:12px;"></td>
+      <td class="c-action"><button class="btn sm" onclick="delLine(${i})">×</button></td>
+    </tr>`).join('');
+}
+function updateSummary() {
+  document.getElementById('sum-lines').textContent = `${lines.length}行`;
+  document.getElementById('sum-qty').textContent = lines.reduce((s, l) => s + (l.qty || 0), 0).toLocaleString();
+  const ownerOk = !!document.getElementById('f-owner').value;
+  const dateOk = !!document.getElementById('f-date').value;
+  const missing = (ownerOk ? 0 : 1) + (dateOk ? 0 : 1);
+  const reqEl = document.getElementById('sum-required');
+  reqEl.textContent = missing === 0 ? '全て入力済' : `未入力 ${missing}件`;
+  reqEl.className = 'val ' + (missing === 0 ? 'accent' : 'alert');
+}
+document.getElementById('f-owner').addEventListener('change', updateSummary);
+document.getElementById('f-date').addEventListener('change', updateSummary);
+addLine();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

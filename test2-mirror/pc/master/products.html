@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>商品マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.detail-card .card-header { font-weight:700; font-size:13px; }
+.stat-row { display:flex; padding:7px 12px; border-top:1px solid var(--c-line); align-items:center; font-size:12px; }
+.stat-row:first-child { border-top:none; }
+.stat-row .lbl { color:#6b7280; }
+.stat-row .val { margin-left:auto; font-family:var(--f-mono); font-weight:600; font-size:13px; color:#374151; }
+.stat-row .val.accent { color:var(--c-accent); }
+.stat-row .val.alert { color:var(--c-alert); }
+.stat-row .val.mute { color:#9ca3af; }
+.stat-row.clickable { cursor:pointer; }
+.stat-row.clickable:hover { background:#f9fafb; }
+.stat-row.clickable.active { background:#eff6ff; }
+.sub-row { display:flex; padding:4px 12px 4px 24px; font-size:11px; align-items:center; }
+.sub-row .lbl { color:#9ca3af; }
+.sub-row .val { margin-left:auto; font-family:var(--f-mono); color:#6b7280; }
+.recent-row { padding:5px 12px; border-top:1px dashed var(--c-line); font-size:11px; }
+.recent-row:first-child { border-top:none; }
+.recent-row .top { display:flex; gap:8px; align-items:center; }
+.recent-row .code { font-family:var(--f-mono); color:#374151; font-weight:500; }
+.recent-row .name { color:#6b7280; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.recent-row .when { margin-left:auto; font-family:var(--f-mono); color:#9ca3af; font-size:10px; }
+.detail-grid { display:grid; grid-template-columns:auto 1fr; gap:6px 12px; font-size:12px; padding:8px 12px; }
+.detail-grid .lbl { color:#9ca3af; font-size:11px; }
+.detail-grid .val { color:#374151; font-family:var(--f-mono); }
+.detail-grid .val.accent { color:var(--c-accent); font-weight:600; }
+table.list tbody tr.selected { background:#e8f0ff !important; }
+table.list tbody tr.clickable { cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">マスタ　/　<b>商品マスタ</b><span class="badge">PHASE 1</span></div>
+    </div>
+    <div class="content">
+
+      <div class="two-pane">
+
+        <!-- 左ペイン: フィルタ + 一覧 -->
+        <div class="left-pane">
+          <div class="card">
+            <div class="card-body" style="padding-bottom:0;">
+              <div class="filter-row">
+                <div class="field"><label>商品コード/JAN</label><input id="f-code"></div>
+                <div class="field"><label>商品名</label><input id="f-name"></div>
+                <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+                <div class="field"><label>温度帯</label><select id="f-temp"><option value="">全件</option><option value="常温">常温</option><option value="冷蔵">冷蔵</option><option value="冷凍">冷凍</option></select></div>
+              </div>
+              <div style="display:flex; gap:8px; margin-top:12px;">
+                <button class="btn primary" onclick="render()">検索</button>
+                <button class="btn primary" style="margin-left:auto;" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button>
+              </div>
+              <div style="display:flex; gap:14px; margin-top:8px; font-size:11px; color:#6b7280;">
+                <span id="meta">-</span>
+              </div>
+            </div>
+            <div class="card-body flush">
+              <table class="list list-full">
+                <thead><tr>
+                  <th class="c-code">SKU</th>
+                  <th class="c-text" style="width:180px;">商品名</th>
+                  <th class="c-code">荷主</th>
+                  <th class="c-code">JAN</th>
+                  <th class="c-status">温度帯</th>
+                  <th class="c-action" style="width:140px;">操作</th>
+                </tr></thead>
+                <tbody id="tb"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右ペイン: 業務情報パネル -->
+        <div class="right-pane">
+
+          <!-- 既定モード: マスタの状況把握 -->
+          <div class="card detail-card" id="right-default">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※直近5件はモック</span></div>
+
+            <!-- マスタ統計 -->
+            <div class="card-body" style="padding:0;">
+              <div class="stat-row"><span class="lbl">商品総数</span><span class="val accent" id="stat-total">-</span></div>
+              <div class="stat-row clickable" data-filter="temp" onclick="statFilter('temp')"><span class="lbl">温度帯別</span><span class="val mute" id="stat-temp-summary">-</span></div>
+              <div id="stat-temp-detail" style="display:none;">
+                <div class="sub-row"><span class="lbl">常温</span><span class="val" id="stat-temp-room">-</span></div>
+                <div class="sub-row"><span class="lbl">冷蔵</span><span class="val" id="stat-temp-cool">-</span></div>
+                <div class="sub-row"><span class="lbl">冷凍</span><span class="val" id="stat-temp-freeze">-</span></div>
+              </div>
+              <div class="stat-row clickable" data-filter="owner" onclick="statFilter('owner')"><span class="lbl">荷主別</span><span class="val mute" id="stat-owner-summary">-</span></div>
+              <div id="stat-owner-detail" style="display:none;"></div>
+            </div>
+
+            <!-- データ品質アラート -->
+            <div class="card-header" style="border-top:1px solid var(--c-line); padding:8px 12px;"><span style="font-size:12px;">データ品質</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="stat-row clickable" data-filter="jan-missing" onclick="qualityFilter('jan-missing')"><span class="lbl">JAN欠損</span><span class="val" id="qual-jan">-</span></div>
+              <div class="stat-row clickable" data-filter="name-missing" onclick="qualityFilter('name-missing')"><span class="lbl">商品名欠損</span><span class="val" id="qual-name">-</span></div>
+              <div class="stat-row clickable" data-filter="jan-dup" onclick="qualityFilter('jan-dup')"><span class="lbl">JAN重複</span><span class="val" id="qual-jan-dup">-</span></div>
+            </div>
+
+            <!-- 最近の追加・編集 (モック) -->
+            <div class="card-header" style="border-top:1px solid var(--c-line); padding:8px 12px;"><span style="font-size:12px;">最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div id="recent-list"></div>
+            </div>
+
+            <div style="padding:6px 12px; font-size:11px; color:#9ca3af; border-top:1px solid var(--c-line);">行をクリックで商品詳細・項目クリックで一覧絞込</div>
+          </div>
+
+          <!-- 行選択モード: その商品の詳細 -->
+          <div class="card detail-card" id="right-detail" style="display:none;">
+            <div class="card-header"><span id="rd-name">-</span><span class="meta" id="rd-code" style="font-size:11px; color:#9ca3af; font-family:var(--f-mono);">-</span></div>
+
+            <!-- 基本情報 -->
+            <div class="detail-grid">
+              <div class="lbl">SKU</div><div class="val" id="rd-sku">-</div>
+              <div class="lbl">JAN</div><div class="val" id="rd-jan">-</div>
+              <div class="lbl">荷主</div><div class="val" id="rd-owner">-</div>
+              <div class="lbl">温度帯</div><div class="val" id="rd-temp">-</div>
+              <div class="lbl">荷姿</div><div class="val" id="rd-unit">-</div>
+              <div class="lbl">期限管理</div><div class="val" id="rd-expiry">-</div>
+            </div>
+
+            <!-- 在庫サマリ (モック) -->
+            <div class="card-header" style="border-top:1px solid var(--c-line); padding:8px 12px;"><span style="font-size:12px;">在庫サマリ</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="stat-row"><span class="lbl">総在庫</span><span class="val accent" id="rd-stock">-</span></div>
+              <div class="stat-row"><span class="lbl">使用ロケ数</span><span class="val" id="rd-loc-count">-</span></div>
+              <div class="stat-row"><span class="lbl">直近の入出庫</span><span class="val mute" id="rd-last-move">-</span></div>
+            </div>
+
+            <div style="padding:6px 12px; font-size:11px; color:var(--c-accent); border-top:1px solid var(--c-line); cursor:pointer;" onclick="clearSelection()">← マスタ統計に戻る</div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let all = [];
+let owners = [];
+let selectedCode = null;
+let qualityKind = null;
+let statKind = null;
+
+async function init() {
+  const [ownersRes, products] = await Promise.all([
+    fetch('/api/owners').then(r => r.json()),
+    fetch('/api/products').then(r => r.json())
+  ]);
+  owners = ownersRes || [];
+  all = products || [];
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => { const opt = document.createElement('option'); opt.value = o.code; opt.textContent = `${o.code} ${o.name}`; sel.appendChild(opt); });
+  renderRightDefault();
+  render();
+}
+
+function tempOf(p) {
+  return p.temperature_zone || '常温';
+}
+
+function renderRightDefault() {
+  // マスタ統計
+  document.getElementById('stat-total').textContent = `${all.length}件`;
+  const tempCount = { '常温': 0, '冷蔵': 0, '冷凍': 0 };
+  all.forEach(p => { const t = tempOf(p); if (tempCount[t] != null) tempCount[t]++; });
+  document.getElementById('stat-temp-summary').textContent = `常${tempCount['常温']} 蔵${tempCount['冷蔵']} 凍${tempCount['冷凍']}`;
+  document.getElementById('stat-temp-room').textContent = `${tempCount['常温']}件`;
+  document.getElementById('stat-temp-cool').textContent = `${tempCount['冷蔵']}件`;
+  document.getElementById('stat-temp-freeze').textContent = `${tempCount['冷凍']}件`;
+
+  // 荷主別カウント (上位5)
+  const ownerCount = {};
+  all.forEach(p => { ownerCount[p.owner_code || '(未設定)'] = (ownerCount[p.owner_code || '(未設定)'] || 0) + 1; });
+  const ownerEntries = Object.entries(ownerCount).sort((a, b) => b[1] - a[1]);
+  document.getElementById('stat-owner-summary').textContent = `${ownerEntries.length}荷主`;
+  const oDetail = document.getElementById('stat-owner-detail');
+  oDetail.innerHTML = ownerEntries.slice(0, 5).map(([code, cnt]) => {
+    const ow = owners.find(o => o.code === code);
+    const label = ow ? `${code} ${ow.name}` : code;
+    return `<div class="sub-row"><span class="lbl">${escapeHtml(label)}</span><span class="val">${cnt}件</span></div>`;
+  }).join('');
+
+  // データ品質
+  const janMissing = all.filter(p => !p.jan_code || !p.jan_code.trim()).length;
+  const nameMissing = all.filter(p => !p.name || !p.name.trim()).length;
+  const janSeen = {};
+  all.forEach(p => { if (p.jan_code && p.jan_code.trim()) janSeen[p.jan_code] = (janSeen[p.jan_code] || 0) + 1; });
+  const janDup = Object.values(janSeen).filter(c => c > 1).length;
+  const qJan = document.getElementById('qual-jan');
+  qJan.textContent = `${janMissing}件`;
+  qJan.className = 'val' + (janMissing > 0 ? ' alert' : ' mute');
+  const qName = document.getElementById('qual-name');
+  qName.textContent = `${nameMissing}件`;
+  qName.className = 'val' + (nameMissing > 0 ? ' alert' : ' mute');
+  const qJanDup = document.getElementById('qual-jan-dup');
+  qJanDup.textContent = `${janDup}件`;
+  qJanDup.className = 'val' + (janDup > 0 ? ' alert' : ' mute');
+
+  // 最近の追加・編集 (モック: 末尾5件)
+  const recent = all.slice(-5).reverse();
+  const dates = ['今日 14:35', '今日 11:02', '昨日 16:48', '昨日 09:15', '06-18 17:30'];
+  document.getElementById('recent-list').innerHTML = recent.length === 0
+    ? '<div class="recent-row"><span class="name" style="color:#9ca3af;">該当なし</span></div>'
+    : recent.map((p, i) => `
+      <div class="recent-row">
+        <div class="top">
+          <span class="code">${escapeHtml(p.code || '-')}</span>
+          <span class="name">${escapeHtml(p.name || '-')}</span>
+          <span class="when">${dates[i] || ''}</span>
+        </div>
+      </div>`).join('');
+}
+
+function statFilter(kind) {
+  // 同じ項目を再クリックで開閉
+  if (statKind === kind) {
+    statKind = null;
+    document.querySelectorAll('.stat-row.active').forEach(el => el.classList.remove('active'));
+  } else {
+    statKind = kind;
+    document.querySelectorAll('.stat-row[data-filter]').forEach(el => {
+      el.classList.toggle('active', el.dataset.filter === kind);
+    });
+  }
+  document.getElementById('stat-temp-detail').style.display = (statKind === 'temp') ? 'block' : 'none';
+  document.getElementById('stat-owner-detail').style.display = (statKind === 'owner') ? 'block' : 'none';
+}
+
+function qualityFilter(kind) {
+  // 同じ項目を再クリックで解除
+  if (qualityKind === kind) {
+    qualityKind = null;
+    document.querySelectorAll('.stat-row.active').forEach(el => el.classList.remove('active'));
+  } else {
+    qualityKind = kind;
+    document.querySelectorAll('.stat-row[data-filter]').forEach(el => {
+      el.classList.toggle('active', el.dataset.filter === kind);
+    });
+  }
+  render();
+}
+
+function render() {
+  const c = document.getElementById('f-code').value.trim().toLowerCase();
+  const n = document.getElementById('f-name').value.trim().toLowerCase();
+  const o = document.getElementById('f-owner').value;
+  const t = document.getElementById('f-temp').value;
+  let rows = all.filter(p => {
+    if (c && !(p.code || '').toLowerCase().includes(c) && !(p.jan_code || '').toLowerCase().includes(c)) return false;
+    if (n && !(p.name || '').toLowerCase().includes(n)) return false;
+    if (o && p.owner_code !== o) return false;
+    if (t && tempOf(p) !== t) return false;
+    return true;
+  });
+  // データ品質フィルタ
+  if (qualityKind === 'jan-missing') {
+    rows = rows.filter(p => !p.jan_code || !p.jan_code.trim());
+  } else if (qualityKind === 'name-missing') {
+    rows = rows.filter(p => !p.name || !p.name.trim());
+  } else if (qualityKind === 'jan-dup') {
+    const dup = new Set();
+    const seen = {};
+    all.forEach(p => { if (p.jan_code && p.jan_code.trim()) seen[p.jan_code] = (seen[p.jan_code] || 0) + 1; });
+    Object.entries(seen).forEach(([k, v]) => { if (v > 1) dup.add(k); });
+    rows = rows.filter(p => dup.has(p.jan_code));
+  }
+  document.getElementById('meta').textContent = `全${all.length}件 / 該当${rows.length}件`;
+  const tb = document.getElementById('tb');
+  if (rows.length === 0) {
+    tb.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--c-text-sub);">該当データなし</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.map(p => {
+    const sel = p.code === selectedCode ? ' class="selected clickable"' : ' class="clickable"';
+    return `
+    <tr${sel} onclick='showRowDetail(${JSON.stringify(p.code)})'>
+      <td class="c-code">${escapeHtml(p.code)}</td>
+      <td class="c-text" style="width:180px;">${escapeHtml(p.name)}</td>
+      <td class="c-code">${escapeHtml(p.owner_code || '-')}</td>
+      <td class="c-code">${escapeHtml(p.jan_code || '-')}</td>
+      <td class="c-status">${escapeHtml(tempOf(p))}</td>
+      <td class="c-action" onclick="event.stopPropagation();"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button> <button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function mockStock(code) {
+  // hash-based mock
+  let h = 0; for (let i = 0; i < code.length; i++) h = (h * 31 + code.charCodeAt(i)) | 0;
+  const stock = Math.abs(h % 5000) + 50;
+  const locCount = (Math.abs(h % 8)) + 1;
+  return { stock, locCount };
+}
+
+function showRowDetail(code) {
+  selectedCode = code;
+  const p = all.find(x => x.code === code);
+  if (!p) return;
+  document.getElementById('right-default').style.display = 'none';
+  document.getElementById('right-detail').style.display = 'block';
+  document.getElementById('rd-name').textContent = p.name || '(商品名なし)';
+  document.getElementById('rd-code').textContent = p.code || '-';
+  document.getElementById('rd-sku').textContent = p.code || '-';
+  document.getElementById('rd-jan').textContent = p.jan_code || '-';
+  const ow = owners.find(o => o.code === p.owner_code);
+  document.getElementById('rd-owner').textContent = ow ? `${p.owner_code} ${ow.name}` : (p.owner_code || '-');
+  document.getElementById('rd-temp').textContent = tempOf(p);
+  document.getElementById('rd-unit').textContent = p.unit_top || '-';
+  document.getElementById('rd-expiry').textContent = p.expiry_managed ? `管理あり (${p.expiry_days || '-'}日)` : 'なし';
+  const m = mockStock(p.code || '');
+  document.getElementById('rd-stock').textContent = `${m.stock.toLocaleString()} ${p.unit_top || ''}`;
+  document.getElementById('rd-loc-count').textContent = `${m.locCount}ロケ`;
+  document.getElementById('rd-last-move').textContent = '今日 14:35 入荷+24';
+  render();
+}
+
+function clearSelection() {
+  selectedCode = null;
+  document.getElementById('right-default').style.display = 'block';
+  document.getElementById('right-detail').style.display = 'none';
+  render();
+}
+
+init();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

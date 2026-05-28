@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>連携ジョブ管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>ジョブ管理（W-510 / G-1〜G-7）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主連携・出荷実績送信ジョブ</div>
+          EDI・荷主システムへの実績送信ジョブの監視・再送信。エラー時はアラート通知。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日のジョブ実行状況</span><span class="meta">12件</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-text">ジョブID</th><th class="c-text">種別</th><th class="c-code">荷主</th><th class="c-text">対象</th><th class="c-date">実行時刻</th><th class="c-status">状態</th><th class="c-action" style="width:160px;">操作</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="c-text">JOB-26060101</td><td class="c-text">出荷実績送信</td><td class="c-code">MK001</td><td class="c-text">SO-26053101〜26060101 (52件)</td><td class="c-date">2026-06-01 18:00</td><td class="c-status"><span class="pill accent">完了</span></td><td class="c-action"><button class="btn sm" onclick="alert('「ログ」モック動作（実装は後続フェーズ）')">ログ</button></td></tr>
+                <tr><td class="c-text">JOB-26060102</td><td class="c-text">配送追跡取込</td><td class="c-code">MK001</td><td class="c-text">ヤマト運輸 (8件)</td><td class="c-date">2026-06-01 19:00</td><td class="c-status"><span class="pill accent">完了</span></td><td class="c-action"><button class="btn sm" onclick="alert('「ログ」モック動作（実装は後続フェーズ）')">ログ</button></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">JOB-26060103</td><td class="c-text">EDI受信</td><td class="c-code">EC001</td><td class="c-text">新規出荷指示 (15件)</td><td class="c-date">2026-06-01 20:00</td><td class="c-status"><span class="pill alert">エラー</span></td><td class="c-action"><button class="btn primary sm" onclick="alert('「再送」モック動作（実装は後続フェーズ）')">再送</button> <button class="btn sm" onclick="alert('「ログ」モック動作（実装は後続フェーズ）')">ログ</button></td></tr>
+                <tr><td class="c-text">JOB-26060104</td><td class="c-text">マスタ同期</td><td class="c-code">MK001</td><td class="c-text">商品マスタ (12件)</td><td class="c-date">2026-06-01 23:00</td><td class="c-status"><span class="pill accent">完了</span></td><td class="c-action"><button class="btn sm" onclick="alert('「ログ」モック動作（実装は後続フェーズ）')">ログ</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>スケジュール設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ジョブ名</th><th class="c-text">種別</th><th class="c-text">実行頻度</th><th class="c-text">次回実行</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">日次出荷実績送信</td><td class="c-text">送信</td><td class="c-text">毎日 18:00</td><td class="c-text">2026-06-02 18:00</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-text">配送追跡取込</td><td class="c-text">受信</td><td class="c-text">毎時 00分</td><td class="c-text">次回 13:00</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-text">EDI受信ポーリング</td><td class="c-text">受信</td><td class="c-text">30分毎</td><td class="c-text">次回 12:30</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-text">月次請求書送信</td><td class="c-text">送信</td><td class="c-text">毎月1日 09:00</td><td class="c-text">2026-07-01 09:00</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

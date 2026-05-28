@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主別CSV書式 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主別CSV書式（X-5 出力カスタマイズ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別CSV出力フォーマット（X-5）</div>
+          荷主ごとに異なるCSV項目順・区切り文字・文字コード・ヘッダ有無を設定。SFTP自動配信と連動。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>出力フォーマット一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-code">荷主</th><th class="c-text">用途</th><th class="c-num">項目数</th><th class="c-text">区切り</th><th class="c-code">文字コード</th><th class="c-text">ヘッダ</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">EXP-MK-INV</td><td class="c-code">MK001</td><td class="c-text">日次在庫</td><td class="c-num">12</td><td class="c-text">カンマ</td><td class="c-code">UTF-8</td><td class="c-text"><span class="pill accent">あり</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EXP-MK-SHP</td><td class="c-code">MK001</td><td class="c-text">出荷確定</td><td class="c-num">18</td><td class="c-text">カンマ</td><td class="c-code">UTF-8</td><td class="c-text"><span class="pill accent">あり</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EXP-AP-INV</td><td class="c-code">AP001</td><td class="c-text">日次在庫</td><td class="c-num">14</td><td class="c-text">タブ</td><td class="c-code">Shift_JIS</td><td class="c-text"><span class="pill">なし</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EXP-EC-ORD</td><td class="c-code">EC001</td><td class="c-text">受注/出荷</td><td class="c-num">22</td><td class="c-text">カンマ</td><td class="c-code">UTF-8</td><td class="c-text"><span class="pill accent">あり</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EXP-PR-INV</td><td class="c-code">PR001</td><td class="c-text">月次在庫</td><td class="c-num">10</td><td class="c-text">カンマ</td><td class="c-code">Shift_JIS</td><td class="c-text"><span class="pill accent">あり</span></td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>EXP-MK-INV 項目定義</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">列</th><th class="c-text">項目名</th><th class="c-text">WMSキー</th><th class="c-text">型</th><th class="c-text">変換</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1</td><td class="c-text">商品コード</td><td class="c-text">sku_code</td><td class="c-text">文字列</td><td class="c-text">そのまま</td></tr>
+                <tr><td class="c-text">2</td><td class="c-text">商品名</td><td class="c-text">product_name</td><td class="c-text">文字列</td><td class="c-text">そのまま</td></tr>
+                <tr><td class="c-text">3</td><td class="c-text">JAN</td><td class="c-text">jan_code</td><td class="c-text">文字列</td><td class="c-text">13桁ゼロ埋め</td></tr>
+                <tr><td class="c-text">4</td><td class="c-text">ロット</td><td class="c-text">lot_no</td><td class="c-text">文字列</td><td class="c-text">{LOT_VENDOR}形式</td></tr>
+                <tr><td class="c-text">5</td><td class="c-text">賞味期限</td><td class="c-text">expiry_date</td><td class="c-text">日付</td><td class="c-text">YYYYMMDD</td></tr>
+                <tr><td class="c-text">6</td><td class="c-text">ロケ</td><td class="c-text">location_code</td><td class="c-text">文字列</td><td class="c-text">そのまま</td></tr>
+                <tr><td class="c-text">7</td><td class="c-text">ケース在庫</td><td class="c-text">case_qty</td><td class="c-text">数値</td><td class="c-text">整数</td></tr>
+                <tr><td class="c-text">8</td><td class="c-text">バラ在庫</td><td class="c-text">piece_qty</td><td class="c-text">数値</td><td class="c-text">整数</td></tr>
+                <tr><td class="c-text">9</td><td class="c-text">合計（バラ換算）</td><td class="c-text">total_pieces</td><td class="c-text">数値</td><td class="c-text">整数</td></tr>
+                <tr><td class="c-text">10</td><td class="c-text">状態</td><td class="c-text">status</td><td class="c-text">文字列</td><td class="c-text">有/止/凍/隔</td></tr>
+                <tr><td class="c-text">11</td><td class="c-text">更新日時</td><td class="c-text">updated_at</td><td class="c-text">日時</td><td class="c-text">YYYYMMDDHHmm</td></tr>
+                <tr><td class="c-text">12</td><td class="c-text">倉庫</td><td class="c-text">warehouse_code</td><td class="c-text">文字列</td><td class="c-text">そのまま</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「プレビュー（10行）」モック動作（実装は後続フェーズ）')">プレビュー（10行）</button>
+          <button class="btn primary" onclick="alert('「+ フォーマット追加」モック動作（実装は後続フェーズ）')">+ フォーマット追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

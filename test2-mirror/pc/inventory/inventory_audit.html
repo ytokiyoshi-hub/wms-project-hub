@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫監査記録 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>在庫監査記録（Q-14 期末監査）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">在庫期末監査・棚卸監査の記録（Q-14）</div>
+          年次／半期の在庫実地監査結果。差異原因の根本分析と是正措置を記録。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去2年の監査履歴</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">監査No</th><th class="c-status">区分</th><th class="c-text">実施期間</th><th class="c-text">監査員</th><th class="c-code">監査SKU</th><th class="c-num">差異件数</th><th class="c-text">精度</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">AUD-2025-H1</td><td class="c-status">半期</td><td class="c-text">2025-06-25〜30</td><td class="c-text">外部監査法人</td><td class="c-code">286</td><td class="c-num">8</td><td class="text-accent c-text">97.2%</td><td class="c-status"><span class="pill accent">合格</span></td></tr>
+                <tr><td class="c-code">AUD-2025-FY</td><td class="c-status">年次</td><td class="c-text">2025-12-25〜30</td><td class="c-text">外部監査法人</td><td class="c-code">286</td><td class="c-num">3</td><td class="text-accent c-text">98.9%</td><td class="c-status"><span class="pill accent">合格</span></td></tr>
+                <tr><td class="c-code">AUD-2026-H1</td><td class="c-status">半期</td><td class="c-text">2026-06-25〜30 予定</td><td class="c-text">外部監査法人</td><td class="c-code">-</td><td class="c-num">-</td><td class="c-text">-</td><td class="c-status"><span class="pill">予定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>AUD-2025-FY 差異内訳</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-text">監査結果</th><th class="c-text">システム値</th><th class="c-num">差異</th><th class="c-text">原因</th><th class="c-text">是正</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-MK001-088</td><td class="c-text">業務用洗剤20L</td><td class="c-text">8</td><td class="c-text">10</td><td class="text-alert c-num">-2</td><td class="c-text">誤ピック未補正</td><td class="c-text">在庫調整実施</td></tr>
+                <tr><td class="c-code">SKU-AP001-098</td><td class="c-text">冬物コート（旧モデル）</td><td class="c-text">42</td><td class="c-text">42</td><td class="c-num">0</td><td class="c-text">-</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">SKU-PR001-045</td><td class="c-text">限定香水（SS22）</td><td class="c-text">18</td><td class="c-text">18</td><td class="c-num">0</td><td class="c-text">-</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">SKU-MK001-022</td><td class="c-text">冷凍パン</td><td class="c-text">48</td><td class="c-text">51</td><td class="text-alert c-num">-3</td><td class="c-text">サンプル提供未記録</td><td class="c-text">マスタ追加</td></tr>
+                <tr><td class="c-code">SKU-EC001-156</td><td class="c-text">季節雑貨A</td><td class="c-text">35</td><td class="c-text">36</td><td class="text-alert c-num">-1</td><td class="c-text">破損品未廃棄記録</td><td class="c-text">廃棄起票</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>是正措置の効果（前回比較）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>前回精度</label><div class="text-mono">97.2%</div></div>
+              <div class="field"><label>今回精度</label><div class="text-mono text-accent" style="font-weight:600;">98.9%</div></div>
+              <div class="field"><label>改善幅</label><div class="text-mono text-accent" style="font-weight:600;">+1.7%</div></div>
+              <div class="field"><label>主要施策</label><div class="text-mono">サイクルカウント / 2回入力UI</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>連携データバリデーション — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>連携データバリデーション（X-6 受信ゲート）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">外部からの受信データの自動検証（X-6）</div>
+          必須項目欠落・桁数不正・存在しないSKU等の事前検知。不合格はDLQへ振分けて運用が対応。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>バリデーションルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ルールID</th><th class="c-text">対象</th><th class="c-text">項目</th><th class="c-text">チェック</th><th class="c-text">失敗時</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">VAL-001</td><td class="c-text">ASN取込</td><td class="c-text">JANコード</td><td class="c-text">13桁数値</td><td class="c-text">DLQ送信</td></tr>
+                <tr><td class="c-text">VAL-002</td><td class="c-text">ASN取込</td><td class="c-text">SKU存在</td><td class="c-text">商品マスタ参照</td><td class="c-text">DLQ送信</td></tr>
+                <tr><td class="c-text">VAL-003</td><td class="c-text">ASN取込</td><td class="c-text">予定日</td><td class="c-text">未来日付かつ60日以内</td><td class="c-text">警告のみ</td></tr>
+                <tr><td class="c-text">VAL-004</td><td class="c-text">受注取込</td><td class="c-text">配送先郵便番号</td><td class="c-text">郵便番号マップ存在</td><td class="c-text">DLQ送信</td></tr>
+                <tr><td class="c-text">VAL-005</td><td class="c-text">受注取込</td><td class="c-text">合計金額</td><td class="c-text">明細小計と一致</td><td class="c-text">DLQ送信</td></tr>
+                <tr><td class="c-text">VAL-006</td><td class="c-text">受注取込</td><td class="c-text">支払期限</td><td class="c-text">受注日以降</td><td class="c-text">警告のみ</td></tr>
+                <tr><td class="c-text">VAL-007</td><td class="c-text">API受注</td><td class="c-text">idempotency_key</td><td class="c-text">過去24h重複なし</td><td class="c-text">409 Conflict返却</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日のDLQ（Dead Letter Queue）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-text">連携</th><th class="c-text">失敗ルール</th><th class="c-num">件数</th><th class="c-status">状態</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">14:30</td><td class="c-text">PR001 SFTP受注</td><td class="c-text">VAL-005 金額不一致</td><td class="c-num">2</td><td class="c-status"><span class="pill alert">未対応</span></td><td class="c-action"><button class="btn small" onclick="alert('「確認」モック動作（実装は後続フェーズ）')">確認</button></td></tr>
+                <tr><td class="c-date">11:08</td><td class="c-text">MK001 EDI ASN</td><td class="c-text">VAL-002 SKU不存在</td><td class="c-num">1</td><td class="c-status"><span class="pill accent">解決済</span></td><td class="c-action"><button class="btn small" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button></td></tr>
+                <tr><td class="c-date">09:50</td><td class="c-text">EC001 API受注</td><td class="c-text">VAL-004 郵便番号</td><td class="c-num">3</td><td class="c-status"><span class="pill">対応中</span></td><td class="c-action"><button class="btn small" onclick="alert('「対応」モック動作（実装は後続フェーズ）')">対応</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日サマリ</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>連携受信件数</label><div class="text-mono" style="font-weight:600;">8,420</div></div>
+              <div class="field"><label>バリデーション合格</label><div class="text-mono text-accent" style="font-weight:600;">8,414</div></div>
+              <div class="field"><label>警告</label><div class="text-mono" style="font-weight:600;">12</div></div>
+              <div class="field"><label>DLQ送信</label><div class="text-mono text-alert" style="font-weight:600;">6</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

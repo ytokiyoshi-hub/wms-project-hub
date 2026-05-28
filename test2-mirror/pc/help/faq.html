@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>FAQ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.faq-item { border-bottom:1px solid var(--c-border); padding:12px 0; }
+.faq-q { font-weight:600; color:var(--c-accent); margin-bottom:6px; }
+.faq-q::before { content:"Q. "; font-family:'Roboto Mono',monospace; }
+.faq-a { color:var(--c-text); font-size:13px; line-height:1.6; }
+.faq-a::before { content:"A. "; font-family:'Roboto Mono',monospace; font-weight:600; color:var(--c-text-sub); }
+.faq-tag { display:inline-block; background:var(--c-bg-soft); color:var(--c-text-sub); font-size:11px; padding:2px 8px; border-radius:10px; margin-right:4px; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ヘルプ　/　<b>よくある質問（FAQ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">現場でよくある質問と対処</div>
+          検索フォームから関連FAQを絞り込み。解決しない場合は通知センターでサポート連絡。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>キーワード</label><input type="text" placeholder="例: ロット 引当 期限切れ"></div>
+            <div class="field"><label>カテゴリ</label><select><option>全カテゴリ</option><option>入荷</option><option>出荷</option><option>在庫</option><option>HT端末</option><option>荷主</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>よく見られているFAQ</span></div>
+          <div class="card-body">
+  
+            <div class="faq-item">
+              <div class="faq-q">入荷検品でロット番号がスキャンできません</div>
+              <div class="faq-a">ロット印字がかすれている場合は手入力に切り替え可能です。HT-403-2 画面で「手入力」ボタンを押し、ロットNoを入力してください。誤入力防止のため2回入力確認が必要です。</div>
+              <div style="margin-top:6px;"><span class="faq-tag">入荷</span><span class="faq-tag">HT</span><span class="faq-tag">ロット</span></div>
+            </div>
+  
+            <div class="faq-item">
+              <div class="faq-q">FIFO引当で先入れより新しいロットが選ばれた</div>
+              <div class="faq-a">賞味期限が14日以内の場合はFEFOが優先されます（引当順序ルール 優先1）。マスタ ＞ 引当順序ルールで確認してください。また、専用ロケ・出荷止めロットも除外条件として効きます。</div>
+              <div style="margin-top:6px;"><span class="faq-tag">出荷</span><span class="faq-tag">引当</span><span class="faq-tag">FIFO</span></div>
+            </div>
+  
+            <div class="faq-item">
+              <div class="faq-q">荷札がPDF出力されません</div>
+              <div class="faq-a">印刷ハブの状態を確認してください。プリンターがオフライン or 印刷ジョブ滞留があると新規発行も止まります。印刷 ＞ 印刷ハブ から状態を確認・リセット可能です。</div>
+              <div style="margin-top:6px;"><span class="faq-tag">印刷</span><span class="faq-tag">荷札</span></div>
+            </div>
+  
+            <div class="faq-item">
+              <div class="faq-q">在庫数とHTカウントが合いません</div>
+              <div class="faq-a">差異3件以内なら再カウントで自動解消、超える場合は棚卸セッションを起票して原因調査します。棚卸 ＞ カウント明細 から「在庫調整起票」ボタンを押下。</div>
+              <div style="margin-top:6px;"><span class="faq-tag">在庫</span><span class="faq-tag">棚卸</span></div>
+            </div>
+  
+            <div class="faq-item">
+              <div class="faq-q">HT端末でログインできません</div>
+              <div class="faq-a">パスワード5回失敗で30分ロックされます。マスタ ＞ ユーザー画面でロック解除可能（権限：マネージャー以上）。3回目以降は警告音が鳴ります。</div>
+              <div style="margin-top:6px;"><span class="faq-tag">HT</span><span class="faq-tag">ログイン</span></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-generic-stats.js?v=202605202324"></script>
+</body>
+</html>

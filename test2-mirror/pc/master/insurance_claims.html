@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>保険請求履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>保険請求履歴（B-15 事案別管理）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">保険請求事案の追跡（B-15）</div>
+          破損・盗難・災害等の保険請求進捗を管理。請求→査定→支払完了まで全段階記録。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>進行中事案</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">請求No</th><th class="c-date">発生日</th><th class="c-text">事案</th><th class="c-text">保険種別</th><th class="c-text">請求額</th><th class="c-text">査定状況</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">CLM-2026-01</td><td class="c-date">2026-05-28</td><td class="c-text">運送中破損（VIP化粧品）</td><td class="c-text">運送保険</td><td class="c-text">¥820,000</td><td class="c-text"><span class="pill">査定中</span></td><td class="c-status"><span class="pill">支払前</span></td></tr>
+                <tr><td class="c-code">CLM-2026-02</td><td class="c-date">2026-05-15</td><td class="c-text">火災警報（誤発報）</td><td class="c-text">火災保険</td><td class="c-text">¥0</td><td class="c-text"><span class="pill accent">査定完了</span></td><td class="c-status"><span class="pill accent">クローズ</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去5年の請求実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">年度</th><th class="c-num">請求件数</th><th class="c-text">支払額</th><th class="c-num">支払率</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2022</td><td class="c-num">2</td><td class="c-text">¥8,200,000</td><td class="c-num">100%</td></tr>
+                <tr><td class="c-text">2023</td><td class="c-num">1</td><td class="c-text">¥520,000</td><td class="c-num">100%</td></tr>
+                <tr><td class="c-text">2024</td><td class="c-num">1</td><td class="c-text">¥1,500,000</td><td class="c-num">100%</td></tr>
+                <tr><td class="c-text">2025</td><td class="c-num">0</td><td class="c-text">¥0</td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">2026</td><td class="c-num">1</td><td class="c-text">査定中</td><td class="c-num">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>CLM-2026-01 詳細</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">段階</th><th class="c-date">日時</th><th class="c-code">担当</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1. 発生</td><td class="c-date">2026-05-28 11:30</td><td class="c-code">QA</td><td class="c-text">運送中の振動で破損</td></tr>
+                <tr><td class="c-text">2. 写真撮影</td><td class="c-date">2026-05-28 12:00</td><td class="c-code">QA</td><td class="c-text">16枚</td></tr>
+                <tr><td class="c-text">3. 運送会社へ通知</td><td class="c-date">2026-05-28 14:00</td><td class="c-code">マネージャー</td><td class="c-text">佐川 配送センター</td></tr>
+                <tr><td class="c-text">4. 保険申請</td><td class="c-date">2026-05-30 10:00</td><td class="c-code">営業</td><td class="c-text">運送保険 INS-003</td></tr>
+                <tr><td class="c-text">5. 査定</td><td class="c-date">進行中</td><td class="c-code">運送保険会社</td><td class="c-text">2026-06-15 完了見込み</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>請求書プレビュー — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.preview-paper { background:#fff; border:1px solid var(--c-border); padding:32px; margin:0 auto; max-width:760px; box-shadow:0 4px 12px rgba(0,0,0,0.08); }
+.preview-paper .h { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid var(--c-accent); }
+.preview-paper h2 { margin:0; color:var(--c-accent); font-size:22px; }
+.preview-paper .small { font-size:11px; color:var(--c-text-sub); }
+.preview-paper table { width:100%; border-collapse:collapse; font-size:12px; margin-top:14px; }
+.preview-paper th, .preview-paper td { border-bottom:1px solid var(--c-border); padding:6px 8px; text-align:left; }
+.preview-paper th { background:#f8f9fb; }
+.preview-paper td.right, .preview-paper th.right { text-align:right; }
+.preview-paper td.num, .preview-paper th.num { font-family:'Roboto Mono',monospace; }
+.preview-paper .total { font-size:18px; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">請求　/　請求書一覧　/　<b>INV-26060001 プレビュー</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="note-box">
+        <div class="text-bold text-accent" style="margin-bottom:4px;">請求書PDF発行前プレビュー</div>
+        荷主ブランディング（ロゴ・テーマカラー）適用後の見え方を確認できる。承認後にPDF確定。
+      </div>
+
+      <div class="preview-paper">
+        <div class="h">
+          <div>
+            <h2>請求書（INVOICE）</h2>
+            <div class="small">INV-26060001</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:600;">株式会社 ロジスティクスXYZ</div>
+            <div class="small">東京都新宿区西新宿1-1-1<br>登録番号 T1234567890123</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:18px;">
+          <div style="font-size:14px; font-weight:600;">マルキ食品株式会社 御中</div>
+          <div class="small">〒xxx-xxxx 東京都xx区xx 1-2-3</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; font-size:12px; margin-bottom:14px;">
+          <div><b>発行日</b>　2026-06-05</div>
+          <div><b>支払期限</b>　2026-07-31</div>
+          <div><b>対象期間</b>　2026-05-01〜2026-05-31</div>
+          <div><b>請求方式</b>　3期制</div>
+        </div>
+
+        <table>
+          <thead><tr><th>項目</th><th class="right">数量</th><th class="right">単位</th><th class="right">単価</th><th class="right">金額</th></tr></thead>
+          <tbody>
+            <tr><td>入庫料金（5月）</td><td class="right num">6,249</td><td class="right">件</td><td class="right num">階段適用</td><td class="right num">¥223,960</td></tr>
+            <tr><td>出庫料金（5月）</td><td class="right num">3,420</td><td class="right">件</td><td class="right num">階段適用</td><td class="right num">¥182,160</td></tr>
+            <tr><td>保管料金（3期制 平均）</td><td class="right num">8,465</td><td class="right">PCS×日</td><td class="right num">¥0.85</td><td class="right num">¥218,400</td></tr>
+            <tr><td>運送費（実費転嫁）</td><td class="right num">3,420</td><td class="right">件</td><td class="right num">実費</td><td class="right num">¥180,200</td></tr>
+            <tr><td>梱包材実費</td><td class="right num">3,420</td><td class="right">件</td><td class="right num">実費</td><td class="right num">¥41,040</td></tr>
+            <tr><td>SLA違反ペナルティ（差異対応未達）</td><td class="right num">2</td><td class="right">件</td><td class="right num">¥5,000</td><td class="right num">¥10,000</td></tr>
+            <tr><td>クレジット控除（CN-26050001）</td><td class="right num">-</td><td class="right">-</td><td class="right num">-</td><td class="right num">-¥6,500</td></tr>
+            <tr><td colspan="4" class="right">小計</td><td class="right num">¥849,260</td></tr>
+            <tr><td colspan="4" class="right">消費税（10%）</td><td class="right num">¥84,926</td></tr>
+            <tr><td colspan="4" class="right total">合計</td><td class="right num total">¥934,186</td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:24px; font-size:11px; color:var(--c-text-sub);">
+          振込先: みずほ銀行 新宿支店 普通 1234567 ロジスティクスXYZ（カ<br>
+          振込手数料は貴社にてご負担ください。
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+        <button class="btn" onclick="alert('「差し戻し」モック動作（実装は後続フェーズ）')">差し戻し</button>
+        <button class="btn" onclick="alert('「PDFダウンロード」モック動作（実装は後続フェーズ）')">PDFダウンロード</button>
+        <button class="btn primary" onclick="alert('「承認 → 発行」モック動作（実装は後続フェーズ）')">承認 → 発行</button>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

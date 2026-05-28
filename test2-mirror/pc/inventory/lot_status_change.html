@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロット状態変更履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>ロット状態変更履歴（Q-39 状態遷移ログ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ロット状態の遷移ログ（Q-39）</div>
+          通常 / 出荷止め / 検疫 / 凍結 / 廃棄判定 などの状態変更を全件記録。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>状態遷移定義</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">状態</th><th class="c-text">説明</th><th class="c-text">引当可</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status"><span class="pill accent">通常</span></td><td class="c-text">出荷可能</td><td class="c-text">○</td></tr>
+                <tr><td class="c-status"><span class="pill alert">出荷止め</span></td><td class="c-text">荷主指示で出荷停止</td><td class="c-text">×</td></tr>
+                <tr><td class="c-status"><span class="pill alert">検疫</span></td><td class="c-text">品質疑義で隔離</td><td class="c-text">×</td></tr>
+                <tr><td class="c-status"><span class="pill alert">凍結</span></td><td class="c-text">棚卸/調査で一時凍結</td><td class="c-text">×</td></tr>
+                <tr><td class="c-status"><span class="pill alert">廃棄判定</span></td><td class="c-text">廃棄確定</td><td class="c-text">×</td></tr>
+                <tr><td class="c-status"><span class="pill">荷主返送</span></td><td class="c-text">荷主返送指示</td><td class="c-text">×</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の状態変更</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-code">SKU</th><th class="c-code">ロット</th><th class="c-num">数量</th><th class="c-text">旧状態</th><th class="c-text">新状態</th><th class="c-text">理由</th><th class="c-text">操作者</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">10:30</td><td class="c-code">SKU-MK001-003</td><td class="c-code">LOT-2605</td><td class="c-num">6</td><td class="c-text">通常</td><td class="c-text">検疫</td><td class="c-text">温度逸脱</td><td class="c-text">QA</td></tr>
+                <tr><td class="c-date">11:08</td><td class="c-code">SKU-PR001-045</td><td class="c-code">LOT-2510</td><td class="c-num">18</td><td class="c-text">検疫</td><td class="c-text">廃棄判定</td><td class="c-text">QA判定完了</td><td class="c-text">QA</td></tr>
+                <tr><td class="c-date">13:00</td><td class="c-code">SKU-MK001-088</td><td class="c-code">LOT-2602</td><td class="c-num">8</td><td class="c-text">通常</td><td class="c-text">出荷止め</td><td class="c-text">荷主指示</td><td class="c-text">マネージャー</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月集計</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">状態遷移</th><th class="c-num">件数</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">通常 → 検疫</td><td class="c-num">8</td></tr>
+                <tr><td class="c-text">検疫 → 通常（解除）</td><td class="c-num">5</td></tr>
+                <tr><td class="c-text">検疫 → 廃棄</td><td class="c-num">3</td></tr>
+                <tr><td class="c-text">通常 → 出荷止め</td><td class="c-num">5</td></tr>
+                <tr><td class="c-text">通常 → 凍結（棚卸）</td><td class="c-num">18</td></tr>
+                <tr><td class="c-text">凍結 → 通常（棚卸完了）</td><td class="c-num">18</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

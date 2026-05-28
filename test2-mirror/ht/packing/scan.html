@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT-803-2 梱包：SKUスキャン検品 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-803 梱包・出荷検品</h1>
+<p class="subtitle">梱包台でSKUを順次スキャン照合 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/packing/order.html"><b>HT-803-1</b>出荷No</a>
+  <a href="/ht/packing/scan.html" class="active"><b>HT-803-2</b>SKUスキャン</a>
+  <a href="/ht/pick/wave.html"><b>HT-804</b>ピック</a>
+  <a href="/ht/inspect/asn.html"><b>HT-403</b>検品</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">13:18 80%</span></div>
+      <div class="ht-header">
+        <span>検品中 <span id="so-show">SO-...</span></span>
+        <span class="scr-id">HT-803</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+          <span id="customer">荷主 / 顧客</span>
+          <span style="font-family:var(--f-mono); color:var(--c-accent);" id="progress">0 / -</span>
+        </div>
+
+        <div style="background:var(--c-accent); color:#fff; padding:8px; text-align:center;">
+          <div style="font-size:9px; opacity:0.8;">次にスキャン</div>
+          <div style="font-family:var(--f-mono); font-size:11px; font-weight:700; margin-top:2px;" id="next-sku">-</div>
+          <div style="font-size:12px; font-weight:600; margin-top:2px;" id="next-name">読込中</div>
+        </div>
+
+        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px; text-align:center;">
+          <div style="font-size:9px; color:var(--c-accent);">指示数量</div>
+          <div style="font-family:var(--f-mono); font-size:24px; font-weight:700; color:var(--c-accent); line-height:1.2;" id="plan-qty">2</div>
+          <div style="font-size:9px; color:var(--c-text-sub);">箱（スキャン済：<span id="scanned-cnt">0</span>）</div>
+        </div>
+
+        <input id="scan-input" placeholder="SKUをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+
+        <div style="font-size:9px; color:var(--c-text-sub);">完了済み</div>
+        <div id="done-list" style="display:grid; grid-template-columns:1fr; gap:2px; font-size:9px;"></div>
+
+        <div style="font-size:9px; color:var(--c-text-mute); margin-top:auto; text-align:center;">
+          照合OKで自動で次へ進む
+        </div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" id="key-confirm"><span class="fn">F1</span>梱包完了</div>
+        <div class="key-lbl"><span class="fn">F2</span>取消</div>
+        <div class="key-lbl"><span class="fn">F3</span>NG</div>
+        <div class="key-lbl" onclick="history.back()"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row"><div class="pkey scan">SCAN</div></div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-803</span>②SKUスキャン検品
+  <div class="desc-text">指示SKUを順次スキャン照合。員数ミスをゼロにする。</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 80%`; };
+setClock(); setInterval(setClock, 30000);
+
+const orderNo = sessionStorage.getItem('pack_order') || '';
+document.getElementById('so-show').textContent = orderNo || '-';
+
+let orderId = null;
+let lines = [];
+let curIdx = 0;
+let scannedQty = 0;
+let materials = [];
+
+(async () => {
+  if (!orderNo) {
+    document.getElementById('next-name').textContent = '出荷No未指定';
+    return;
+  }
+  try {
+    const orders = await fetch('/api/shipment-orders').then(r => r.json());
+    const head = (orders || []).find(o => o.order_no === orderNo);
+    if (!head) {
+      document.getElementById('next-name').textContent = `${orderNo} 見つからず`;
+      return;
+    }
+    orderId = head.id;
+    document.getElementById('customer').textContent = `${head.owner_code || '-'} / ${head.customer_name || '-'}`;
+    const detail = await fetch(`/api/shipment-orders/${head.id}`).then(r => r.json());
+    lines = (detail.lines || []).map(l => ({ ...l, _planQty: l.ordered_qty || 0 }));
+    materials = await fetch('/api/packing-materials').then(r => r.json()).catch(() => []);
+    document.getElementById('progress').textContent = `1 / ${lines.length}行`;
+    showCurrent();
+  } catch (e) {
+    document.getElementById('next-name').textContent = `読込失敗: ${e.message}`;
+  }
+})();
+
+function showCurrent() {
+  const cur = lines[curIdx];
+  if (!cur) {
+    document.getElementById('next-sku').textContent = '✓ 全行完了';
+    document.getElementById('next-name').textContent = 'F1で梱包確定';
+    document.getElementById('plan-qty').textContent = '0';
+    return;
+  }
+  document.getElementById('next-sku').textContent = cur.product_code;
+  document.getElementById('next-name').textContent = cur.product_name || cur.product_code;
+  document.getElementById('plan-qty').textContent = cur._planQty;
+  document.getElementById('scanned-cnt').textContent = scannedQty;
+  document.getElementById('progress').textContent = `${curIdx + 1} / ${lines.length}行`;
+}
+
+function addDone(line, qty) {
+  const div = document.createElement('div');
+  div.style.cssText = 'padding:3px 5px; background:#e8f5ea; border:1px solid #2d7a3a; color:#2d7a3a; font-family:var(--f-mono);';
+  div.textContent = `${line.product_code} ✓ ×${qty}`;
+  document.getElementById('done-list').appendChild(div);
+}
+
+window.htSimulateScan = () => {
+  const cur = lines[curIdx];
+  if (!cur) return;
+  document.getElementById('scan-input').value = cur.product_code;
+  setTimeout(processScan, 100);
+};
+
+function processScan() {
+  const v = document.getElementById('scan-input').value.trim();
+  if (!v) return;
+  const cur = lines[curIdx];
+  if (!cur) { document.getElementById('scan-input').value = ''; return; }
+  if (v === cur.product_code) {
+    scannedQty++;
+    if (scannedQty >= cur._planQty) {
+      addDone(cur, cur._planQty);
+      curIdx++;
+      scannedQty = 0;
+      document.getElementById('scan-input').value = '';
+      showCurrent();
+    } else {
+      document.getElementById('scanned-cnt').textContent = scannedQty;
+      document.getElementById('scan-input').value = '';
+    }
+  } else {
+    alert(`SKU不一致 (期待: ${cur.product_code})`);
+    document.getElementById('scan-input').value = '';
+  }
+  document.getElementById('scan-input').focus();
+}
+
+document.getElementById('scan-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') processScan(); });
+document.getElementById('key-confirm').addEventListener('click', async () => {
+  if (!orderId) { alert('出荷指示未読込'); return; }
+  const remaining = lines.length - curIdx;
+  if (remaining > 0 && !confirm(`${remaining}行未スキャン。それでも梱包確定しますか？`)) return;
+  const mat = (materials || []).find(m => (m.stock_qty || 0) > 0) || (materials || [])[0];
+  if (!mat) { alert('梱包材マスタなし'); return; }
+  try {
+    const res = await fetch('/api/packings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order_id: orderId, material_code: mat.code, package_count: 1 })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(`梱包登録失敗: ${err.error || res.status}`);
+      return;
+    }
+    alert(`梱包完了: ${orderNo} / 梱包材 ${mat.code}`);
+    sessionStorage.removeItem('pack_order');
+    location.href = '/';
+  } catch (e) {
+    alert(`通信エラー: ${e.message}`);
+  }
+});
+</script>
+</body>
+</html>

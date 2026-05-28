@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HT-407 補充作業 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-407 補充作業</h1>
+<p class="subtitle">ストックロケから供給ロケへの補充 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/inspect/asn.html"><b>HT-403</b>検品</a>
+  <a href="/ht/putaway/instructions.html"><b>HT-406</b>棚入れ</a>
+  <a href="/ht/replenish/scan.html" class="active"><b>HT-407</b>補充</a>
+  <a href="/ht/pick/wave.html"><b>HT-804</b>ピック</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">11:30 78%</span></div>
+      <div class="ht-header">
+        <span>補充作業 REP-2606-001</span>
+        <span class="scr-id">HT-407</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
+          <div style="font-size:9px; color:var(--c-accent); font-weight:600;">補充指示</div>
+          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="sku-name">SKU-MK001-001 シャンプー300ml</div>
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">数量: 48 ケース</div>
+        </div>
+
+        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:6px 8px;">
+          <div style="font-size:9px; color:var(--c-text-sub);">供給元（ストック）</div>
+          <div style="font-family:var(--f-mono); font-size:13px; font-weight:600; color:var(--c-accent); margin-top:2px;">3AP-02-001</div>
+        </div>
+
+        <div style="text-align:center; color:var(--c-accent); font-size:14px;">▼</div>
+
+        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:6px 8px;">
+          <div style="font-size:9px; color:var(--c-text-sub);">受入先（ピッキング棚）</div>
+          <div style="font-family:var(--f-mono); font-size:13px; font-weight:600; color:var(--c-accent); margin-top:2px;">3AT-01-001</div>
+        </div>
+
+        <div class="step-progress">
+          <div class="step current"><span class="num">1</span>供給元スキャン</div>
+          <div class="step"><span class="num">2</span>受入先スキャン</div>
+          <div class="step"><span class="num">3</span>完了</div>
+        </div>
+
+        <input id="scan-input" placeholder="ロケコードをスキャン" autofocus style="border:1px solid var(--c-accent); padding:6px; font-size:10px; font-family:var(--f-mono);">
+
+        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">供給元 → 受入先 の順</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" id="key-confirm"><span class="fn">F1</span>確定</div>
+        <div class="key-lbl"><span class="fn">F2</span>スキップ</div>
+        <div class="key-lbl"><span class="fn">F3</span>指示変更</div>
+        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row"><div class="pkey scan">SCAN</div></div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-407</span>補充作業
+  <div class="desc-text">ストックロケから供給ロケへの補充作業</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 78%`; };
+setClock(); setInterval(setClock, 30000);
+window.htSimulateScan = () => { document.getElementById('scan-input').value = '3AP-02-001'; };
+document.getElementById('key-confirm').addEventListener('click', () => alert('補充作業登録'));
+</script>
+</body>
+</html>

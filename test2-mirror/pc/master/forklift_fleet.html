@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>フォークリフト管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>フォークリフト管理（S-63 機体・運転者）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">フォークリフト機体・運転者管理（S-63）</div>
+          機体・運転者ライセンス・点検履歴を管理。法定点検と運転者の資格更新を自動アラート。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>機体一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">機体ID</th><th class="c-text">機種</th><th class="c-text">方式</th><th class="c-text">最大荷重</th><th class="c-text">次回点検</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">FL-001</td><td class="c-text">カウンタ 2t</td><td class="c-text">電動</td><td class="c-text">2,000kg</td><td class="c-text">2026-06-15</td><td class="c-status"><span class="pill accent">稼働中</span></td></tr>
+                <tr><td class="c-text">FL-002</td><td class="c-text">カウンタ 2t</td><td class="c-text">電動</td><td class="c-text">2,000kg</td><td class="c-text">2026-07-08</td><td class="c-status"><span class="pill accent">稼働中</span></td></tr>
+                <tr><td class="c-text">FL-003</td><td class="c-text">リーチ 1t</td><td class="c-text">電動</td><td class="c-text">1,000kg</td><td class="c-text">2026-06-25</td><td class="c-status"><span class="pill accent">稼働中</span></td></tr>
+                <tr><td class="c-text">FL-004</td><td class="c-text">リーチ 1t</td><td class="c-text">電動</td><td class="c-text">1,000kg</td><td class="c-text">2026-08-12</td><td class="c-status"><span class="pill">充電中</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">FL-005</td><td class="c-text">カウンタ 3t</td><td class="c-text">ディーゼル</td><td class="c-text">3,000kg</td><td class="text-alert c-text">2026-06-05</td><td class="c-status"><span class="pill alert">点検期限間近</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>運転者ライセンス</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">氏名</th><th class="c-text">免許種別</th><th class="c-text">取得日</th><th class="c-text">資格更新</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">佐藤太郎</td><td class="c-text">1t以上</td><td class="c-text">2020-04-10</td><td class="c-text">2027-04-10</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">山本健介</td><td class="c-text">1t以上</td><td class="c-text">2023-09-22</td><td class="c-text">2026-09-22</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">田中一郎</td><td class="c-text">1t以上（受講中）</td><td class="c-text">2026-04-15</td><td class="c-text">-</td><td class="c-status"><span class="pill alert">2026-07-15期限</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>事故・ヒヤリハット履歴</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日時</th><th class="c-text">機体</th><th class="c-text">運転者</th><th class="c-text">事象</th><th class="c-text">対応</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">2026-05-15</td><td class="c-text">FL-001</td><td class="c-text">佐藤太郎</td><td class="c-text">カゴ車に接触（軽微）</td><td class="c-text">速度制限見直し</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

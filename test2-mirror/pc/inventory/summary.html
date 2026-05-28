@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫サマリ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>在庫サマリ（KPI）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="stats" id="kpi">
+          <div class="stat"><div class="label">総SKU数</div><div class="value" id="kpi-sku">-</div><span class="unit">品目</span></div>
+          <div class="stat"><div class="label">在庫合計</div><div class="value" id="kpi-total">-</div><span class="unit">点</span></div>
+          <div class="stat"><div class="label">アクティブロット</div><div class="value" id="kpi-lot">-</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">使用ロケ数</div><div class="value" id="kpi-loc">-</div><span class="unit">ロケ</span></div>
+          <div class="stat"><div class="label">期限切迫(30日内)</div><div class="value text-alert" id="kpi-exp">-</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">ホールド</div><div class="value" id="kpi-hold">-</div><span class="unit">件</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別サマリ（実 API: /api/inventory）</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">荷主</th><th class="c-num">SKU数</th><th class="c-num">在庫数</th><th class="c-num">ロット数</th><th class="c-code">使用ロケ</th><th class="c-action">操作</th>
+              </tr></thead>
+              <tbody id="tb-owner"><tr><td colspan="6" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>状態別</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">状態</th><th class="c-num">件数</th><th class="c-num">在庫数</th><th class="c-action">操作</th></tr></thead>
+              <tbody id="tb-status"><tr><td colspan="4" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/pc/inventory/lots.html">ロット追跡</a>
+              <a class="btn" href="/pc/inventory/snapshots.html">スナップショット</a>
+              <a class="btn" href="/pc/inventory/move.html">在庫移動</a>
+              <a class="btn" href="/pc/inventory/adjust.html">在庫調整</a>
+              <a class="btn" href="/pc/inventory/expiry.html">期限管理</a>
+              <a class="btn" href="/pc/inventory/inventory_kpi.html">在庫KPI</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = new Date().toISOString().slice(0, 10);
+async function loadData() {
+  try {
+    const inv = await fetch('/api/inventory').then(r => r.json());
+    const rows = Array.isArray(inv) ? inv : [];
+    document.getElementById('meta').textContent = `${rows.length}行`;
+
+    // KPI 集計
+    const skuSet = new Set();
+    const lotSet = new Set();
+    const locSet = new Set();
+    let total = 0, hold = 0, expiring = 0;
+    const byOwner = {}, byStatus = {};
+    rows.forEach(r => {
+      skuSet.add(r.product_code);
+      if (r.lot_no) lotSet.add(`${r.product_code}|${r.lot_no}`);
+      if (r.location_code) locSet.add(r.location_code);
+      total += r.qty || 0;
+      const st = r.status || 'available';
+      byStatus[st] = byStatus[st] || { count: 0, qty: 0 };
+      byStatus[st].count++; byStatus[st].qty += r.qty || 0;
+      if (st === 'hold' || st === 'quarantine') hold++;
+      if (r.expiry_date) {
+        const days = Math.floor((new Date(r.expiry_date) - new Date(today)) / 86400000);
+        if (days <= 30 && days >= 0) expiring++;
+      }
+      const o = r.owner_code || '(不明)';
+      byOwner[o] = byOwner[o] || { sku: new Set(), qty: 0, lot: new Set(), loc: new Set() };
+      byOwner[o].sku.add(r.product_code);
+      byOwner[o].qty += r.qty || 0;
+      if (r.lot_no) byOwner[o].lot.add(`${r.product_code}|${r.lot_no}`);
+      if (r.location_code) byOwner[o].loc.add(r.location_code);
+    });
+
+    document.getElementById('kpi-sku').textContent = skuSet.size.toLocaleString();
+    document.getElementById('kpi-total').textContent = total.toLocaleString();
+    document.getElementById('kpi-lot').textContent = lotSet.size.toLocaleString();
+    document.getElementById('kpi-loc').textContent = locSet.size.toLocaleString();
+    document.getElementById('kpi-exp').textContent = expiring.toLocaleString();
+    document.getElementById('kpi-hold').textContent = hold.toLocaleString();
+
+    const tb1 = document.getElementById('tb-owner');
+    const ownerRows = Object.entries(byOwner).sort((a, b) => b[1].qty - a[1].qty);
+    tb1.innerHTML = ownerRows.length === 0
+      ? '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--c-text-sub);">データなし</td></tr>'
+      : ownerRows.map(([o, s]) => `
+        <tr>
+          <td class="num">${esc(o)}</td>
+          <td class="right num">${s.sku.size}</td>
+          <td class="right num">${s.qty.toLocaleString()}</td>
+          <td class="right num">${s.lot.size}</td>
+          <td class="right num">${s.loc.size}</td>
+          <td class="center"><a class="btn sm" href="/inventory.html?owner=${encodeURIComponent(o)}">詳細</a></td>
+        </tr>
+      `).join('');
+
+    const tb2 = document.getElementById('tb-status');
+    const statusRows = Object.entries(byStatus).sort((a, b) => b[1].qty - a[1].qty);
+    tb2.innerHTML = statusRows.length === 0
+      ? '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--c-text-sub);">データなし</td></tr>'
+      : statusRows.map(([st, s]) => {
+          const isHold = st === 'hold' || st === 'quarantine';
+          return `
+            <tr ${isHold ? 'style="background:var(--c-alert-lt);"' : ''}>
+              <td>${esc(st)}</td>
+              <td class="right num">${s.count}</td>
+              <td class="right num">${s.qty.toLocaleString()}</td>
+              <td class="center">${isHold ? '<a class="btn sm primary" href="/pc/inventory/hold.html">対応</a>' : '<a class="btn sm" href="/inventory.html">確認</a>'}</td>
+            </tr>
+          `;
+        }).join('');
+  } catch (e) {
+    document.getElementById('meta').textContent = `読込失敗: ${e.message}`;
+  }
+}
+loadData();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ヤード管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ヤード管理（S-41 トラックヤード）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">トラックヤードのスポット管理（S-41）</div>
+          到着車両を一時駐車する「ヤードスポット」を可視化。バース待機時間最小化。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ヤードスポット一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">スポット</th><th class="c-status">区分</th><th class="c-num">サイズ</th><th class="c-text">用途</th><th class="c-text">現在状態</th><th class="c-num">滞在時間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">Y-IN-01</td><td class="c-status"><span class="pill">入荷待</span></td><td class="c-num">2t</td><td class="c-text">カントウ運送 専用</td><td class="c-text"><span class="pill accent">空</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">Y-IN-02</td><td class="c-status"><span class="pill">入荷待</span></td><td class="c-num">4t</td><td class="c-text">大型車</td><td class="c-text"><span class="pill alert">使用中</span></td><td class="c-num">15分</td></tr>
+                <tr><td class="c-text">Y-IN-03</td><td class="c-status"><span class="pill">入荷待</span></td><td class="c-num">2t</td><td class="c-text">共用</td><td class="c-text"><span class="pill accent">空</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">Y-OUT-01</td><td class="c-status"><span class="pill accent">出荷待</span></td><td class="c-num">2t</td><td class="c-text">自社便</td><td class="c-text"><span class="pill alert">使用中</span></td><td class="c-num">8分</td></tr>
+                <tr><td class="c-text">Y-OUT-02</td><td class="c-status"><span class="pill accent">出荷待</span></td><td class="c-num">4t</td><td class="c-text">カントウ運送</td><td class="c-text"><span class="pill accent">空</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">Y-OUT-03</td><td class="c-status"><span class="pill accent">出荷待</span></td><td class="c-num">2t</td><td class="c-text">共用</td><td class="c-text"><span class="pill alert">使用中</span></td><td class="c-num">22分</td></tr>
+                <tr><td class="c-text">Y-WT-01</td><td class="c-status"><span class="pill">待機</span></td><td class="c-num">2t</td><td class="c-text">休憩・待機</td><td class="c-text"><span class="pill accent">空</span></td><td class="c-num">-</td></tr>
+                <tr><td class="c-text">Y-WT-02</td><td class="c-status"><span class="pill">待機</span></td><td class="c-num">2t</td><td class="c-text">休憩・待機</td><td class="c-text"><span class="pill accent">空</span></td><td class="c-num">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>滞在統計（直近7日）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">区分</th><th class="c-num">平均滞在時間</th><th class="c-num">最大滞在時間</th><th class="c-num">使用率</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status">入荷ヤード</td><td class="c-num">18分</td><td class="c-num">42分</td><td class="c-num">62%</td></tr>
+                <tr><td class="c-status">出荷ヤード</td><td class="c-num">15分</td><td class="c-num">35分</td><td class="c-num">58%</td></tr>
+                <tr><td class="c-status">待機ヤード</td><td class="c-num">8分</td><td class="c-num">25分</td><td class="c-num">28%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

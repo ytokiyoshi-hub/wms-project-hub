@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>サイト全体俯瞰 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.s-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+.s-card { background:#fff; border:1px solid var(--c-border); border-radius:8px; padding:14px; text-align:center; }
+.s-card .v { font-family:'Roboto Mono',monospace; font-size:26px; font-weight:700; color:var(--c-accent); }
+.s-card .l { font-size:12px; color:var(--c-text-sub); margin-bottom:4px; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ダッシュボード　/　<b>サイト全体俯瞰（D-6 マルチサイト統合）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">全倉庫横串の俯瞰ビュー（D-6）</div>
+          東京DC・大阪DC・九州DCの3拠点を1画面で俯瞰。本社・営業部長向け経営ビュー。
+        </div>
+  
+        <div class="s-grid">
+          <div class="s-card"><div class="l">全社売上（当月）</div><div class="v">¥21.4M</div></div>
+          <div class="s-card"><div class="l">全社利益</div><div class="v">¥5.62M</div></div>
+          <div class="s-card"><div class="l">利益率</div><div class="v">26.3%</div></div>
+          <div class="s-card"><div class="l">SLA達成率</div><div class="v">97.8%</div></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>倉庫別 主要指標（当月）</span></div>
+          <div class="card-body flush">
+            <table class="list">
+              <thead><tr><th class="c-text">倉庫</th><th class="c-text">売上</th><th class="c-text">コスト</th><th class="c-text">利益</th><th class="c-num">出荷件数</th><th class="c-text">SLA達成</th><th class="c-num">在庫精度</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">東京DC WH001</td><td class="c-text">¥11.4M</td><td class="c-text">¥8.4M</td><td class="text-accent c-text">¥3.0M</td><td class="c-num">10,240</td><td class="text-accent c-text">98.4%</td><td class="c-num">99.6%</td></tr>
+                <tr><td class="c-text">大阪DC WH002</td><td class="c-text">¥7.2M</td><td class="c-text">¥5.5M</td><td class="text-accent c-text">¥1.7M</td><td class="c-num">6,820</td><td class="c-text">97.2%</td><td class="c-num">99.4%</td></tr>
+                <tr><td class="c-text">九州DC WH003</td><td class="c-text">¥2.8M</td><td class="c-text">¥1.9M</td><td class="text-accent c-text">¥0.9M</td><td class="c-num">2,420</td><td class="c-text">96.8%</td><td class="c-num">98.9%</td></tr>
+                <tr style="font-weight:600;background:#f0f8ff;"><td class="c-text">合計</td><td class="c-text">¥21.4M</td><td class="c-text">¥15.8M</td><td class="c-text">¥5.6M</td><td class="c-num">19,480</td><td class="c-text">97.8%</td><td class="c-num">99.4%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>全社 注意事項</span></div>
+          <div class="card-body flush">
+            <table class="list">
+              <thead><tr><th class="c-text">項目</th><th class="c-status">状況</th><th class="c-text">対応</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PR001 契約更新</td><td class="c-status">2026-07-31 終了 / 60日前アラート</td><td class="c-text">営業部長</td></tr>
+                <tr><td class="c-text">EC001 集中度</td><td class="c-status">売上の46.1%を占有</td><td class="c-text">新規荷主獲得</td></tr>
+                <tr><td class="c-text">大阪DC 危険物倍数</td><td class="c-status">0.95倍（上限間近）</td><td class="c-text">大阪マネージャー</td></tr>
+                <tr><td class="c-text">九州DC 立ち上がり</td><td class="c-status">稼働率52%（伸びしろあり）</td><td class="c-text">九州マネージャー</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

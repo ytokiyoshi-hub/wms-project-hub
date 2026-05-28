@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>棚卸依頼受付 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">棚卸　/　<b>棚卸依頼受付（Q-17 依頼登録）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主／QA／監査からの棚卸依頼受付（Q-17）</div>
+          通常の循環棚卸とは別に、特定SKU・特定ロケの臨時棚卸を起票。緊急度別にスケジューリング。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>依頼者</label><select><option>荷主</option><option>QA</option><option>監査法人</option><option>マネージャー</option></select></div>
+            <div class="field"><label>対象</label><select><option>SKU指定</option><option>ロケ範囲</option><option>カテゴリ全体</option></select></div>
+            <div class="field"><label>緊急度</label><select><option>低（次回循環時）</option><option>中（1週間以内）</option><option>高（24h以内）</option></select></div>
+            <div class="field"><label>理由</label><select><option>差異調査</option><option>盗難疑義</option><option>監査要求</option><option>システム差異</option></select></div>
+          </div>
+          <div style="margin-top:14px;">
+            <label style="display:block; font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">対象SKU / ロケ</label>
+            <input type="text" style="width:100%; padding:8px; border:1px solid var(--c-border); border-radius:4px;" placeholder="例: SKU-MK001-001, SKU-MK001-002 または A-01-01〜A-01-10">
+          </div>
+          <div style="margin-top:14px;">
+            <label style="display:block; font-size:11px; color:var(--c-text-sub); margin-bottom:4px;">詳細</label>
+            <textarea style="width:100%; min-height:80px; padding:8px; border:1px solid var(--c-border); border-radius:4px;" placeholder="背景 / 経緯 / 期待結果"></textarea>
+          </div>
+          <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+            <button class="btn" onclick="alert('「キャンセル」モック動作（実装は後続フェーズ）')">キャンセル</button>
+            <button class="btn primary" onclick="alert('「依頼受付 → セッション作成」モック動作（実装は後続フェーズ）')">依頼受付 → セッション作成</button>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>未対応の依頼</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>依頼No</th><th>受付日時</th><th>依頼者</th><th>対象</th><th>緊急度</th><th>理由</th><th>担当</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr style="background:var(--c-alert-lt);"><td class="num">CR-26060101</td><td class="num">06-01 13:42</td><td>QA</td><td>SKU-MK001-003 LOT-2605</td><td><span class="pill alert">高</span></td><td>温度逸脱差異調査</td><td>佐藤</td><td><span class="pill alert">対応中</span></td></tr>
+                <tr><td class="num">CR-26060102</td><td class="num">06-01 11:08</td><td>荷主MK001</td><td>A-02-01〜A-02-10</td><td><span class="pill">中</span></td><td>差異照合依頼</td><td>未割当</td><td><span class="pill">受付済</span></td></tr>
+                <tr><td class="num">CR-26052801</td><td class="num">05-28 14:00</td><td>監査法人</td><td>カテゴリ：化粧品</td><td><span class="pill">低</span></td><td>監査前確認</td><td>マネージャー</td><td><span class="pill">予定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

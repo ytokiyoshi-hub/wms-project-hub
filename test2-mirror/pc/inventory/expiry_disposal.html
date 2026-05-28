@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>期限切れ廃棄処理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>期限切れ廃棄処理（Q-12 廃棄記録）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">期限切れSKUの廃棄記録（Q-12）</div>
+          荷主承認→廃棄業者引取まで追跡。マニフェスト（産業廃棄物管理票）連携。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>廃棄候補（期限切れ・期限切迫）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-code">ロット</th><th class="c-num">数量</th><th class="c-date">期限</th><th class="c-status">状態</th><th class="c-code">荷主承認</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">SKU-MK001-015</td><td class="c-text">冷蔵ヨーグルト</td><td class="c-code">LOT-2604</td><td class="c-num">8</td><td class="text-alert c-date">2026-05-30</td><td class="c-status"><span class="pill alert">期限切れ</span></td><td class="c-code"><span class="pill">未承認</span></td><td class="c-action"><button class="btn small primary" onclick="alert('「承認依頼」モック動作（実装は後続フェーズ）')">承認依頼</button></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">SKU-PR001-045</td><td class="c-text">限定香水（SS22）</td><td class="c-code">LOT-2510</td><td class="c-num">18</td><td class="c-date">2026-07-15</td><td class="c-status"><span class="pill">廃棄判定</span></td><td class="c-code"><span class="pill accent">承認済</span></td><td class="c-action"><button class="btn small primary" onclick="alert('「廃棄起票」モック動作（実装は後続フェーズ）')">廃棄起票</button></td></tr>
+                <tr><td class="c-code">SKU-MK001-022</td><td class="c-text">冷凍パン</td><td class="c-code">LOT-2604</td><td class="c-num">5</td><td class="c-date">2026-06-10</td><td class="c-status"><span class="pill">期限切迫</span></td><td class="c-code"><span class="pill">未承認</span></td><td class="c-action"><button class="btn small" onclick="alert('「処置判断」モック動作（実装は後続フェーズ）')">処置判断</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>廃棄実績（直近30日）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">廃棄No</th><th class="c-text">廃棄日</th><th class="c-code">荷主</th><th class="c-code">SKU</th><th class="c-num">数量</th><th class="c-num">廃棄金額</th><th class="c-text">業者</th><th class="c-text">マニフェスト</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">DSP-26052801</td><td class="c-text">2026-05-28</td><td class="c-code">MK001</td><td class="c-code">SKU-MK001-099</td><td class="c-num">24</td><td class="c-num">¥7,200</td><td class="c-text">東京廃棄</td><td class="c-text">MNF-26052801</td></tr>
+                <tr><td class="c-code">DSP-26052501</td><td class="c-text">2026-05-25</td><td class="c-code">EC001</td><td class="c-code">SKU-EC001-098</td><td class="c-num">12</td><td class="c-num">¥3,600</td><td class="c-text">東京廃棄</td><td class="c-text">MNF-26052501</td></tr>
+                <tr><td class="c-code">DSP-26051501</td><td class="c-text">2026-05-15</td><td class="c-code">PR001</td><td class="c-code">SKU-PR001-088</td><td class="c-num">6</td><td class="c-num">¥18,000</td><td class="c-text">東京廃棄</td><td class="c-text">MNF-26051501</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月集計</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>廃棄件数</label><div class="text-mono" style="font-weight:600;">3</div></div>
+              <div class="field"><label>廃棄数量合計</label><div class="text-mono" style="font-weight:600;">42 PCS</div></div>
+              <div class="field"><label>廃棄金額合計</label><div class="text-mono text-alert" style="font-weight:600;">¥28,800</div></div>
+              <div class="field"><label>マニフェスト発行</label><div class="text-mono">3 件</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

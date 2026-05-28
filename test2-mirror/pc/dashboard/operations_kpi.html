@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>業務KPIダッシュボード — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.ops-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+.ops-card { background:#fff; border:1px solid var(--c-border); border-radius:8px; padding:14px; }
+.ops-card .lab { font-size:11px; color:var(--c-text-sub); margin-bottom:4px; }
+.ops-card .val { font-family:'Roboto Mono',monospace; font-size:22px; font-weight:700; color:var(--c-accent); }
+.ops-card .sub { font-size:11px; color:var(--c-text-sub); margin-top:4px; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ダッシュボード　/　<b>業務KPIダッシュボード（D-8 統合KPI）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">統合業務KPIダッシュボード（D-8）</div>
+          生産性・品質・コスト・サービスレベルの4軸KPIを一画面で俯瞰。経営層・本部向け。
+        </div>
+  
+        <div class="ops-grid">
+          <div class="ops-card"><div class="lab">📊 生産性</div><div class="val">28.8 行/h/人</div><div class="sub">前月比 +5%</div></div>
+          <div class="ops-card"><div class="lab">✅ 品質</div><div class="val">99.93%</div><div class="sub">合格率 / 前月+0.2%</div></div>
+          <div class="ops-card"><div class="lab">💰 コスト</div><div class="val">¥1,117</div><div class="sub">/ 出荷件 / 前月-2.6%</div></div>
+          <div class="ops-card"><div class="lab">⏱️ サービス</div><div class="val">98.4%</div><div class="sub">SLA達成率</div></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>4軸×荷主別 KPI（当月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">生産性</th><th class="c-text">品質</th><th class="c-text">コスト</th><th class="c-code">SLA</th><th class="c-text">総合</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">32.4 行/h</td><td class="text-accent c-text">99.95%</td><td class="c-text">¥953</td><td class="text-accent c-code">98.9%</td><td class="c-text"><span class="pill accent">優良</span></td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">21.5 行/h</td><td class="text-accent c-text">99.99%</td><td class="c-text">¥1,820</td><td class="text-accent c-code">99.7%</td><td class="c-text"><span class="pill accent">優良</span></td></tr>
+                <tr><td class="c-code">EC001</td><td class="text-accent c-text">42.8 行/h</td><td class="c-text">99.55%</td><td class="text-accent c-text">¥742</td><td class="c-code">99.4%</td><td class="c-text"><span class="pill accent">優良</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">PR001</td><td class="c-text">18.2 行/h</td><td class="c-text">99.92%</td><td class="text-alert c-text">¥3,720</td><td class="text-alert c-code">92.7%</td><td class="c-text"><span class="pill alert">要改善</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去12ヶ月 月次推移</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">月</th><th class="c-text">行数/h/人</th><th class="c-text">品質</th><th class="c-num">¥/件</th><th class="c-code">SLA</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2025-06</td><td class="c-text">23.1</td><td class="c-text">99.85%</td><td class="c-num">¥1,297</td><td class="c-code">96.4%</td></tr>
+                <tr><td class="c-text">2025-09</td><td class="c-text">25.2</td><td class="c-text">99.88%</td><td class="c-num">¥1,250</td><td class="c-code">97.2%</td></tr>
+                <tr><td class="c-text">2025-12</td><td class="c-text">28.4</td><td class="c-text">99.92%</td><td class="c-num">¥1,180</td><td class="c-code">97.8%</td></tr>
+                <tr><td class="c-text">2026-03</td><td class="c-text">27.6</td><td class="c-text">99.91%</td><td class="c-num">¥1,147</td><td class="c-code">98.1%</td></tr>
+                <tr><td class="c-text">2026-05</td><td class="text-accent c-text">28.8</td><td class="text-accent c-text">99.93%</td><td class="text-accent c-num">¥1,117</td><td class="text-accent c-code">98.4%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

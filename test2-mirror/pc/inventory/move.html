@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫移動 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>在庫移動（実 API: /api/inventory/move）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-header"><span>移動指示登録</span></div><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>商品コード</label><input id="f-product" placeholder="SKU-MK001-001"></div>
+            <div class="field"><label>ロット</label><input id="f-lot" placeholder="L260601-01"></div>
+            <div class="field"><label>移動元ロケ</label><input id="f-from"></div>
+            <div class="field"><label>移動先ロケ</label><input id="f-to"></div>
+            <div class="field"><label>移動数量</label><input type="number" id="f-qty"></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field" style="grid-column:span 2;"><label>理由</label>
+              <select id="f-reason">
+                <option>ロケ整理</option>
+                <option>在庫集約</option>
+                <option>賞味期限管理（FEFO）</option>
+                <option>不適合品の隔離</option>
+                <option>その他</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column:span 2;"><label>備考</label><input id="f-note"></div>
+          </div>
+          <div style="margin-top:14px; display:flex; gap:8px; justify-content:flex-end;">
+            <button class="btn" onclick="clearForm()">クリア</button>
+            <button class="btn primary" onclick="register()">登録</button>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/inventory.html">在庫照会</a>
+              <a class="btn" href="/pc/inventory/summary.html">在庫サマリ</a>
+              <a class="btn" href="/pc/inventory/lots.html">ロット追跡</a>
+              <a class="btn" href="/pc/inventory/transactions.html">トランザクションログ</a>
+              <a class="btn" href="/pc/inventory/adjust.html">在庫調整</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+async function register() {
+  const product = document.getElementById('f-product').value.trim();
+  const lot = document.getElementById('f-lot').value.trim();
+  const from = document.getElementById('f-from').value.trim();
+  const to = document.getElementById('f-to').value.trim();
+  const qty = parseInt(document.getElementById('f-qty').value, 10);
+  const reason = document.getElementById('f-reason').value;
+  const note = document.getElementById('f-note').value.trim();
+  if (!product || !from || !to || !qty) { alert('商品 / 移動元 / 移動先 / 数量 を入力してください'); return; }
+  if (!confirm(`移動を実行しますか？\n${product}${lot ? ` / ${lot}` : ''}\n${from} → ${to} (数量 ${qty})\n理由: ${reason}`)) return;
+  try {
+    const r = await fetch('/api/inventory/move', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_code: product, lot_no: lot || null, from_location: from, to_location: to, qty, reason, note })
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      alert(`移動失敗: ${err.error || r.status}`);
+      return;
+    }
+    alert('在庫移動を登録しました');
+    location.href = '/pc/inventory/transactions.html';
+  } catch (e) {
+    alert(`通信失敗: ${e.message}`);
+  }
+}
+function clearForm() {
+  ['f-product','f-lot','f-from','f-to','f-qty','f-note'].forEach(id => document.getElementById(id).value = '');
+}
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

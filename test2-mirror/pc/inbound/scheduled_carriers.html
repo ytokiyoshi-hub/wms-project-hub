@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入荷予定運送会社 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>予定運送会社（W-412 入荷便管理）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">入荷便×運送会社の予定一覧（W-412）</div>
+          ASNから自動連携、または手動で運送会社を予約。実績との突合で遅延／早着を可視化。
+          <div style="margin-top:6px; font-size:11px; color:var(--c-text-sub);">※ 運送会社マスタ別API未実装。下表はモック。実 ASN は <a href="/pc/inbound/plans.html">入荷予定一覧</a>、<a href="/pc/inbound/asn_history.html">ASN受信履歴</a> へ。</div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>今後7日の入荷便予定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>予定日</th><th>仕入先</th><th>運送会社</th><th class="right">便数</th><th class="right">パレット数</th><th>ASN</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td class="num">2026-06-01</td><td>関東食品</td><td>カントウ運送</td><td class="right num">2</td><td class="right num">16</td><td class="num">ASN-26060101 / 102</td><td><span class="pill accent">完了</span></td></tr>
+                <tr><td class="num">2026-06-01</td><td>大阪物流</td><td>自社便</td><td class="right num">1</td><td class="right num">12</td><td class="num">ASN-26060103</td><td><span class="pill alert">遅延</span></td></tr>
+                <tr><td class="num">2026-06-01</td><td>EC物流便</td><td>EC物流</td><td class="right num">1</td><td class="right num">8</td><td class="num">ASN-26060104</td><td><span class="pill accent">荷下中</span></td></tr>
+                <tr><td class="num">2026-06-02</td><td>関東食品</td><td>カントウ運送</td><td class="right num">1</td><td class="right num">8</td><td class="num">ASN-26060201</td><td><span class="pill">予定</span></td></tr>
+                <tr><td class="num">2026-06-02</td><td>北海道乳業</td><td>札幌ロジ</td><td class="right num">1</td><td class="right num">18</td><td class="num">未連携</td><td><span class="pill alert">ASN待ち</span></td></tr>
+                <tr><td class="num">2026-06-03</td><td>九州青果</td><td>九州ロジ</td><td class="right num">1</td><td class="right num">6</td><td class="num">ASN-26060301</td><td><span class="pill">予定</span></td></tr>
+                <tr><td class="num">2026-06-05</td><td>関東食品（定期）</td><td>カントウ運送</td><td class="right num">2</td><td class="right num">14</td><td class="num">ASN-26060501 / 502</td><td><span class="pill">予定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>運送会社別 過去30日 着時刻精度</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>運送会社</th><th class="right">便数</th><th class="right">定刻±15分</th><th class="right">早着 &gt;15分</th><th class="right">遅延 &gt;15分</th><th>判定</th></tr></thead>
+              <tbody>
+                <tr><td>カントウ運送</td><td class="right num">42</td><td class="right num">38</td><td class="right num">3</td><td class="right num">1</td><td><span class="pill accent">優秀</span></td></tr>
+                <tr><td>自社便</td><td class="right num">28</td><td class="right num">26</td><td class="right num">2</td><td class="right num">0</td><td><span class="pill accent">優秀</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>札幌ロジ</td><td class="right num">12</td><td class="right num">8</td><td class="right num">1</td><td class="right num text-alert">3</td><td><span class="pill alert">改善要</span></td></tr>
+                <tr><td>EC物流</td><td class="right num">22</td><td class="right num">20</td><td class="right num">1</td><td class="right num">1</td><td><span class="pill">標準</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/pc/inbound/dock_appointment.html">着車予約</a>
+              <a class="btn" href="/pc/inbound/carrier_arrival.html">到着車両管理</a>
+              <a class="btn" href="/pc/inbound/asn_history.html">ASN受信履歴</a>
+              <a class="btn" href="/pc/inbound/plans.html">入荷予定一覧</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

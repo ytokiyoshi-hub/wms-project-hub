@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主在庫差分 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>荷主在庫差分（Q-32 WMS×荷主システム差分）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">WMS在庫 vs 荷主システム在庫の差分照合（Q-32）</div>
+          荷主の販売管理システム在庫と WMS在庫を月末照合。両者ズレの原因を特定。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>対象荷主</label><select><option>MK001 マルキ食品</option></select></div>
+            <div class="field"><label>基準日</label><input type="date" value="2026-05-31" class="text-mono"></div>
+            <div class="field"><label>差分のみ</label><select><option>あり</option><option>全件</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>差分SKU（2026-05-31 月末）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-code">WMS</th><th class="c-code">荷主</th><th class="c-num">差異</th><th class="c-text">原因</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">SKU-MK001-066</td><td class="c-text">業務用洗剤500ml</td><td class="c-code">820</td><td class="c-code">818</td><td class="text-alert c-num">+2</td><td class="c-text">誤ピック未補正</td></tr>
+                <tr><td class="c-code">SKU-MK001-088</td><td class="c-text">業務用洗剤20L</td><td class="c-code">8</td><td class="c-code">10</td><td class="c-num">-2</td><td class="c-text">サンプル提供未記録</td></tr>
+                <tr><td class="c-code">SKU-MK001-022</td><td class="c-text">冷凍パン</td><td class="c-code">42</td><td class="c-code">45</td><td class="c-num">-3</td><td class="c-text">調査中</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>原因別 集計</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">原因</th><th class="c-num">SKU数</th><th class="c-num">差異合計</th><th class="c-text">処置</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">誤ピック未補正</td><td class="c-num">1</td><td class="c-num">+2</td><td class="c-text">在庫調整起票</td></tr>
+                <tr><td class="c-text">サンプル提供未記録</td><td class="c-num">1</td><td class="c-num">-2</td><td class="c-text">荷主マスタ追加</td></tr>
+                <tr><td class="c-text">調査中</td><td class="c-num">1</td><td class="c-num">-3</td><td class="c-text">監視カメラ確認</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去6ヶ月 差分推移</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">月末</th><th class="c-num">差分SKU数</th><th class="c-num">差異絶対値合計</th><th class="c-text">精度</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2025-12</td><td class="c-num">5</td><td class="c-num">12</td><td class="c-text">99.86%</td></tr>
+                <tr><td class="c-text">2026-02</td><td class="c-num">4</td><td class="c-num">8</td><td class="c-text">99.91%</td></tr>
+                <tr><td class="c-text">2026-04</td><td class="c-num">3</td><td class="c-num">5</td><td class="text-accent c-text">99.94%</td></tr>
+                <tr><td class="c-text">2026-05</td><td class="c-num">3</td><td class="c-num">7</td><td class="c-text">99.92%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

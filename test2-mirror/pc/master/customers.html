@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>取引先マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>取引先マスタ</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>コード/名称</label><input id="f-q"></div>
+            <div class="field"><label>区分</label><select id="f-cat"><option value="">全件</option><option value="supplier">仕入先</option><option value="customer">出荷先</option></select></div>
+            <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <button class="btn primary" onclick="render()">検索</button>
+            <button class="btn primary" style="margin-left:auto;" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button>
+          </div>
+        </div></div>
+        <div class="card">
+          <div class="card-header"><span>取引先一覧</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">コード</th><th class="c-text">名称</th><th class="c-code">荷主</th><th class="c-status">区分</th><th class="c-text">住所</th><th class="c-action" style="width:140px;">操作</th>
+              </tr></thead>
+              <tbody id="tb"></tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let all = [];
+async function init() {
+  const [owners, customers] = await Promise.all([fetch('/api/owners').then(r=>r.json()).catch(()=>[]), fetch('/api/customers').then(r=>r.json()).catch(()=>[])]);
+  all = customers || [];
+  const sel = document.getElementById('f-owner');
+  (owners||[]).forEach(o => { const opt = document.createElement('option'); opt.value = o.code; opt.textContent = `${o.code} ${o.name}`; sel.appendChild(opt); });
+  render();
+}
+function render() {
+  const q = document.getElementById('f-q').value.trim().toLowerCase();
+  const c = document.getElementById('f-cat').value;
+  const o = document.getElementById('f-owner').value;
+  const rows = (all || []).filter(x => {
+    if (q && !x.code.toLowerCase().includes(q) && !(x.name||'').toLowerCase().includes(q)) return false;
+    if (c && x.category !== c) return false;
+    if (o && x.owner_code !== o) return false;
+    return true;
+  });
+  document.getElementById('meta').textContent = `${(all||[]).length}件中 ${rows.length}件表示`;
+  const tb = document.getElementById('tb');
+  tb.innerHTML = rows.length ? rows.map(x => `
+    <tr>
+      <td class="text-accent text-bold c-code">${escapeHtml(x.code)}</td>
+      <td class="c-text">${escapeHtml(x.name)}</td>
+      <td class="c-code">${escapeHtml(x.owner_code || '-')}</td>
+      <td class="c-status">${escapeHtml(x.category || '-')}</td>
+      <td class="c-text">${escapeHtml(x.address || '-')}</td>
+      <td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button> <button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button></td>
+    </tr>
+  `).join('') : '<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--c-text-sub);">該当データなし</td></tr>';
+}
+init();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

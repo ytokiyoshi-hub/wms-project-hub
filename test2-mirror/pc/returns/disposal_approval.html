@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>W-1004 廃棄承認 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">返品　/　<b>廃棄承認 (W-1004 荷主ロール)</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box warn">
+          <div class="text-bold text-alert" style="margin-bottom:4px;">廃棄承認は荷主ロールのみ（Q10-5 確定）</div>
+          HT で廃棄申請されたものを、PC W-1004 で荷主担当が最終承認。倉庫事業者の独断で廃棄処分はできない。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>廃棄承認待ち</span><span class="meta">1件</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>返品No</th><th>荷主</th><th>商品</th><th>ロット</th><th class="right">数量</th><th>不良理由</th><th>申請者</th><th class="center" style="width:280px;">承認操作</th>
+              </tr></thead>
+              <tbody>
+                <tr style="background:var(--c-alert-lt);">
+                  <td class="num">RT-26060102-001</td>
+                  <td class="num">EC001</td>
+                  <td>SKU-EC001-001 EC定番セット</td>
+                  <td class="num">LOT-260520-03</td>
+                  <td class="right num">1</td>
+                  <td>外装破損</td>
+                  <td>田中 太郎</td>
+                  <td class="center">
+                    <button class="btn danger sm" onclick="approve()">廃棄承認</button>
+                    <button class="btn sm" onclick="alert('「良品戻し変更」モック動作（実装は後続フェーズ）')">良品戻し変更</button>
+                    <button class="btn sm" onclick="alert('「荷主確認待ち」モック動作（実装は後続フェーズ）')">荷主確認待ち</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function approve() { if (confirm('廃棄を最終承認します。この操作は取り消せません。')) alert('廃棄承認登録'); }
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

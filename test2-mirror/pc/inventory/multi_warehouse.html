@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>複数倉庫切替 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>複数倉庫切替（Q-16 マルチDC運用）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">複数倉庫の統合運用（Q-16）</div>
+          SKU単位でどの倉庫に在庫があるかを可視化。受注時に最適倉庫から自動引当。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>登録倉庫</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">倉庫コード</th><th class="c-text">名称</th><th class="c-text">場所</th><th class="c-num">SKU数</th><th class="c-num">ロケ数</th><th class="c-num">在庫評価額</th><th class="c-num">稼働率</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">WH001</td><td class="c-text">東京DC</td><td class="c-text">東京江東区</td><td class="c-num">337</td><td class="c-num">535</td><td class="c-num">¥19.8M</td><td class="c-num">76%</td></tr>
+                <tr><td class="c-code">WH002</td><td class="c-text">大阪DC</td><td class="c-text">大阪此花区</td><td class="c-num">285</td><td class="c-num">420</td><td class="c-num">¥14.2M</td><td class="c-num">68%</td></tr>
+                <tr><td class="c-code">WH003</td><td class="c-text">九州DC</td><td class="c-text">福岡博多区</td><td class="c-num">142</td><td class="c-num">220</td><td class="c-num">¥5.8M</td><td class="c-num">52%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SKU横串在庫検索</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>SKU検索</label><input type="text" value="SKU-MK001-001" class="text-mono"></div>
+              <div class="field"><label>商品名</label><div class="text-mono">シャンプー300ml</div></div>
+              <div class="field"><label>合計在庫</label><div class="text-mono text-accent" style="font-weight:600;">280 PCS</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>倉庫別 在庫</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">倉庫</th><th class="c-num">在庫</th><th class="c-text">出荷可能</th><th class="c-text">予約済</th><th class="c-text">引当可</th><th class="c-num">回転率</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">東京DC WH001</td><td class="c-num">120</td><td class="c-text">118</td><td class="c-text">2</td><td class="text-accent c-text">118</td><td class="c-num">12.4回</td></tr>
+                <tr><td class="c-text">大阪DC WH002</td><td class="c-num">100</td><td class="c-text">100</td><td class="c-text">0</td><td class="text-accent c-text">100</td><td class="c-num">8.2回</td></tr>
+                <tr><td class="c-text">九州DC WH003</td><td class="c-num">60</td><td class="c-text">60</td><td class="c-text">0</td><td class="text-accent c-text">60</td><td class="c-num">6.0回</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>自動引当ロジック（マルチDC）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">順位</th><th class="c-num">条件</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1</td><td class="c-num">配送先に最も近い倉庫</td><td class="c-text">距離による配送費最適化</td></tr>
+                <tr><td class="c-text">2</td><td class="c-num">在庫が十分ある倉庫</td><td class="c-text">分納回避</td></tr>
+                <tr><td class="c-text">3</td><td class="c-num">FEFO 期限が近い倉庫</td><td class="c-text">期限ロス防止</td></tr>
+                <tr><td class="c-text">4</td><td class="c-num">回転率が低い倉庫を優先</td><td class="c-text">偏在解消</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

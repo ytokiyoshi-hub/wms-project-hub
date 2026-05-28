@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主メールテンプレート — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主メールテンプレート（N-7 荷主別メール）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別カスタマイズメールテンプレ（N-7）</div>
+          TPL基本テンプレを荷主別にカスタマイズ。署名・問合せ先・トーンを荷主のブランドに合わせる。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>テンプレート一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-code">荷主</th><th class="c-text">用途</th><th class="c-text">署名</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">EML-MK-001</td><td class="c-code">MK001</td><td class="c-text">差異検出通知</td><td class="c-text">マルキ食品 物流</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EML-MK-002</td><td class="c-code">MK001</td><td class="c-text">賞味期限切迫</td><td class="c-text">マルキ食品 QA</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EML-AP-001</td><td class="c-code">AP001</td><td class="c-text">SLA違反通知</td><td class="c-text">APプレミアム物流統括</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EML-EC-001</td><td class="c-code">EC001</td><td class="c-text">顧客返品通知</td><td class="c-text">EC太郎 物流</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EML-PR-001</td><td class="c-code">PR001</td><td class="c-text">滞留在庫通知</td><td class="c-text">PRプレミアム流通</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>EML-MK-001 内容</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>件名</label><div class="text-mono">【WMS】入荷差異のご連絡 {{asn_no}}</div></div>
+              <div class="field"><label>差出人</label><div class="text-mono">noreply@wms.local</div></div>
+              <div class="field"><label>返信先</label><div class="text-mono">tanaka@marki.co.jp</div></div>
+              <div class="field"><label>CC</label><div class="text-mono">QA / 営業</div></div>
+            </div>
+            <div style="margin-top:14px; padding:14px; background:#f8f9fb; border-radius:6px; font-size:13px;">
+              田中様<br><br>
+              お世話になっております。WMSテストサイト2運用センターです。<br><br>
+              本日 {{date}} の入荷検品にて、ASN {{asn_no}} に下記差異が検出されました。<br><br>
+              <b>SKU: {{sku_code}} {{product_name}}</b><br>
+              予定数: {{expected_qty}} / 実績数: {{actual_qty}} / 差異: {{diff_qty}}<br><br>
+              差異対応のご回答を 24時間以内にお願いします。<br>
+              管理画面: https://portal.wms.local/<br><br>
+              マルキ食品様 物流ご担当チーム宛
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

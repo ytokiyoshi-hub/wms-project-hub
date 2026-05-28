@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ERP連携 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>ERP連携（X-10 会計連携）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主側ERPシステムとの連携（X-10）</div>
+          在庫評価・受注実績・請求情報をERPに連携。SAP / Oracle / 国内会計ソフト対応。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>連携先 ERP</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">連携先</th><th class="c-code">ERP</th><th class="c-text">連携項目</th><th class="c-text">頻度</th><th class="c-text">前回送信</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">MK001 マルキ食品</td><td class="c-code">OBIC7</td><td class="c-text">在庫評価額 / 受領通知</td><td class="c-text">日次03:00</td><td class="c-text">06-01 03:00</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">AP001 アパレル</td><td class="c-code">SAP S/4HANA</td><td class="c-text">在庫 / 棚卸結果</td><td class="c-text">日次04:00</td><td class="c-text">06-01 04:02</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">EC001 EC太郎</td><td class="c-code">NetSuite</td><td class="c-text">受注 / 出荷 / 在庫（リアル）</td><td class="c-text">5分毎</td><td class="c-text">06-01 14:30</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">PR001 プレミアム流通</td><td class="c-code">勘定奉行</td><td class="c-text">月次請求 / 在庫評価</td><td class="c-text">月次月初</td><td class="c-text">06-01 05:00</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">自社 経理</td><td class="c-code">freee</td><td class="c-text">月次請求書発行データ</td><td class="c-text">月次5日</td><td class="c-text">06-05 23:50</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>連携データ仕様</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">データ</th><th class="c-text">形式</th><th class="c-text">方向</th><th class="c-text">説明</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">在庫評価額</td><td class="c-text">CSV / API</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">月末スナップショット × 仕入単価</td></tr>
+                <tr><td class="c-text">受領通知</td><td class="c-text">EDI 856</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">入荷確定時</td></tr>
+                <tr><td class="c-text">受注</td><td class="c-text">EDI 850 / API</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">新規受注 / 変更 / キャンセル</td></tr>
+                <tr><td class="c-text">請求書</td><td class="c-text">PEPPOL / メール</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">月次請求</td></tr>
+                <tr><td class="c-text">仕入価格マスタ</td><td class="c-text">CSV</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">月次更新</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の連携サマリ</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>連携ジョブ数</label><div class="text-mono" style="font-weight:600;">312</div></div>
+              <div class="field"><label>成功</label><div class="text-mono text-accent" style="font-weight:600;">312</div></div>
+              <div class="field"><label>失敗</label><div class="text-mono">0</div></div>
+              <div class="field"><label>遅延</label><div class="text-mono">0</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

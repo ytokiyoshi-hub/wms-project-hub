@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>取引先グループ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>取引先グループ（S-16 親会社・チェーン店）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">親会社・チェーン店等のグループ管理（S-16）</div>
+          複数取引先を「親会社」「チェーン本部」配下にまとめ、請求や統計をグループ単位で集計可能に。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>グループ一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">グループコード</th><th class="c-text">名称</th><th class="c-status">区分</th><th class="c-num">所属取引先数</th><th class="c-code">代表担当</th><th class="c-text">請求まとめ</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">CG-001</td><td class="c-text">東京食品グループ</td><td class="c-status"><span class="pill accent">親会社</span></td><td class="c-num">12</td><td class="c-code">東京食品センター</td><td class="c-text"><span class="pill accent">親会社一括</span></td></tr>
+                <tr><td class="c-code">CG-002</td><td class="c-text">EC物流ネットワーク</td><td class="c-status"><span class="pill">配送拠点</span></td><td class="c-num">8</td><td class="c-code">横浜EC物流</td><td class="c-text"><span class="pill">個別請求</span></td></tr>
+                <tr><td class="c-code">CG-003</td><td class="c-text">営業課</td><td class="c-status"><span class="pill">社内</span></td><td class="c-num">5</td><td class="c-code">営業課A</td><td class="c-text"><span class="pill accent">社内振替</span></td></tr>
+                <tr><td class="c-code">CG-004</td><td class="c-text">北陸チェーン店</td><td class="c-status"><span class="pill accent">チェーン本部</span></td><td class="c-num">22</td><td class="c-code">北陸本部</td><td class="c-text"><span class="pill accent">本部一括</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>CG-001 東京食品グループ 所属取引先</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">取引先コード</th><th class="c-text">名称</th><th class="c-text">方面</th><th class="c-text">当月出荷</th><th class="c-num">当月金額</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">CUS-MK-001</td><td class="c-text">東京食品センター</td><td class="c-text">東京西</td><td class="c-text">328</td><td class="c-num">¥382,400</td></tr>
+                <tr><td class="c-code">CUS-MK-002</td><td class="c-text">東京食品 川崎店</td><td class="c-text">神奈川</td><td class="c-text">120</td><td class="c-num">¥140,000</td></tr>
+                <tr><td class="c-code">CUS-MK-003</td><td class="c-text">東京食品 横浜店</td><td class="c-text">神奈川</td><td class="c-text">95</td><td class="c-num">¥110,800</td></tr>
+                <tr><td class="c-code">CUS-MK-004</td><td class="c-text">東京食品 千葉店</td><td class="c-text">千葉</td><td class="c-text">88</td><td class="c-num">¥102,600</td></tr>
+                <tr style="font-weight:600;background:#f0f8ff;"><td class="c-code">合計</td><td class="c-text">4店舗</td><td class="c-text">-</td><td class="c-text">631</td><td class="c-num">¥735,800</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn primary" onclick="alert('「+ グループ追加」モック動作（実装は後続フェーズ）')">+ グループ追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

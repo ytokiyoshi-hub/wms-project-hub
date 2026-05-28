@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>App-1 ホーム — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app-mock.css">
+</head>
+<body>
+
+<h1 class="page-title">App-1 従業員アプリ ホーム</h1>
+<p class="subtitle">スマホ従業員アプリ・本日のシフト確認 (iPhone 375x812 想定)</p>
+
+<div class="app-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/app/home.html" class="active"><b>App-1</b>ホーム</a>
+  <a href="/app/shifts.html"><b>App-2</b>シフト</a>
+  <a href="/app/timecard.html"><b>App-3</b>勤怠</a>
+  <a href="/app/payroll.html"><b>App-4</b>給与</a>
+  <a href="/app/notice.html"><b>App-5</b>お知らせ</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="app-wrap">
+  <div class="app-device">
+    <div class="app-screen">
+      <div class="app-statusbar">
+        <span id="clock">9:30</span>
+        <span>📶 100%</span>
+      </div>
+      <div class="app-header">
+        <div class="title">こんにちは 田中さん</div>
+        <div class="sub">2026年6月1日（月）</div>
+      </div>
+      <div class="app-body">
+        <div class="app-card" style="background:var(--c-accent); color:#fff; border-color:var(--c-accent);">
+          <div class="label" style="color:rgba(255,255,255,0.8);">本日のシフト</div>
+          <div class="value big" style="color:#fff;">08:00 - 17:00</div>
+          <div style="font-size:11px; opacity:0.8; margin-top:4px;">1F常温エリア / ピッキング</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div class="app-card">
+            <div class="label">今月勤務</div>
+            <div class="value big">18</div>
+            <div style="font-size:10px; color:var(--c-text-sub);">日 / 144h</div>
+          </div>
+          <div class="app-card">
+            <div class="label">予想給与</div>
+            <div class="value big">172</div>
+            <div style="font-size:10px; color:var(--c-text-sub);">千円</div>
+          </div>
+        </div>
+
+        <div class="app-card">
+          <div class="label">📢 お知らせ</div>
+          <div style="font-size:12px; margin-top:6px;">
+            <div style="padding:6px 0; border-bottom:1px solid var(--c-line);">繁忙期手当について（6月）</div>
+            <div style="padding:6px 0; border-bottom:1px solid var(--c-line);">新人研修 6/15</div>
+            <div style="padding:6px 0;">夏季休暇申請 受付中</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-tabbar">
+        <div class="tab active"><span class="icon">🏠</span>ホーム</div>
+        <div class="tab" onclick="location.href='/app/shifts.html'"><span class="icon">📅</span>シフト</div>
+        <div class="tab" onclick="location.href='/app/timecard.html'"><span class="icon">⏰</span>勤怠</div>
+        <div class="tab" onclick="location.href='/app/payroll.html'"><span class="icon">💴</span>給与</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">App-1</span>従業員アプリ ホーム
+  <div class="desc-text">本日のシフト・お知らせ確認</div>
+</div>
+</body>
+</html>

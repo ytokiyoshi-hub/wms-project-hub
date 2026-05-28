@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HT-804-E ピックエラー — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-804-E ピックエラー（SKU不一致）</h1>
+<p class="subtitle">スキャン商品が指示と異なる時 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/pick/wave.html"><b>HT-804-1</b>ウェーブ</a>
+  <a href="/ht/pick/scan.html"><b>HT-804-2</b>スキャン</a>
+  <a href="/ht/pick/done.html"><b>HT-804-3</b>完了</a>
+  <a href="/ht/pick/error.html" class="active"><b>HT-804-E</b>エラー</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">12:36 87%</span></div>
+      <div class="ht-header" style="background:var(--c-alert);">
+        <span>エラー！</span>
+        <span class="scr-id">HT-804-E</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:10px; text-align:center;">
+          <div style="font-size:36px; color:var(--c-alert);">⚠</div>
+          <div style="font-size:13px; color:var(--c-alert); font-weight:700; margin-top:4px;">スキャンエラー：SKU不一致</div>
+        </div>
+
+        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:7px;">
+          <div style="margin-bottom:5px;">
+            <div style="font-size:9px; color:var(--c-text-sub);">指示 SKU</div>
+            <div style="font-family:var(--f-mono); font-weight:600; font-size:11px;">SKU-MK001-001</div>
+            <div style="font-size:10px;">シャンプー300ml</div>
+          </div>
+          <div style="border-top:1px dashed var(--c-line); padding-top:5px;">
+            <div style="font-size:9px; color:var(--c-alert);">スキャンしたSKU</div>
+            <div style="font-family:var(--f-mono); font-weight:600; color:var(--c-alert); font-size:11px;">SKU-MK001-002</div>
+            <div style="font-size:10px; color:var(--c-alert);">コンディショナー300ml ← 違う</div>
+          </div>
+        </div>
+
+        <div style="background:var(--c-alert-lt); border-left:3px solid var(--c-alert); padding:6px 8px; font-size:10px; color:var(--c-alert); font-weight:600;">
+          ⚠ 正しい棚から取り直してください
+        </div>
+
+        <div style="font-size:10px; color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-line-dk);">
+          解決できない場合はF3でリーダーへ連絡
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">F1で再スキャン</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" onclick="location.href='/ht/pick/scan.html'"><span class="fn">F1</span>再スキャン</div>
+        <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+        <div class="key-lbl"><span class="fn">F3</span>リーダー連絡</div>
+        <div class="key-lbl" onclick="history.back()"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row"><div class="pkey scan">SCAN</div></div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-804-E</span>ピックエラー
+  <div class="desc-text">SKU不一致検出時のエラー画面</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 87%`; };
+setClock(); setInterval(setClock, 30000);
+</script>
+</body>
+</html>

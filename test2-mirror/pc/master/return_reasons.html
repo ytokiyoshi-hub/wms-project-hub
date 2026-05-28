@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>返品理由マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>返品理由マスタ（S-26 返品コード）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">返品理由コード体系（S-26）</div>
+          返品受付時の必須選択。WMS側／荷主側／顧客側など責任区分も保持。集計時の責任按分に利用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>返品理由一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-text">名称</th><th class="c-status">区分</th><th class="c-text">責任</th><th class="c-num">戻入推定率</th><th class="c-text">標準処置</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">RR-001</td><td class="c-text">サイズ違い</td><td class="c-status"><span class="pill">顧客都合</span></td><td class="c-text">顧客</td><td class="c-num">95%</td><td class="c-text">良品戻入 → 交換 or 返金</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-002</td><td class="c-text">イメージ違い</td><td class="c-status"><span class="pill">顧客都合</span></td><td class="c-text">顧客</td><td class="c-num">90%</td><td class="c-text">良品戻入 → 返金</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-003</td><td class="c-text">初期不良</td><td class="c-status"><span class="pill alert">商品不良</span></td><td class="c-text">荷主</td><td class="c-num">10%</td><td class="c-text">QA確認 → 廃棄 or 荷主返送</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-004</td><td class="c-text">誤注文</td><td class="c-status"><span class="pill">顧客都合</span></td><td class="c-text">顧客</td><td class="c-num">95%</td><td class="c-text">良品戻入 → 返金</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-005</td><td class="c-text">誤出荷</td><td class="c-status"><span class="pill alert">WMS不良</span></td><td class="c-text">WMS</td><td class="c-num">85%</td><td class="c-text">良品戻入 → 再出荷</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-006</td><td class="c-text">配送中破損</td><td class="c-status"><span class="pill alert">運送不良</span></td><td class="c-text">運送会社</td><td class="c-num">0%</td><td class="c-text">廃棄 → 運送会社賠償</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-007</td><td class="c-text">受取拒否</td><td class="c-status"><span class="pill">顧客都合</span></td><td class="c-text">顧客</td><td class="c-num">95%</td><td class="c-text">良品戻入 → 返金</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-008</td><td class="c-text">住所不明</td><td class="c-status"><span class="pill">顧客都合</span></td><td class="c-text">顧客</td><td class="c-num">95%</td><td class="c-text">良品戻入 → 連絡待ち</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-009</td><td class="c-text">賞味期限切れ</td><td class="c-status"><span class="pill alert">在庫管理</span></td><td class="c-text">WMS</td><td class="c-num">0%</td><td class="c-text">廃棄</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">RR-099</td><td class="c-text">その他</td><td class="c-status"><span class="pill">その他</span></td><td class="c-text">要判定</td><td class="c-num">-</td><td class="c-text">QA判定</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月発生件数（責任別）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">責任</th><th class="c-num">件数</th><th class="c-num">構成比</th><th class="c-text">賠償／費用</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">顧客都合</td><td class="c-num">28</td><td class="c-num">67%</td><td class="c-text">-（顧客負担）</td></tr>
+                <tr><td class="c-text">荷主（商品不良）</td><td class="c-num">5</td><td class="c-num">12%</td><td class="c-text">荷主負担</td></tr>
+                <tr><td class="c-text">WMS（誤出荷／管理）</td><td class="c-num">6</td><td class="c-num">14%</td><td class="text-alert c-text">¥18,200</td></tr>
+                <tr><td class="c-text">運送会社</td><td class="c-num">3</td><td class="c-num">7%</td><td class="c-text">¥6,200（請求中）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

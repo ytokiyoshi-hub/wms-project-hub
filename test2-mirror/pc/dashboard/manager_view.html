@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>マネージャー俯瞰 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.mgr-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+.tile { background:#fff; border:1px solid var(--c-border); border-radius:8px; padding:14px; }
+.tile h4 { margin:0 0 10px 0; font-size:13px; color:var(--c-text); }
+.tile.alert { border-left:4px solid var(--c-alert, #c00000); }
+.tile.ok { border-left:4px solid var(--c-success, #2c9a4a); }
+.tile-val { font-family:'Roboto Mono',monospace; font-size:24px; font-weight:700; color:var(--c-accent); line-height:1.1; }
+.tile-sub { font-size:11px; color:var(--c-text-sub); margin-top:4px; }
+.tile.alert .tile-val { color:var(--c-alert, #c00000); }
+.tile.ok .tile-val { color:var(--c-success, #2c9a4a); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ダッシュボード　/　<b>マネージャー俯瞰（D-3 経営層向け）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">マネージャー向け俯瞰ビュー（D-3）</div>
+          日次／週次のKPIをマネージャー視点で要約。SLA達成・コスト・人員・品質を一画面に集約。
+        </div>
+  
+        <div class="mgr-grid" style="margin-bottom:14px;">
+          <div class="tile ok"><h4>SLA達成率（当月）</h4><div class="tile-val">98.4%</div><div class="tile-sub">目標98.0% / +0.4%</div></div>
+          <div class="tile alert"><h4>SLA違反件数</h4><div class="tile-val">14</div><div class="tile-sub">先週比 +5件</div></div>
+          <div class="tile ok"><h4>1出荷あたりコスト</h4><div class="tile-val">¥1,117</div><div class="tile-sub">前月比 -2.6%</div></div>
+        </div>
+  
+        <div class="mgr-grid" style="margin-bottom:14px;">
+          <div class="tile"><h4>本日出荷予定</h4><div class="tile-val">120</div><div class="tile-sub">完了 82 / 38件残</div></div>
+          <div class="tile"><h4>本日入荷予定</h4><div class="tile-val">8</div><div class="tile-sub">完了 5 / 3件残</div></div>
+          <div class="tile alert"><h4>未対応例外</h4><div class="tile-val">4</div><div class="tile-sub">引当失敗1 / 配送不可1 / 他2</div></div>
+        </div>
+  
+        <div class="mgr-grid" style="margin-bottom:14px;">
+          <div class="tile ok"><h4>在庫精度</h4><div class="tile-val">99.6%</div><div class="tile-sub">サイクルカウントベース</div></div>
+          <div class="tile"><h4>在庫金額</h4><div class="tile-val">¥19.8M</div><div class="tile-sub">前月比 +¥0.4M</div></div>
+          <div class="tile alert"><h4>滞留在庫率</h4><div class="tile-val">2.3%</div><div class="tile-sub">目標2.0%以下</div></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本週のハイライト</span></div>
+          <div class="card-body flush">
+            <table class="list">
+              <thead><tr><th class="c-text">項目</th><th class="c-status">状況</th><th class="c-code">担当</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">ECモール ハーフ祭対応</td><td class="c-status">派遣+5名で増員、生産性高い</td><td class="c-code">マネージャー</td><td class="c-status"><span class="pill accent">順調</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PR001 SLA未達（92.7%）</td><td class="c-status">夜間出荷の人員不足が原因</td><td class="c-code">営業担当</td><td class="c-status"><span class="pill alert">改善要</span></td></tr>
+                <tr><td class="c-text">大阪DC 危険物倍数 0.95倍</td><td class="c-status">許可超え1ヶ月前にアラート発報</td><td class="c-code">大阪DC マネージャー</td><td class="c-status"><span class="pill">監視</span></td></tr>
+                <tr><td class="c-text">CTR-2024-011（PR001）更新</td><td class="c-status">60日前アラート発報、交渉中</td><td class="c-code">営業担当</td><td class="c-status"><span class="pill">進行中</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

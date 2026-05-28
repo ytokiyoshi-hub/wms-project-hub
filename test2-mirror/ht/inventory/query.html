@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HT-501 在庫照会 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-501 在庫照会</h1>
+<p class="subtitle">ロケorSKUスキャンで在庫確認 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/inspect/asn.html"><b>HT-403</b>検品</a>
+  <a href="/ht/putaway/instructions.html"><b>HT-406</b>棚入れ</a>
+  <a href="/ht/pick/wave.html"><b>HT-804</b>ピック</a>
+  <a href="/ht/inventory/query.html" class="active"><b>HT-501</b>在庫照会</a>
+  <a href="/ht/move/scan.html"><b>HT-505</b>在庫移動</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">10:50 82%</span></div>
+      <div class="ht-header">
+        <span>在庫照会</span>
+        <span class="scr-id">HT-501</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:10px;">
+          ★ ロケまたはSKUをスキャン
+        </div>
+
+        <input id="scan-input" placeholder="ロケ or SKU or JAN" autofocus style="border:2px solid var(--c-accent); padding:8px; font-size:12px; font-family:var(--f-mono);">
+
+        <div style="font-size:9px; color:var(--c-text-sub);">直近の在庫</div>
+
+        <div id="result-area">
+          <div style="background:var(--c-base); border:1px solid var(--c-line); padding:8px;">
+            <div style="font-family:var(--f-mono); font-size:11px; font-weight:600; color:var(--c-accent);">SKU-MK001-001</div>
+            <div style="font-size:11px; font-weight:600; margin-top:2px;">シャンプー300ml</div>
+
+            <div style="height:1px; background:var(--c-line); margin:6px 0;"></div>
+
+            <div style="font-size:9px;">
+              <div style="display:flex; justify-content:space-between; padding:2px 0;">
+                <span class="text-mono">3AP-02-001</span>
+                <span class="text-mono text-bold text-accent">120 ケース</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:2px 0; border-top:1px solid var(--c-bg);">
+                <span class="text-mono">3AT-01-001</span>
+                <span class="text-mono text-bold text-accent">48 ケース</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:2px 0; border-top:1px solid var(--c-bg); font-weight:600;">
+                <span>合計</span>
+                <span class="text-mono">168 ケース</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">スキャン or 手入力</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary"><span class="fn">F1</span>詳細</div>
+        <div class="key-lbl"><span class="fn">F2</span>ロット表示</div>
+        <div class="key-lbl"><span class="fn">F3</span>履歴</div>
+        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row"><div class="pkey scan">SCAN</div></div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-501</span>在庫照会
+  <div class="desc-text">ロケ or SKUスキャンで在庫確認・現場での即時参照</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 82%`; };
+setClock(); setInterval(setClock, 30000);
+window.htSimulateScan = () => { document.getElementById('scan-input').value = '3AP-02-001'; };
+</script>
+</body>
+</html>

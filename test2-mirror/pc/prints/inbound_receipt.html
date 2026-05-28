@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入荷検品書印刷 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+@media print { .layout > .sidebar, .topbar, .print-actions { display: none !important; } .content { padding: 0 !important; } }
+.paper { background: white; padding: 30px; max-width: 900px; margin: 0 auto; border: 1px solid var(--c-line); }
+.paper h1 { text-align: center; font-size: 18px; margin-bottom: 16px; }
+.paper table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.paper table th, .paper table td { border: 1px solid #000; padding: 4px 6px; }
+.paper table thead th { background: #ddd; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">印刷　/　<b>入荷検品書</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="print-actions" style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px;">
+        <button class="btn" onclick="history.back()">戻る</button>
+        <button class="btn primary" onclick="window.print()">印刷</button>
+      </div>
+      <div class="paper">
+        <h1>入荷検品書</h1>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:14px;">
+          <div>
+            <div><b>入荷No:</b> IN-26060101</div>
+            <div><b>荷主:</b> MK001 マルキ食品</div>
+            <div><b>仕入先:</b> 関東食品㈱</div>
+          </div>
+          <div style="text-align:right;">
+            <div><b>予定日:</b> 2026-06-01</div>
+            <div><b>検品日時:</b> 2026-06-01 09:30</div>
+            <div><b>検品者:</b> 田中 太郎</div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr><th style="width:30px;">#</th><th>SKU</th><th>商品名</th><th>JAN</th><th>ロット</th><th class="right">予定数</th><th class="right">実績数</th><th class="right">差異</th><th>備考</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>SKU-MK001-001</td><td>シャンプー300ml</td><td style="font-family:var(--f-mono);">4901234567001</td><td>L260601-01</td><td style="text-align:right;">120</td><td style="text-align:right;">120</td><td style="text-align:right;">0</td><td></td></tr>
+            <tr><td>2</td><td>SKU-MK001-002</td><td>コンディショナー300ml</td><td style="font-family:var(--f-mono);">4901234567002</td><td>L260601-02</td><td style="text-align:right;">80</td><td style="text-align:right;">80</td><td style="text-align:right;">0</td><td></td></tr>
+            <tr><td>3</td><td>SKU-MK001-003</td><td>冷蔵牛乳1L</td><td style="font-family:var(--f-mono);">4901234567003</td><td>L260601-03</td><td style="text-align:right;">36</td><td style="text-align:right;">36</td><td style="text-align:right;">0</td><td></td></tr>
+            <tr><td colspan="5" style="text-align:right;"><b>合計</b></td><td style="text-align:right;"><b>236</b></td><td style="text-align:right;"><b>236</b></td><td style="text-align:right;"><b>0</b></td><td></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:24px; display:flex; justify-content:space-between;">
+          <div style="border:1px solid #000; padding:10px 30px; font-size:11px;">仕入先印</div>
+          <div style="border:1px solid #000; padding:10px 30px; font-size:11px;">検品者印</div>
+          <div style="border:1px solid #000; padding:10px 30px; font-size:11px;">承認者印</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロケマスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">マスタ　/　<b>ロケマスタ</b><span class="badge">PHASE 1</span></div>
+    </div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>ロケコード</label><input id="f-code"></div>
+            <div class="field"><label>倉庫</label><select id="f-wh"><option value="">全件</option><option value="WH001">WH001 東京DC</option><option value="YU001">YU001 湯浅運輸</option></select></div>
+            <div class="field"><label>種別</label><select id="f-type"><option value="">全件</option><option value="P">パレット</option><option value="T">棚</option><option value="F">流動棚</option><option value="K">仮置き</option><option value="R">不適合</option><option value="H">ハイラック</option></select></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <button class="btn primary" onclick="render()">検索</button>
+            <button class="btn primary" style="margin-left:auto;" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button>
+          </div>
+        </div></div>
+        <div class="card">
+          <div class="card-header"><span>ロケ一覧</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">コード</th><th class="c-text">倉庫</th><th class="c-text">階</th><th class="c-text">フロア</th><th class="c-text">種別</th><th class="c-text">通路</th><th class="c-text">位置</th><th class="c-num">温度帯</th><th class="c-code">専用荷主</th>
+              </tr></thead>
+              <tbody id="tb"></tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TYPE_LABEL = { P: 'パレット', T: '棚', F: '流動棚', K: '仮置き', R: '不適合', H: 'ハイラック' };
+const TEMP_LABEL = { ambient: '常温', cold: '冷蔵', frozen: '冷凍' };
+let all = [];
+async function init() {
+  all = await fetch('/api/locations').then(r => r.json()).catch(() => []);
+  render();
+}
+function render() {
+  const c = document.getElementById('f-code').value.trim().toLowerCase();
+  const w = document.getElementById('f-wh').value;
+  const t = document.getElementById('f-type').value;
+  const rows = all.filter(l => {
+    if (c && !(l.code || '').toLowerCase().includes(c)) return false;
+    if (w && l.warehouse_code !== w) return false;
+    if (t && l.type_char !== t) return false;
+    return true;
+  });
+  document.getElementById('meta').textContent = `${all.length}件中 ${rows.length}件表示`;
+  const tb = document.getElementById('tb');
+  tb.innerHTML = rows.length ? rows.map(l => `
+    <tr>
+      <td class="text-accent text-bold c-code">${escapeHtml(l.code)}</td>
+      <td class="c-text">${escapeHtml(l.warehouse_code || '-')}</td>
+      <td class="c-text">${escapeHtml(l.floor || '-')}</td>
+      <td class="c-text">${escapeHtml(l.floor_zone || '-')}</td>
+      <td class="c-text">${TYPE_LABEL[l.type_char] || l.type_char || '-'}</td>
+      <td class="c-text">${escapeHtml(l.aisle || '-')}</td>
+      <td class="c-text">${escapeHtml(l.position || '-')}</td>
+      <td class="c-num">${TEMP_LABEL[l.temp_zone] || l.temp_zone || '-'}</td>
+      <td class="c-code">${escapeHtml(l.owner_code || '共用')}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="9" style="text-align:center; padding:24px; color:var(--c-text-sub);">該当データなし</td></tr>';
+}
+init();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

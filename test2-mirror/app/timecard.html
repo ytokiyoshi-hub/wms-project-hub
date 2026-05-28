@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>App-3 勤怠 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app-mock.css">
+</head>
+<body>
+
+<h1 class="page-title">App-3 勤怠（出退勤打刻）</h1>
+<p class="subtitle">QRスキャンで打刻・休憩記録 (iPhone 375x812 想定)</p>
+
+<div class="app-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/app/home.html"><b>App-1</b>ホーム</a>
+  <a href="/app/shifts.html"><b>App-2</b>シフト</a>
+  <a href="/app/timecard.html" class="active"><b>App-3</b>勤怠</a>
+  <a href="/app/payroll.html"><b>App-4</b>給与</a>
+  <a href="/app/notice.html"><b>App-5</b>お知らせ</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="app-wrap">
+  <div class="app-device">
+    <div class="app-screen">
+      <div class="app-statusbar"><span id="clock">9:30</span><span>📶 100%</span></div>
+      <div class="app-header">
+        <div class="title">勤怠</div>
+        <div class="sub">2026年6月1日（月）</div>
+      </div>
+      <div class="app-body">
+        <div class="app-card" style="text-align:center;">
+          <div class="label">本日</div>
+          <div class="value big" style="font-size:36px;" id="big-clock">08:00</div>
+          <div style="font-size:11px; color:var(--c-accent); margin-top:6px;">出勤打刻済</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button style="background:var(--c-accent); color:#fff; border:none; padding:14px; font-weight:600; border-radius:6px;" onclick="alert('「休憩開始」モック動作（実装は後続フェーズ）')">休憩開始</button>
+          <button style="background:var(--c-alert); color:#fff; border:none; padding:14px; font-weight:600; border-radius:6px;" onclick="alert('「退勤」モック動作（実装は後続フェーズ）')">退勤</button>
+        </div>
+
+        <div class="app-card">
+          <div class="label">本日の記録</div>
+          <table style="width:100%; font-size:11px; margin-top:6px;">
+            <tbody>
+              <tr><td>出勤</td><td style="text-align:right; font-family:var(--f-mono);">08:00</td></tr>
+              <tr><td>休憩開始</td><td style="text-align:right; font-family:var(--f-mono); color:var(--c-text-sub);">-</td></tr>
+              <tr><td>休憩終了</td><td style="text-align:right; font-family:var(--f-mono); color:var(--c-text-sub);">-</td></tr>
+              <tr><td>退勤</td><td style="text-align:right; font-family:var(--f-mono); color:var(--c-text-sub);">-</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="app-tabbar">
+        <div class="tab" onclick="location.href='/app/home.html'"><span class="icon">🏠</span>ホーム</div>
+        <div class="tab" onclick="location.href='/app/shifts.html'"><span class="icon">📅</span>シフト</div>
+        <div class="tab active"><span class="icon">⏰</span>勤怠</div>
+        <div class="tab" onclick="location.href='/app/payroll.html'"><span class="icon">💴</span>給与</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">App-3</span>勤怠
+  <div class="desc-text">出退勤打刻・休憩記録</div>
+</div>
+
+<script>
+const setClock = () => {
+  const d = new Date();
+  document.getElementById('clock').textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('big-clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+};
+setClock(); setInterval(setClock, 30000);
+</script>
+</body>
+</html>

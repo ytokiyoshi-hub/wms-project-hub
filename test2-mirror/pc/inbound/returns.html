@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>返品入庫 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>返品入庫（U-1 RMA運用）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">入庫返品（U-1 入庫統一・RMA運用）</div>
+          通常入庫と返品入庫を分岐せず、入庫No.体系統一。RMA番号は付加情報扱い（QA確定）。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>受付日</label><input type="date" id="f-date"></div>
+            <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+            <div class="field"><label>状態</label><select id="f-status"><option value="">全て</option><option value="received">受付中</option><option value="completed">入庫済</option></select></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <button class="btn primary" onclick="render()">検索</button>
+            <button class="btn" onclick="clearFilters()">クリア</button>
+            <span id="stats" style="font-size:12px; color:var(--c-text-sub); margin-left:auto;">-</span>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>返品入庫一覧（実 API: /api/returns）</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>返品No</th><th>荷主</th><th>顧客</th><th>原因</th><th>受付日</th><th class="right">明細</th><th class="right">完了</th><th>状態</th><th class="center" style="width:200px;">操作</th>
+              </tr></thead>
+              <tbody id="tb"><tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let all = [];
+async function init() {
+  const [owners, returns] = await Promise.all([
+    fetch('/api/owners').then(r => r.json()).catch(() => []),
+    fetch('/api/returns').then(r => r.json()).catch(() => [])
+  ]);
+  const sel = document.getElementById('f-owner');
+  (owners || []).forEach(o => sel.insertAdjacentHTML('beforeend', `<option value="${esc(o.code)}">${esc(o.code)} ${esc(o.name)}</option>`));
+  all = returns || [];
+  render();
+}
+const DISPLAY_LIMIT = 100;
+function render() {
+  const owner = document.getElementById('f-owner').value;
+  const status = document.getElementById('f-status').value;
+  const date = document.getElementById('f-date').value;
+  const rows = all.filter(r => {
+    if (owner && r.owner_code !== owner) return false;
+    if (status && r.status !== status) return false;
+    if (date && r.return_date !== date) return false;
+    return true;
+  });
+  const shown = Math.min(rows.length, DISPLAY_LIMIT);
+  document.getElementById('stats').textContent = `全${all.length}件 / 該当${rows.length}件 / 表示${shown}件`;
+  document.getElementById('meta').textContent = `${shown}件表示`;
+  const tb = document.getElementById('tb');
+  if (rows.length === 0) {
+    tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-text-sub);">該当データなし</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.slice(0, DISPLAY_LIMIT).map(r => {
+    const pill = r.status === 'completed' ? '<span class="pill">入庫済</span>'
+              : r.status === 'received' ? '<span class="pill accent">受付中</span>'
+              : `<span class="pill">${esc(r.status)}</span>`;
+    return `
+      <tr>
+        <td class="num">${esc(r.return_no)}</td>
+        <td class="num">${esc(r.owner_code)}</td>
+        <td>${esc(r.customer_name || '-')}</td>
+        <td>${esc(r.reason || '-')}</td>
+        <td class="num">${esc(r.return_date || '-')}</td>
+        <td class="right num">${r.line_count ?? '-'}</td>
+        <td class="right num">${r.done_count ?? '-'}</td>
+        <td>${pill}</td>
+        <td class="center">
+          <a class="btn sm" href="/pc/inbound/return_inbound_detail.html">詳細</a>
+          ${r.status !== 'completed' ? `<a class="btn primary sm" href="/ht/returns/scan.html">HT検品へ</a>` : ''}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+function clearFilters() {
+  document.getElementById('f-owner').value = '';
+  document.getElementById('f-status').value = '';
+  document.getElementById('f-date').value = '';
+  render();
+}
+init();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

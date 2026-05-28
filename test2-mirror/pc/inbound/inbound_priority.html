@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入荷優先度 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>入荷優先度（W-414 検品順序）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">入荷検品の優先順位ルール（W-414）</div>
+          当日出荷予定 / クロスドック / 冷蔵品 / 危険物 などを優先検品。SKU引当待ち状況とも連動。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>検品待ち入荷予定（実 API: status=planned 並び）</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>順</th><th>入荷No</th><th>荷主</th><th>仕入先</th><th>予定日</th><th class="right">明細</th><th class="right">優先スコア</th><th>主要因</th><th class="center">操作</th></tr></thead>
+              <tbody id="tb"><tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>優先度スコアリング</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>因子</th><th>スコア</th><th>備考</th></tr></thead>
+              <tbody>
+                <tr><td>当日出荷紐付</td><td class="num text-accent">+40</td><td>受注待ち / クロスドック</td></tr>
+                <tr><td>冷蔵 / 冷凍</td><td class="num text-alert">+30</td><td>品質劣化リスク</td></tr>
+                <tr><td>賞味期限 ≤7日</td><td class="num text-alert">+25</td><td>FEFO引当のため</td></tr>
+                <tr><td>危険物</td><td class="num text-alert">+20</td><td>適正保管</td></tr>
+                <tr><td>翌日出荷</td><td class="num">+15</td><td>標準</td></tr>
+                <tr><td>大ロット（≥10PT）</td><td class="num">+10</td><td>滞留防止</td></tr>
+                <tr><td>長期保管</td><td class="num">+0</td><td>標準</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = new Date().toISOString().slice(0, 10);
+async function loadData() {
+  try {
+    const all = await fetch('/api/inbound-schedules').then(r => r.json());
+    const pending = (all || []).filter(s => s.status === 'planned' || !s.status);
+    // 優先スコア計算: 当日=+40, 翌日=+15, それ以外=0
+    const scored = pending.map(s => {
+      let score = 0; let reason = [];
+      if (s.scheduled_date === today) { score += 40; reason.push('当日'); }
+      else if (s.scheduled_date) {
+        const days = Math.floor((new Date(s.scheduled_date) - new Date(today)) / 86400000);
+        if (days === 1) { score += 15; reason.push('翌日'); }
+        else if (days > 1) reason.push(`${days}日後`);
+        else reason.push('過去日');
+      }
+      if (s.order_type === 'return') { score += 10; reason.push('返品'); }
+      score += (s.line_count || 0) * 2;  // 大ロット
+      return { ...s, score, reason: reason.join('/') || '標準' };
+    }).sort((a, b) => b.score - a.score).slice(0, 20);
+
+    document.getElementById('meta').textContent = `${scored.length}件 / 全 ${pending.length}件中 上位20`;
+    const tb = document.getElementById('tb');
+    if (scored.length === 0) {
+      tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-text-sub);">検品待ち入荷なし</td></tr>';
+      return;
+    }
+    tb.innerHTML = scored.map((s, i) => {
+      const pillCls = s.score >= 40 ? 'alert' : s.score >= 15 ? 'accent' : '';
+      return `
+        <tr ${s.score >= 40 ? 'style="background:var(--c-alert-lt);"' : ''}>
+          <td class="num">${i+1}</td>
+          <td class="num">${esc(s.schedule_no)}</td>
+          <td class="num">${esc(s.owner_code)}</td>
+          <td>${esc(s.supplier_name || '-')}</td>
+          <td class="num">${esc(s.scheduled_date)}</td>
+          <td class="right num">${s.line_count || 0}</td>
+          <td class="right num ${s.score >= 40 ? 'text-alert' : ''}">${s.score}</td>
+          <td>${esc(s.reason)}</td>
+          <td class="center"><button class="btn sm ${pillCls === 'alert' ? 'primary' : ''}" onclick="location.href='/pc/inbound/plans.html'">検品開始</button></td>
+        </tr>
+      `;
+    }).join('');
+  } catch (e) {
+    document.getElementById('tb').innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+loadData();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>速達対応 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>速達対応（W-340 当日午前納品）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">当日午前納品（速達）対応（W-340）</div>
+          VIP顧客 / 緊急受注向けの「当日午前納品」枠。割増料金・専属ピッカー・自社便優先。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の速達対応</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SO番号</th><th class="c-code">顧客</th><th class="c-date">受注時刻</th><th class="c-date">納品期限</th><th class="c-status">状態</th><th class="c-text">割増料</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SO-26060001</td><td class="c-code">東京食品センター</td><td class="c-date">07:30</td><td class="c-date">11:00</td><td class="c-status"><span class="pill accent">納品済</span></td><td class="c-text">¥3,500</td></tr>
+                <tr><td class="c-code">SO-26060003</td><td class="c-code">営業課A</td><td class="c-date">08:42</td><td class="c-date">12:00</td><td class="c-status"><span class="pill">配送中</span></td><td class="c-text">¥3,500</td></tr>
+                <tr><td class="c-code">SO-26060008</td><td class="c-code">東京食品 川崎店</td><td class="c-date">10:15</td><td class="c-date">13:30</td><td class="c-status"><span class="pill">ピック中</span></td><td class="c-text">¥3,500</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>速達対応ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-num">条件</th><th class="c-text">説明</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-num">対象</td><td class="c-text">VIP顧客 / 荷主特別要請</td></tr>
+                <tr><td class="c-num">受注締切</td><td class="c-text">10:30まで（11:00開始の自社便を活用）</td></tr>
+                <tr><td class="c-num">納品エリア</td><td class="c-text">東京23区 / 川崎市の一部</td></tr>
+                <tr><td class="c-num">専属ピッカー</td><td class="c-text">1名常時待機（07:00〜11:00）</td></tr>
+                <tr><td class="c-num">運送</td><td class="c-text">自社便のみ（外部運送会社不可）</td></tr>
+                <tr><td class="c-num">割増料金</td><td class="c-text">¥3,500/件（顧客 or 荷主負担）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月実績</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>速達件数</label><div class="text-mono" style="font-weight:600;">28</div></div>
+              <div class="field"><label>SLA達成</label><div class="text-mono text-accent" style="font-weight:600;">28 (100%)</div></div>
+              <div class="field"><label>追加売上</label><div class="text-mono text-accent" style="font-weight:600;">¥98,000</div></div>
+              <div class="field"><label>主要顧客</label><div class="text-mono">東京食品センター / 営業課A</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

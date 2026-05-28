@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>外部依存ヘルス — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>外部依存ヘルス（A-9 統合監視）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">外部システムの稼働状況統合監視（A-9）</div>
+          EDI / API / SMTP / プリンタ / 温度センサーなど全外部依存を一覧監視。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>サービス状態（現在）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">サービス</th><th class="c-text">分類</th><th class="c-status">状態</th><th class="c-num">応答時間</th><th class="c-text">最終成功</th><th class="c-text">直近1h失敗</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">MK001 EDI（SFTP）</td><td class="c-text"><span class="pill">EDI</span></td><td class="c-status"><span class="pill accent">正常</span></td><td class="c-num">88ms</td><td class="c-text">14:32</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">AP001 SFTP</td><td class="c-text"><span class="pill">EDI</span></td><td class="c-status"><span class="pill accent">正常</span></td><td class="c-num">142ms</td><td class="c-text">06:00</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">EC001 API（Webhook）</td><td class="c-text"><span class="pill">API</span></td><td class="c-status"><span class="pill accent">正常</span></td><td class="c-num">220ms</td><td class="c-text">14:32</td><td class="c-text">2</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PR001 SFTP</td><td class="c-text"><span class="pill">EDI</span></td><td class="c-status"><span class="pill alert">障害中</span></td><td class="text-alert c-num">timeout</td><td class="c-text">12:00</td><td class="text-alert c-text">5</td></tr>
+                <tr><td class="c-text">佐川e-Net</td><td class="c-text"><span class="pill">TMS</span></td><td class="c-status"><span class="pill accent">正常</span></td><td class="c-num">320ms</td><td class="c-text">14:30</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">ヤマトB2クラウド</td><td class="c-text"><span class="pill">TMS</span></td><td class="c-status"><span class="pill accent">正常</span></td><td class="c-num">280ms</td><td class="c-text">14:25</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">SendGrid（メール）</td><td class="c-text"><span class="pill">通知</span></td><td class="c-status"><span class="pill accent">正常</span></td><td class="c-num">180ms</td><td class="c-text">14:32</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">LINE Messaging API</td><td class="c-text"><span class="pill">通知</span></td><td class="c-status"><span class="pill accent">正常</span></td><td class="c-num">220ms</td><td class="c-text">14:20</td><td class="c-text">0</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PRT-003（出荷バース）</td><td class="c-text"><span class="pill">プリンタ</span></td><td class="c-status"><span class="pill alert">用紙切れ</span></td><td class="c-num">-</td><td class="c-text">13:42</td><td class="c-text">3</td></tr>
+                <tr><td class="c-text">SNS-REF1（冷蔵庫1）</td><td class="c-text"><span class="pill">センサー</span></td><td class="c-status"><span class="pill accent">正常</span></td><td class="c-num">5秒間隔</td><td class="c-text">14:32</td><td class="c-text">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去24時間 可用性</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">サービス</th><th class="c-text">アップタイム</th><th class="c-num">障害時間</th><th class="c-text">SLA目標</th><th class="c-status">判定</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">MK001 EDI</td><td class="text-accent c-text">100.00%</td><td class="c-num">0分</td><td class="c-text">99.9%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">EC001 API</td><td class="c-text">99.96%</td><td class="c-num">35秒</td><td class="c-text">99.9%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PR001 SFTP</td><td class="text-alert c-text">89.6%</td><td class="text-alert c-num">150分</td><td class="c-text">99.0%</td><td class="c-status"><span class="pill alert">未達</span></td></tr>
+                <tr><td class="c-text">佐川e-Net</td><td class="c-text">99.92%</td><td class="c-num">1.2分</td><td class="c-text">99.5%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「PR001 SFTP 再接続」モック動作（実装は後続フェーズ）')">PR001 SFTP 再接続</button>
+          <button class="btn primary" onclick="alert('「障害レポート出力」モック動作（実装は後続フェーズ）')">障害レポート出力</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

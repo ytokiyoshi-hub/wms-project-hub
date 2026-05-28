@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>料金階段（量割引） — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>料金階段（B-3 数量別単価）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">数量／件数によるボリュームディスカウント（B-3）</div>
+          荷主別×サービス別に階段料金を定義。月次集計時に階段適用→請求額算出。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>料金階段一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">サービス</th><th class="c-text">階段</th><th class="c-text">下限</th><th class="c-text">上限</th><th class="c-num">単価</th><th class="c-text">適用</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">入庫</td><td class="c-text">Tier-1</td><td class="c-text">0</td><td class="c-text">999</td><td class="c-num">¥40</td><td class="c-text"><span class="pill accent">適用中</span></td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-text">入庫</td><td class="c-text">Tier-2</td><td class="c-text">1,000</td><td class="c-text">4,999</td><td class="c-num">¥36</td><td class="c-text"><span class="pill accent">適用中</span></td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-text">入庫</td><td class="c-text">Tier-3</td><td class="c-text">5,000</td><td class="c-text">-</td><td class="c-num">¥32</td><td class="c-text"><span class="pill accent">適用中</span></td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-text">出庫</td><td class="c-text">Tier-1</td><td class="c-text">0</td><td class="c-text">499</td><td class="c-num">¥55</td><td class="c-text"><span class="pill accent">適用中</span></td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-text">出庫</td><td class="c-text">Tier-2</td><td class="c-text">500</td><td class="c-text">-</td><td class="c-num">¥48</td><td class="c-text"><span class="pill accent">適用中</span></td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">EC出荷</td><td class="c-text">Tier-1</td><td class="c-text">0</td><td class="c-text">199</td><td class="c-num">¥120</td><td class="c-text"><span class="pill accent">適用中</span></td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">EC出荷</td><td class="c-text">Tier-2</td><td class="c-text">200</td><td class="c-text">-</td><td class="c-num">¥98</td><td class="c-text"><span class="pill accent">適用中</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月適用シミュレーション（MK001 入庫）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">階段</th><th class="c-num">対象件数</th><th class="c-num">単価</th><th class="c-text">小計</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">Tier-1（0〜999）</td><td class="c-num">999</td><td class="c-num">¥40</td><td class="c-text">¥39,960</td></tr>
+                <tr><td class="c-text">Tier-2（1,000〜4,999）</td><td class="c-num">4,000</td><td class="c-num">¥36</td><td class="c-text">¥144,000</td></tr>
+                <tr><td class="c-text">Tier-3（5,000〜）</td><td class="c-num">1,250</td><td class="c-num">¥32</td><td class="c-text">¥40,000</td></tr>
+                <tr style="font-weight:600;"><td class="c-text">合計</td><td class="c-num">6,249</td><td class="c-num">-</td><td class="c-text">¥223,960</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

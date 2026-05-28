@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>IoTデバイス管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>IoTデバイス管理（S-48 センサー/カメラ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">IoTセンサー・カメラの管理（S-48）</div>
+          温度・湿度・振動・人感センサー、監視カメラ、AGV/AMR等の登録・状態監視。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>IoTデバイス一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">デバイスID</th><th class="c-text">種別</th><th class="c-text">設置場所</th><th class="c-text">通信</th><th class="c-text">バッテリ</th><th class="c-text">最終通信</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">SNS-001</td><td class="c-text"><span class="pill">温度</span></td><td class="c-text">1F A通路</td><td class="c-text">Wi-Fi</td><td class="c-text">電源</td><td class="c-text">14:32</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">SNS-REF1</td><td class="c-text"><span class="pill accent">温度（チルド）</span></td><td class="c-text">冷蔵庫1</td><td class="c-text">Wi-Fi</td><td class="c-text">電源</td><td class="c-text">14:32</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">SNS-FRZ1</td><td class="c-text"><span class="pill alert">温度（冷凍）</span></td><td class="c-text">冷凍庫1</td><td class="c-text">Wi-Fi</td><td class="c-text">電源</td><td class="c-text">14:32</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">VBR-001</td><td class="c-text"><span class="pill">振動</span></td><td class="c-text">パレットラック</td><td class="c-text">LoRaWAN</td><td class="c-text">82%</td><td class="c-text">14:30</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">CAM-001</td><td class="c-text"><span class="pill">監視カメラ</span></td><td class="c-text">1F 入荷バース</td><td class="c-text">有線</td><td class="c-text">電源</td><td class="c-text">継続</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">CAM-005</td><td class="c-text"><span class="pill">監視カメラ</span></td><td class="c-text">3F サーバ室</td><td class="c-text">有線</td><td class="c-text">電源</td><td class="c-text">継続</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">AGV-001</td><td class="c-text"><span class="pill accent">AGV</span></td><td class="c-text">2F EC専用</td><td class="c-text">Wi-Fi</td><td class="c-text">68%</td><td class="c-text">14:31</td><td class="c-status"><span class="pill accent">稼働中</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">SNS-HUM-01</td><td class="c-text"><span class="pill">湿度</span></td><td class="c-text">3F 化粧品</td><td class="c-text">Wi-Fi</td><td class="text-alert c-text">15%</td><td class="text-alert c-text">06:00</td><td class="c-status"><span class="pill alert">通信切</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>デバイス統計</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>登録総数</label><div class="text-mono" style="font-weight:600;">68</div></div>
+              <div class="field"><label>稼働中</label><div class="text-mono text-accent" style="font-weight:600;">66</div></div>
+              <div class="field"><label>通信切</label><div class="text-mono text-alert" style="font-weight:600;">1</div></div>
+              <div class="field"><label>バッテリ低下</label><div class="text-mono text-alert" style="font-weight:600;">1</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

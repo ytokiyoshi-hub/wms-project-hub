@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>APIエンドポイント仕様 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>APIエンドポイント仕様（X-9 API一覧）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">公開API仕様（X-9）</div>
+          荷主システムから利用可能なREST API。各エンドポイントは認証必須。OpenAPI 3.0準拠。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>主要エンドポイント</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">メソッド</th><th class="c-text">パス</th><th class="c-text">説明</th><th class="c-text">必要スコープ</th><th class="c-text">レート</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/inventory</td><td class="c-text">荷主の在庫一覧</td><td class="c-text"><span class="pill accent">read</span></td><td class="c-text">60/分</td></tr>
+                <tr><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/inventory/{sku_code}</td><td class="c-text">SKU個別在庫</td><td class="c-text"><span class="pill accent">read</span></td><td class="c-text">120/分</td></tr>
+                <tr><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/inventory/snapshot/daily</td><td class="c-text">日次スナップショット</td><td class="c-text"><span class="pill accent">read</span></td><td class="c-text">10/分</td></tr>
+                <tr><td class="c-text"><span class="pill accent">POST</span></td><td class="text-xs c-text">/api/v1/orders</td><td class="c-text">受注登録</td><td class="c-text"><span class="pill">write</span></td><td class="c-text">600/分</td></tr>
+                <tr><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/orders/{so_no}</td><td class="c-text">受注詳細</td><td class="c-text"><span class="pill accent">read</span></td><td class="c-text">120/分</td></tr>
+                <tr><td class="c-text"><span class="pill alert">DELETE</span></td><td class="text-xs c-text">/api/v1/orders/{so_no}</td><td class="c-text">受注キャンセル</td><td class="c-text"><span class="pill">write</span></td><td class="c-text">30/分</td></tr>
+                <tr><td class="c-text"><span class="pill accent">POST</span></td><td class="text-xs c-text">/api/v1/asn</td><td class="c-text">入荷予定登録</td><td class="c-text"><span class="pill">write</span></td><td class="c-text">60/分</td></tr>
+                <tr><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/asn/{asn_no}</td><td class="c-text">入荷予定詳細</td><td class="c-text"><span class="pill accent">read</span></td><td class="c-text">60/分</td></tr>
+                <tr><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/shipments/{so_no}/tracking</td><td class="c-text">配送追跡</td><td class="c-text"><span class="pill accent">read</span></td><td class="c-text">300/分</td></tr>
+                <tr><td class="c-text"><span class="pill accent">POST</span></td><td class="text-xs c-text">/api/v1/returns</td><td class="c-text">返品依頼登録</td><td class="c-text"><span class="pill">write</span></td><td class="c-text">60/分</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>共通仕様</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">仕様</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">認証</td><td class="c-text">Bearer Token（APIキー）または HMAC-SHA256（リクエスト署名）</td></tr>
+                <tr><td class="c-text">形式</td><td class="c-text">JSON（UTF-8）</td></tr>
+                <tr><td class="c-text">タイムゾーン</td><td class="c-text">JST（ISO 8601 形式）</td></tr>
+                <tr><td class="c-text">ページング</td><td class="c-text">?page=1&per_page=100（最大1000）</td></tr>
+                <tr><td class="c-text">レート超過時</td><td class="c-text">HTTP 429 + Retry-After ヘッダ</td></tr>
+                <tr><td class="c-text">べき等性</td><td class="c-text">POST に Idempotency-Key ヘッダ対応（24h保持）</td></tr>
+                <tr><td class="c-text">API バージョン</td><td class="c-text">v1（現行）/ v2（2027 Q1 リリース予定）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「OpenAPI仕様 DL」モック動作（実装は後続フェーズ）')">OpenAPI仕様 DL</button>
+          <button class="btn primary" onclick="alert('「Swagger UI」モック動作（実装は後続フェーズ）')">Swagger UI</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

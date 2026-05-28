@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT-306 積込確認 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-306 積込確認</h1>
+<p class="subtitle">トラックへの積込時にカゴをスキャンして予定との照合 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/inspect/asn.html"><b>HT-403</b>検品</a>
+  <a href="/ht/putaway/instructions.html"><b>HT-406</b>棚入れ</a>
+  <a href="/ht/wave/progress.html"><b>HT-208</b>ウェーブ進捗</a>
+  <a href="/ht/handover/confirm.html"><b>HT-307</b>引渡確認</a>
+  <a href="/ht/loading/confirm.html" class="active"><b>HT-306</b>積込確認</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">14:25 60%</span></div>
+      <div class="ht-header">
+        <span>積込確認</span>
+        <span class="scr-id">HT-306</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
+          <div style="font-size:9px; color:var(--c-text-sub);">対象便</div>
+          <div style="font-size:11px; font-weight:600;" id="loading-no">読込中</div>
+          <div style="font-size:9px; color:var(--c-text-sub);" id="carrier-info">-</div>
+        </div>
+
+        <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
+          <div style="font-size:9px; color:var(--c-text-sub);">積込進捗</div>
+          <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+            <div style="font-family:var(--f-mono); font-weight:700; font-size:24px; color:var(--c-accent);" id="loaded">10</div>
+            <div style="font-size:11px; color:var(--c-text-sub);">/</div>
+            <div style="font-family:var(--f-mono); font-weight:600; font-size:18px;">12</div>
+            <div style="font-size:11px;">個口</div>
+          </div>
+          <div style="height:8px; background:var(--c-line); margin-top:6px;">
+            <div style="height:100%; background:var(--c-accent); width:83%;" id="load-bar"></div>
+          </div>
+        </div>
+
+        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
+          <div style="font-size:9px; color:var(--c-accent); font-weight:600;">最後にスキャン</div>
+          <div style="font-size:10px; font-family:var(--f-mono); margin-top:2px;" id="last-cage">CON-260501-0010</div>
+          <div style="font-size:9px; margin-top:2px;" id="last-info">SO-00125 / 1/2 個口</div>
+        </div>
+
+        <input id="scan-input" placeholder="カゴをスキャン" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);" autofocus>
+
+        <div style="font-size:10px; color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-line-dk);" id="remain-msg">
+          ★ 残2個口 → 続けてスキャン
+        </div>
+
+        <div style="font-size:9px; margin-top:auto; padding:5px 6px; background:var(--c-alert-lt); border-left:3px solid var(--c-alert); color:var(--c-alert);">
+          ⚠ 予定外品の検知時：即停止・リーダー確認
+        </div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" id="key-complete"><span class="fn">F1</span>積込完了</div>
+        <div class="key-lbl"><span class="fn">F2</span>取消</div>
+        <div class="key-lbl"><span class="fn">F3</span>残一覧</div>
+        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row">
+        <div class="pkey scan">SCAN</div>
+      </div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-306</span>積込確認
+  <div class="desc-text">トラック横でカゴをSCANしながら積込。予定外品はエラー停止。全件完了でF1積込完了。</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 60%`; };
+setClock(); setInterval(setClock, 30000);
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let loadingId = sessionStorage.getItem('loading_id');
+let loadingNo = sessionStorage.getItem('loading_no');
+let orders = [];
+
+async function load() {
+  try {
+    if (!loadingId) {
+      const all = await fetch('/api/loadings').then(r => r.json()) || [];
+      const target = all.find(l => l.status !== 'completed') || all[0];
+      if (!target) {
+        document.getElementById('loading-no').textContent = '計画なし';
+        return;
+      }
+      loadingId = target.id;
+      loadingNo = target.loading_no;
+    }
+    document.getElementById('loading-no').textContent = loadingNo || '-';
+    const detail = await fetch(`/api/loadings/${loadingId}`).then(r => r.json());
+    document.getElementById('carrier-info').textContent = `${detail.carrier_name || detail.carrier_code || '-'} / ${detail.scheduled_at || ''}`;
+    orders = detail.orders || [];
+    redraw();
+  } catch (e) {
+    document.getElementById('loading-no').textContent = '読込失敗';
+  }
+}
+function redraw() {
+  const total = orders.length || 1;
+  const loaded = orders.filter(o => o.loaded).length;
+  document.getElementById('loaded').textContent = loaded;
+  const totalEl = document.querySelector('[style*="font-size:18px"]');
+  if (totalEl) totalEl.textContent = orders.length;
+  document.getElementById('load-bar').style.width = (loaded/total*100) + '%';
+  document.getElementById('remain-msg').textContent = `★ 残${orders.length - loaded}件 → 続けてスキャン`;
+}
+load();
+
+async function scanCage() {
+  const v = document.getElementById('scan-input').value.trim();
+  if (!v) return;
+  if (!loadingId) { alert('計画未読込'); return; }
+  const target = orders.find(o => (o.order_no === v || `#${o.order_id}` === v || v === 'AUTO') && !o.loaded)
+    || orders.find(o => !o.loaded);
+  if (!target) { alert('対象なし'); return; }
+  try {
+    const res = await fetch(`/api/loadings/${loadingId}/load-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ loading_order_id: target.id })
+    });
+    if (!res.ok) { alert(`積込失敗`); return; }
+    target.loaded = 1;
+    document.getElementById('last-cage').textContent = target.order_no || `#${target.order_id}`;
+    document.getElementById('last-info').textContent = `${target.customer_name || ''}`;
+    document.getElementById('scan-input').value = '';
+    document.getElementById('scan-input').focus();
+    redraw();
+  } catch (e) {
+    alert(`通信エラー: ${e.message}`);
+  }
+}
+document.getElementById('scan-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') scanCage(); });
+document.getElementById('key-complete').addEventListener('click', async () => {
+  const remain = orders.filter(o => !o.loaded).length;
+  if (remain > 0 && !confirm(`残${remain}件あります。本当に完了？`)) return;
+  alert(`積込完了: ${loadingNo}`);
+  location.href = '/';
+});
+window.htSimulateScan = () => {
+  document.getElementById('scan-input').value = 'AUTO';
+  scanCage();
+};
+</script>
+</body>
+</html>

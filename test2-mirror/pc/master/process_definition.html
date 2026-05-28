@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>工程定義 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>工程定義（S-70 業務プロセス定義）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">業務プロセスの工程粒度定義（S-70）</div>
+          WMS内で扱う全工程を体系化。各工程の前後関係・所属モジュール・責任者を明示。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>工程一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">工程ID</th><th class="c-text">名称</th><th class="c-text">モジュール</th><th class="c-text">前工程</th><th class="c-code">標準担当</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">P-IN-01</td><td class="c-text">ASN受信</td><td class="c-text">入荷</td><td class="c-text">-</td><td class="c-code">EDI</td></tr>
+                <tr><td class="c-text">P-IN-02</td><td class="c-text">着車予約</td><td class="c-text">入荷</td><td class="c-text">P-IN-01</td><td class="c-code">仕入先</td></tr>
+                <tr><td class="c-text">P-IN-03</td><td class="c-text">到着受付</td><td class="c-text">入荷</td><td class="c-text">P-IN-02</td><td class="c-code">入荷担当</td></tr>
+                <tr><td class="c-text">P-IN-04</td><td class="c-text">検品</td><td class="c-text">入荷</td><td class="c-text">P-IN-03</td><td class="c-code">入荷担当</td></tr>
+                <tr><td class="c-text">P-IN-05</td><td class="c-text">棚入れ</td><td class="c-text">入荷</td><td class="c-text">P-IN-04</td><td class="c-code">入荷担当</td></tr>
+                <tr><td class="c-text">P-OUT-01</td><td class="c-text">受注受信</td><td class="c-text">出荷</td><td class="c-text">-</td><td class="c-code">API/EDI</td></tr>
+                <tr><td class="c-text">P-OUT-02</td><td class="c-text">引当</td><td class="c-text">出荷</td><td class="c-text">P-OUT-01</td><td class="c-code">システム</td></tr>
+                <tr><td class="c-text">P-OUT-03</td><td class="c-text">ピッキング</td><td class="c-text">出荷</td><td class="c-text">P-OUT-02</td><td class="c-code">出荷担当</td></tr>
+                <tr><td class="c-text">P-OUT-04</td><td class="c-text">梱包</td><td class="c-text">出荷</td><td class="c-text">P-OUT-03</td><td class="c-code">梱包担当</td></tr>
+                <tr><td class="c-text">P-OUT-05</td><td class="c-text">検品</td><td class="c-text">出荷</td><td class="c-text">P-OUT-04</td><td class="c-code">出荷担当</td></tr>
+                <tr><td class="c-text">P-OUT-06</td><td class="c-text">引渡</td><td class="c-text">出荷</td><td class="c-text">P-OUT-05</td><td class="c-code">出荷担当</td></tr>
+                <tr><td class="c-text">P-OUT-07</td><td class="c-text">積込</td><td class="c-text">出荷</td><td class="c-text">P-OUT-06</td><td class="c-code">運送会社</td></tr>
+                <tr><td class="c-text">P-OUT-08</td><td class="c-text">配送</td><td class="c-text">配送</td><td class="c-text">P-OUT-07</td><td class="c-code">運送会社</td></tr>
+                <tr><td class="c-text">P-OUT-09</td><td class="c-text">配達完了</td><td class="c-text">配送</td><td class="c-text">P-OUT-08</td><td class="c-code">運送会社</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>工程間 連動ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-num">条件</th><th class="c-text">発火</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-num">P-IN-04（検品）完了かつ受注紐付あり</td><td class="c-text">P-OUT-03（ピック）スキップしてP-OUT-06（引渡）へ → クロスドック</td></tr>
+                <tr><td class="c-num">P-OUT-09（配達完了）</td><td class="c-text">会計連携・荷主請求の確定</td></tr>
+                <tr><td class="c-num">P-IN-04（検品）で差異検出</td><td class="c-text">差異処理プロセスへ分岐</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>音声入荷検品 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>音声入荷検品（W-426 ハンズフリー検品）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ハンズフリー音声検品（W-426）</div>
+          音声端末（VOI-001/002）で「商品コード読上→数量応答」のハンズフリー検品。両手が空くため大型品検品で効率化。
+          <div style="margin-top:6px; font-size:11px; color:var(--c-text-sub);">※ 音声端末ログAPI未実装。下表はモック。実検品ログは <a href="/pc/inbound/inspection_status.html">検品進捗</a>、<a href="/pc/inbound/inspection_history.html">検品履歴</a> へ。</div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の音声検品セッション</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>セッション</th><th>ASN</th><th>担当</th><th>機器</th><th class="right">検品行</th><th class="right">所要</th><th>状態</th><th class="center">操作</th></tr></thead>
+              <tbody>
+                <tr><td class="num">VS-26060101</td><td class="num">ASN-26060101</td><td>佐藤太郎</td><td class="num">VOI-001</td><td class="right num">42</td><td class="right num">28分</td><td><span class="pill accent">完了</span></td><td class="center"><button class="btn sm" onclick="viewSession('VS-26060101')">ログ</button></td></tr>
+                <tr><td class="num">VS-26060102</td><td class="num">ASN-26060102</td><td>鈴木花子</td><td class="num">VOI-002</td><td class="right num">35</td><td class="right num">22分</td><td><span class="pill accent">完了</span></td><td class="center"><button class="btn sm" onclick="viewSession('VS-26060102')">ログ</button></td></tr>
+                <tr><td class="num">VS-26060103</td><td class="num">ASN-26060104</td><td>山本健介</td><td class="num">VOI-001</td><td class="right num">28</td><td class="right num">進行中</td><td><span class="pill">進行中</span></td><td class="center"><button class="btn sm" onclick="viewSession('VS-26060103')">ログ</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>音声プロンプト例</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>段階</th><th>システム → 作業者</th><th>作業者 → システム</th></tr></thead>
+              <tbody>
+                <tr><td>1. 開始</td><td>「次の商品。シャンプー300ml、予定数120」</td><td>「Ready」</td></tr>
+                <tr><td>2. スキャン</td><td>「バーコードを読んでください」</td><td>HTスキャン or 「マニュアル」</td></tr>
+                <tr><td>3. 数量確認</td><td>「数量は？」</td><td>「120」</td></tr>
+                <tr><td>4. 完了</td><td>「次の商品。コンディショナー300ml、予定数80」</td><td>「Ready」</td></tr>
+                <tr><td>差異時</td><td>「差異あり。実数は？」</td><td>「118」 → 「2件不足。続行？」 → 「Yes」</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月効果</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>音声セッション数</label><div class="text-mono" style="font-weight:600;">82</div></div>
+              <div class="field"><label>平均速度（行/h）</label><div class="text-mono text-accent" style="font-weight:600;">85</div></div>
+              <div class="field"><label>HT検品との比較</label><div class="text-mono text-accent" style="font-weight:600;">+45%</div></div>
+              <div class="field"><label>誤検品率</label><div class="text-mono text-accent" style="font-weight:600;">0.05%</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/pc/inbound/inspection_status.html">検品進捗</a>
+              <a class="btn" href="/pc/inbound/inspection_history.html">検品履歴</a>
+              <a class="btn" href="/pc/inbound/inbound_kpi.html">入荷KPI</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function viewSession(no) { alert(`セッション ${no} の音声ログを表示します（モック）`); }
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

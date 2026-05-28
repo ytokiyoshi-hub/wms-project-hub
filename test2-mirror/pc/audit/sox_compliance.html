@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SOX対応 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>SOX対応（A-14 内部統制）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">J-SOX対応（内部統制報告）（A-14）</div>
+          財務報告に係る内部統制の整備・運用状況。WMSが財務影響を持つ業務プロセスを統制対象として管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>統制対象プロセス</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">プロセス</th><th class="c-text">財務影響</th><th class="c-text">キーコントロール</th><th class="c-text">評価結果</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">入荷確定→在庫増</td><td class="c-text">仕入計上</td><td class="c-text">2重照合（WMS+荷主）</td><td class="c-text"><span class="pill accent">適切</span></td></tr>
+                <tr><td class="c-text">出荷確定→売上計上</td><td class="c-text">売上計上</td><td class="c-text">出荷確定EDI送信＋追跡番号付与</td><td class="c-text"><span class="pill accent">適切</span></td></tr>
+                <tr><td class="c-text">月末スナップショット</td><td class="c-text">在庫評価額</td><td class="c-text">スナップショット改ざん検知</td><td class="c-text"><span class="pill accent">適切</span></td></tr>
+                <tr><td class="c-text">棚卸</td><td class="c-text">在庫実存性</td><td class="c-text">サイクルカウント＋外部監査</td><td class="c-text"><span class="pill accent">適切</span></td></tr>
+                <tr><td class="c-text">マスタ変更</td><td class="c-text">料金単価</td><td class="c-text">変更履歴＋承認ワークフロー</td><td class="c-text"><span class="pill accent">適切</span></td></tr>
+                <tr><td class="c-text">請求書発行</td><td class="c-text">売掛金</td><td class="c-text">承認ワークフロー</td><td class="c-text"><span class="pill accent">適切</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>セグリゲーション（職務分離）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">業務</th><th class="c-text">申請</th><th class="c-text">承認</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">料金単価変更</td><td class="c-text">営業</td><td class="c-text">営業部長</td></tr>
+                <tr><td class="c-text">在庫調整</td><td class="c-text">現場リーダー</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-text">請求書発行</td><td class="c-text">請求担当</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-text">クレジットノート</td><td class="c-text">営業</td><td class="c-text">マネージャー or 営業部長</td></tr>
+                <tr><td class="c-text">マスタ削除</td><td class="c-text">システム管理者</td><td class="c-text">マネージャー</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>整備・運用評価結果</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>整備評価</label><div><span class="pill accent">適切</span></div></div>
+              <div class="field"><label>運用評価（サンプリング）</label><div><span class="pill accent">適切</span></div></div>
+              <div class="field"><label>サンプル数</label><div class="text-mono">42（過去12ヶ月）</div></div>
+              <div class="field"><label>不備件数</label><div class="text-mono text-accent" style="font-weight:600;">0</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

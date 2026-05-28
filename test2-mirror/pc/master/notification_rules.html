@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>通知ルール詳細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>通知ルール詳細（N-6 条件マッチ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">通知発火の詳細条件（N-6）</div>
+          単純なイベント発火だけでなく、「金額がX以上」「特定荷主」「VIP顧客」など複合条件を定義。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>登録通知ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ルール</th><th class="c-text">イベント</th><th class="c-num">条件</th><th class="c-text">通知先</th><th class="c-text">テンプレ</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">NR-001</td><td class="c-text">出荷確定</td><td class="c-num">金額 ≥ ¥100,000</td><td class="c-text">営業部長</td><td class="c-text">TPL-VIP-001</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">NR-002</td><td class="c-text">差異検出</td><td class="c-num">差異率 ≥ 5%</td><td class="c-text">マネージャー + 荷主</td><td class="c-text">TPL-001</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">NR-003</td><td class="c-text">SLA違反</td><td class="c-num">VIP顧客 OR 荷主重要度A</td><td class="c-text">営業 + 営業部長</td><td class="c-text">TPL-SLA-001</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">NR-004</td><td class="c-text">温度逸脱</td><td class="c-num">逸脱時間 ≥ 30分</td><td class="c-text">QA + マネージャー + 荷主</td><td class="c-text">TPL-TEMP-001</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">NR-005</td><td class="c-text">賞味期限切迫</td><td class="c-num">残≤7日 AND 食品カテゴリ</td><td class="c-text">QA + 荷主</td><td class="c-text">TPL-003</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">NR-006</td><td class="c-text">API失敗</td><td class="c-num">連続5回失敗</td><td class="c-text">システム管理者</td><td class="c-text">TPL-API-001</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">NR-099</td><td class="c-text">テスト</td><td class="c-num">常時</td><td class="c-text">開発者</td><td class="c-text">テスト</td><td class="c-status"><span class="pill alert">テスト用</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>条件記述例（NR-003）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>イベント</label><div class="text-mono">SLA違反</div></div>
+              <div class="field"><label>条件式（DSL）</label><div class="text-mono text-accent">customer.vip_flag == true OR owner.priority == 'A'</div></div>
+              <div class="field"><label>抑制設定</label><div class="text-mono">同SO1回のみ / 5分以内重複抑制</div></div>
+              <div class="field"><label>営業時間外</label><div class="text-mono">SMS / 緊急ホットライン</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月発火件数</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ルール</th><th class="c-num">発火回数</th><th class="c-text">抑制（重複）</th><th class="c-text">配信失敗</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">NR-001</td><td class="c-num">42</td><td class="c-text">0</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">NR-002</td><td class="c-num">12</td><td class="c-text">2</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">NR-003</td><td class="c-num">6</td><td class="c-text">1</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">NR-004</td><td class="c-num">3</td><td class="c-text">0</td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">NR-005</td><td class="c-num">8</td><td class="c-text">0</td><td class="c-text">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

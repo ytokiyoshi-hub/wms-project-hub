@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT-307 引渡確認 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-307 引渡確認</h1>
+<p class="subtitle">仮置きエリアでカゴをスキャンして到着登録 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/inspect/asn.html"><b>HT-403</b>検品</a>
+  <a href="/ht/putaway/instructions.html"><b>HT-406</b>棚入れ</a>
+  <a href="/ht/wave/progress.html"><b>HT-208</b>ウェーブ進捗</a>
+  <a href="/ht/handover/confirm.html" class="active"><b>HT-307</b>引渡確認</a>
+  <a href="/ht/loading/confirm.html"><b>HT-306</b>積込確認</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">13:40 65%</span></div>
+      <div class="ht-header">
+        <span>引渡確認</span>
+        <span class="scr-id">HT-307</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
+          <div style="font-size:9px; color:var(--c-text-sub);">積込計画</div>
+          <div style="font-size:11px; font-weight:600;" id="lane-no">-</div>
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;" id="lane-desc">読み込み中...</div>
+        </div>
+
+        <div style="font-size:10px; color:var(--c-text-sub); margin-top:4px; padding:4px 6px; background:var(--c-accent-lt); border-left:3px solid var(--c-accent);">
+          ★ カゴをスキャンしてください
+        </div>
+
+        <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
+          <div style="font-size:10px; color:var(--c-text-sub);">最後にスキャンしたカゴ</div>
+          <div style="font-size:11px; font-weight:600; font-family:var(--f-mono); margin-top:2px;" id="last-cage">CON-260501-0008</div>
+          <div style="font-size:9px; margin-top:4px;" id="last-order">出荷 SO-00124 (◇◇商事)</div>
+          <div style="font-size:9px; color:var(--c-accent);" id="last-progress">2/3 個口 → 集合まで残1</div>
+        </div>
+
+        <input id="scan-input" placeholder="カゴをスキャン" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);" autofocus>
+
+        <div style="font-size:9px; color:var(--c-text-sub); margin-top:4px;">本便の集合状況</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px; font-size:9px;" id="orders-grid">
+          <div style="grid-column:span 2; color:var(--c-text-sub);">読み込み中...</div>
+        </div>
+
+        <div style="font-size:10px; color:var(--c-text-sub); text-align:center; margin-top:auto;" id="total-progress">本便：8/12 個口到着</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" id="key-confirm"><span class="fn">F1</span>確定</div>
+        <div class="key-lbl"><span class="fn">F2</span>レーン変更</div>
+        <div class="key-lbl"><span class="fn">F3</span>集合状況</div>
+        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row">
+        <div class="pkey scan">SCAN</div>
+      </div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-307</span>引渡確認
+  <div class="desc-text">レーンスキャン → カゴをSCANで連続到着登録。残数が見える。</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 65%`; };
+setClock(); setInterval(setClock, 30000);
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const loadingId = sessionStorage.getItem('handover_loading_id');
+const loadingNo = sessionStorage.getItem('handover_loading_no') || '-';
+document.getElementById('lane-no').textContent = loadingNo;
+
+let detail = null;
+async function loadDetail() {
+  if (!loadingId) {
+    document.getElementById('lane-desc').textContent = '積込計画未選択（HT-307-1へ）';
+    return;
+  }
+  try {
+    detail = await fetch(`/api/loadings/${loadingId}`).then(r => r.json());
+    document.getElementById('lane-desc').textContent = `${detail.carrier_name || detail.carrier_code || '-'} ${detail.scheduled_at || ''}（${detail.status || '-'}）`;
+    const orders = detail.orders || [];
+    const loaded = orders.filter(o => o.loaded);
+    document.getElementById('total-progress').textContent = `本便：${loaded.length}/${orders.length} 件積込済`;
+    document.getElementById('orders-grid').innerHTML = orders.length === 0
+      ? '<div style="grid-column:span 2; color:var(--c-text-sub);">明細なし</div>'
+      : orders.map(o => {
+        const ok = !!o.loaded;
+        const cls = ok
+          ? 'background:var(--c-accent-lt); border:1px solid var(--c-accent); color:var(--c-accent);'
+          : 'background:var(--c-alert-lt); border:1px solid var(--c-alert); color:var(--c-alert);';
+        return `<div style="padding:3px 5px; ${cls}">${esc(o.order_no || `#${o.order_id}`)} ${ok ? '✓' : '残'}</div>`;
+      }).join('');
+  } catch (e) {
+    document.getElementById('lane-desc').textContent = `読込失敗: ${e.message}`;
+  }
+}
+loadDetail();
+
+function recordArrival() {
+  const v = document.getElementById('scan-input').value.trim();
+  if (!v) return;
+  document.getElementById('last-cage').textContent = v;
+  document.getElementById('scan-input').value = '';
+  document.getElementById('scan-input').focus();
+}
+document.getElementById('scan-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') recordArrival(); });
+document.getElementById('key-confirm').addEventListener('click', async () => {
+  if (!loadingId) { alert('積込計画未選択'); return; }
+  if (!confirm(`${loadingNo} を引渡確定しますか？`)) return;
+  try {
+    const res = await fetch(`/api/loadings/${loadingId}/handover`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ driver_name: 'BT-HT受領' })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(`引渡失敗: ${err.error || res.status}`);
+      return;
+    }
+    alert(`引渡完了: ${loadingNo}`);
+    sessionStorage.removeItem('handover_loading_id');
+    sessionStorage.removeItem('handover_loading_no');
+    location.href = '/';
+  } catch (e) {
+    alert(`通信エラー: ${e.message}`);
+  }
+});
+
+window.htSimulateScan = () => {
+  document.getElementById('scan-input').value = 'CON-' + new Date().toISOString().slice(2,10).replace(/-/g,'') + '-' + String(Math.floor(Math.random()*100)).padStart(4,'0');
+  recordArrival();
+};
+</script>
+</body>
+</html>

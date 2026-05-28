@@ -1,0 +1,145 @@
+/* HT画面 — wms-project-hub HTモック準拠 CSS（端末枠・物理キーパッド完全再現版・2026-05-18 修正） */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --c-base:#fff; --c-bg:#f4f5f7; --c-line:#d8dde3; --c-line-dk:#9aa3ad;
+  --c-text:#1a1f29; --c-text-sub:#6c7280; --c-text-mute:#9ca3af;
+  --c-accent:#1a3a5c; --c-accent-dk:#0f2540; --c-accent-lt:#e8eef5;
+  --c-alert:#b8002e; --c-alert-lt:#fbe9ed;
+  --f-base:'Noto Sans JP',sans-serif;
+  --f-mono:'Roboto Mono',monospace;
+}
+
+html, body { font-family: var(--f-base); color: var(--c-text); background: #2a2d35; padding: 32px 24px 60px; line-height: 1.6; min-height: 100vh; }
+
+/* ===== 実機モード (?real=1): Android ブラウザで端末枠を消して全画面表示 ===== */
+html.real-mode, body.real-mode {
+  background: var(--c-bg);
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  overscroll-behavior: contain;
+}
+body.real-mode h1.page-title,
+body.real-mode p.subtitle,
+body.real-mode .ht-nav,
+body.real-mode .device-label,
+body.real-mode .ht-keypad,
+body.real-mode .ht-device .brand,
+body.real-mode .ht-device .model { display: none !important; }
+body.real-mode .ht-wrap { padding: 0; min-height: 100vh; }
+body.real-mode .ht-device {
+  width: 100%;
+  max-width: none;
+  background: var(--c-bg);
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+body.real-mode .ht-screen {
+  aspect-ratio: auto;
+  width: 100%;
+  flex: 1;
+  border: none;
+  margin-bottom: 0;
+  min-height: 100vh;
+}
+body.real-mode .ht-statusbar { height: 18px; font-size: 11px; }
+body.real-mode .ht-header { height: 32px; font-size: 14px; }
+body.real-mode .ht-header .scr-id { font-size: 11px; }
+body.real-mode .ht-body { padding: 10px; gap: 8px; font-size: 13px; }
+body.real-mode .ht-body input { font-size: 16px; min-height: 36px; }
+body.real-mode .ht-key-labels { height: 48px; }
+body.real-mode .ht-key-labels .key-lbl { padding: 7px 4px; font-size: 12px; }
+body.real-mode .ht-key-labels .key-lbl .fn { font-size: 11px; }
+
+h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
+p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }
+
+/* === HT端末枠 (実機シルエット再現) === */
+.ht-wrap { display:flex; justify-content:center; padding:20px 0; }
+.ht-device {
+  width: 280px;
+  background: #1a1c22;
+  border: 3px solid #2a2d35;
+  border-radius: 18px 18px 22px 22px;
+  padding: 14px 10px 16px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  position: relative;
+}
+.ht-device .brand { position:absolute; top:4px; left:12px; font-size:7px; color:#555; font-weight:600; }
+.ht-device .model { position:absolute; top:4px; right:12px; font-size:7px; color:#555; font-family:var(--f-mono); }
+
+/* === HT画面 (端末画面・aspect 480/800 = 4インチ) === */
+.ht-screen {
+  width: 100%;
+  aspect-ratio: 480/800;
+  background: var(--c-bg);
+  border: 1px solid #444;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ht-statusbar { background:#1a1c22; color:#c8ccd4; height:14px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; font-size:8px; font-family:var(--f-mono); flex-shrink:0; }
+.ht-header { background:var(--c-accent); color:#fff; height:24px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; flex-shrink:0; justify-content:space-between; }
+.ht-header .scr-id { font-family:var(--f-mono); font-size:9px; opacity:0.7; }
+.ht-body { flex:1; padding:8px; overflow:hidden; background:var(--c-base); display:flex; flex-direction:column; gap:6px; }
+.ht-key-labels { background:#1a1c22; color:#fff; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; flex-shrink:0; border-top:1px solid #444; }
+.ht-key-labels .key-lbl { padding:5px 3px; text-align:center; border-right:1px solid #444; font-size:8px; line-height:1.2; cursor: pointer; }
+.ht-key-labels .key-lbl:last-child { border-right:none; }
+.ht-key-labels .key-lbl.primary { background:var(--c-accent-dk); }
+.ht-key-labels .key-lbl .fn { display:block; font-family:var(--f-mono); font-weight:700; font-size:9px; color:#ffd966; }
+.ht-key-labels .key-lbl.disabled { opacity:0.3; cursor: default; }
+
+/* === 物理キーパッド === */
+.ht-keypad { background:#2a2d35; border:1px solid #444; padding:8px 6px; display:flex; flex-direction:column; gap:5px; }
+.ht-keypad .row { display:flex; gap:4px; justify-content:center; }
+.pkey { background:#1a1c22; color:#fff; border:1px solid #555; padding:3px 0; font-size:9px; font-family:var(--f-mono); font-weight:600; text-align:center; flex:1; border-radius:2px; cursor: pointer; }
+.pkey:hover { background:#333; }
+.pkey.f1 { color:#ffd966; }
+.pkey.scan { background:var(--c-alert); flex:2; padding:5px 0; }
+.pkey.scan:hover { background:#d10038; }
+.ht-dpad-row { display:flex; align-items:center; gap:6px; }
+.ht-dpad { width:54px; height:54px; flex-shrink:0; background:#1a1c22; border:1px solid #444; border-radius:50%; position:relative; }
+.ht-dpad::before { content:""; position:absolute; inset:6px; background: linear-gradient(0deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%), linear-gradient(90deg, transparent 38%, #353944 38%, #353944 62%, transparent 62%); border-radius:50%; }
+.ht-dpad .ok { position:absolute; inset:0; margin:auto; width:14px; height:14px; background:#555; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:6px; color:#fff; font-weight:600; }
+.ht-num-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:3px; flex:1; }
+
+/* === 端末下ラベル === */
+.device-label { color:#fff; font-size:13px; font-weight:600; text-align:center; margin-top:8px; }
+.device-label .id { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+.device-label .desc-text { font-size:11px; color:#a0a4ad; font-weight:400; margin-top:4px; max-width:280px; line-height:1.5; }
+
+/* === ナビ (テストサイト2 用 / 画面遷移リンク) === */
+.ht-nav { max-width:1500px; margin:0 auto 32px; background:#353944; border:1px solid #4a4f5c; padding:12px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:13px; }
+.ht-nav .label { color:#c8ccd4; font-weight:500; }
+.ht-nav a { color:#c8ccd4; text-decoration:none; background:#1a1c22; padding:6px 14px; border:1px solid #4a4f5c; }
+.ht-nav a:hover { background:#fff; color:var(--c-text); border-color:#fff; }
+.ht-nav a b { color:#c8ccd4; font-family:var(--f-mono); font-weight:600; margin-right:8px; }
+.ht-nav a.active { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+.ht-nav a.active b { color:#fff; }
+
+/* === ステップ進捗バー === */
+.step-progress { display:flex; gap:0; border:1px solid var(--c-line-dk); }
+.step-progress .step { flex:1; padding:6px 4px; text-align:center; font-size:11px; color:var(--c-text-sub); border-right:1px solid var(--c-line-dk); background:var(--c-bg); }
+.step-progress .step:last-child { border-right:none; }
+.step-progress .step.done { background:var(--c-text-sub); color:#fff; }
+.step-progress .step.current { background:var(--c-accent); color:#fff; font-weight:600; }
+.step-progress .step .num { font-family:var(--f-mono); font-weight:700; margin-right:4px; }
+
+/* === 進捗バー === */
+.pbar { height:6px; background:var(--c-line); position:relative; }
+.pbar .fill { height:100%; background:var(--c-accent); }
+.pbar .fill.alert { background:var(--c-alert); }
+
+/* === 画面内テキスト === */
+.text-mono { font-family:var(--f-mono); }
+.text-accent { color: var(--c-accent); }
+.text-bold { font-weight: 600; }

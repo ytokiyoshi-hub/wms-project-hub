@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>輸出入対応 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>輸出入対応（S-62 通関設定）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">輸出入関連マスタ（S-62）</div>
+          通関業者・税関区分・関税率テーブル・輸出書類テンプレートを管理。輸入入荷・輸出出荷に対応。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>通関業者</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">業者ID</th><th class="c-text">名称</th><th class="c-text">担当税関</th><th class="c-text">処理速度</th><th class="c-text">連携方式</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">CB-001</td><td class="c-text">東京通関</td><td class="c-text">東京税関</td><td class="c-text">標準</td><td class="c-text">EDI（NACCS）</td></tr>
+                <tr><td class="c-text">CB-002</td><td class="c-text">大阪通関</td><td class="c-text">大阪税関</td><td class="c-text">標準</td><td class="c-text">EDI（NACCS）</td></tr>
+                <tr><td class="c-text">CB-003</td><td class="c-text">EXIM Express</td><td class="c-text">全国</td><td class="text-accent c-text">迅速</td><td class="c-text">API</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>HSコード × 関税率（主要）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">HSコード</th><th class="c-text">品目</th><th class="c-num">関税率</th><th class="c-text">消費税</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">6109.10</td><td class="c-text">Tシャツ等（綿）</td><td class="c-num">10%</td><td class="c-text">10%</td></tr>
+                <tr><td class="c-code">6203.42</td><td class="c-text">男子用ズボン（綿）</td><td class="c-num">9.1%</td><td class="c-text">10%</td></tr>
+                <tr><td class="c-code">3304.99</td><td class="c-text">化粧品</td><td class="c-num">0%</td><td class="c-text">10%</td></tr>
+                <tr><td class="c-code">8527.91</td><td class="c-text">無線機（電子部品）</td><td class="c-num">0%</td><td class="c-text">10%</td></tr>
+                <tr><td class="c-code">2202.99</td><td class="c-text">清涼飲料水</td><td class="c-num">10〜25%</td><td class="c-text">8%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>輸出書類テンプレート</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">書類名</th><th class="c-text">用途</th><th class="c-text">必須</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">Commercial Invoice</td><td class="c-text">輸出申告 / 売買契約</td><td class="c-text"><span class="pill alert">必須</span></td></tr>
+                <tr><td class="c-text">Packing List</td><td class="c-text">梱包内訳</td><td class="c-text"><span class="pill alert">必須</span></td></tr>
+                <tr><td class="c-text">B/L（Bill of Lading）</td><td class="c-text">海上輸送契約</td><td class="c-text"><span class="pill alert">必須</span></td></tr>
+                <tr><td class="c-text">原産地証明書</td><td class="c-text">FTA活用時</td><td class="c-text"><span class="pill">条件付き</span></td></tr>
+                <tr><td class="c-text">輸出許可書</td><td class="c-text">規制品</td><td class="c-text"><span class="pill">条件付き</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月実績</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>輸入入荷</label><div class="text-mono">12 件（CBM 142）</div></div>
+              <div class="field"><label>輸出出荷</label><div class="text-mono">3 件</div></div>
+              <div class="field"><label>関税納付額</label><div class="text-mono">¥820,000（荷主負担）</div></div>
+              <div class="field"><label>通関平均所要</label><div class="text-mono">2.4営業日</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

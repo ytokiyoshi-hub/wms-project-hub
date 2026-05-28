@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入荷KPI — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+/* 見せ方B: 強弱 / 色は要対応のみ — .stats + .stat は test2.css の共通 */
+.stat { position:relative; }
+.stat .drill { position:absolute; top:6px; right:8px; font-size:11px; color:#9ca3af; text-decoration:none; }
+.stat:hover .drill { color:var(--c-accent); }
+.stat .drill:hover { text-decoration:underline; }
+.bar-chart { display:flex; align-items:flex-end; gap:4px; height:80px; padding:8px 0; }
+.bar-chart .bar { background:#9ca3af; width:24px; min-height:2px; position:relative; }
+.bar-chart .bar:hover { background:var(--c-accent); }
+.bar-chart .bar-label { font-size:9px; color:#9ca3af; writing-mode:vertical-rl; padding-top:4px; }
+.calm-alert { background:#fff; border-left:3px solid var(--c-alert); padding:6px 10px; margin-bottom:10px; font-size:12px; color:#374151; display:none; }
+.calm-alert.show { display:block; }
+.pill.silent { background:#f3f4f6; color:#9ca3af; border-color:#e5e7eb; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>入荷KPI ダッシュボード（W-425）</b><span class="badge">ダッシュボード型</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">入荷工程の主要 KPI（W-425）</div>
+          到着・検品・差異・棚入完了率を実 API から集計。KPIカードをクリックして関連画面へドリルダウン可。
+        </div>
+  
+        <!-- 控えめアラート: 行動が要るときだけ -->
+        <div id="alert-bar" class="calm-alert"></div>
+  
+        <div class="stats" id="kpi-cards">
+          <div class="stat">
+            <a class="drill" href="/pc/inbound/plans.html">＞</a>
+            <div class="label">入荷予定 総件数</div>
+            <div class="value accent" id="k-sched">-</div>
+            <div class="delta">DB 全期間</div>
+          </div>
+          <div class="stat">
+            <a class="drill" href="/pc/inbound/inspection_status.html">＞</a>
+            <div class="label">検品実績 件数</div>
+            <div class="value accent" id="k-insp">-</div>
+            <div class="delta">inbound_actuals 全期間</div>
+          </div>
+          <div class="stat">
+            <a class="drill" href="/pc/inbound/inspection_history.html">＞</a>
+            <div class="label">検品合格率</div>
+            <div class="value" id="k-pass">-</div>
+            <div class="delta" id="k-pass-d">-</div>
+          </div>
+          <div class="stat">
+            <a class="drill" href="/pc/inbound/putaway.html">＞</a>
+            <div class="label">棚入完了率</div>
+            <div class="value" id="k-comp">-</div>
+            <div class="delta">completed の割合</div>
+          </div>
+          <div class="stat">
+            <a class="drill" href="/pc/inbound/discrepancy.html">＞</a>
+            <div class="label">差異 総件数</div>
+            <div class="value" id="k-diff">-</div>
+            <div class="delta">累積</div>
+          </div>
+          <div class="stat">
+            <a class="drill" href="/pc/inbound/discrepancy.html?status=pending">＞</a>
+            <div class="label">差異 未処理</div>
+            <div class="value" id="k-pend">-</div>
+            <div class="delta">対応が必要</div>
+          </div>
+        </div>
+  
+        <!-- 詳細テーブル群: auto-fit grid で広い画面なら2列・狭ければ1列 -->
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header"><span style="font-weight:700; font-size:13px;">月次入荷件数（直近12ヶ月）</span><span class="meta" id="month-meta" style="font-size:11px; color:#9ca3af;">-</span></div>
+            <div class="card-body">
+              <div class="bar-chart" id="bar-chart"></div>
+              <table class="list list-full" style="margin-top:10px;">
+                <thead><tr><th class="c-date">月</th><th class="c-num">入荷予定件数</th><th class="c-num">明細数</th><th class="c-status">傾向</th></tr></thead>
+                <tbody id="tb-monthly"><tr><td colspan="4" style="text-align:center; padding:20px; color:var(--c-text-sub);">集計中...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span style="font-weight:700; font-size:13px;">仕入先別 差異率（履歴全期間 上位10）</span></div>
+            <div class="card-body flush">
+              <table class="list list-full">
+                <thead><tr><th class="c-text">仕入先</th><th class="c-num">入荷件数</th><th class="c-num">差異件数</th><th class="c-num">差異率</th><th class="c-status">判定</th><th class="c-action">操作</th></tr></thead>
+                <tbody id="tb-supplier"><tr><td colspan="6" style="text-align:center; padding:20px; color:var(--c-text-sub);">集計中...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/pc/inbound/plans.html">入荷予定一覧</a>
+              <a class="btn" href="/pc/inbound/inspection_status.html">検品進捗</a>
+              <a class="btn" href="/pc/inbound/inspection_history.html">検品履歴</a>
+              <a class="btn" href="/pc/inbound/discrepancy.html">差異処理</a>
+              <a class="btn" href="/pc/inbound/asn_history.html">ASN受信履歴</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function loadKPI() {
+  try {
+    const [schedules, actuals, discrep] = await Promise.all([
+      fetch('/api/inbound-schedules').then(r => r.json()),
+      fetch('/api/inbound-actuals').then(r => r.json()),
+      fetch('/api/discrepancies').then(r => r.json()),
+    ]);
+
+    const totalSchedules = schedules.length;
+    const inspectedCount = actuals.length;
+    const completedCount = actuals.filter(a => a.status === 'completed').length;
+    const discrepCount = discrep.length;
+    const pendingDiscrep = discrep.filter(d => d.status === 'pending').length;
+    const acceptanceRate = inspectedCount > 0 ? ((inspectedCount - discrepCount) / inspectedCount * 100).toFixed(1) : null;
+    const completionRate = inspectedCount > 0 ? (completedCount / inspectedCount * 100).toFixed(1) : null;
+
+    // 控えめアラート: 行動が要るときだけ
+    const bar = document.getElementById('alert-bar');
+    bar.classList.remove('show');
+    if (pendingDiscrep >= 5) {
+      bar.innerHTML = `差異未処理が <b>${pendingDiscrep} 件</b>（仕入先連絡が遅れている可能性） → <a href="/pc/inbound/discrepancy.html?status=pending" style="color:var(--c-accent); font-weight:600;">差異処理画面 →</a>`;
+      bar.classList.add('show');
+    } else if (acceptanceRate != null && Number(acceptanceRate) < 90) {
+      bar.innerHTML = `検品合格率 <b>${acceptanceRate}%</b>（目標 95%）→ <a href="/pc/inbound/inspection_history.html" style="color:var(--c-accent); font-weight:600;">仕入先別の差異率を確認 →</a>`;
+      bar.classList.add('show');
+    } else if (pendingDiscrep > 0) {
+      bar.innerHTML = `差異 ${pendingDiscrep} 件 が処理待ち → <a href="/pc/inbound/discrepancy.html?status=pending" style="color:var(--c-accent); font-weight:600;">対応 →</a>`;
+      bar.classList.add('show');
+    }
+
+    document.getElementById('k-sched').textContent = totalSchedules.toLocaleString();
+    document.getElementById('k-insp').textContent = inspectedCount.toLocaleString();
+    const passEl = document.getElementById('k-pass');
+    passEl.textContent = acceptanceRate == null ? '-' : `${acceptanceRate}%`;
+    passEl.className = 'val ' + (acceptanceRate == null ? '' : acceptanceRate >= 95 ? 'accent' : 'alert');
+    document.getElementById('k-pass-d').textContent = `差異無しの割合 (目標 ≥95%)`;
+    const compEl = document.getElementById('k-comp');
+    compEl.textContent = completionRate == null ? '-' : `${completionRate}%`;
+    compEl.className = 'val ' + (completionRate == null ? '' : completionRate >= 95 ? 'accent' : 'alert');
+    const diffEl = document.getElementById('k-diff');
+    diffEl.textContent = discrepCount.toLocaleString();
+    diffEl.className = 'val ' + (discrepCount > 0 ? 'alert' : 'accent');
+    const pendEl = document.getElementById('k-pend');
+    pendEl.textContent = pendingDiscrep.toLocaleString();
+    pendEl.className = 'val ' + (pendingDiscrep > 0 ? 'alert' : 'accent');
+
+    // 仕入先別
+    const bySup = {};
+    actuals.forEach(a => {
+      const k = a.supplier_name || '(不明)';
+      if (!bySup[k]) bySup[k] = { count: 0, diff: 0 };
+      bySup[k].count++;
+      if (a.expected_qty !== a.inspected_qty) bySup[k].diff++;
+    });
+    const sup = Object.entries(bySup).sort((a, b) => b[1].count - a[1].count).slice(0, 10);
+    if (sup.length === 0) {
+      document.getElementById('tb-supplier').innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--c-text-sub);">集計対象なし</td></tr>';
+    } else {
+      document.getElementById('tb-supplier').innerHTML = sup.map(([name, s]) => {
+        const rate = (s.diff / s.count * 100).toFixed(1);
+        const judge = s.diff === 0 ? '<span class="pill silent">優秀</span>' : rate > 15 ? '<span class="pill alert">改善要</span>' : '<span class="pill silent">通常</span>';
+        return `<tr>
+          <td class="c-text">${esc(name)}</td>
+          <td class="c-num">${s.count}</td>
+          <td class="c-num">${s.diff}</td>
+          <td class="c-num ${rate > 10 ? 'text-alert' : ''}">${rate}%</td>
+          <td class="c-status">${judge}</td>
+          <td class="c-action"><a class="btn sm" href="/pc/inbound/inspection_history.html">履歴</a></td>
+        </tr>`;
+      }).join('');
+    }
+
+    // 月次推移 (schedule_date ベース)
+    const byMonth = {};
+    schedules.forEach(s => {
+      const m = (s.scheduled_date || '').slice(0, 7);
+      if (!m) return;
+      if (!byMonth[m]) byMonth[m] = { count: 0, lines: 0 };
+      byMonth[m].count++;
+      byMonth[m].lines += (s.line_count || 0);
+    });
+    const months = Object.entries(byMonth).sort().slice(-12);
+    document.getElementById('month-meta').textContent = `${months.length}ヶ月分`;
+    if (months.length === 0) {
+      document.getElementById('tb-monthly').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--c-text-sub);">集計対象なし</td></tr>';
+      return;
+    }
+    // 棒グラフ
+    const maxCount = Math.max(...months.map(([, v]) => v.count));
+    document.getElementById('bar-chart').innerHTML = months.map(([m, v]) => {
+      const h = maxCount > 0 ? (v.count / maxCount * 70) : 0;
+      return `<div title="${m}: ${v.count}件" style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+        <div class="bar" style="height:${h}px;"></div>
+        <div class="bar-label">${m.slice(5)}</div>
+      </div>`;
+    }).join('');
+    // 月次表
+    let prev = null;
+    document.getElementById('tb-monthly').innerHTML = months.map(([m, v]) => {
+      const trend = prev == null ? '<span class="pill silent">-</span>' : v.count > prev ? '<span class="pill silent">↑</span>' : v.count < prev ? '<span class="pill alert">↓</span>' : '<span class="pill silent">→</span>';
+      prev = v.count;
+      return `<tr><td class="c-date">${m}</td><td class="c-num">${v.count}</td><td class="c-num">${v.lines}</td><td class="c-status">${trend}</td></tr>`;
+    }).join('');
+  } catch (e) {
+    document.getElementById('k-sched').textContent = '!';
+    document.getElementById('tb-monthly').innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+loadKPI();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

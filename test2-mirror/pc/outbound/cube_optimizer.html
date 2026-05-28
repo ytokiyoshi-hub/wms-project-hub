@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>箱詰め最適化 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>箱詰め最適化（W-329 3Dビンパッキング）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">3Dビンパッキングアルゴリズム（W-329）</div>
+          受注明細の各SKU寸法から最適な箱サイズと積み方を計算。配送費削減と緩衝材削減。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SO-26060108 最適化結果</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>受注明細数</label><div class="text-mono">5 SKU / 22 PCS</div></div>
+              <div class="field"><label>総容積</label><div class="text-mono">0.022 m³</div></div>
+              <div class="field"><label>選定外箱</label><div class="text-mono text-accent" style="font-weight:600;">サイズ80（折コン大）</div></div>
+              <div class="field"><label>充填率</label><div class="text-mono text-accent" style="font-weight:600;">88%</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>明細別 配置</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-num">数量</th><th class="c-text">単品容積</th><th class="c-num">合計容積</th><th class="c-text">配置順</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-MK001-001</td><td class="c-num">6</td><td class="c-text">0.000648m³</td><td class="c-num">0.0039m³</td><td class="c-text">下段</td></tr>
+                <tr><td class="c-code">SKU-MK001-002</td><td class="c-num">6</td><td class="c-text">0.000648m³</td><td class="c-num">0.0039m³</td><td class="c-text">下段</td></tr>
+                <tr><td class="c-code">SKU-MK001-003</td><td class="c-num">4</td><td class="c-text">0.001056m³</td><td class="c-num">0.0042m³</td><td class="c-text">下段</td></tr>
+                <tr><td class="c-code">SKU-EC001-008</td><td class="c-num">3</td><td class="c-text">0.001000m³</td><td class="c-num">0.0030m³</td><td class="c-text">中段</td></tr>
+                <tr><td class="c-code">SKU-EC001-001</td><td class="c-num">3</td><td class="c-text">0.002000m³</td><td class="c-num">0.0060m³</td><td class="c-text">上段</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>削減効果（標準箱使用 vs 最適化）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">標準</th><th class="c-text">最適化</th><th class="c-text">削減</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">外箱サイズ</td><td class="c-text">100</td><td class="c-text">80</td><td class="c-text">-1段</td></tr>
+                <tr><td class="c-text">配送料金</td><td class="c-text">¥1,250</td><td class="c-text">¥1,000</td><td class="text-accent c-text">-¥250</td></tr>
+                <tr><td class="c-text">緩衝材使用量</td><td class="c-text">28cm</td><td class="c-text">12cm</td><td class="text-accent c-text">-57%</td></tr>
+                <tr><td class="c-text">箱内空間</td><td class="c-text">38%</td><td class="c-text">88%</td><td class="c-text">充填率向上</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日 最適化件数</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>対象出荷数</label><div class="text-mono">82</div></div>
+              <div class="field"><label>サイズダウン件数</label><div class="text-mono text-accent" style="font-weight:600;">42</div></div>
+              <div class="field"><label>削減配送費</label><div class="text-mono text-accent" style="font-weight:600;">¥10,500</div></div>
+              <div class="field"><label>削減緩衝材</label><div class="text-mono">8.4m</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

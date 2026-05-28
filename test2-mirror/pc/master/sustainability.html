@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>サステナビリティ指標 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>サステナビリティ指標（S-56 ESG対応）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ESG/CSR指標の管理（S-56）</div>
+          CO2排出 / 廃棄量 / 再生エネルギー比率 / 紙削減を月次集計。荷主のESG報告に提供。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>主要サステナビリティKPI（当月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">指標</th><th class="c-text">当月</th><th class="c-text">前月</th><th class="c-text">目標</th><th class="c-status">判定</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">CO2排出量（運送）</td><td class="c-text">82 t-CO2</td><td class="c-text">85 t-CO2</td><td class="c-text">≤90</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">倉庫電力使用量</td><td class="c-text">42,800 kWh</td><td class="c-text">42,500 kWh</td><td class="c-text">≤45,000</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">再生エネルギー比率</td><td class="text-accent c-text">38%</td><td class="c-text">35%</td><td class="c-text">≥30%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">廃棄物排出量</td><td class="c-text">142 kg</td><td class="c-text">158 kg</td><td class="c-text">≤200</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">梱包材リサイクル率</td><td class="text-accent c-text">82%</td><td class="c-text">78%</td><td class="c-text">≥75%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">紙使用量</td><td class="text-accent c-text">820 枚</td><td class="c-text">1,200 枚</td><td class="c-text">≤2,000</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">労働災害件数</td><td class="c-text">0</td><td class="c-text">0</td><td class="c-text">0</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>削減取組</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">取組</th><th class="c-text">導入時期</th><th class="c-text">効果</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">屋根太陽光発電</td><td class="c-text">2024-06</td><td class="c-text">電力38%自給</td></tr>
+                <tr><td class="c-text">段ボール再利用</td><td class="c-text">2024-09</td><td class="c-text">梱包材-30%</td></tr>
+                <tr><td class="c-text">電子マニフェスト</td><td class="c-text">2025-01</td><td class="c-text">紙使用量-60%</td></tr>
+                <tr><td class="c-text">EV配送車試験導入</td><td class="c-text">2026-03</td><td class="c-text">CO2削減 -3%</td></tr>
+                <tr><td class="c-text">箱詰め最適化（W-329）</td><td class="c-text">2026-04</td><td class="c-text">梱包材-12% / 配送車削減</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主向け報告</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>対象荷主</label><select><option>MK001</option><option>AP001</option><option>EC001</option></select></div>
+              <div class="field"><label>期間</label><select><option>当月</option><option>四半期</option><option>年間</option></select></div>
+              <div class="field"><label>形式</label><select><option>PDF（ESG報告書）</option><option>CSV</option></select></div>
+              <div class="field"><label>操作</label><div><button class="btn small primary" onclick="alert('「出力」モック動作（実装は後続フェーズ）')">出力</button></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

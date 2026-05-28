@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロケ容量定義 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ロケ容量定義（S-2 寸法・耐荷重・上限）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ロケ寸法・容量・耐荷重定義（S-2）</div>
+          ロケごとの収容容積・最大重量・推奨格納SKU特性。棚入れ最適化と過積載防止に利用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ロケ容量一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">ロケ</th><th class="c-text">種別</th><th class="c-text">寸法W×D×H</th><th class="c-text">容積</th><th class="c-num">最大重量</th><th class="c-num">最大段数</th><th class="c-text">推奨</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">A-01-01</td><td class="c-text"><span class="pill accent">パレットラック</span></td><td class="c-text">1200×1200×1800mm</td><td class="c-text">2.6m³</td><td class="c-num">1,000kg</td><td class="c-num">3段</td><td class="c-text">常温食品 / 1100mm-PL</td></tr>
+                <tr><td class="c-code">A-01-02</td><td class="c-text"><span class="pill accent">パレットラック</span></td><td class="c-text">1200×1200×1800mm</td><td class="c-text">2.6m³</td><td class="c-num">1,000kg</td><td class="c-num">3段</td><td class="c-text">常温食品 / 1100mm-PL</td></tr>
+                <tr><td class="c-code">B-02-05</td><td class="c-text"><span class="pill">中量棚</span></td><td class="c-text">900×600×400mm</td><td class="c-text">0.22m³</td><td class="c-num">120kg</td><td class="c-num">折コン4段</td><td class="c-text">バラピック品</td></tr>
+                <tr><td class="c-code">C-05-08</td><td class="c-text"><span class="pill">軽量棚</span></td><td class="c-text">600×400×300mm</td><td class="c-text">0.07m³</td><td class="c-num">30kg</td><td class="c-num">単品</td><td class="c-text">EC専用小型品</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">D-01-01</td><td class="c-text"><span class="pill alert">危険物</span></td><td class="c-text">800×600×1500mm</td><td class="c-text">0.72m³</td><td class="c-num">200kg</td><td class="c-num">4段</td><td class="c-text">第4類 / 漏れ防護パン</td></tr>
+                <tr><td class="c-code">REF-01</td><td class="c-text"><span class="pill">冷蔵庫</span></td><td class="c-text">1100×1100×1600mm</td><td class="c-text">1.9m³</td><td class="c-num">800kg</td><td class="c-num">2段</td><td class="c-text">5℃以下 / 期限14日以内優先</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>稼働状況（容積占有率）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">エリア</th><th class="c-num">ロケ数</th><th class="c-text">総容積</th><th class="c-text">使用容積</th><th class="c-num">占有率</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1F A通路（パレット）</td><td class="c-num">120</td><td class="c-text">312m³</td><td class="c-text">248m³</td><td class="c-num">79.5%</td><td class="c-status"><span class="pill accent">適正</span></td></tr>
+                <tr><td class="c-text">1F B通路（中量）</td><td class="c-num">280</td><td class="c-text">61m³</td><td class="c-text">45m³</td><td class="c-num">73.8%</td><td class="c-status"><span class="pill accent">適正</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">2F C通路（軽量）</td><td class="c-num">450</td><td class="c-text">31m³</td><td class="c-text">29m³</td><td class="text-alert c-num">93.5%</td><td class="c-status"><span class="pill alert">逼迫</span></td></tr>
+                <tr><td class="c-text">冷蔵庫</td><td class="c-num">36</td><td class="c-text">68m³</td><td class="c-text">41m³</td><td class="c-num">60.3%</td><td class="c-status"><span class="pill accent">適正</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

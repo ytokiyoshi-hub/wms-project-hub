@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>スループットKPI — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">レポート　/　<b>スループットKPI（R-17 月次成長）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">スループットの月次成長トレンド（R-17）</div>
+          入荷PCS / 出荷行 / 出荷件数 / コンテナ数を月別に集計。容量限界・設備投資判断のインプット。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去12ヶ月 月次スループット</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>月</th><th class="right">入荷PCS</th><th class="right">出荷行</th><th class="right">出荷件数</th><th class="right">コンテナ</th><th class="right">作業人時</th></tr></thead>
+              <tbody>
+                <tr><td class="num">2025-06</td><td class="right num">42,000</td><td class="right num">8,200</td><td class="right num">7,800</td><td class="right num">8</td><td class="right num">1,820h</td></tr>
+                <tr><td class="num">2025-09</td><td class="right num">48,500</td><td class="right num">9,800</td><td class="right num">8,500</td><td class="right num">10</td><td class="right num">1,920h</td></tr>
+                <tr><td class="num">2025-12</td><td class="right num">62,000</td><td class="right num">12,400</td><td class="right num">10,800</td><td class="right num">12</td><td class="right num">2,180h</td></tr>
+                <tr><td class="num">2026-03</td><td class="right num">52,000</td><td class="right num">9,200</td><td class="right num">8,800</td><td class="right num">9</td><td class="right num">1,950h</td></tr>
+                <tr><td class="num">2026-05</td><td class="right num">58,200</td><td class="right num">10,240</td><td class="right num">9,580</td><td class="right num">10</td><td class="right num">2,020h</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>1人時あたりスループット</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>月</th><th class="right">入荷PCS/h</th><th class="right">出荷行/h</th><th class="right">出荷件数/h</th><th>生産性</th></tr></thead>
+              <tbody>
+                <tr><td class="num">2025-06</td><td class="right num">23.1</td><td class="right num">4.5</td><td class="right num">4.3</td><td><span class="pill">標準</span></td></tr>
+                <tr><td class="num">2025-12</td><td class="right num">28.4</td><td class="right num">5.7</td><td class="right num">5.0</td><td><span class="pill accent">繁忙期高効率</span></td></tr>
+                <tr><td class="num">2026-05</td><td class="right num text-accent">28.8</td><td class="right num text-accent">5.1</td><td class="right num text-accent">4.7</td><td><span class="pill accent">改善</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>容量限界の予測</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>現在月次スループット</label><div class="text-mono">10,240 出荷行</div></div>
+              <div class="field"><label>現在容量上限</label><div class="text-mono">12,000 行</div></div>
+              <div class="field"><label>達成率</label><div class="text-mono">85%</div></div>
+              <div class="field"><label>判定</label><div><span class="pill alert">設備投資を検討</span></div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>提案1</label><div class="text-mono">ピックエリア拡張 +2,500行/月</div></div>
+              <div class="field"><label>提案2</label><div class="text-mono">夜間シフト追加 +1,800行/月</div></div>
+              <div class="field"><label>提案3</label><div class="text-mono">自動仕分け機導入 +5,000行/月</div></div>
+              <div class="field"><label>投資判断</label><div><button class="btn small primary" onclick="alert('「経営会議に提案」モック動作（実装は後続フェーズ）')">経営会議に提案</button></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-generic-stats.js?v=202605202324"></script>
+</body>
+</html>

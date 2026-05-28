@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HT-1102 荷主切替：確認 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+<style>
+.current-owner-bar { background: var(--c-bg); border:1px solid var(--c-line); padding:6px 8px; }
+.current-owner-bar .label { font-size:9px; color:var(--c-text-sub); }
+.current-owner-bar .name { font-size:13px; font-weight:600; margin-top:2px; }
+.current-owner-bar .code { font-size:9px; color:var(--c-text-sub); font-family:var(--f-mono); }
+.arrow-down { font-size:14px; color:var(--c-accent); text-align:center; padding:4px; }
+.new-owner-bar { background: var(--c-accent); color:#fff; padding:8px; }
+.new-owner-bar .label { font-size:9px; opacity:0.8; }
+.new-owner-bar .name { font-size:14px; font-weight:700; margin-top:2px; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">HT-1102 荷主切替（確認）</h1>
+<p class="subtitle">切替先確認・誤スキャン防止 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/owner/scan.html"><b>HT-1101</b>スキャン</a>
+  <a href="/ht/owner/confirm.html" class="active"><b>HT-1102</b>確認</a>
+  <a href="/ht/owner/done.html"><b>HT-1103</b>完了</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">10:06 82%</span></div>
+      <div class="ht-header">
+        <span>荷主切替 確認</span>
+        <span class="scr-id">HT-1102</span>
+      </div>
+      <div class="ht-body">
+        <div class="step-progress">
+          <div class="step done"><span class="num">1</span>スキャン</div>
+          <div class="step current"><span class="num">2</span>確認</div>
+          <div class="step"><span class="num">3</span>完了</div>
+        </div>
+
+        <div class="current-owner-bar">
+          <div class="label">現在の荷主</div>
+          <div class="name" id="cur-name">-</div>
+          <div class="code" id="cur-code">-</div>
+        </div>
+
+        <div class="arrow-down">▼ 切替先</div>
+
+        <div class="new-owner-bar">
+          <div class="label">切替先の荷主</div>
+          <div class="name" id="new-name">-</div>
+          <div class="code" style="opacity:0.8;" id="new-code">-</div>
+        </div>
+
+        <div style="background:var(--c-alert-lt); border-left:3px solid var(--c-alert); padding:5px 7px; font-size:10px; color:var(--c-alert); font-weight:600;">
+          ⚠ 切替後の業務は全て新荷主のデータに対して実行されます
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">
+          F1で切替確定 / F4でキャンセル
+        </div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" id="key-confirm"><span class="fn">F1</span>切替確定</div>
+        <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+        <div class="key-lbl disabled"><span class="fn">F3</span>−</div>
+        <div class="key-lbl" onclick="history.back()"><span class="fn">F4</span>取消</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row"><div class="pkey scan">SCAN</div></div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-1102</span>切替確認
+  <div class="desc-text">スキャン結果を表示。切替は全スタッフの参照データに影響するため必ず確認。</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 82%`; };
+setClock(); setInterval(setClock, 30000);
+
+(async () => {
+  const owners = await fetch('/api/owners').then(r=>r.json()).catch(()=>[]);
+  const cur = JSON.parse(sessionStorage.getItem('current_owner') || 'null') || owners[0];
+  const tgt = JSON.parse(sessionStorage.getItem('switch_target') || 'null') || owners[1] || owners[0];
+  document.getElementById('cur-name').textContent = cur.name;
+  document.getElementById('cur-code').textContent = cur.code;
+  document.getElementById('new-name').textContent = tgt.name;
+  document.getElementById('new-code').textContent = tgt.code;
+})();
+
+document.getElementById('key-confirm').addEventListener('click', () => {
+  location.href = '/ht/owner/done.html';
+});
+</script>
+</body>
+</html>

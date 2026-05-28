@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLA違反履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>SLA違反履歴（R-13 違反追跡）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">SLA違反の全件履歴（R-13）</div>
+          違反ごとに原因／処置／ペナルティ／改善策をトラッキング。再発防止のPDCA管理。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>期間</label><input type="text" value="2026-05-01 〜 2026-05-31" class="text-mono"></div>
+            <div class="field"><label>SLA</label><select><option>全SLA</option><option>当日出荷</option><option>EC即日</option><option>差異対応</option></select></div>
+            <div class="field"><label>荷主</label><select><option>全荷主</option></select></div>
+            <div class="field"><label>原因</label><select><option>全原因</option><option>在庫不足</option><option>人員不足</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>違反履歴（2026年5月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">違反No</th><th class="c-code">SLA</th><th class="c-date">発生日</th><th class="c-text">関連</th><th class="c-text">原因</th><th class="c-text">ペナルティ</th><th class="c-text">改善策</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SLA-V-26050003</td><td class="c-code">SLA-MK-003</td><td class="c-date">2026-05-12</td><td class="c-text">差異 RIN-26051201</td><td class="c-text">QA回答遅延</td><td class="c-text">¥5,000</td><td class="c-text">QA担当2名体制</td></tr>
+                <tr><td class="c-code">SLA-V-26050008</td><td class="c-code">SLA-MK-001</td><td class="c-date">2026-05-18</td><td class="c-text">SO-26051801</td><td class="c-text">在庫不足→分納</td><td class="c-text">¥3,000</td><td class="c-text">発注点引上</td></tr>
+                <tr><td class="c-code">SLA-V-26050015</td><td class="c-code">SLA-EC-001</td><td class="c-date">2026-05-22</td><td class="c-text">SO-26052201</td><td class="c-text">ピッカー欠員</td><td class="c-text">¥1,000</td><td class="c-text">当日シフト確認</td></tr>
+                <tr><td class="c-code">SLA-V-26050018</td><td class="c-code">SLA-MK-003</td><td class="c-date">2026-05-25</td><td class="c-text">差異 RIN-26052501</td><td class="c-text">QA回答遅延</td><td class="c-text">¥5,000</td><td class="c-text">QA担当2名体制</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">SLA-V-26050022</td><td class="c-code">SLA-AP-002</td><td class="c-date">2026-05-28</td><td class="c-text">QC-26052801</td><td class="c-text">誤梱包 0.13%超え</td><td class="text-alert c-text">¥100,000</td><td class="c-text">梱包者再教育</td></tr>
+                <tr><td class="c-code">SLA-V-26050025</td><td class="c-code">SLA-PR-001</td><td class="c-date">2026-05-30</td><td class="c-text">SO-26053001</td><td class="c-text">人員不足（夜間）</td><td class="c-text">¥3,000</td><td class="c-text">派遣手配</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月集計</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>違反件数</label><div class="text-mono" style="font-weight:600;">6</div></div>
+              <div class="field"><label>ペナルティ総額</label><div class="text-mono text-alert" style="font-weight:600;">¥117,000</div></div>
+              <div class="field"><label>クレジット発行済</label><div class="text-mono">¥17,000</div></div>
+              <div class="field"><label>未処置</label><div class="text-mono">¥100,000（AP001 SLA-V-26050022）</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

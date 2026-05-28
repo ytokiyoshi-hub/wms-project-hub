@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>危険物マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>危険物マスタ（S-7 消防法対応）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">消防法 危険物の保管管理（S-7）</div>
+          危険物等級・指定数量を商品単位で定義。保管エリア制限と倉庫合計の指定数量倍数を監視。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>危険物SKU一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-text">類別</th><th class="c-text">品名</th><th class="c-num">指定数量</th><th class="c-text">単位</th><th class="c-text">保管制限</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-MK001-201</td><td class="c-text">業務用アルコール5L</td><td class="c-text"><span class="pill alert">第4類</span></td><td class="c-text">アルコール類</td><td class="c-num">400</td><td class="c-text">L</td><td class="c-text">専用ロケのみ</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">SKU-MK001-202</td><td class="c-text">業務用油性塗料</td><td class="c-text"><span class="pill alert">第4類</span></td><td class="c-text">第二石油類</td><td class="c-num">1,000</td><td class="c-text">L</td><td class="c-text">専用ロケのみ</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">SKU-PR001-085</td><td class="c-text">化粧用エアゾール</td><td class="c-text"><span class="pill alert">第4類</span></td><td class="c-text">第一石油類</td><td class="c-num">200</td><td class="c-text">L</td><td class="c-text">専用ロケのみ</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>倉庫別 指定数量倍数</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">倉庫</th><th class="c-text">類別</th><th class="c-text">現在量</th><th class="c-num">指定数量</th><th class="c-num">倍数</th><th class="c-text">許可</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">東京DC WH001</td><td class="c-text">第4類 アルコール類</td><td class="c-text">280 L</td><td class="c-num">400 L</td><td class="c-num">0.70倍</td><td class="c-text">少量危険物</td><td class="c-status"><span class="pill accent">適合</span></td></tr>
+                <tr><td class="c-text">東京DC WH001</td><td class="c-text">第4類 第二石油類</td><td class="c-text">650 L</td><td class="c-num">1,000 L</td><td class="c-num">0.65倍</td><td class="c-text">少量危険物</td><td class="c-status"><span class="pill accent">適合</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">大阪DC WH002</td><td class="c-text">第4類 アルコール類</td><td class="c-text">380 L</td><td class="c-num">400 L</td><td class="text-alert c-num">0.95倍</td><td class="c-text">少量危険物</td><td class="c-status"><span class="pill alert">警告</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

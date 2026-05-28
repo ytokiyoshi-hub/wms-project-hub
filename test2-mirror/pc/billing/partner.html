@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>委託先請求書突合 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">請求　/　<b>委託先請求書突合（M-13）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">委託先（外部倉庫）請求書 vs 自社計算の突合</div>
+          外部委託先（YU001 湯浅運輸 等）からの請求書を、自社計算（在庫・荷役実績ベース）と突合して差異検出。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>対象月</label><input type="month" value="2026-06"></div>
+            <div class="field"><label>委託先</label><select><option>YU001 湯浅運輸</option><option>TK001 東京倉庫</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="stats">
+          <div class="stat"><div class="label">委託先請求</div><div class="value">120</div><span class="unit">千円</span></div>
+          <div class="stat"><div class="label">自社計算</div><div class="value">118</div><span class="unit">千円</span></div>
+          <div class="stat"><div class="label">差異</div><div class="value text-alert">+2</div><span class="unit">千円</span></div>
+          <div class="stat"><div class="label">差異率</div><div class="value">1.7</div><span class="unit">%</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>項目別 突合</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>項目</th><th class="right">委託先請求</th><th class="right">自社計算</th><th class="right">差異</th><th>原因候補</th><th class="center">対応</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>保管料</td><td class="right num">80,000</td><td class="right num">80,000</td><td class="right num">0</td><td>-</td><td class="center"><span class="pill accent">一致</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>入庫荷役</td><td class="right num">25,000</td><td class="right num">23,500</td><td class="right num text-alert">+1,500</td><td>件数差異 (250→235)</td><td class="center"><button class="btn sm" onclick="alert('「調査」モック動作（実装は後続フェーズ）')">調査</button></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>出庫荷役</td><td class="right num">12,000</td><td class="right num">11,500</td><td class="right num text-alert">+500</td><td>件数差異 (60→57)</td><td class="center"><button class="btn sm" onclick="alert('「調査」モック動作（実装は後続フェーズ）')">調査</button></td></tr>
+                <tr><td>その他</td><td class="right num">3,000</td><td class="right num">3,000</td><td class="right num">0</td><td>-</td><td class="center"><span class="pill accent">一致</span></td></tr>
+                <tr style="font-weight:600; background:var(--c-bg);"><td>合計</td><td class="right num">120,000</td><td class="right num">118,000</td><td class="right num text-alert">+2,000</td><td></td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「CSV出力」モック動作（実装は後続フェーズ）')">CSV出力</button>
+          <button class="btn primary" onclick="alert('「差異クレーム作成」モック動作（実装は後続フェーズ）')">差異クレーム作成</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

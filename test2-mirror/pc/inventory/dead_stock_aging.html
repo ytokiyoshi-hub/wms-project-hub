@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>滞留齢分析 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>滞留齢分析（Z-10 滞留期間分布）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">滞留在庫の経過期間分布（Z-10）</div>
+          滞留している在庫を「直近滞留」「中期滞留」「長期滞留」に分類。期間別に処分判断の緊急度を区分。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>滞留齢分布</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">期間</th><th class="c-num">SKU数</th><th class="c-num">在庫数量</th><th class="c-num">在庫金額</th><th class="c-status">判定</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">90〜120日（直近滞留）</td><td class="c-num">5</td><td class="c-num">82</td><td class="c-num">¥125,000</td><td class="c-status"><span class="pill">監視</span></td></tr>
+                <tr style="background:#fff9e6;"><td class="c-text">121〜180日（中期滞留）</td><td class="c-num">3</td><td class="c-num">42</td><td class="c-num">¥185,000</td><td class="c-status"><span class="pill alert">荷主に処分判断依頼</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">181〜365日（長期滞留）</td><td class="c-num">2</td><td class="c-num">60</td><td class="c-num">¥250,000</td><td class="c-status"><span class="pill alert">廃棄候補</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">366日超（超長期）</td><td class="text-alert c-num">1</td><td class="c-num">18</td><td class="c-num">¥82,800</td><td class="c-status"><span class="pill alert">廃棄確定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>長期滞留SKU 詳細</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-code">荷主</th><th class="c-text">滞留期間</th><th class="c-text">最終出荷</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">SKU-PR001-045</td><td class="c-text">限定香水（SS22）</td><td class="c-code">PR001</td><td class="text-alert c-text">218日</td><td class="c-text">2025-10-26</td><td class="c-status"><span class="pill alert">廃棄判定</span></td></tr>
+                <tr><td class="c-code">SKU-AP001-098</td><td class="c-text">冬物コート（旧モデル）</td><td class="c-code">AP001</td><td class="c-text">125日</td><td class="c-text">2026-01-28</td><td class="c-status"><span class="pill">荷主回答待</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>処分提案</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">区分</th><th class="c-num">提案件数</th><th class="c-text">方針</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status">直近滞留（90-120日）</td><td class="c-num">5</td><td class="c-text">販促・値下げ提案（荷主協議）</td></tr>
+                <tr><td class="c-status">中期滞留（121-180日）</td><td class="c-num">3</td><td class="c-text">荷主への返送 or 大幅値下げ</td></tr>
+                <tr><td class="c-status">長期滞留（181-365日）</td><td class="c-num">2</td><td class="c-text">廃棄 or 荷主返送</td></tr>
+                <tr><td class="c-status">超長期（366日超）</td><td class="c-num">1</td><td class="c-text">即廃棄</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

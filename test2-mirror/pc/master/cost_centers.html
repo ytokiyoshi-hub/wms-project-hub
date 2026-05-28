@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>費用部門 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>費用部門（B-9 コストセンター）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">コストセンター（費用部門）定義（B-9）</div>
+          倉庫×工程ごとの費用集計単位。会計連携時の勘定科目振分にも利用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>コストセンター一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-text">名称</th><th class="c-text">倉庫</th><th class="c-status">区分</th><th class="c-text">勘定科目</th><th class="c-text">当月発生額</th><th class="c-text">責任者</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">CC-WH1-INB</td><td class="c-text">東京DC 入荷</td><td class="c-text">WH001</td><td class="c-status"><span class="pill">工程</span></td><td class="c-text">52001 倉庫労務</td><td class="c-text">¥1,820,000</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-code">CC-WH1-STR</td><td class="c-text">東京DC 保管</td><td class="c-text">WH001</td><td class="c-status"><span class="pill">工程</span></td><td class="c-text">52002 倉庫保管</td><td class="c-text">¥2,500,000</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-code">CC-WH1-OUT</td><td class="c-text">東京DC 出荷</td><td class="c-text">WH001</td><td class="c-status"><span class="pill">工程</span></td><td class="c-text">52003 倉庫労務</td><td class="c-text">¥2,820,000</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-code">CC-WH1-DLV</td><td class="c-text">東京DC 配送</td><td class="c-text">WH001</td><td class="c-status"><span class="pill">工程</span></td><td class="c-text">53001 運送費</td><td class="c-text">¥1,750,000</td><td class="c-text">営業</td></tr>
+                <tr><td class="c-code">CC-WH1-OVR</td><td class="c-text">東京DC 共通</td><td class="c-text">WH001</td><td class="c-status"><span class="pill accent">共通</span></td><td class="c-text">54001 共通費</td><td class="c-text">¥1,250,000</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-code">CC-WH2-OVR</td><td class="c-text">大阪DC 全工程</td><td class="c-text">WH002</td><td class="c-status"><span class="pill accent">共通</span></td><td class="c-text">54001 共通費</td><td class="c-text">¥3,840,000</td><td class="c-text">大阪マネージャー</td></tr>
+                <tr><td class="c-code">CC-HQ-001</td><td class="c-text">本社管理部</td><td class="c-text">-</td><td class="c-status"><span class="pill alert">本社</span></td><td class="c-text">55001 一般管理費</td><td class="c-text">¥1,300,000</td><td class="c-text">本社</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>東京DC 当月コスト分配</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">コストセンター</th><th class="c-num">金額</th><th class="c-num">荷主MK001按分</th><th class="c-num">荷主AP001按分</th><th class="c-num">荷主EC001按分</th><th class="c-num">荷主PR001按分</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">CC-WH1-INB</td><td class="c-num">¥1,820,000</td><td class="c-num">¥720,000</td><td class="c-num">¥180,000</td><td class="c-num">¥820,000</td><td class="c-num">¥100,000</td></tr>
+                <tr><td class="c-text">CC-WH1-STR</td><td class="c-num">¥2,500,000</td><td class="c-num">¥420,000</td><td class="c-num">¥1,200,000</td><td class="c-num">¥520,000</td><td class="c-num">¥360,000</td></tr>
+                <tr><td class="c-text">CC-WH1-OUT</td><td class="c-num">¥2,820,000</td><td class="c-num">¥820,000</td><td class="c-num">¥220,000</td><td class="c-num">¥1,520,000</td><td class="c-num">¥260,000</td></tr>
+                <tr><td class="c-text">CC-WH1-DLV</td><td class="c-num">¥1,750,000</td><td class="c-num">¥520,000</td><td class="c-num">¥180,000</td><td class="c-num">¥920,000</td><td class="c-num">¥130,000</td></tr>
+                <tr><td class="c-text">CC-WH1-OVR</td><td class="c-num">¥1,250,000</td><td class="c-num">¥360,000</td><td class="c-num">¥220,000</td><td class="c-num">¥460,000</td><td class="c-num">¥210,000</td></tr>
+                <tr style="font-weight:600;background:#f0f8ff;"><td class="c-text">合計</td><td class="c-num">¥10,140,000</td><td class="c-num">¥2,840,000</td><td class="c-num">¥2,000,000</td><td class="c-num">¥4,240,000</td><td class="c-num">¥1,060,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

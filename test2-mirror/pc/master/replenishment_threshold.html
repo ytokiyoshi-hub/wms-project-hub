@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>発注点・閾値計算 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>発注点・閾値計算（P-9 自動）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">出荷実績ベースの自動閾値計算（P-9）</div>
+          過去N日の平均出荷量×安全係数で発注点を自動算出。集計期間は荷主×SKUごとカスタマイズ（P-11）。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SKU別 自動算出された発注点</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">過去7日平均</th><th class="c-num">安全係数</th><th class="c-text">発注点</th><th class="c-text">発注量</th><th class="c-text">集計期間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-MK001-001</td><td class="c-text">8/日</td><td class="c-num">2.0</td><td class="text-accent c-text">24</td><td class="c-text">48</td><td class="c-text">過去7日</td></tr>
+                <tr><td class="c-code">SKU-MK001-002</td><td class="c-text">4/日</td><td class="c-num">2.0</td><td class="text-accent c-text">14</td><td class="c-text">28</td><td class="c-text">過去7日</td></tr>
+                <tr><td class="c-code">SKU-MK001-003</td><td class="c-text">12/日</td><td class="c-num">1.5</td><td class="text-accent c-text">28</td><td class="c-text">36</td><td class="c-text">過去14日（賞味期限考慮）</td></tr>
+                <tr><td class="c-code">SKU-EC001-001</td><td class="c-text">40/日</td><td class="c-num">1.8</td><td class="text-accent c-text">120</td><td class="c-text">240</td><td class="c-text">過去3日（高回転）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

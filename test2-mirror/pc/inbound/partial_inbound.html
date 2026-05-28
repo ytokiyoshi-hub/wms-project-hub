@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>部分入荷管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>部分入荷管理（W-423 分納入荷）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">仕入先からの分納入荷管理（W-423）</div>
+          ASN1件に対し複数便で分納される入荷を追跡。各便の到着・検品状況と最終的な完納状況を管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>検品済みだが棚入れ未完了の line（部分入荷=分納の代理表示）</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>入荷No</th><th>荷主</th><th>仕入先</th><th>商品</th><th class="right">予定</th><th class="right">検品済</th><th class="right">残</th><th>状態</th><th class="center">操作</th></tr></thead>
+              <tbody id="tb"><tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>部分入荷ルール（業務定義）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>条件</th><th>処理</th></tr></thead>
+              <tbody>
+                <tr><td>各便受領時</td><td>個別検品 / 部分受領通知（EDI）</td></tr>
+                <tr><td>全便完納</td><td>完納通知 / 請求対象に追加</td></tr>
+                <tr><td>遅延便あり</td><td>マネージャーアラート / 荷主通知</td></tr>
+                <tr><td>欠便確定</td><td>差異処理へ自動連携</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px;">
+          <button class="btn primary" onclick="location.href='/pc/inbound/putaway.html'">棚入れ画面へ</button>
+          <button class="btn" onclick="location.href='/pc/inbound/discrepancy.html'">差異処理へ</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function loadData() {
+  try {
+    const items = await fetch('/api/putaway/pending').then(r => r.json());
+    document.getElementById('meta').textContent = `${items.length}件`;
+    const tb = document.getElementById('tb');
+    if (items.length === 0) {
+      tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-text-sub);">分納中の line なし（全 line 棚入れ完了）</td></tr>';
+      return;
+    }
+    tb.innerHTML = items.slice(0, 50).map(l => {
+      const remain = (l.expected_qty || 0) - (l.inspected_qty || 0);
+      const rowBg = remain !== 0 ? 'background:var(--c-alert-lt);' : '';
+      return `
+        <tr style="${rowBg}">
+          <td class="num">${esc(l.schedule_no)}</td>
+          <td class="num">${esc(l.owner_code || '-')}</td>
+          <td>${esc(l.owner_name || '-')}</td>
+          <td>${esc(l.product_code)} ${esc(l.product_name || '')}</td>
+          <td class="right num">${l.expected_qty}</td>
+          <td class="right num">${l.inspected_qty || 0}</td>
+          <td class="right num ${remain !== 0 ? 'text-alert' : ''}">${remain}</td>
+          <td><span class="pill accent">${esc(l.status)}</span></td>
+          <td class="center"><button class="btn sm" onclick="location.href='/pc/inbound/putaway.html'">棚入れ</button></td>
+        </tr>
+      `;
+    }).join('');
+  } catch (e) {
+    document.getElementById('tb').innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+loadData();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

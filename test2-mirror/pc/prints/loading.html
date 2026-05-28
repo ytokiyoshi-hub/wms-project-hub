@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>積込明細書印刷 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+@media print { .layout > .sidebar, .topbar, .print-actions { display: none !important; } .content { padding: 0 !important; } }
+.paper { background: white; padding: 30px; max-width: 900px; margin: 0 auto; border: 1px solid var(--c-line); }
+.paper h1 { text-align: center; font-size: 20px; margin-bottom: 16px; }
+.paper table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.paper table th, .paper table td { border: 1px solid #000; padding: 4px 6px; }
+.paper table thead th { background: #ddd; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">印刷　/　<b>積込明細書</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="print-actions" style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px;">
+        <button class="btn" onclick="history.back()">戻る</button>
+        <button class="btn primary" onclick="window.print()">印刷</button>
+      </div>
+      <div class="paper">
+        <h1>積込明細書</h1>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:14px;">
+          <div>
+            <div><b>便:</b> 13:30便 東京西エリア</div>
+            <div><b>配送業者:</b> ヤマト運輸</div>
+            <div><b>車両:</b> 品川500あ12-34（2tトラック）</div>
+          </div>
+          <div style="text-align:right;">
+            <div><b>発行日時:</b> 2026-06-01 13:00</div>
+            <div><b>担当:</b> 渡辺 大輔</div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr><th style="width:30px;">#</th><th>出荷No</th><th>荷主</th><th>出荷先</th><th class="right">個口</th><th class="right">重量</th><th>追跡番号</th><th style="width:50px;">確認</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>SO-26060101</td><td>MK001</td><td>東京食品センター</td><td style="text-align:right;">3</td><td style="text-align:right;">85kg</td><td>1234-5678-9012</td><td>□</td></tr>
+            <tr><td>2</td><td>SO-26060102</td><td>MK001</td><td>営業課A</td><td style="text-align:right;">2</td><td style="text-align:right;">42kg</td><td>1234-5678-9013</td><td>□</td></tr>
+            <tr><td>3</td><td>SO-26060103</td><td>EC001</td><td>横浜EC物流</td><td style="text-align:right;">5</td><td style="text-align:right;">120kg</td><td>1234-5678-9014</td><td>□</td></tr>
+            <tr><td>4</td><td>SO-26060104</td><td>MK001</td><td>東京西スーパー</td><td style="text-align:right;">2</td><td style="text-align:right;">68kg</td><td>1234-5678-9015</td><td>□</td></tr>
+            <tr><td colspan="4" style="text-align:right;"><b>合計</b></td><td style="text-align:right;"><b>12</b></td><td style="text-align:right;"><b>315kg</b></td><td colspan="2"></td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px; margin-top:14px; line-height:1.7;">
+          ※ 積込時はカゴラベルをHT-806でスキャンしてください<br>
+          ※ 容量超過時は即停止・リーダーへ連絡
+        </div>
+        <div style="margin-top:24px; display:flex; justify-content:space-between;">
+          <div style="border:1px solid #000; padding:10px 30px; font-size:11px;">引渡者印</div>
+          <div style="border:1px solid #000; padding:10px 30px; font-size:11px;">受取者印</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

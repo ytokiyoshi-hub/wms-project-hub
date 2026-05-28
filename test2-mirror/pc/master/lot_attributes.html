@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロット属性詳細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ロット属性詳細（S-45 製造日・原産地）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ロット単位の追加属性（S-45）</div>
+          製造日・製造工場・原産地・検査証明・有機認証など、SKUより細かいロット単位の属性管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>定義可能なロット属性</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">属性</th><th class="c-text">型</th><th class="c-text">必須</th><th class="c-text">用途</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">製造日</td><td class="c-text">日付</td><td class="c-text"><span class="pill alert">必須</span></td><td class="c-text">FIFO引当 / 期限計算</td></tr>
+                <tr><td class="c-text">賞味期限</td><td class="c-text">日付</td><td class="c-text">条件付き</td><td class="c-text">食品のみ必須</td></tr>
+                <tr><td class="c-text">製造工場</td><td class="c-text">文字列</td><td class="c-text">条件付き</td><td class="c-text">食品 / 医薬品</td></tr>
+                <tr><td class="c-text">原産地</td><td class="c-text">文字列</td><td class="c-text">条件付き</td><td class="c-text">輸入品</td></tr>
+                <tr><td class="c-text">HSコード</td><td class="c-text">文字列</td><td class="c-text">輸入品のみ</td><td class="c-text">関税分類</td></tr>
+                <tr><td class="c-text">有機認証</td><td class="c-text">真偽</td><td class="c-text">食品のみ</td><td class="c-text">JAS有機</td></tr>
+                <tr><td class="c-text">放射線検査</td><td class="c-text">真偽</td><td class="c-text">食品のみ</td><td class="c-text">輸入食品</td></tr>
+                <tr><td class="c-text">環境負荷</td><td class="c-text">列挙</td><td class="c-text">任意</td><td class="c-text">カーボンフットプリント</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>LOT-2605（SKU-MK001-003 冷蔵牛乳）詳細</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>製造日</label><div class="text-mono">2026-05-30</div></div>
+              <div class="field"><label>賞味期限</label><div class="text-mono">2026-06-08</div></div>
+              <div class="field"><label>製造工場</label><div class="text-mono">北海道苫小牧第1工場</div></div>
+              <div class="field"><label>製造ロットNo（製造側）</label><div class="text-mono">A-260530-123</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>原産地</label><div class="text-mono">日本（北海道）</div></div>
+              <div class="field"><label>HSコード</label><div class="text-mono">-（国内品）</div></div>
+              <div class="field"><label>有機認証</label><div><span class="pill accent">JAS有機</span></div></div>
+              <div class="field"><label>放射線検査</label><div><span class="pill accent">合格</span></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

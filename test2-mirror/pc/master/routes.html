@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>配送便ルートマスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>配送便ルート</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div style="display:flex; gap:8px;">
+            <input id="f-q" placeholder="便名/方面" style="flex:1; border:1px solid var(--c-line-dk); padding:7px 10px;">
+            <button class="btn primary" onclick="alert('「検索」モック動作（実装は後続フェーズ）')">検索</button>
+            <button class="btn primary" style="margin-left:auto;" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button>
+          </div>
+        </div></div>
+        <div class="card">
+          <div class="card-header"><span>配送便ルート一覧</span><span class="meta">6便</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-text">便ID</th><th class="c-text">便名</th><th class="c-code">配送業者</th><th class="c-text">方面</th><th class="c-date">集荷時刻</th><th class="c-num">最大重量</th><th class="c-num">最大容量</th><th class="c-action" style="width:120px;">操作</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="c-text">RT001</td><td class="c-text">13:30便 東京西</td><td class="c-code">ヤマト運輸</td><td class="c-text">東京西エリア</td><td class="c-date">13:30</td><td class="c-num">2,000kg</td><td class="c-num">10.0m³</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-text">RT002</td><td class="c-text">15:00便 東京東</td><td class="c-code">佐川急便</td><td class="c-text">東京東エリア</td><td class="c-date">15:00</td><td class="c-num">2,000kg</td><td class="c-num">10.0m³</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-text">RT003</td><td class="c-text">17:00便 神奈川</td><td class="c-code">福山通運</td><td class="c-text">神奈川エリア</td><td class="c-date">17:00</td><td class="c-num">4,000kg</td><td class="c-num">12.0m³</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-text">RT004</td><td class="c-text">翌朝便 全国</td><td class="c-code">ヤマト運輸</td><td class="c-text">全国</td><td class="c-date">17:30</td><td class="c-num">1,000kg</td><td class="c-num">5.0m³</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-text">RT005</td><td class="c-text">11:00便 千葉</td><td class="c-code">西濃運輸</td><td class="c-text">千葉エリア</td><td class="c-date">11:00</td><td class="c-num">4,000kg</td><td class="c-num">12.0m³</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-text">RT006</td><td class="c-text">09:00便 埼玉</td><td class="c-code">ヤマト運輸</td><td class="c-text">埼玉エリア</td><td class="c-date">09:00</td><td class="c-num">2,000kg</td><td class="c-num">10.0m³</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

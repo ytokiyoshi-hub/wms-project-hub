@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ピッキング方式 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ピッキング方式（S-53 オーダー/マルチ/トータル）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ピッキング方式定義（S-53）</div>
+          オーダーピック / マルチオーダーピック / トータルピック / 摘み取り式 / 種まき式 の5方式。荷主×ロケ特性に応じて使い分け。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>方式一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">方式</th><th class="c-text">説明</th><th class="c-text">適用場面</th><th class="c-text">生産性</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">オーダーピック</td><td class="c-text">1オーダー1カゴ</td><td class="c-text">大型品 / 個別配送</td><td class="c-text">低</td></tr>
+                <tr><td class="c-text">マルチオーダー</td><td class="c-text">1カゴで複数オーダー同時</td><td class="c-text">EC（少量多注文）</td><td class="c-text">高</td></tr>
+                <tr><td class="c-text">トータルピック</td><td class="c-text">SKU合計を一気にピック→仕分け</td><td class="c-text">同一SKU大量注文</td><td class="c-text">非常に高</td></tr>
+                <tr><td class="c-text">摘み取り式</td><td class="c-text">1人がオーダー単位で全SKUピック</td><td class="c-text">標準</td><td class="c-text">標準</td></tr>
+                <tr><td class="c-text">種まき式</td><td class="c-text">1人がSKU単位で全オーダーに配布</td><td class="c-text">少種多量</td><td class="c-text">高</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主×方式 マッピング</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">主方式</th><th class="c-text">補助方式</th><th class="c-text">選択ロジック</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">オーダーピック</td><td class="c-text">マルチオーダー（同送先）</td><td class="c-text">配送先で自動振分</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">オーダーピック</td><td class="c-text">-</td><td class="c-text">サイズ確認重視</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">マルチオーダー</td><td class="c-text">トータルピック（販促時）</td><td class="c-text">1オーダー平均3SKUで判定</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-text">オーダーピック</td><td class="c-text">-</td><td class="c-text">VIP品 個別ハンドリング</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>方式別 当月実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">方式</th><th class="c-text">適用ウェーブ</th><th class="c-text">平均行/h/人</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">オーダーピック</td><td class="c-text">128</td><td class="c-text">42.5</td></tr>
+                <tr><td class="c-text">マルチオーダー</td><td class="c-text">82</td><td class="text-accent c-text">68.2</td></tr>
+                <tr><td class="c-text">トータルピック</td><td class="c-text">8</td><td class="text-accent c-text">95.5</td></tr>
+                <tr><td class="c-text">摘み取り式</td><td class="c-text">120</td><td class="c-text">38.0</td></tr>
+                <tr><td class="c-text">種まき式</td><td class="c-text">22</td><td class="c-text">58.4</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

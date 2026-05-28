@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ピッキングウェーブ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>ピッキングウェーブ</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>日付</label><input type="date" value="2026-06-01"></div>
+            <div class="field"><label>状態</label><select><option>全て</option><option>未着手</option><option>進行中</option><option>完了</option></select></div>
+            <div class="field"><label>エリア</label><select><option>全エリア</option><option>1F常温</option><option>2F常温</option><option>冷蔵</option></select></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <button class="btn primary" onclick="alert('「検索」モック動作（実装は後続フェーズ）')">検索</button>
+            <button class="btn primary" style="margin-left:auto;" onclick="alert('「ウェーブ生成（出荷指示から自動編成）」モック動作（実装は後続フェーズ）')">ウェーブ生成（出荷指示から自動編成）</button>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>ピッキングウェーブ一覧</span><span class="meta">5件</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">ウェーブNo</th><th class="c-text">エリア</th><th class="c-code">担当者</th><th class="c-num">出荷数</th><th class="c-num">明細数</th><th class="c-text">締切</th><th class="c-text">進捗</th><th class="c-action" style="width:160px;">操作</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="text-accent c-code">WV-26060101</td><td class="c-text">1F常温</td><td class="c-code">田中 太郎</td><td class="c-num">3</td><td class="c-num">15</td><td class="c-text">15:00</td><td class="c-text"><div style="display:flex; align-items:center; gap:6px;"><div style="width:80px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:60%;"></div></div><span class="text-mono">9/15</span></div></td><td class="c-action"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button> <button class="btn sm" onclick="alert('「中断」モック動作（実装は後続フェーズ）')">中断</button></td></tr>
+                <tr><td class="text-accent c-code">WV-26060102</td><td class="c-text">2F常温</td><td class="c-code">鈴木 一郎</td><td class="c-num">2</td><td class="c-num">8</td><td class="c-text">15:00</td><td class="c-text"><div style="display:flex; align-items:center; gap:6px;"><div style="width:80px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:100%;"></div></div><span class="text-mono accent">8/8 ✓</span></div></td><td class="c-action"><button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button></td></tr>
+                <tr><td class="text-accent c-code">WV-26060103</td><td class="c-text">冷蔵</td><td class="c-code">高橋 春菜</td><td class="c-num">1</td><td class="c-num">3</td><td class="c-text">15:00</td><td class="c-text"><div style="display:flex; align-items:center; gap:6px;"><div style="width:80px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:0%;"></div></div><span class="text-mono">0/3</span></div></td><td class="c-action"><button class="btn primary sm" onclick="alert('「開始指示」モック動作（実装は後続フェーズ）')">開始指示</button></td></tr>
+                <tr><td class="text-accent c-code">WV-26060201</td><td class="c-text">1F常温</td><td class="c-code">佐藤 花子</td><td class="c-num">4</td><td class="c-num">22</td><td class="c-text">17:00</td><td class="c-text"><div style="display:flex; align-items:center; gap:6px;"><div style="width:80px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:0%;"></div></div><span class="text-mono">予定</span></div></td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ウェーブ編成ロジック（C-2/C-3）</div>
+          ・エリア並行（C-2）: 出荷指示を複数エリアで同時並行ピック<br>
+          ・ゾーンリレー（C-3）: エリアA→B→C と順次リレー（特定の出荷指示）<br>
+          ・温度帯別分割（C-5）: 冷蔵/冷凍は別ウェーブ
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

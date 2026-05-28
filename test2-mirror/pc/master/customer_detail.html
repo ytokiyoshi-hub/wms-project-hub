@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>取引先詳細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　取引先　/　<b>東京食品センター（CUS-MK-001）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-header"><span>基本情報</span></div><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>取引先コード</label><div class="text-mono text-accent" style="font-weight:600;">CUS-MK-001</div></div>
+            <div class="field"><label>名称</label><div>東京食品センター</div></div>
+            <div class="field"><label>区分</label><div><span class="pill accent">配送先</span></div></div>
+            <div class="field"><label>荷主</label><div>MK001 マルキ食品</div></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field"><label>郵便番号</label><div class="text-mono">150-0011</div></div>
+            <div class="field"><label>住所</label><div>東京都渋谷区東1-1-1</div></div>
+            <div class="field"><label>方面</label><div>東京西</div></div>
+            <div class="field"><label>配送ゾーン</label><div>Zone-A</div></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field"><label>電話</label><div class="text-mono">03-1234-5678</div></div>
+            <div class="field"><label>担当者</label><div>受付センター</div></div>
+            <div class="field"><label>営業時間</label><div class="text-mono">08:00〜17:00（土日除く）</div></div>
+            <div class="field"><label>納品口</label><div>南側 1F バックヤード</div></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>納品ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">内容</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">納品時間帯指定</td><td class="c-text">10:00-12:00 / 14:00-16:00</td><td class="c-text">13:00休憩で受付停止</td></tr>
+                <tr><td class="c-text">事前連絡</td><td class="c-text">不要</td><td class="c-text">定期便のため</td></tr>
+                <tr><td class="c-text">SDS/シール要件</td><td class="c-text">カゴラベル + 配達票同梱</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">パレット返却</td><td class="c-text">同便で空パレット引取</td><td class="c-text">1枚あたり ¥0</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">注意事項</td><td class="c-text">冷蔵商品は別搬入口（北側）</td><td class="c-text">誤搬入注意</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去30日の納品実績</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>納品回数</label><div class="text-mono" style="font-weight:600;">28回</div></div>
+              <div class="field"><label>遅延回数</label><div class="text-mono text-alert" style="font-weight:600;">1回</div></div>
+              <div class="field"><label>誤納品</label><div class="text-mono">0回</div></div>
+              <div class="field"><label>苦情</label><div class="text-mono">0件</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>請求書印刷 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+@media print {
+  .layout > .sidebar, .topbar, .print-actions { display: none !important; }
+  .content { padding: 0 !important; }
+}
+.paper { background: white; padding: 40px; max-width: 800px; margin: 0 auto; border: 1px solid var(--c-line); }
+.paper h1 { font-size: 24px; text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+.paper table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 14px; }
+.paper table th, .paper table td { border: 1px solid #000; padding: 5px 8px; }
+.paper table thead th { background: #ddd; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">印刷　/　<b>請求書</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="print-actions" style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px;">
+        <button class="btn" onclick="history.back()">戻る</button>
+        <button class="btn primary" onclick="window.print()">印刷（PDF保存）</button>
+      </div>
+
+      <div class="paper">
+        <h1>請求書</h1>
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+          <div>
+            <div style="font-size:14px; font-weight:600;">株式会社マルキ食品 御中</div>
+            <div style="font-size:11px; margin-top:6px;">〒XXX-XXXX 東京都XX区XX</div>
+          </div>
+          <div style="text-align:right;">
+            <div>請求書番号: INV-2606-MK001</div>
+            <div>発行日: 2026-07-01</div>
+            <div>支払期限: 2026-07-31</div>
+          </div>
+        </div>
+
+        <div style="font-size:13px; margin-bottom:10px;">下記の通りご請求申し上げます。</div>
+
+        <div style="background:#f4f5f7; padding:14px; border:1px solid var(--c-line); margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:13px;">2026年6月分（請求方式: 3期制）</div>
+            <div style="font-size:22px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent);">¥380,000</div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>項目</th><th class="right" style="width:120px;">数量・基準</th><th class="right" style="width:100px;">単価</th><th class="right" style="width:120px;">金額（円）</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>保管料（3期制）</td><td style="text-align:right;">期首+10日+20日+入庫 4,230PL</td><td style="text-align:right;">67.5/PL</td><td style="text-align:right;">285,000</td></tr>
+            <tr><td>入庫荷役料</td><td style="text-align:right;">480件</td><td style="text-align:right;">100/件</td><td style="text-align:right;">48,000</td></tr>
+            <tr><td>出庫荷役料</td><td style="text-align:right;">2,180件</td><td style="text-align:right;">20/件</td><td style="text-align:right;">43,600</td></tr>
+            <tr><td>梱包資材費</td><td style="text-align:right;">130箱</td><td style="text-align:right;">25/箱</td><td style="text-align:right;">3,250</td></tr>
+            <tr><td colspan="3" style="text-align:right;"><b>小計（税抜）</b></td><td style="text-align:right;">379,850</td></tr>
+            <tr><td colspan="3" style="text-align:right;">消費税（10%）</td><td style="text-align:right;">150</td></tr>
+            <tr><td colspan="3" style="text-align:right;"><b>合計（税込）</b></td><td style="text-align:right;"><b>380,000</b></td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:24px; font-size:11px; line-height:1.8;">
+          <div><b>振込先:</b> 〇〇銀行 〇〇支店 普通 1234567 株式会社XX物流</div>
+          <div><b>備考:</b> ご質問は経理担当までお問い合わせください</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

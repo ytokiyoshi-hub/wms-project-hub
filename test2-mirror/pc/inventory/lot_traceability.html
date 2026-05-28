@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロットトレーサビリティ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>ロットトレーサビリティ（Q-18 リコール対応 / 実 API: /api/inventory/lot-trace）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ロット単位の上流・下流トレース（Q-18）</div>
+          特定ロットの「保管→出荷先」を一気通貫で追跡。リコール／品質問題対応に必須。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>SKU</label><input id="f-product" type="text" value="SKU-MK001-001" class="text-mono"></div>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="btn primary" onclick="loadData()">検索</button>
+              </div>
+            <div class="field"><label>ロット</label><input id="f-lot" type="text" value="L260518-01" class="text-mono"></div>
+            <div class="field" style="grid-column:span 2;"><label>　</label>
+              <div>
+                <button class="btn primary" onclick="loadData()">トレース実行</button>
+                <button class="btn" onclick="exportCsv()" style="margin-left:8px;">配送先CSV出力</button>
+                <button class="btn alert" onclick="freezeLot()" style="margin-left:8px;">出荷止め発動</button>
+              </div>
+            </div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>現在の在庫（実 API）</span><span class="meta" id="meta-stock">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">ロケ</th><th class="c-num">残在庫</th><th class="c-text">入荷日</th><th class="c-date">期限</th></tr></thead>
+              <tbody id="tb-stock"><tr><td colspan="4" style="text-align:center; padding:20px; color:var(--c-text-sub);">未実行</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>変動履歴（入庫/出庫/移動/調整 - 実 API）</span><span class="meta" id="meta-txn">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日時</th><th class="c-text">種別</th><th class="c-code">ロケ</th><th class="c-num">数量</th><th class="c-text">関連</th></tr></thead>
+              <tbody id="tb-txn"><tr><td colspan="5" style="text-align:center; padding:20px; color:var(--c-text-sub);">未実行</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/pc/inventory/lots.html">ロット追跡</a>
+              <a class="btn" href="/pc/inventory/transactions.html">トランザクションログ</a>
+              <a class="btn" href="/pc/inventory/serial_inquiry.html">シリアル照会</a>
+              <a class="btn" href="/pc/inventory/hold.html">出荷止め一覧</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function loadData() {
+  const product = document.getElementById('f-product').value.trim();
+  const lot = document.getElementById('f-lot').value.trim();
+  if (!product || !lot) { alert('SKU とロットの両方を入力'); return; }
+  try {
+    const url = `/api/inventory/lot-trace?product_code=${encodeURIComponent(product)}&lot_no=${encodeURIComponent(lot)}`;
+    const data = await fetch(url).then(r => r.json());
+    if (data.error) { alert(`エラー: ${data.error}`); return; }
+    const stocks = data.stocks || [];
+    const txns = data.transactions || [];
+    document.getElementById('meta-stock').textContent = `${stocks.length} ロケ`;
+    document.getElementById('meta-txn').textContent = `${txns.length} 件`;
+
+    const tb1 = document.getElementById('tb-stock');
+    tb1.innerHTML = stocks.length === 0
+      ? '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--c-text-sub);">在庫なし</td></tr>'
+      : stocks.map(s => `
+        <tr>
+          <td class="num">${esc(s.location_code)}</td>
+          <td class="right num ${s.qty <= 0 ? 'text-alert' : 'text-accent'}" style="font-weight:600;">${s.qty}</td>
+          <td class="right num">${esc((s.received_at || '').slice(0, 10))}</td>
+          <td class="right num">${esc(s.expiry_date || '-')}</td>
+        </tr>
+      `).join('');
+
+    const tb2 = document.getElementById('tb-txn');
+    tb2.innerHTML = txns.length === 0
+      ? '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--c-text-sub);">履歴なし</td></tr>'
+      : txns.slice(0, 50).map(t => {
+          const pill = t.tx_type === 'inbound' ? 'accent' : t.tx_type === 'outbound' ? 'alert' : '';
+          return `
+            <tr>
+              <td class="num">${esc(t.created_at)}</td>
+              <td><span class="pill ${pill}">${esc(t.tx_type)}</span></td>
+              <td class="num">${esc(t.location_code)}</td>
+              <td class="right num ${t.qty < 0 ? 'text-alert' : 'text-accent'}">${t.qty > 0 ? '+' : ''}${t.qty}</td>
+              <td class="num">${esc(t.ref_type || '')}${t.ref_id ? '#' + t.ref_id : ''}</td>
+            </tr>
+          `;
+        }).join('');
+  } catch (e) { alert(`通信失敗: ${e.message}`); }
+}
+function exportCsv() {
+  alert('配送先CSV出力（モック）。本機能はリコール対応用 - HANDOFF事項。');
+}
+function freezeLot() {
+  const lot = document.getElementById('f-lot').value.trim();
+  if (!lot) { alert('ロットを指定'); return; }
+  if (!confirm(`ロット ${lot} を出荷止めにしますか？\n対応するSKUの全在庫が hold 状態になります（モック）。`)) return;
+  alert('出荷止め発動（モック）。実装時は inventory.status = "hold" 一括更新。');
+}
+loadData();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

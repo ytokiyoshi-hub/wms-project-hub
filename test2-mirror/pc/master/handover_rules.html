@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>引継ぎルール — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>引継ぎルール（H-10 シフト間引継ぎ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">シフト間の引継ぎ標準化（H-10）</div>
+          早番→遅番、遅番→夜勤などのシフト間引継ぎ事項を標準化。残作業・例外・特記事項を継承。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>引継ぎ項目</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-status">区分</th><th class="c-text">必須</th><th class="c-text">引継ぎ方法</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">未完了ウェーブ</td><td class="c-status"><span class="pill alert">業務</span></td><td class="c-text">必須</td><td class="c-text">システム自動</td></tr>
+                <tr><td class="c-text">未対応例外</td><td class="c-status"><span class="pill alert">業務</span></td><td class="c-text">必須</td><td class="c-text">システム自動 + 口頭</td></tr>
+                <tr><td class="c-text">検疫・凍結品</td><td class="c-status"><span class="pill alert">業務</span></td><td class="c-text">必須</td><td class="c-text">システム自動</td></tr>
+                <tr><td class="c-text">SLA逼迫SO</td><td class="c-status"><span class="pill alert">業務</span></td><td class="c-text">必須</td><td class="c-text">システム + 引継書</td></tr>
+                <tr><td class="c-text">機器故障</td><td class="c-status"><span class="pill">設備</span></td><td class="c-text">必須</td><td class="c-text">引継書</td></tr>
+                <tr><td class="c-text">欠勤者・休憩者</td><td class="c-status"><span class="pill">人員</span></td><td class="c-text">必須</td><td class="c-text">引継書</td></tr>
+                <tr><td class="c-text">外部訪問者</td><td class="c-status"><span class="pill">その他</span></td><td class="c-text">必須</td><td class="c-text">引継書</td></tr>
+                <tr><td class="c-text">備品・消耗品</td><td class="c-status"><span class="pill">その他</span></td><td class="c-text">任意</td><td class="c-text">引継書</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日 13:00 早番→遅番 引継ぎ</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>早番代表</label><div class="text-mono">佐藤太郎</div></div>
+              <div class="field"><label>遅番代表</label><div class="text-mono">山本健介</div></div>
+              <div class="field"><label>引継時刻</label><div class="text-mono">12:55〜13:05</div></div>
+              <div class="field"><label>状態</label><div><span class="pill accent">完了</span></div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>引継ぎ内容（本日）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">区分</th><th class="c-text">項目</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status">業務</td><td class="c-text">WAVE-26060103 ピック中（残120行）</td><td class="c-text">佐藤→山本へ続行</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-status">業務</td><td class="c-text">SO-26060104-A SLA違反確定</td><td class="c-text">営業連絡済 / 完了優先</td></tr>
+                <tr><td class="c-status">業務</td><td class="c-text">QRN-26060101 検疫中（牛乳6本）</td><td class="c-text">QA判定待ち</td></tr>
+                <tr><td class="c-status">設備</td><td class="c-text">PRT-003 用紙切れ</td><td class="c-text">用紙補充済 / 動作確認</td></tr>
+                <tr><td class="c-status">人員</td><td class="c-text">伊藤裕子 14:00より休憩</td><td class="c-text">OJT継続</td></tr>
+                <tr><td class="c-status">その他</td><td class="c-text">監査人 16:00来訪予定</td><td class="c-text">SZ-002立入許可済</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

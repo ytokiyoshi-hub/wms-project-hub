@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>通知チャネル定義 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>通知チャネル定義（N-5 配信経路）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">通知配信経路の設定（N-5）</div>
+          メール／LINE／Slack／SMS／Webhook など、システムが使用できる経路と認証情報を一元管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>登録チャネル</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-text">種別</th><th class="c-text">名称</th><th class="c-text">送信元</th><th class="c-num">送信成功率</th><th class="c-text">月コスト</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">CH-MAIL-001</td><td class="c-text">メール</td><td class="c-text">SendGrid 本番</td><td class="text-xs c-text">noreply@wms.local</td><td class="text-accent c-num">99.8%</td><td class="c-text">¥3,500</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">CH-LINE-001</td><td class="c-text">LINE</td><td class="c-text">LINE Notify</td><td class="c-text">WMS Bot</td><td class="text-accent c-num">99.2%</td><td class="c-text">¥0</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">CH-LINE-002</td><td class="c-text">LINE</td><td class="c-text">LINE Messaging API</td><td class="c-text">WMS Official</td><td class="text-accent c-num">99.5%</td><td class="c-text">¥5,000</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">CH-SLCK-001</td><td class="c-text">Slack</td><td class="c-text">社内Slack #wms-alerts</td><td class="c-text">WMS Bot</td><td class="text-accent c-num">100.0%</td><td class="c-text">¥0</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">CH-SMS-001</td><td class="c-text">SMS</td><td class="c-text">Twilio</td><td class="c-text">WMS</td><td class="c-num">98.4%</td><td class="c-text">¥8,200</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">CH-WH-001</td><td class="c-text">Webhook</td><td class="c-text">HTTPS POST</td><td class="c-text">per-owner</td><td class="c-num">97.8%</td><td class="c-text">¥0</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">CH-MAIL-X</td><td class="c-text">メール</td><td class="c-text">旧SMTPサーバー</td><td class="text-xs c-text">old@wms.local</td><td class="text-alert c-num">86.4%</td><td class="c-text">¥0</td><td class="c-status"><span class="pill alert">廃止予定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月送信量サマリ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">チャネル</th><th class="c-num">送信数</th><th class="c-text">成功</th><th class="c-text">失敗</th><th class="c-text">レート</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">CH-MAIL-001</td><td class="c-num">12,840</td><td class="c-text">12,815</td><td class="c-text">25</td><td class="text-accent c-text">99.8%</td></tr>
+                <tr><td class="c-text">CH-LINE-002</td><td class="c-num">4,520</td><td class="c-text">4,498</td><td class="c-text">22</td><td class="text-accent c-text">99.5%</td></tr>
+                <tr><td class="c-text">CH-SLCK-001</td><td class="c-num">820</td><td class="c-text">820</td><td class="c-text">0</td><td class="text-accent c-text">100.0%</td></tr>
+                <tr><td class="c-text">CH-SMS-001</td><td class="c-num">142</td><td class="c-text">140</td><td class="c-text">2</td><td class="c-text">98.6%</td></tr>
+                <tr><td class="c-text">CH-WH-001</td><td class="c-num">28,420</td><td class="c-text">27,800</td><td class="c-text">620</td><td class="c-text">97.8%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「テスト送信」モック動作（実装は後続フェーズ）')">テスト送信</button>
+          <button class="btn primary" onclick="alert('「+ チャネル追加」モック動作（実装は後続フェーズ）')">+ チャネル追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

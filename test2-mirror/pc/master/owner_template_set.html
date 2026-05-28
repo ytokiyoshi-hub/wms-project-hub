@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主テンプレートセット — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主テンプレートセット（S-69 新規荷主用設定束ね）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">新規荷主導入を効率化（S-69）</div>
+          業態別の標準設定セット。新規荷主の初期設定をテンプレ適用で1日以内に完了。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>テンプレートセット一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">セットID</th><th class="c-text">業態</th><th class="c-text">含む設定</th><th class="c-num">標準工数</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">TS-EC</td><td class="c-text">EC荷主</td><td class="c-text">API中心 / マルチオーダー / 多頻度補充</td><td class="c-num">4h</td></tr>
+                <tr><td class="c-text">TS-FOOD</td><td class="c-text">食品荷主</td><td class="c-text">EDI / FEFO / 温度管理 / 期限管理</td><td class="c-num">6h</td></tr>
+                <tr><td class="c-text">TS-APRL</td><td class="c-text">アパレル荷主</td><td class="c-text">坪貸し / シーズン管理 / サイズ属性</td><td class="c-num">6h</td></tr>
+                <tr><td class="c-text">TS-COSM</td><td class="c-text">化粧品荷主</td><td class="c-text">シリアル管理 / 期限 / VIP保管</td><td class="c-num">8h</td></tr>
+                <tr><td class="c-text">TS-IMPORT</td><td class="c-text">輸入商品</td><td class="c-text">HSコード / 通関 / 為替</td><td class="c-num">8h</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>TS-EC 含む設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">領域</th><th class="c-text">標準設定</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">請求方式</td><td class="c-text">2期制（標準）</td></tr>
+                <tr><td class="c-text">連携方式</td><td class="c-text">REST API（推奨）</td></tr>
+                <tr><td class="c-text">ピッキング方式</td><td class="c-text">マルチオーダー</td></tr>
+                <tr><td class="c-text">引当順序</td><td class="c-text">FIFO（標準）</td></tr>
+                <tr><td class="c-text">運送会社デフォルト</td><td class="c-text">佐川 / ヤマト（自動最適）</td></tr>
+                <tr><td class="c-text">返品ポリシー</td><td class="c-text">30日 / 無料返品</td></tr>
+                <tr><td class="c-text">通知</td><td class="c-text">出荷確定 → API / 配達完了 → API</td></tr>
+                <tr><td class="c-text">SLA</td><td class="c-text">EC即日（14:30締切）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>適用実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">セット</th><th class="c-text">適用日</th><th class="c-num">カスタマイズ件数</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">EC001 EC太郎</td><td class="c-text">TS-EC</td><td class="c-text">2023-04-01</td><td class="c-num">8</td></tr>
+                <tr><td class="c-code">MK001 マルキ食品</td><td class="c-text">TS-FOOD</td><td class="c-text">2022-08-15</td><td class="c-num">12</td></tr>
+                <tr><td class="c-code">AP001 アパレル</td><td class="c-text">TS-APRL</td><td class="c-text">2024-10-01</td><td class="c-num">5</td></tr>
+                <tr><td class="c-code">PR001 プレミアム</td><td class="c-text">TS-COSM</td><td class="c-text">2024-08-01</td><td class="c-num">10</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

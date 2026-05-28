@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主ダッシュボード設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主ダッシュボード設定（S-14 ポータル表示制御）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主ポータルの表示項目・公開範囲（S-14）</div>
+          荷主ごとに表示するKPI・タブ・データ範囲を制御。「単価まで見せる／見せない」など権限を細分。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 ダッシュボード設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-num">在庫</th><th class="c-text">入荷予定</th><th class="c-text">出荷実績</th><th class="c-text">請求</th><th class="c-num">料金単価</th><th class="c-code">API公開</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001 マルキ食品</td><td class="c-num">◎</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-num">◎</td><td class="c-code">○</td><td class="c-status"><span class="pill accent">フル公開</span></td></tr>
+                <tr><td class="c-code">AP001 アパレル</td><td class="c-num">◎</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-num">×</td><td class="c-code">×</td><td class="c-status"><span class="pill">単価非公開</span></td></tr>
+                <tr><td class="c-code">EC001 EC太郎</td><td class="c-num">◎</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-text">◎</td><td class="c-num">○</td><td class="c-code">◎</td><td class="c-status"><span class="pill accent">API中心</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">PR001 プレミアム流通</td><td class="c-num">◎</td><td class="c-text">×</td><td class="c-text">◎</td><td class="c-text">○</td><td class="c-num">×</td><td class="c-code">×</td><td class="c-status"><span class="pill alert">最小公開</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>表示KPI（荷主ポータル トップ）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">KPI</th><th class="c-code">MK001</th><th class="c-code">AP001</th><th class="c-code">EC001</th><th class="c-code">PR001</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">当日入荷件数</td><td class="c-code">表示</td><td class="c-code">表示</td><td class="c-code">表示</td><td class="c-code">非表示</td></tr>
+                <tr><td class="c-code">当日出荷件数</td><td class="c-code">表示</td><td class="c-code">表示</td><td class="c-code">表示</td><td class="c-code">表示</td></tr>
+                <tr><td class="c-code">SLA達成率</td><td class="c-code">表示</td><td class="c-code">表示</td><td class="c-code">表示</td><td class="c-code">非表示</td></tr>
+                <tr><td class="c-code">在庫金額</td><td class="c-code">表示</td><td class="c-code">非表示</td><td class="c-code">表示</td><td class="c-code">非表示</td></tr>
+                <tr><td class="c-code">滞留在庫</td><td class="c-code">表示</td><td class="c-code">表示</td><td class="c-code">表示</td><td class="c-code">非表示</td></tr>
+                <tr><td class="c-code">賞味期限切迫</td><td class="c-code">表示</td><td class="c-code">-</td><td class="c-code">-</td><td class="c-code">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>データ範囲制限</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">制限内容</th><th class="c-code">適用荷主</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">過去データ閲覧期間</td><td class="c-text">過去13ヶ月まで</td><td class="c-code">全荷主</td></tr>
+                <tr><td class="c-text">CSV ダウンロード</td><td class="c-text">1回 ≤10,000行</td><td class="c-code">全荷主</td></tr>
+                <tr><td class="c-text">API 1日コール数</td><td class="c-text">10,000 calls</td><td class="c-code">EC001以外</td></tr>
+                <tr><td class="c-text">API 1日コール数</td><td class="c-text">制限なし</td><td class="c-code">EC001</td></tr>
+                <tr><td class="c-text">他荷主データ閲覧</td><td class="c-text">不可</td><td class="c-code">全荷主（強制）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

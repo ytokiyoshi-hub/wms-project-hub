@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT-403-2 検品：スキャン中 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-403 検品作業（入荷検品）</h1>
+<p class="subtitle">入荷現物をHTでスキャンして検品を実施 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/inspect/asn.html"><b>HT-403-1</b>ASN選択</a>
+  <a href="/ht/inspect/scan.html" class="active"><b>HT-403-2</b>スキャン</a>
+  <a href="/ht/inspect/done.html"><b>HT-403-3</b>完了</a>
+  <a href="/ht/putaway/instructions.html"><b>HT-406-1</b>棚入れ指示</a>
+  <a href="/ht/putaway/location.html"><b>HT-406-2</b>ロケスキャン</a>
+  <a href="/ht/putaway/done.html"><b>HT-406-3</b>棚入れ完了</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WMS-HT v0.2</span><span id="clock">--:-- ████</span></div>
+      <div class="ht-header">
+        <span>検品：スキャン中</span>
+        <span class="scr-id">SCR-403-2</span>
+      </div>
+      <div class="ht-body">
+        <div class="step-progress">
+          <div class="step done"><span class="num">1</span>ASN選択</div>
+          <div class="step current"><span class="num">2</span>スキャン</div>
+          <div class="step"><span class="num">3</span>完了確認</div>
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-sub);" id="asn-info">-</div>
+
+        <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">品目 <span id="item-progress">1/?</span></div>
+
+        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
+          <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent);" id="cur-code">-</div>
+          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="cur-name">読込中</div>
+          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;" id="cur-plan">予定: -</div>
+        </div>
+
+        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:5px 8px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <div style="font-size:9px; color:var(--c-text-sub);">スキャン済:</div>
+            <div style="font-size:13px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent);"><span id="scanned-qty">0</span> <span style="font-size:10px; color:var(--c-text-sub); font-weight:400;">/ <span id="plan-qty">-</span></span></div>
+          </div>
+          <div class="pbar" style="margin-top:4px;">
+            <div class="fill" id="progress-fill" style="width:0%;"></div>
+          </div>
+        </div>
+
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 8px; font-size:9px;">
+          <div style="display:flex; justify-content:space-between;"><span style="color:var(--c-text-sub);">ロット：</span><span id="lot-no" style="font-family:var(--f-mono); font-weight:600;">未入力</span></div>
+          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span style="color:var(--c-text-sub);">製造：</span><span id="mfg-date" style="font-family:var(--f-mono);">-</span></div>
+          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span style="color:var(--c-text-sub);">賞味：</span><span id="exp-date" style="font-family:var(--f-mono);">-</span></div>
+        </div>
+
+        <input id="jan-input" placeholder="JAN" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+        <input id="qty-input" type="number" placeholder="数量" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+
+        <div style="background:#1a1c22; color:#ffd966; text-align:center; padding:6px; font-size:9px; font-family:var(--f-mono); margin-top:auto;">▼ バーコードをスキャン</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl" onclick="history.back()"><span class="fn">F1</span>戻る</div>
+        <div class="key-lbl"><span class="fn">F2</span>NG入力</div>
+        <div class="key-lbl primary" id="key-confirm"><span class="fn">F3</span>次品目</div>
+        <div class="key-lbl"><span class="fn">F4</span>メニュー</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+        <div class="pkey scan" onclick="simulateScan()">SCAN</div>
+        <div class="pkey f1" onclick="document.getElementById('key-confirm').click()">F3</div><div class="pkey f1">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-num-grid">
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+        </div>
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-403-2</span>検品 STEP2
+  <div class="desc-text">SKUをスキャンして数量を確認してください</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} ████`; };
+setClock(); setInterval(setClock, 30000);
+
+const params = new URLSearchParams(location.search);
+const scheduleId = params.get('id');
+const scheduleNo = params.get('no');
+const supplier = params.get('supplier');
+const ownerCode = params.get('owner');
+let lines = [], curIdx = 0;
+
+document.getElementById('asn-info').textContent = `${scheduleNo || '-'} / ${supplier || '-'}`;
+
+async function loadLines() {
+  if (!scheduleId) {
+    document.getElementById('cur-name').textContent = 'schedule_id 未指定';
+    return;
+  }
+  try {
+    const detail = await fetch(`/api/inbound-schedules/${scheduleId}`).then(r => r.json());
+    lines = (detail.lines || []).filter(l => l.status === 'planned');
+    if (lines.length === 0) {
+      document.getElementById('cur-name').textContent = '検品済';
+      return;
+    }
+    showCurrent();
+  } catch (e) {
+    document.getElementById('cur-name').textContent = `読込失敗: ${e.message}`;
+  }
+}
+
+function showCurrent() {
+  const l = lines[curIdx];
+  if (!l) return;
+  document.getElementById('cur-code').textContent = l.product_code;
+  document.getElementById('cur-name').textContent = l.product_name || l.product_code;
+  document.getElementById('cur-plan').textContent = `予定: ${l.expected_qty} ケース`;
+  document.getElementById('plan-qty').textContent = l.expected_qty;
+  document.getElementById('scanned-qty').textContent = 0;
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('item-progress').textContent = `${curIdx + 1}/${lines.length}`;
+  document.getElementById('lot-no').textContent = l.lot_no || '(なし)';
+  document.getElementById('exp-date').textContent = l.expiry_date || '-';
+}
+
+function simulateScan() {
+  const l = lines[curIdx];
+  if (!l) return;
+  document.getElementById('jan-input').value = l.product_code;
+  document.getElementById('qty-input').value = String(l.expected_qty);
+  document.getElementById('qty-input').focus();
+}
+// 旧名互換
+window.htSimulateScan = simulateScan;
+
+async function confirmInspect() {
+  const janV = document.getElementById('jan-input').value.trim();
+  const qty = parseInt(document.getElementById('qty-input').value, 10);
+  const l = lines[curIdx];
+  if (!l) { alert('対象line無し'); return; }
+  if (!janV || !qty || qty <= 0) { alert('JAN(or商品コード) と数量を入力'); return; }
+  try {
+    const res = await fetch(`/api/inspect/${l.id}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ inspected_qty: qty, lot_no: l.lot_no || '', expiry_date: l.expiry_date || '' })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(`検品失敗: ${err.error || res.status}`);
+      return;
+    }
+    document.getElementById('scanned-qty').textContent = qty;
+    document.getElementById('progress-fill').style.width = '100%';
+    curIdx++;
+    if (curIdx >= lines.length) {
+      const p = new URLSearchParams({ id: scheduleId, no: scheduleNo, supplier: supplier || '', owner: ownerCode || '' });
+      location.href = '/ht/inspect/done.html?' + p.toString();
+    } else {
+      document.getElementById('jan-input').value = '';
+      document.getElementById('qty-input').value = '';
+      showCurrent();
+      document.getElementById('jan-input').focus();
+    }
+  } catch (e) {
+    alert(`通信エラー: ${e.message}`);
+  }
+}
+
+document.getElementById('key-confirm').addEventListener('click', confirmInspect);
+document.getElementById('qty-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmInspect(); });
+
+loadLines();
+</script>
+</body>
+</html>

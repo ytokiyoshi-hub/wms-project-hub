@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>検品進捗 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>検品進捗</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="stats">
+          <div class="stat"><div class="label">本日対象</div><div class="value" id="kpi-total">-</div><span class="unit">明細</span></div>
+          <div class="stat"><div class="label">検品中(inspected)</div><div class="value text-accent" id="kpi-inspecting">-</div><span class="unit">明細</span></div>
+          <div class="stat"><div class="label">差異検出</div><div class="value text-alert" id="kpi-discrepancy">-</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">完了(completed)</div><div class="value" id="kpi-completed">-</div><span class="unit">明細</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>検品進捗（実 API: inbound-actuals）</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>入荷No</th><th>荷主</th><th>仕入先</th><th>商品</th><th class="right">予定数</th><th class="right">検品数</th><th>状態</th><th>検品日時</th><th class="center">操作</th>
+              </tr></thead>
+              <tbody id="tb"><tr><td colspan="9" style="text-align:center; padding:24px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function loadData() {
+  try {
+    const [actuals, discrep] = await Promise.all([
+      fetch('/api/inbound-actuals').then(r => r.json()),
+      fetch('/api/discrepancies?status=pending').then(r => r.json()),
+    ]);
+    const inspecting = actuals.filter(a => a.status === 'inspected');
+    const completed = actuals.filter(a => a.status === 'completed');
+    document.getElementById('kpi-total').textContent = actuals.length;
+    document.getElementById('kpi-inspecting').textContent = inspecting.length;
+    document.getElementById('kpi-discrepancy').textContent = discrep.length;
+    document.getElementById('kpi-completed').textContent = completed.length;
+    document.getElementById('meta').textContent = `${actuals.length}件`;
+
+    const tb = document.getElementById('tb');
+    if (actuals.length === 0) {
+      tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:24px; color:var(--c-text-sub);">検品実績なし — HT端末で検品開始してください</td></tr>';
+      return;
+    }
+    tb.innerHTML = actuals.slice(0, 50).map(a => {
+      const hasDiff = a.expected_qty !== a.inspected_qty;
+      const rowBg = hasDiff ? 'background:var(--c-alert-lt);' : '';
+      const statusPill = a.status === 'completed' ? '<span class="pill">完了</span>' : '<span class="pill accent">検品済</span>';
+      const action = hasDiff
+        ? `<button class="btn sm" onclick="location.href='/pc/inbound/discrepancy.html'">差異対応</button>`
+        : (a.status === 'inspected' ? `<button class="btn sm" onclick="location.href='/pc/inbound/putaway.html'">棚入れへ</button>` : `<button class="btn sm" onclick="showDetail(${a.schedule_id})">詳細</button>`);
+      return `
+        <tr style="${rowBg}">
+          <td class="num">${esc(a.schedule_no)}</td>
+          <td class="num">${esc(a.owner_code)}</td>
+          <td>${esc(a.supplier_name || '-')}</td>
+          <td>${esc(a.product_code)} ${esc(a.product_name || '')}</td>
+          <td class="right num">${a.expected_qty}</td>
+          <td class="right num ${hasDiff ? 'text-alert' : ''}">${a.inspected_qty ?? '-'}</td>
+          <td>${statusPill}</td>
+          <td class="num">${esc(a.inspected_at || '-')}</td>
+          <td class="center">${action}</td>
+        </tr>
+      `;
+    }).join('');
+  } catch (e) {
+    document.getElementById('tb').innerHTML = `<tr><td colspan="9" style="text-align:center; padding:24px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+async function showDetail(scheduleId) {
+  try {
+    const d = await fetch(`/api/inbound-schedules/${scheduleId}`).then(r => r.json());
+    const lines = (d.lines || []).map(l => `・${l.product_code} 予定:${l.expected_qty} 検品:${l.inspected_qty ?? '-'} 状態:${l.status}`).join('\n');
+    alert(`【${d.schedule_no}】 ${d.owner_name || d.owner_code} / ${d.supplier_name || '-'}\n予定日: ${d.scheduled_date}\n\n--- 明細 ---\n${lines || '(なし)'}`);
+  } catch (e) { alert('取得失敗: ' + e.message); }
+}
+
+loadData();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

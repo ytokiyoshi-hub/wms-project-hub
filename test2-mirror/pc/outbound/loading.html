@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>W-307 積込管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>積込管理 (W-307) — D系</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">積込管理（D-1 ～ D-6）</div>
+          トラック横でHT-806/HT-306でカゴをスキャン → 重量/容量チェック → 積込完了 → 引渡記録。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の便別積込状況</span><span class="meta" id="load-count">-便</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">積込No</th><th class="c-text">業者</th><th class="c-text">車両</th><th class="c-text">集荷</th><th class="c-num">件数</th><th class="c-text">積込済</th><th class="c-text">進捗</th><th class="c-status">状態</th>
+              </tr></thead>
+              <tbody id="load-tbody">
+                <tr><td colspan="8" style="text-align:center; padding:14px; color:var(--c-text-sub);">読み込み中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+(async () => {
+  try {
+    const list = await fetch('/api/loadings').then(r => r.json()) || [];
+    document.getElementById('load-count').textContent = `${list.length}便`;
+    const tbody = document.getElementById('load-tbody');
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:14px; color:var(--c-text-sub);">積込計画なし</td></tr>';
+      return;
+    }
+    const statusMap = { planned: '未着手', loading: '積込中', loaded: '積込完了', handover: '引渡済', completed: '完了' };
+    tbody.innerHTML = list.map(l => {
+      const total = l.order_count || 0;
+      const loaded = l.loaded_count || 0;
+      const pct = total > 0 ? Math.round(loaded / total * 100) : 0;
+      const rowBg = l.status === 'loading' ? 'style="background:var(--c-alert-lt);"' : '';
+      return `<tr ${rowBg}>
+        <td class="text-accent c-code">${esc(l.loading_no)}</td>
+        <td class="c-text">${esc(l.carrier_name || l.carrier_code || '-')}</td>
+        <td class="c-text">${esc(l.vehicle_no || '-')}</td>
+        <td class="c-text">${esc(l.scheduled_at || '-')}</td>
+        <td class="c-num">${total}</td>
+        <td class="c-text">${loaded}</td>
+        <td class="c-text"><div style="display:flex; gap:6px; align-items:center;"><div style="width:80px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:${pct}%;"></div></div><span class="text-mono">${pct}%</span></div></td>
+        <td class="c-status"><span class="pill ${l.status === 'loading' ? 'accent' : ''}">${esc(statusMap[l.status] || l.status || '-')}</span></td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    document.getElementById('load-tbody').innerHTML = `<tr><td colspan="8" style="text-align:center; padding:14px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+})();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

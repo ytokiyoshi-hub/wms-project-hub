@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>設定変更履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>設定変更履歴（A-8 システム設定の改定）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">システム設定の変更履歴（A-8）</div>
+          セキュリティ設定・SLA定義・ロール権限など、システム全体に影響する設定変更を改定単位で記録。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>対象設定</label><select><option>全設定</option><option>セキュリティ設定</option><option>SLA定義</option><option>ロール権限</option></select></div>
+            <div class="field"><label>期間</label><input type="text" value="2026-04-01 〜 2026-06-01" class="text-mono"></div>
+            <div class="field"><label>変更者</label><select><option>全員</option><option>システム管理者</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>変更履歴</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">変更日時</th><th class="c-text">設定</th><th class="c-text">項目</th><th class="c-text">旧値</th><th class="c-text">新値</th><th class="c-text">変更者</th><th class="c-text">承認者</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">2026-05-30 16:22</td><td class="c-text">セキュリティ</td><td class="c-text">パスワード最低文字数</td><td class="c-text">8</td><td class="text-accent c-text">10</td><td class="c-text">システム管理者</td><td class="c-text">営業部長</td></tr>
+                <tr><td class="c-date">2026-05-28 14:00</td><td class="c-text">SLA定義</td><td class="c-text">EC即日出荷 締切</td><td class="c-text">14:00</td><td class="text-accent c-text">14:30</td><td class="c-text">マネージャー</td><td class="c-text">営業部長</td></tr>
+                <tr><td class="c-date">2026-05-20 10:08</td><td class="c-text">ロール権限</td><td class="c-text">ROLE-LEAD ウェーブ承認</td><td class="c-text">なし</td><td class="text-accent c-text">あり</td><td class="c-text">マネージャー</td><td class="c-text">本社</td></tr>
+                <tr><td class="c-date">2026-05-12 11:15</td><td class="c-text">セキュリティ</td><td class="c-text">MFA要求 ROLE-LEAD</td><td class="c-text">任意</td><td class="c-text">推奨</td><td class="c-text">システム管理者</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-date">2026-05-05 09:42</td><td class="c-text">SLA定義</td><td class="c-text">新規追加 SLA-EC-002</td><td class="c-text">-</td><td class="text-accent c-text">欠品手数料</td><td class="c-text">マネージャー</td><td class="c-text">営業部長</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">2026-04-28 16:30</td><td class="c-text">API レート</td><td class="c-text">EC001 レート上限</td><td class="c-text">300/分</td><td class="c-text">600/分</td><td class="c-text">システム管理者</td><td class="c-text">営業</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>影響範囲（直近2ヶ月の主要変更）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">変更</th><th class="c-text">影響対象</th><th class="c-text">影響開始日</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">パスワード最低文字数 8→10</td><td class="c-text">全ユーザー（68名）</td><td class="c-text">2026-05-30</td><td class="c-text">次回パスワード変更時から適用</td></tr>
+                <tr><td class="c-text">EC即日締切 14:00→14:30</td><td class="c-text">EC001 SLA</td><td class="c-text">2026-06-01</td><td class="c-text">EC001 と合意済 / 契約附則 v2</td></tr>
+                <tr><td class="c-text">EC001 レート 300→600</td><td class="c-text">EC001 API</td><td class="c-text">2026-04-28</td><td class="c-text">繁忙期向け一時的増枠</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

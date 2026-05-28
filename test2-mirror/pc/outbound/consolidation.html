@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>出荷統合 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>出荷統合（W-314 同送先まとめ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">同一配送先の複数出荷指示を1便にまとめる（W-314）</div>
+          同送先・同便枠の出荷を統合して1配送として処理。配送費削減 + 受取側の荷扱い負荷軽減。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>統合候補（同配送先 ≥2件）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">配送先</th><th class="c-num">出荷数</th><th class="c-code">出荷No</th><th class="c-code">荷主</th><th class="c-num">合計重量</th><th class="c-num">合計サイズ</th><th class="c-text">便</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">東京食品センター</td><td class="c-num">3</td><td class="text-xs c-code">SO-26060101 / SO-26060115 / SO-26060118</td><td class="c-code">MK001</td><td class="c-num">28.5kg</td><td class="c-num">140</td><td class="c-text">13:30便</td><td class="c-action"><button class="btn small primary" onclick="alert('「統合」モック動作（実装は後続フェーズ）')">統合</button></td></tr>
+                <tr><td class="c-code">横浜EC物流</td><td class="c-num">5</td><td class="text-xs c-code">SO-26060103 / -120 / -125 / -130 / -132</td><td class="c-code">EC001</td><td class="c-num">12.0kg</td><td class="c-num">100</td><td class="c-text">15:00便</td><td class="c-action"><button class="btn small primary" onclick="alert('「統合」モック動作（実装は後続フェーズ）')">統合</button></td></tr>
+                <tr><td class="c-code">営業課A</td><td class="c-num">2</td><td class="text-xs c-code">SO-26060102 / SO-26060128</td><td class="c-code">MK001</td><td class="c-num">8.5kg</td><td class="c-num">80</td><td class="c-text">13:30便</td><td class="c-action"><button class="btn small primary" onclick="alert('「統合」モック動作（実装は後続フェーズ）')">統合</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>統合プレビュー（東京食品センター）</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>統合後 出荷No</label><div class="text-mono text-accent" style="font-weight:600;">SO-26060101-CONS</div></div>
+              <div class="field"><label>統合元</label><div class="text-mono">3 件</div></div>
+              <div class="field"><label>合計重量</label><div class="text-mono">28.5kg</div></div>
+              <div class="field"><label>合計サイズ</label><div class="text-mono">140</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>配送原価（統合前）</label><div class="text-mono">¥4,560（3便分）</div></div>
+              <div class="field"><label>配送原価（統合後）</label><div class="text-mono text-accent" style="font-weight:600;">¥1,820（1便）</div></div>
+              <div class="field"><label>削減額</label><div class="text-mono text-accent" style="font-weight:600;">¥2,740</div></div>
+              <div class="field"><label>削減率</label><div class="text-mono text-accent" style="font-weight:600;">60.1%</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の統合実績</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>統合件数</label><div class="text-mono" style="font-weight:600;">8 グループ</div></div>
+              <div class="field"><label>元出荷No数</label><div class="text-mono" style="font-weight:600;">22 件</div></div>
+              <div class="field"><label>削減配送費</label><div class="text-mono text-accent" style="font-weight:600;">¥18,420</div></div>
+              <div class="field"><label>削減便数</label><div class="text-mono" style="font-weight:600;">14 便</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

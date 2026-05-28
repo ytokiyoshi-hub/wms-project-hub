@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HT-000 ログイン — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-000 ログイン</h1>
+<p class="subtitle">作業者ログイン (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/login.html" class="active"><b>HT-000</b>ログイン</a>
+  <a href="/ht/menu.html"><b>HT-001</b>メニュー</a>
+  <a href="/ht/inspect/asn.html"><b>HT-403</b>検品</a>
+  <a href="/ht/pick/wave.html"><b>HT-804</b>ピック</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">07:55 100%</span></div>
+      <div class="ht-header">
+        <span>WMS ログイン</span>
+        <span class="scr-id">HT-000</span>
+      </div>
+      <div class="ht-body" style="justify-content:center; padding:30px 14px;">
+        <div style="text-align:center;">
+          <div style="font-size:32px; color:var(--c-accent); font-weight:700;">WMS</div>
+          <div style="font-size:11px; color:var(--c-text-sub); margin-top:4px;">テストサイト2 / v0.2</div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="ht-info-row">
+          <div class="lbl" style="font-size:10px; color:var(--c-text-sub);">作業者ID</div>
+          <input id="user-input" placeholder="USR-001" style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:14px; font-family:var(--f-mono); text-align:center; background:var(--c-base);" autofocus>
+        </div>
+
+        <div class="ht-info-row">
+          <div class="lbl" style="font-size:10px; color:var(--c-text-sub);">パスワード</div>
+          <input id="pw-input" type="password" placeholder="****" style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:14px; font-family:var(--f-mono); text-align:center; background:var(--c-base);">
+        </div>
+
+        <button id="key-login" onclick="login()" style="background:var(--c-accent); color:#fff; border:none; padding:10px; font-weight:600; font-size:13px; cursor:pointer; margin-top:8px;">
+          F1 ログイン
+        </button>
+
+        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:10px;">
+          IDをスキャン or 手入力
+        </div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" onclick="login()"><span class="fn">F1</span>ログイン</div>
+        <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+        <div class="key-lbl"><span class="fn">F3</span>PW忘れ</div>
+        <div class="key-lbl"><span class="fn">F4</span>終了</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row"><div class="pkey scan">SCAN</div></div>
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-000</span>ログイン
+  <div class="desc-text">作業者ID + パスワード でログイン → HT-001 メニューへ</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 100%`; };
+setClock(); setInterval(setClock, 30000);
+window.htSimulateScan = () => { document.getElementById('user-input').value = 'USR-001'; document.getElementById('pw-input').focus(); };
+function login() {
+  const u = document.getElementById('user-input').value.trim();
+  if (!u) { alert('作業者IDを入力'); return; }
+  location.href = '/ht/menu.html';
+}
+</script>
+</body>
+</html>

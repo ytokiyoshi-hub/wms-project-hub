@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫監査履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>在庫監査履歴（Q-35 過去監査一覧）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">過去の在庫監査履歴（Q-35）</div>
+          実地監査・サイクルカウント結果・是正措置の経年推移を一覧。外部監査人提供用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>監査履歴（過去5年）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">監査No</th><th class="c-status">区分</th><th class="c-date">実施日</th><th class="c-text">監査員</th><th class="c-code">対象SKU</th><th class="c-num">在庫精度</th><th class="c-num">是正項目数</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">AUD-2022-H1</td><td class="c-status">半期</td><td class="c-date">2022-06-30</td><td class="c-text">外部監査</td><td class="c-code">220</td><td class="c-num">96.4%</td><td class="c-num">8</td></tr>
+                <tr><td class="c-code">AUD-2022-FY</td><td class="c-status">年次</td><td class="c-date">2022-12-30</td><td class="c-text">外部監査</td><td class="c-code">238</td><td class="c-num">97.1%</td><td class="c-num">6</td></tr>
+                <tr><td class="c-code">AUD-2023-H1</td><td class="c-status">半期</td><td class="c-date">2023-06-30</td><td class="c-text">外部監査</td><td class="c-code">252</td><td class="c-num">97.6%</td><td class="c-num">5</td></tr>
+                <tr><td class="c-code">AUD-2023-FY</td><td class="c-status">年次</td><td class="c-date">2023-12-30</td><td class="c-text">外部監査</td><td class="c-code">268</td><td class="c-num">98.1%</td><td class="c-num">4</td></tr>
+                <tr><td class="c-code">AUD-2024-H1</td><td class="c-status">半期</td><td class="c-date">2024-06-30</td><td class="c-text">外部監査</td><td class="c-code">275</td><td class="c-num">98.5%</td><td class="c-num">3</td></tr>
+                <tr><td class="c-code">AUD-2024-FY</td><td class="c-status">年次</td><td class="c-date">2024-12-30</td><td class="c-text">外部監査</td><td class="c-code">282</td><td class="c-num">98.8%</td><td class="c-num">3</td></tr>
+                <tr><td class="c-code">AUD-2025-H1</td><td class="c-status">半期</td><td class="c-date">2025-06-30</td><td class="c-text">外部監査</td><td class="c-code">286</td><td class="c-num">97.2%</td><td class="c-num">8</td></tr>
+                <tr><td class="c-code">AUD-2025-FY</td><td class="c-status">年次</td><td class="c-date">2025-12-30</td><td class="c-text">外部監査</td><td class="c-code">286</td><td class="text-accent c-num">98.9%</td><td class="c-num">3</td></tr>
+                <tr><td class="c-code">AUD-2026-H1</td><td class="c-status">半期</td><td class="c-date">2026-06-30 予定</td><td class="c-text">外部監査</td><td class="c-code">-</td><td class="c-num">-</td><td class="c-num">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>精度トレンド（経年）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>2022年平均</label><div class="text-mono">96.8%</div></div>
+              <div class="field"><label>2023年平均</label><div class="text-mono">97.9%</div></div>
+              <div class="field"><label>2024年平均</label><div class="text-mono text-accent">98.7%</div></div>
+              <div class="field"><label>2025年平均</label><div class="text-mono text-accent">98.1%</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>主要是正措置（過去10件）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">監査</th><th class="c-text">是正</th><th class="c-text">効果</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2023-H1</td><td class="c-text">サイクルカウント開始</td><td class="c-text">差異検知精度+5%</td></tr>
+                <tr><td class="c-text">2023-FY</td><td class="c-text">2回入力UI導入</td><td class="c-text">誤入力-60%</td></tr>
+                <tr><td class="c-text">2024-H1</td><td class="c-text">ABC再配置自動提案</td><td class="c-text">動線最適化</td></tr>
+                <tr><td class="c-text">2025-H1</td><td class="c-text">HT検品手順統一</td><td class="c-text">誤検品-40%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>印刷帳票ハブ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb"><b>印刷帳票ハブ</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="stats">
+          <a href="/pc/prints/picking_list.html" style="text-decoration:none;"><div class="stat"><div class="label">ピッキングリスト</div><div class="value">📋</div><span class="unit">出荷指示単位</span></div></a>
+          <a href="/pc/prints/invoice.html" style="text-decoration:none;"><div class="stat"><div class="label">請求書</div><div class="value">📄</div><span class="unit">月次・荷主単位</span></div></a>
+          <a href="/pc/prints/inventory.html" style="text-decoration:none;"><div class="stat"><div class="label">在庫明細書</div><div class="value">📊</div><span class="unit">月末時点</span></div></a>
+          <a href="/pc/prints/loading.html" style="text-decoration:none;"><div class="stat"><div class="label">積込明細書</div><div class="value">🚚</div><span class="unit">便単位</span></div></a>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の印刷予定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>帳票</th><th>対象</th><th>発行予定</th><th class="center">操作</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>ピッキングリスト</td><td>WV-26060101 ウェーブ</td><td class="num">2026-06-01 12:00</td><td class="center"><button class="btn primary sm" onclick="alert('「印刷」モック動作（実装は後続フェーズ）')">印刷</button></td></tr>
+                <tr><td>積込明細書</td><td>13:30便 東京西エリア</td><td class="num">2026-06-01 13:00</td><td class="center"><button class="btn primary sm" onclick="alert('「印刷」モック動作（実装は後続フェーズ）')">印刷</button></td></tr>
+                <tr><td>月次請求書</td><td>2026年6月分 全荷主</td><td class="num">2026-07-01 09:00</td><td class="center"><button class="btn sm" onclick="alert('「予約済」モック動作（実装は後続フェーズ）')">予約済</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

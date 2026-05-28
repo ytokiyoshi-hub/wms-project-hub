@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫移動理由 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>在庫移動理由（S-21 移動コード体系）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">在庫移動の理由コード（S-21）</div>
+          日次移動の記録時に必須指定。整理整頓・補充・破損対応など。集計時に動線改善判断の根拠データに。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>移動理由コード一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-text">名称</th><th class="c-status">区分</th><th class="c-text">影響</th><th class="c-text">承認</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MR-001</td><td class="c-text">整理整頓</td><td class="c-status"><span class="pill">通常</span></td><td class="c-text">在庫数変動なし</td><td class="c-text">不要</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MR-002</td><td class="c-text">バラ補充</td><td class="c-status"><span class="pill accent">補充</span></td><td class="c-text">ケース→バラ転換</td><td class="c-text">不要</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MR-003</td><td class="c-text">ABC再配置</td><td class="c-status"><span class="pill">最適化</span></td><td class="c-text">在庫数変動なし</td><td class="c-text">リーダー承認</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MR-004</td><td class="c-text">破損品分離</td><td class="c-status"><span class="pill alert">品質</span></td><td class="c-text">通常→保留ロケ</td><td class="c-text">QA承認</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MR-005</td><td class="c-text">季節レイアウト変更</td><td class="c-status"><span class="pill">最適化</span></td><td class="c-text">大量移動</td><td class="c-text">マネージャー承認</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MR-006</td><td class="c-text">誤格納修正</td><td class="c-status"><span class="pill alert">品質</span></td><td class="c-text">温度帯違反など</td><td class="c-text">リーダー承認</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MR-007</td><td class="c-text">倉庫間移送</td><td class="c-status"><span class="pill accent">移送</span></td><td class="c-text">WH001↔WH002</td><td class="c-text">マネージャー承認</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MR-099</td><td class="c-text">その他</td><td class="c-status"><span class="pill">その他</span></td><td class="c-text">備考必須</td><td class="c-text">マネージャー承認</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月集計（理由別）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">理由</th><th class="c-num">件数</th><th class="c-num">数量合計</th><th class="c-num">作業時間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">MR-001 整理整頓</td><td class="c-num">82</td><td class="c-num">2,420</td><td class="c-num">14h</td></tr>
+                <tr><td class="c-text">MR-002 バラ補充</td><td class="c-num">1,420</td><td class="c-num">18,200</td><td class="c-num">128h</td></tr>
+                <tr><td class="c-text">MR-003 ABC再配置</td><td class="c-num">42</td><td class="c-num">820</td><td class="c-num">8h</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">MR-004 破損品分離</td><td class="c-num">18</td><td class="c-num">85</td><td class="c-num">3h</td></tr>
+                <tr><td class="c-text">MR-005 季節レイアウト</td><td class="c-num">8</td><td class="c-num">580</td><td class="c-num">12h</td></tr>
+                <tr><td class="c-text">MR-007 倉庫間移送</td><td class="c-num">22</td><td class="c-num">1,420</td><td class="c-num">22h</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

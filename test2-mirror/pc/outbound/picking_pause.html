@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ピック中断記録 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>ピック中断記録（W-339 中断分析）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ピック中断の原因記録（W-339）</div>
+          ピッカーが作業を中断する理由を分析。在庫不足/設備故障/休憩/呼出 等を集計して生産性改善。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日のピック中断</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-text">ピッカー</th><th class="c-text">ウェーブ</th><th class="c-text">理由</th><th class="c-num">中断時間</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">10:42</td><td class="c-text">佐藤太郎</td><td class="c-text">WAVE-26060101</td><td class="c-text">休憩</td><td class="c-num">15分</td><td class="c-status"><span class="pill accent">通常</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">11:08</td><td class="c-text">山本健介</td><td class="c-text">WAVE-26060102</td><td class="c-text">HT端末不調</td><td class="c-num">8分</td><td class="c-status"><span class="pill alert">設備</span></td></tr>
+                <tr><td class="c-date">11:25</td><td class="c-text">佐藤太郎</td><td class="c-text">WAVE-26060101</td><td class="c-text">マネージャー呼出</td><td class="c-num">5分</td><td class="c-status"><span class="pill">業務</span></td></tr>
+                <tr><td class="c-date">12:30</td><td class="c-text">鈴木花子</td><td class="c-text">WAVE-26060103</td><td class="c-text">休憩</td><td class="c-num">30分</td><td class="c-status"><span class="pill accent">通常</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">13:42</td><td class="c-text">田中一郎</td><td class="c-text">WAVE-26060103</td><td class="c-text">在庫不足発覚</td><td class="c-num">12分</td><td class="c-status"><span class="pill alert">業務</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>原因別 集計（当月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">原因</th><th class="c-num">件数</th><th class="c-num">平均中断時間</th><th class="c-text">生産性損失</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">休憩</td><td class="c-num">328</td><td class="c-num">18分</td><td class="c-text">計画通り</td></tr>
+                <tr><td class="c-text">HT端末不調</td><td class="c-num">42</td><td class="c-num">8分</td><td class="text-alert c-text">5.6時間</td></tr>
+                <tr><td class="c-text">マネージャー呼出</td><td class="c-num">28</td><td class="c-num">6分</td><td class="c-text">2.8時間</td></tr>
+                <tr><td class="c-text">在庫不足発覚</td><td class="c-num">18</td><td class="c-num">12分</td><td class="text-alert c-text">3.6時間</td></tr>
+                <tr><td class="c-text">ロケ修繕</td><td class="c-num">8</td><td class="c-num">25分</td><td class="c-text">3.3時間</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>改善提案</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">原因</th><th class="c-text">提案</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">HT端末不調</td><td class="c-text">FW更新の徹底 / 予備端末常時待機</td></tr>
+                <tr><td class="c-text">在庫不足発覚</td><td class="c-text">引当処理の精度向上 / 補充頻度見直し</td></tr>
+                <tr><td class="c-text">マネージャー呼出</td><td class="c-text">Slack/LINEで非同期化</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>返品ラベル発行 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">返品　/　<b>返品ラベル発行（W-1005 着払いラベル）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">エンドユーザー宛て返品ラベル（W-1005）</div>
+          EC返品で「着払いラベルPDFをユーザーへ送付」する運用に対応。返品番号と運送会社の追跡番号を紐付け保存。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>荷主</label><select><option>EC001 EC太郎</option></select></div>
+            <div class="field"><label>運送会社</label><select><option>佐川（着払い）</option><option>カントウ運送（着払い）</option></select></div>
+            <div class="field"><label>サイズ目安</label><select><option>80サイズ</option><option>60サイズ</option><option>100サイズ</option></select></div>
+            <div class="field"><label>出力</label><select><option>PDF（メール添付）</option><option>感熱ラベル直接印刷</option></select></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field"><label>顧客名</label><input type="text" placeholder="氏名"></div>
+            <div class="field"><label>郵便番号</label><input type="text" placeholder="123-4567" class="text-mono"></div>
+            <div class="field"><label>電話番号</label><input type="text" placeholder="090-xxxx-xxxx" class="text-mono"></div>
+            <div class="field"><label>関連受注</label><input type="text" placeholder="SO-..." class="text-mono"></div>
+          </div>
+          <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+            <button class="btn" onclick="alert('「プレビュー」モック動作（実装は後続フェーズ）')">プレビュー</button>
+            <button class="btn primary" onclick="alert('「ラベル発行」モック動作（実装は後続フェーズ）')">ラベル発行</button>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日発行済みラベル</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>発行日時</th><th>返品No</th><th>関連受注</th><th>顧客</th><th>運送</th><th>追跡番号</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td class="num">2026-06-01 10:20</td><td class="num">RTL-26060101</td><td class="num">SO-26052801</td><td>山田次郎様</td><td>佐川</td><td class="num">7777-8888-9012</td><td><span class="pill accent">発行済</span></td></tr>
+                <tr><td class="num">2026-06-01 11:08</td><td class="num">RTL-26060102</td><td class="num">SO-26052810</td><td>佐藤花子様</td><td>佐川</td><td class="num">7777-8888-9013</td><td><span class="pill">未着</span></td></tr>
+                <tr><td class="num">2026-06-01 12:25</td><td class="num">RTL-26060103</td><td class="num">SO-26052815</td><td>鈴木太郎様</td><td>カントウ</td><td class="num">8888-9999-1234</td><td><span class="pill accent">受取確認</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月発行統計</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>発行件数</label><div class="text-mono" style="font-weight:600;">42</div></div>
+              <div class="field"><label>受取確認</label><div class="text-mono text-accent" style="font-weight:600;">35</div></div>
+              <div class="field"><label>未着</label><div class="text-mono" style="font-weight:600;">7</div></div>
+              <div class="field"><label>着払い負担合計</label><div class="text-mono text-alert" style="font-weight:600;">¥38,640</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

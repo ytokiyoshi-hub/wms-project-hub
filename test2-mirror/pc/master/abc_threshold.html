@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ABC閾値設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ABC閾値設定（Z-1 自動分類基準）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ABC分析の閾値・再計算頻度（Z-1）</div>
+          ABC分類の累積構成比閾値・基準データ・再計算スケジュール。荷主別の上書きも可能。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>全社デフォルト</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>基準データ</label><select><option>出荷数量</option><option>出荷回数</option><option>金額</option></select></div>
+              <div class="field"><label>集計期間</label><select><option>過去90日</option><option>過去30日</option><option>過去180日</option></select></div>
+              <div class="field"><label>再計算頻度</label><select><option>週次（日曜深夜）</option><option>日次</option><option>月次</option></select></div>
+              <div class="field"><label>除外</label><select><option>新規商品 30日以内</option><option>除外なし</option></select></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>Aランク累計</label><input type="number" value="70" style="text-align:right;"> %以下</div>
+              <div class="field"><label>Bランク累計</label><input type="number" value="90" style="text-align:right;"> %以下</div>
+              <div class="field"><label>Cランク累計</label><input type="number" value="100" style="text-align:right;"> %以下</div>
+              <div class="field"><label>未分類扱い</label><select><option>Dランク（廃番候補）</option></select></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 上書き設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">基準</th><th class="c-text">期間</th><th class="c-text">A閾値</th><th class="c-text">B閾値</th><th class="c-text">C閾値</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001 マルキ食品</td><td class="c-text">出荷数量</td><td class="c-text">90日</td><td class="c-text">70%</td><td class="c-text">90%</td><td class="c-text">100%</td><td class="c-status"><span class="pill">デフォルト</span></td></tr>
+                <tr><td class="c-code">AP001 アパレル</td><td class="c-text">金額</td><td class="c-text">180日</td><td class="c-text">75%</td><td class="c-text">93%</td><td class="c-text">100%</td><td class="c-status"><span class="pill accent">上書き</span></td></tr>
+                <tr><td class="c-code">EC001 EC太郎</td><td class="c-text">出荷回数</td><td class="c-text">30日</td><td class="c-text">65%</td><td class="c-text">88%</td><td class="c-text">100%</td><td class="c-status"><span class="pill accent">上書き</span></td></tr>
+                <tr><td class="c-code">PR001 プレミアム流通</td><td class="c-text">出荷数量</td><td class="c-text">90日</td><td class="c-text">70%</td><td class="c-text">90%</td><td class="c-text">100%</td><td class="c-status"><span class="pill">デフォルト</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>次回計算スケジュール</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>次回実行</label><div class="text-mono text-accent" style="font-weight:600;">2026-06-07 02:00</div></div>
+              <div class="field"><label>対象SKU数</label><div class="text-mono" style="font-weight:600;">286</div></div>
+              <div class="field"><label>推定実行時間</label><div class="text-mono">2.8分</div></div>
+              <div class="field"><label>操作</label><div><button class="btn small" onclick="alert('「今すぐ実行」モック動作（実装は後続フェーズ）')">今すぐ実行</button></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

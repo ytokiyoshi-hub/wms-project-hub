@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>物量予測・必要人員 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">人員管理　/　<b>物量予測・必要人員（K-5/K-6）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">物量予測と必要人員自動算出（K-5/K-6）</div>
+          過去実績と季節要因から物量を予測。生産性指標を逆算して必要人員を提示。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>来週の物量予測</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>日付</th><th class="right">入荷予測</th><th class="right">出荷予測</th><th class="right">必要人員</th><th>シフト割当</th><th class="center">過不足</th></tr></thead>
+              <tbody>
+                <tr><td>6/2 (火)</td><td class="right num">42件</td><td class="right num">155件</td><td class="right num">12名</td><td class="num">12名</td><td class="center"><span class="pill accent">適正</span></td></tr>
+                <tr><td>6/3 (水)</td><td class="right num">38件</td><td class="right num">145件</td><td class="right num">11名</td><td class="num">12名</td><td class="center"><span class="pill">+1余裕</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>6/5 (金)</td><td class="right num">52件</td><td class="right num">220件</td><td class="right num">15名</td><td class="num">12名</td><td class="center"><span class="pill alert">-3不足</span></td></tr>
+                <tr><td>6/6 (土)</td><td class="right num">10件</td><td class="right num">80件</td><td class="right num">5名</td><td class="num">5名</td><td class="center"><span class="pill accent">適正</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>シフト適正提案（11項目 K-7）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>提案項目</th><th>現状</th><th>提案</th><th>効果</th></tr></thead>
+              <tbody>
+                <tr><td>6/5 増員</td><td>12名</td><td>15名（パート2名+派遣1名）</td><td>遅延回避</td></tr>
+                <tr><td>冷蔵エリア</td><td>1名固定</td><td>繁忙時 2名（応援）</td><td>遅延回避</td></tr>
+                <tr><td>ピッキング配置</td><td>エリア均等</td><td>1F常温に+1名（出荷集中）</td><td>15%効率UP</td></tr>
+                <tr><td>残業</td><td>0h</td><td>6/5 のみ +2h</td><td>+1名分相当</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

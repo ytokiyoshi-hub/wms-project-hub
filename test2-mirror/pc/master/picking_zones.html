@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ピッキングゾーン — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ピッキングゾーン（S-39 ゾーンピッキング）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ゾーンピッキング設定（S-39）</div>
+          倉庫をゾーンに区切り、ピッカーをゾーン専属化。大規模倉庫でピッカー間の動線交錯を防止。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>東京DC ゾーン定義</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ゾーン</th><th class="c-text">名称</th><th class="c-code">対象ロケ</th><th class="c-code">主取扱SKU</th><th class="c-num">専属ピッカー数</th><th class="c-text">HT端末</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">Z-1F-A</td><td class="c-text">1F フロント（高回転）</td><td class="c-code">A-01〜A-15</td><td class="c-code">MK001 A品</td><td class="c-num">2名</td><td class="c-text">HT-001 / HT-002</td></tr>
+                <tr><td class="c-text">Z-1F-B</td><td class="c-text">1F バックヤード</td><td class="c-code">B-01〜B-20</td><td class="c-code">MK001 B/C品</td><td class="c-num">1名</td><td class="c-text">HT-003</td></tr>
+                <tr><td class="c-text">Z-1F-EC</td><td class="c-text">1F EC専用</td><td class="c-code">A-EC-01〜30</td><td class="c-code">EC001 全SKU</td><td class="c-num">3名</td><td class="c-text">HT-004〜006</td></tr>
+                <tr><td class="c-text">Z-1F-REF</td><td class="c-text">1F 冷蔵</td><td class="c-code">REF-01〜36</td><td class="c-code">MK001 冷蔵品</td><td class="c-num">1名</td><td class="c-text">HT-007</td></tr>
+                <tr><td class="c-text">Z-1F-FRZ</td><td class="c-text">1F 冷凍</td><td class="c-code">FRZ-01〜16</td><td class="c-code">MK001 冷凍品</td><td class="c-num">1名</td><td class="c-text">HT-008</td></tr>
+                <tr><td class="c-text">Z-2F-AP</td><td class="c-text">2F アパレル</td><td class="c-code">C-AP-01〜45</td><td class="c-code">AP001 全SKU</td><td class="c-num">2名</td><td class="c-text">HT-009 / HT-010</td></tr>
+                <tr><td class="c-text">Z-3F-PR</td><td class="c-text">3F プレミアム</td><td class="c-code">D-PR-01〜25</td><td class="c-code">PR001 全SKU</td><td class="c-num">1名</td><td class="c-text">HT-011</td></tr>
+                <tr><td class="c-text">Z-3F-HAZ</td><td class="c-text">3F 危険物</td><td class="c-code">D-HAZ-01〜10</td><td class="c-code">危険物</td><td class="c-num">専任1名</td><td class="c-text">HT-012</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>マルチオーダーピッキングの統合ロジック</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">方式</th><th class="c-text">説明</th><th class="c-text">適用</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">ゾーン分担</td><td class="c-text">各ゾーンのピッカーが1オーダーを部分ピック→統合エリアで合体</td><td class="c-text">EC001（マルチオーダー多）</td></tr>
+                <tr><td class="c-text">ピックアンドパス</td><td class="c-text">1台のカゴをゾーンごとに引き継ぎ</td><td class="c-text">大規模ピッキング</td></tr>
+                <tr><td class="c-text">シングルゾーン</td><td class="c-text">1ピッカーが全SKUをピック（小規模）</td><td class="c-text">MK001 / AP001</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

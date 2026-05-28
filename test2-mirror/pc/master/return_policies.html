@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>返品ポリシー — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>返品ポリシー（S-27 荷主別返品ルール）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別の返品受付ポリシー（S-27）</div>
+          返品可能期限・状態条件・着払い負担・返金方法など、荷主との合意ルールを統合管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 返品ポリシー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-date">受付期限</th><th class="c-num">状態条件</th><th class="c-text">着払い</th><th class="c-text">返金方法</th><th class="c-text">クーポン振替</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-date">受領後7日</td><td class="c-num">未開封・期限内</td><td class="c-text">顧客負担</td><td class="c-text">銀行振込</td><td class="c-text"><span class="pill">不可</span></td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-date">受領後14日</td><td class="c-num">未着用・タグ付き</td><td class="c-text">顧客負担（不良時は荷主）</td><td class="c-text">クレカ返金</td><td class="c-text"><span class="pill accent">可</span></td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-date">受領後30日</td><td class="c-num">未開封</td><td class="c-text"><span class="pill accent">荷主負担（無料返品）</span></td><td class="c-text">クレカ返金</td><td class="c-text"><span class="pill accent">可</span></td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-date">受領後7日</td><td class="c-num">未開封・期限内</td><td class="c-text">顧客負担</td><td class="c-text">銀行振込</td><td class="c-text"><span class="pill">不可</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>EC001 詳細ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-num">条件</th><th class="c-text">処置</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-num">受領後14日以内 / 未開封</td><td class="c-text">全額返金 + 着払いラベル無料発送</td></tr>
+                <tr><td class="c-num">受領後15-30日 / 未開封</td><td class="c-text">金額の85% + 着払いラベル無料発送</td></tr>
+                <tr><td class="c-num">受領後30日超</td><td class="c-text">受付不可（顧客に通知）</td></tr>
+                <tr><td class="c-num">開封済（イメージ違い）</td><td class="c-text">受付不可（不良除く）</td></tr>
+                <tr><td class="c-num">初期不良</td><td class="c-text">無制限・全額返金 + 賠償</td></tr>
+                <tr><td class="c-num">同梱付属品欠品</td><td class="c-text">金額の50%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月適用件数</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-num">返品件数</th><th class="c-text">受付</th><th class="c-text">却下</th><th class="c-text">主な却下理由</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-num">12</td><td class="c-text">10</td><td class="c-text">2</td><td class="c-text">期限超過</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-num">8</td><td class="c-text">8</td><td class="c-text">0</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-num">42</td><td class="c-text">38</td><td class="c-text">4</td><td class="c-text">開封済 / 期限超過</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-num">2</td><td class="c-text">2</td><td class="c-text">0</td><td class="c-text">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

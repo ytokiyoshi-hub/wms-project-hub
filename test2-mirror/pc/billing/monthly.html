@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>月次請求 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">請求　/　<b>月次請求</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>対象年月</label><input type="month" id="f-ym" value="2026-06"></div>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="btn primary" onclick="render()">検索</button>
+              </div>
+            <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <button class="btn primary" onclick="calculate()">計算</button>
+            <button class="btn" onclick="snapshot()">スナップショット確定</button>
+            <span id="stats" style="font-size:12px; color:var(--c-text-sub); margin-left:8px;">-</span>
+          </div>
+        </div></div>
+  
+        <div class="stats" id="kpi-grid">
+          <div class="stat"><div class="label">対象荷主数</div><div class="value" id="k-owners">-</div><span class="unit">社</span></div>
+          <div class="stat"><div class="label">保管料</div><div class="value" id="k-storage">-</div><span class="unit">円</span></div>
+          <div class="stat"><div class="label">荷役料</div><div class="value" id="k-handling">-</div><span class="unit">円</span></div>
+          <div class="stat"><div class="label">合計</div><div class="value" id="k-total">-</div><span class="unit">円</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別請求</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>荷主</th><th>請求方式</th><th class="right">期首在庫</th><th class="right">10日在庫</th><th class="right">20日在庫</th><th class="right">入庫数</th><th class="right">保管料</th><th class="right">荷役料</th><th class="right">合計</th>
+              </tr></thead>
+              <tbody id="tb"></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">期分け計算（3期制/2期制/坪貸し）</div>
+          ・マルキ食品(MK001)=3期制: (期首 + 10日 + 20日 + 入庫) × 単価<br>
+          ・食品EC(EC001)=2期制: (期首 + 15日 + 入庫) × 単価<br>
+          ・アパレル(AP001)=坪貸し: 確保面積 × 単価
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+async function init() {
+  const owners = await fetch('/api/owners').then(r=>r.json()).catch(()=>[]);
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => { const opt = document.createElement('option'); opt.value = o.code; opt.textContent = `${o.code} ${o.name}`; sel.appendChild(opt); });
+  calculate();
+}
+
+const BILL_METHOD = { MK001: '3期制', AP001: '坪貸し', EC001: '2期制', PR001: '3期制' };
+const BILL_DATA = [
+  { code: 'MK001', name: '株式会社マルキ食品',     m: '3期制',  bs: 1250, b10: 1180, b20: 1320, inq: 480, storage: 285000, handling: 95000 },
+  { code: 'AP001', name: 'アパレル雑貨株式会社',   m: '坪貸し', bs: 200, b10: 200, b20: 200, inq: 80,  storage: 80000,  handling: 24000 },
+  { code: 'EC001', name: '食品EC株式会社',          m: '2期制',  bs: 480, b10: 450, b20: 520, inq: 1200, storage: 140000, handling: 220000 },
+  { code: 'PR001', name: '精密機器株式会社',        m: '3期制',  bs: 80,  b10: 75,  b20: 90,  inq: 32,  storage: 56000,  handling: 18000 },
+];
+
+function calculate() {
+  const o = document.getElementById('f-owner').value;
+  const rows = BILL_DATA.filter(r => !o || r.code === o);
+  document.getElementById('stats').textContent = `${rows.length}社`;
+  document.getElementById('meta').textContent = `${BILL_DATA.length}社中 ${rows.length}社表示`;
+  const totS = rows.reduce((s, r) => s + r.storage, 0);
+  const totH = rows.reduce((s, r) => s + r.handling, 0);
+  document.getElementById('k-owners').textContent = rows.length;
+  document.getElementById('k-storage').textContent = totS.toLocaleString();
+  document.getElementById('k-handling').textContent = totH.toLocaleString();
+  document.getElementById('k-total').textContent = (totS + totH).toLocaleString();
+  const tb = document.getElementById('tb');
+  tb.innerHTML = rows.map(r => `
+    <tr>
+      <td><div class="text-mono text-bold text-accent">${r.code}</div><div style="font-size:11px; color:var(--c-text-sub);">${r.name}</div></td>
+      <td>${r.m}</td>
+      <td class="right num">${r.bs}</td>
+      <td class="right num">${r.b10}</td>
+      <td class="right num">${r.b20}</td>
+      <td class="right num">${r.inq}</td>
+      <td class="right num">${r.storage.toLocaleString()}</td>
+      <td class="right num">${r.handling.toLocaleString()}</td>
+      <td class="right num text-accent text-bold">${(r.storage + r.handling).toLocaleString()}</td>
+    </tr>
+  `).join('');
+}
+
+function snapshot() {
+  alert('月次請求スナップショット確定（次月以降は変更不可）\n対象: ' + document.getElementById('f-ym').value);
+}
+init();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

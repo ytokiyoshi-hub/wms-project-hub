@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT-804-1 ピッキング：ウェーブ受取 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-804 ピッキング作業</h1>
+<p class="subtitle">ウェーブ受取 → ロケスキャン → 数量確認の業務貫通 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/pick/wave.html" class="active"><b>HT-804-1</b>ウェーブ受取</a>
+  <a href="/ht/pick/scan.html"><b>HT-804-2</b>ロケ→SKU</a>
+  <a href="/ht/pick/done.html"><b>HT-804-3</b>数量→完了</a>
+  <a href="/ht/inspect/asn.html"><b>HT-403</b>検品</a>
+  <a href="/ht/putaway/instructions.html"><b>HT-406</b>棚入れ</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">12:30 88%</span></div>
+      <div class="ht-header">
+        <span>ピッキング作業</span>
+        <span class="scr-id">HT-804</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-accent); color:#fff; padding:8px; text-align:center;">
+          <div style="font-size:9px; opacity:0.8;">ウェーブ番号</div>
+          <div style="font-family:var(--f-mono); font-size:14px; font-weight:700; margin-top:2px;" id="wave-no">WV-2605-003</div>
+        </div>
+
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:6px 8px; font-size:10px;">
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--c-text-sub);">担当者</span>
+            <span style="font-weight:600;">田中 太郎</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:3px;">
+            <span style="color:var(--c-text-sub);">担当エリア</span>
+            <span style="font-weight:600;">1F常温</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:3px;">
+            <span style="color:var(--c-text-sub);">割当行数</span>
+            <span style="font-family:var(--f-mono); font-weight:600;" id="line-count">5行</span>
+          </div>
+        </div>
+
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:6px 8px; font-size:10px;">
+          ★ F1キーで作業開始してください
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-sub); margin-top:auto; padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-line-dk);">
+          締切 15:00 / 残時間 2h 30m
+        </div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" id="key-start"><span class="fn">F1</span>作業開始</div>
+        <div class="key-lbl disabled"><span class="fn">F2</span>−</div>
+        <div class="key-lbl"><span class="fn">F3</span>ウェーブ変更</div>
+        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F4</span>メニュー</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey">F2</div><div class="pkey">F3</div><div class="pkey">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+        <div class="ht-num-grid">
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey">ENT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-804</span>①受取
+  <div class="desc-text">ウェーブ番号と担当エリアを確認してF1で開始。</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 88%`; };
+setClock(); setInterval(setClock, 30000);
+
+// HT-805 から pick_order_id が渡ってくる前提（list.html クリックで保存）
+// なければ 業務基準で最初の picking 状態の SO を選ぶ
+let resolvedOrderId = sessionStorage.getItem('pick_order_id') || null;
+
+(async () => {
+  try {
+    if (!resolvedOrderId) {
+      const all = await fetch('/api/shipment-orders').then(r => r.json()) || [];
+      const target = all.find(o => o.done_count < o.line_count && o.line_count > 0);
+      if (target) {
+        resolvedOrderId = String(target.id);
+        sessionStorage.setItem('pick_order_id', resolvedOrderId);
+        sessionStorage.setItem('pick_order_no', target.order_no);
+      }
+    }
+    const orderNo = sessionStorage.getItem('pick_order_no');
+    if (orderNo) document.getElementById('wave-no').textContent = orderNo;
+    if (!resolvedOrderId) {
+      document.getElementById('line-count').textContent = '対象なし';
+      return;
+    }
+    const detail = await fetch(`/api/shipment-orders/${resolvedOrderId}`).then(r => r.json());
+    const tasks = (detail.tasks || []).filter(t => t.status === 'pending');
+    document.getElementById('line-count').textContent = `${tasks.length}行`;
+    if (tasks.length > 0) {
+      // 先頭の pending task を pick_task_id にセット（HT-804-3 done.html がこれを使う）
+      sessionStorage.setItem('pick_task_id', String(tasks[0].id));
+      sessionStorage.setItem('pick_target_sku', tasks[0].product_code);
+      sessionStorage.setItem('pick_target_qty', String(tasks[0].qty));
+      sessionStorage.setItem('pick_target_loc', tasks[0].location_code);
+    }
+  } catch (e) {}
+})();
+
+document.getElementById('key-start').addEventListener('click', () => location.href = '/ht/pick/scan.html');
+</script>
+</body>
+</html>

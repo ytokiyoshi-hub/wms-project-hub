@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>KPIレポート — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">レポート　/　<b>KPI</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>対象月</label><input type="month" id="f-ym" value="2026-06"></div>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="btn primary" onclick="render()">検索</button>
+              </div>
+            <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="stats">
+          <div class="stat"><div class="label">入荷件数</div><div class="value">1,240</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">出荷件数</div><div class="value">4,650</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">誤出荷率</div><div class="value">0.02</div><span class="unit">%</span></div>
+          <div class="stat"><div class="label">在庫回転日数</div><div class="value">28</div><span class="unit">日</span></div>
+          <div class="stat"><div class="label">引当成功率</div><div class="value">99.7</div><span class="unit">%</span></div>
+          <div class="stat"><div class="label">遅延出荷</div><div class="value">3</div><span class="unit">件</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別実績（月次）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>荷主</th><th class="right">入荷件数</th><th class="right">出荷件数</th><th class="right">SKU数</th><th class="right">月末在庫</th><th class="right">誤出荷</th><th class="right">回転日数</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>MK001 マルキ食品</td><td class="right num">580</td><td class="right num">2,180</td><td class="right num">400</td><td class="right num">1,320</td><td class="right num">0</td><td class="right num">22日</td></tr>
+                <tr><td>AP001 アパレル雑貨</td><td class="right num">85</td><td class="right num">320</td><td class="right num">200</td><td class="right num">450</td><td class="right num">0</td><td class="right num">42日</td></tr>
+                <tr><td>EC001 食品EC</td><td class="right num">450</td><td class="right num">1,950</td><td class="right num">150</td><td class="right num">520</td><td class="right num">1</td><td class="right num">8日</td></tr>
+                <tr><td>PR001 精密機器</td><td class="right num">125</td><td class="right num">200</td><td class="right num">50</td><td class="right num">90</td><td class="right num">0</td><td class="right num">60日</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>日次出荷推移</span></div>
+          <div class="card-body">
+            <div style="display:flex; align-items:flex-end; height:160px; gap:6px;">
+              <div style="flex:1; background:var(--c-accent); height:60%;" title="6/1 145件"></div>
+              <div style="flex:1; background:var(--c-accent); height:70%;" title="6/2 168件"></div>
+              <div style="flex:1; background:var(--c-accent); height:55%;" title="6/3 135件"></div>
+              <div style="flex:1; background:var(--c-accent); height:80%;" title="6/4 190件"></div>
+              <div style="flex:1; background:var(--c-accent); height:75%;" title="6/5 178件"></div>
+              <div style="flex:1; background:var(--c-accent); height:65%;" title="6/6 155件"></div>
+              <div style="flex:1; background:var(--c-accent); height:50%;" title="6/7 120件"></div>
+            </div>
+            <div style="display:flex; gap:6px; font-size:10px; color:var(--c-text-sub); margin-top:6px; text-align:center;">
+              <div style="flex:1;">6/1</div><div style="flex:1;">6/2</div><div style="flex:1;">6/3</div><div style="flex:1;">6/4</div><div style="flex:1;">6/5</div><div style="flex:1;">6/6</div><div style="flex:1;">6/7</div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+(async () => {
+  const owners = await fetch('/api/owners').then(r=>r.json()).catch(()=>[]);
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => { const opt = document.createElement('option'); opt.value = o.code; opt.textContent = `${o.code} ${o.name}`; sel.appendChild(opt); });
+})();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

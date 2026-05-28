@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>キット商品定義 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>キット商品定義（S-68 セットSKU設計）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">キット（セット）商品の構成定義（S-68）</div>
+          セットSKU の構成品・組立工程・分解可否を定義。BOM（Bill of Materials）と類似管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>キット定義一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">セットSKU</th><th class="c-text">名称</th><th class="c-num">構成品数</th><th class="c-text">運用</th><th class="c-text">分解可否</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-EC001-SET01</td><td class="c-text">ギフトセットA</td><td class="c-num">3</td><td class="c-text">出荷時組立</td><td class="c-text">分解可</td></tr>
+                <tr><td class="c-code">SKU-EC001-SET02</td><td class="c-text">母の日セット</td><td class="c-num">2</td><td class="c-text">事前組立</td><td class="c-text">分解不可（包装済）</td></tr>
+                <tr><td class="c-code">SKU-MK001-SET01</td><td class="c-text">シャンプー＋コンディショナーセット</td><td class="c-num">2</td><td class="c-text">出荷時組立</td><td class="c-text">分解可</td></tr>
+                <tr><td class="c-code">SKU-PR001-SET01</td><td class="c-text">プレミアム化粧品セット</td><td class="c-num">5</td><td class="c-text">事前組立</td><td class="c-text">分解不可（化粧箱）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SKU-EC001-SET01 構成</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">構成品SKU</th><th class="c-text">商品名</th><th class="c-num">数量</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-EC001-001</td><td class="c-text">EC定番セット</td><td class="c-num">1</td><td class="c-text">主商品</td></tr>
+                <tr><td class="c-code">SKU-MK001-001</td><td class="c-text">シャンプー300ml</td><td class="c-num">1</td><td class="c-text">付属</td></tr>
+                <tr><td class="c-code">SKU-MK001-002</td><td class="c-text">コンディショナー300ml</td><td class="c-num">1</td><td class="c-text">付属</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>事前組立スケジュール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">セットSKU</th><th class="c-text">頻度</th><th class="c-num">1回作業時間</th><th class="c-num">在庫目標</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-EC001-SET02</td><td class="c-text">週次（金曜午後）</td><td class="c-num">3h</td><td class="c-num">80セット</td></tr>
+                <tr><td class="c-code">SKU-PR001-SET01</td><td class="c-text">月次（月初）</td><td class="c-num">6h</td><td class="c-num">42セット</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

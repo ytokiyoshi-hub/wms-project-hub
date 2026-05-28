@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ログイン失敗履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>ログイン失敗履歴（A-4 不審アクセス検知）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">パスワード誤り・MFA失敗・ロック発生（A-4）</div>
+          失敗回数の急増・同一IPからの連続失敗・深夜帯失敗をハイライト。アカウントロック自動解除も追跡。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>期間</label><input type="text" value="2026-05-25 〜 2026-06-01" class="text-mono"></div>
+            <div class="field"><label>結果</label><select><option>全件</option><option>失敗のみ</option><option>ロック発生</option></select></div>
+            <div class="field"><label>ユーザー</label><select><option>全員</option><option>システム管理者</option></select></div>
+            <div class="field"><label>IP</label><input type="text" placeholder="部分一致"></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>失敗ログ（直近）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日時</th><th class="c-code">ユーザー</th><th class="c-code">IP</th><th class="c-code">UA</th><th class="c-text">理由</th><th class="c-text">連続失敗</th><th class="c-status">結果</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">06-01 14:22:01</td><td class="c-code">tanaka</td><td class="c-code">192.168.1.45</td><td class="text-xs c-code">HT-006/Android</td><td class="c-text">パスワード誤り</td><td class="c-text">1</td><td class="c-status"><span class="pill">継続</span></td></tr>
+                <tr><td class="c-date">06-01 13:45:18</td><td class="c-code">suzuki</td><td class="c-code">192.168.1.32</td><td class="text-xs c-code">Chrome/Mac</td><td class="c-text">パスワード誤り</td><td class="c-text">2</td><td class="c-status"><span class="pill">継続</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">06-01 11:08:32</td><td class="c-code">admin</td><td class="text-alert c-code">203.0.113.42</td><td class="text-xs c-code">Chrome/Win</td><td class="c-text">パスワード誤り</td><td class="text-alert c-text">5</td><td class="c-status"><span class="pill alert">ロック発動</span></td></tr>
+                <tr><td class="c-date">05-31 22:15:08</td><td class="c-code">tanaka</td><td class="c-code">192.168.1.45</td><td class="text-xs c-code">HT-006/Android</td><td class="c-text">MFA失敗</td><td class="c-text">1</td><td class="c-status"><span class="pill">継続</span></td></tr>
+                <tr><td class="c-date">05-31 09:30:22</td><td class="c-code">itoh</td><td class="c-code">192.168.1.58</td><td class="text-xs c-code">HT-008/Android</td><td class="c-text">パスワード誤り</td><td class="c-text">3</td><td class="c-status"><span class="pill">継続</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>不審アラート（自動検知）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">検知日時</th><th class="c-text">パターン</th><th class="c-text">対象</th><th class="c-text">詳細</th><th class="c-text">処置</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">06-01 11:08</td><td class="c-text"><span class="pill alert">5連続失敗</span></td><td class="c-text">admin / 203.0.113.42</td><td class="c-text">社外IPから管理者アカウントへの5連続失敗</td><td class="c-text"><span class="pill alert">30分ロック実施</span></td></tr>
+                <tr><td class="c-date">05-31 23:00</td><td class="c-text"><span class="pill">深夜失敗</span></td><td class="c-text">tanaka</td><td class="c-text">22-06時間帯の失敗1件</td><td class="c-text"><span class="pill">通知</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>今月集計</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>失敗回数</label><div class="text-mono" style="font-weight:600;">128</div></div>
+              <div class="field"><label>ロック発動</label><div class="text-mono text-alert" style="font-weight:600;">3</div></div>
+              <div class="field"><label>不審アラート</label><div class="text-mono text-alert" style="font-weight:600;">2</div></div>
+              <div class="field"><label>社外IP失敗</label><div class="text-mono text-alert" style="font-weight:600;">8</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

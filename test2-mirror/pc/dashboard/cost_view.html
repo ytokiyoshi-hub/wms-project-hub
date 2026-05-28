@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>コスト俯瞰 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.cost-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+.c-card { background:#fff; border:1px solid var(--c-border); border-radius:8px; padding:14px; text-align:center; }
+.c-card .v { font-family:'Roboto Mono',monospace; font-size:22px; font-weight:700; color:var(--c-accent); }
+.c-card .l { font-size:12px; color:var(--c-text-sub); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ダッシュボード　/　<b>コスト俯瞰（D-9 月次コスト）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">月次コスト俯瞰ビュー（D-9）</div>
+          当月のコスト総額・前月比・予算消化率を一覧。経営層・営業部長向け俯瞰画面。
+        </div>
+  
+        <div class="cost-grid">
+          <div class="c-card"><div class="l">当月総コスト</div><div class="v">¥15.8M</div></div>
+          <div class="c-card"><div class="l">予算</div><div class="v">¥16.0M</div></div>
+          <div class="c-card"><div class="l">消化率</div><div class="v">98.7%</div></div>
+          <div class="c-card"><div class="l">前月比</div><div class="v">+4.8%</div></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>科目別 予実比較</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">科目</th><th class="c-text">予算</th><th class="c-text">実績</th><th class="c-num">消化率</th><th class="c-text">前月比</th><th class="c-status">判定</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">人件費（正社員）</td><td class="c-text">¥3,200,000</td><td class="c-text">¥3,250,000</td><td class="c-num">101.6%</td><td class="c-text">+1.2%</td><td class="c-status"><span class="pill">範囲内</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">人件費（派遣）</td><td class="c-text">¥1,950,000</td><td class="c-text">¥2,100,000</td><td class="text-alert c-num">107.7%</td><td class="c-text">+8.5%</td><td class="c-status"><span class="pill alert">超過</span></td></tr>
+                <tr><td class="c-text">倉庫賃料</td><td class="c-text">¥2,500,000</td><td class="c-text">¥2,500,000</td><td class="c-num">100.0%</td><td class="c-text">±0%</td><td class="c-status"><span class="pill accent">予定通</span></td></tr>
+                <tr><td class="c-text">運送費</td><td class="c-text">¥1,800,000</td><td class="c-text">¥1,750,000</td><td class="c-num">97.2%</td><td class="c-text">+12.0%</td><td class="c-status"><span class="pill accent">範囲内</span></td></tr>
+                <tr><td class="c-text">光熱費</td><td class="c-text">¥720,000</td><td class="c-text">¥720,000</td><td class="c-num">100.0%</td><td class="c-text">+5.2%</td><td class="c-status"><span class="pill">範囲内</span></td></tr>
+                <tr><td class="c-text">消耗品（梱包材）</td><td class="c-text">¥420,000</td><td class="c-text">¥420,000</td><td class="c-num">100.0%</td><td class="c-text">+2.1%</td><td class="c-status"><span class="pill">範囲内</span></td></tr>
+                <tr><td class="c-text">システム保守</td><td class="c-text">¥280,000</td><td class="c-text">¥280,000</td><td class="c-num">100.0%</td><td class="c-text">±0%</td><td class="c-status"><span class="pill accent">予定通</span></td></tr>
+                <tr><td class="c-text">その他</td><td class="c-text">¥420,000</td><td class="c-text">¥420,000</td><td class="c-num">100.0%</td><td class="c-text">-3.5%</td><td class="c-status"><span class="pill">範囲内</span></td></tr>
+                <tr style="font-weight:600;background:#f0f8ff;"><td class="c-text">合計</td><td class="c-text">¥11,290,000</td><td class="c-text">¥11,440,000</td><td class="c-num">101.3%</td><td class="c-text">+4.8%</td><td class="c-status"><span class="pill">範囲内</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>是正提案</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">提案</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">派遣費超過（+8.5%）</td><td class="c-text">EC繁忙期対応で計画通り / 来月は通常水準へ戻る見込み</td></tr>
+                <tr><td class="c-text">運送費前月比+12%</td><td class="c-text">EC増加分の自然増 / 顧客タリフ見直しは不要</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

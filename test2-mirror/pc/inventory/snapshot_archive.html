@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>スナップショットアーカイブ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>スナップショットアーカイブ（Q-22 長期保管）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">月末スナップショットの長期保管（Q-22）</div>
+          会計監査・税務調査に対応する月末スナップショットを10年間保管。圧縮+暗号化でS3保存。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>保管中アーカイブ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">スナップショット日</th><th class="c-status">区分</th><th class="c-num">レコード数</th><th class="c-num">サイズ</th><th class="c-text">暗号化</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2026-05-31</td><td class="c-status"><span class="pill">月末</span></td><td class="c-num">28,617</td><td class="c-num">42.8MB</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-status"><span class="pill accent">S3保管</span></td></tr>
+                <tr><td class="c-text">2026-04-30</td><td class="c-status"><span class="pill">月末</span></td><td class="c-num">28,420</td><td class="c-num">42.5MB</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-status"><span class="pill accent">S3保管</span></td></tr>
+                <tr><td class="c-text">2026-03-31</td><td class="c-status"><span class="pill alert">年度末</span></td><td class="c-num">27,820</td><td class="c-num">41.8MB</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-status"><span class="pill accent">S3 Glacier</span></td></tr>
+                <tr><td class="c-text">2026-02-28</td><td class="c-status"><span class="pill">月末</span></td><td class="c-num">27,520</td><td class="c-num">41.2MB</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-status"><span class="pill accent">S3 Glacier</span></td></tr>
+                <tr><td class="c-text">2025-12-31</td><td class="c-status"><span class="pill alert">年末</span></td><td class="c-num">26,200</td><td class="c-num">39.5MB</td><td class="c-text"><span class="pill accent">AES-256</span></td><td class="c-status"><span class="pill accent">S3 Glacier Deep</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>復元リクエスト</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">リクエストNo</th><th class="c-text">対象</th><th class="c-text">復元理由</th><th class="c-text">申請者</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SR-26052801</td><td class="c-text">2024-12-31 スナップショット</td><td class="c-text">会計監査</td><td class="c-text">監査法人</td><td class="c-status"><span class="pill accent">復元完了</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>保管ポリシー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">期間</th><th class="c-text">保管先</th><th class="c-num">復元時間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">0〜90日</td><td class="c-text">S3 Standard</td><td class="c-num">即時</td></tr>
+                <tr><td class="c-text">91日〜2年</td><td class="c-text">S3 Glacier</td><td class="c-num">3〜5時間</td></tr>
+                <tr><td class="c-text">2年〜10年</td><td class="c-text">S3 Glacier Deep Archive</td><td class="c-num">12時間〜2日</td></tr>
+                <tr><td class="c-text">10年経過</td><td class="c-text">削除（要件法的義務終了）</td><td class="c-num">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

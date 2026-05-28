@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>App-2 シフト — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app-mock.css">
+</head>
+<body>
+
+<h1 class="page-title">App-2 シフト確認</h1>
+<p class="subtitle">月次シフト確認・希望提出 (iPhone 375x812 想定)</p>
+
+<div class="app-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/app/home.html"><b>App-1</b>ホーム</a>
+  <a href="/app/shifts.html" class="active"><b>App-2</b>シフト</a>
+  <a href="/app/timecard.html"><b>App-3</b>勤怠</a>
+  <a href="/app/payroll.html"><b>App-4</b>給与</a>
+  <a href="/app/notice.html"><b>App-5</b>お知らせ</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="app-wrap">
+  <div class="app-device">
+    <div class="app-screen">
+      <div class="app-statusbar"><span id="clock">9:30</span><span>📶 100%</span></div>
+      <div class="app-header">
+        <div class="title">シフト</div>
+        <div class="sub">2026年6月</div>
+      </div>
+      <div class="app-body">
+        <div class="app-card">
+          <div class="label">勤務予定（月次）</div>
+          <table style="width:100%; font-size:11px; margin-top:6px;">
+            <thead><tr><th style="text-align:left;">日</th><th>シフト</th><th>エリア</th></tr></thead>
+            <tbody>
+              <tr><td>6/1 (月)</td><td>08:00-17:00</td><td>1F常温</td></tr>
+              <tr><td>6/2 (火)</td><td>08:00-17:00</td><td>1F常温</td></tr>
+              <tr><td>6/3 (水)</td><td>休</td><td>-</td></tr>
+              <tr><td>6/4 (木)</td><td>08:00-17:00</td><td>1F常温</td></tr>
+              <tr><td>6/5 (金)</td><td>10:00-19:00</td><td>2F常温</td></tr>
+              <tr><td>6/6 (土)</td><td>休</td><td>-</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button style="background:var(--c-accent); color:#fff; border:none; padding:10px; font-weight:600; border-radius:6px;" onclick="alert('「来月のシフト希望を提出」モック動作（実装は後続フェーズ）')">来月のシフト希望を提出</button>
+      </div>
+      <div class="app-tabbar">
+        <div class="tab" onclick="location.href='/app/home.html'"><span class="icon">🏠</span>ホーム</div>
+        <div class="tab active"><span class="icon">📅</span>シフト</div>
+        <div class="tab" onclick="location.href='/app/timecard.html'"><span class="icon">⏰</span>勤怠</div>
+        <div class="tab" onclick="location.href='/app/payroll.html'"><span class="icon">💴</span>給与</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">App-2</span>シフト
+  <div class="desc-text">月次シフトの確認・希望提出</div>
+</div>
+</body>
+</html>

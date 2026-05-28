@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主価格戦略 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主価格戦略（B-18 戦略マップ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別の価格戦略マップ（B-18）</div>
+          荷主との関係性（戦略パートナー／取引関係／新規）に応じた価格戦略を設計。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>戦略区分</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">区分</th><th class="c-text">説明</th><th class="c-text">価格戦略</th><th class="c-code">対象荷主</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status"><span class="pill alert">戦略パートナー</span></td><td class="c-text">長期固定取引</td><td class="c-text">低マージン・大取引量</td><td class="c-code">EC001</td></tr>
+                <tr><td class="c-status"><span class="pill accent">主要取引</span></td><td class="c-text">安定継続</td><td class="c-text">標準マージン</td><td class="c-code">MK001 / AP001</td></tr>
+                <tr><td class="c-status"><span class="pill">標準取引</span></td><td class="c-text">定常的取引</td><td class="c-text">標準＋αマージン</td><td class="c-code">PR001</td></tr>
+                <tr><td class="c-status"><span class="pill">新規/小規模</span></td><td class="c-text">採用検討中</td><td class="c-text">高マージン（リスク織込）</td><td class="c-code">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別戦略</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-status">区分</th><th class="c-num">当月利益率</th><th class="c-text">戦略要旨</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">EC001</td><td class="c-status">戦略パートナー</td><td class="c-num">26.8%</td><td class="c-text">取引量重視 / 自動化投資の対象</td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-status">主要取引</td><td class="text-accent c-num">22.9%</td><td class="c-text">SLA品質維持で長期化</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-status">主要取引</td><td class="text-accent c-num">27.6%</td><td class="c-text">坪貸し継続 / 関係強化</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-status">標準取引</td><td class="c-num">25.6%</td><td class="c-text">夜間SLA問題を解決して継続</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>価格改定提案サイクル</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">区分</th><th class="c-text">改定頻度</th><th class="c-text">営業対応</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status">戦略パートナー</td><td class="c-text">年次（契約更新時）</td><td class="c-text">営業部長</td></tr>
+                <tr><td class="c-status">主要取引</td><td class="c-text">年次</td><td class="c-text">営業マネージャー</td></tr>
+                <tr><td class="c-status">標準取引</td><td class="c-text">2年に1回</td><td class="c-text">営業担当</td></tr>
+                <tr><td class="c-status">新規</td><td class="c-text">都度交渉</td><td class="c-text">営業担当 + 営業部長</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主料金交渉履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主料金交渉履歴（B-17 価格改定記録）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主との価格改定・交渉履歴（B-17）</div>
+          年次価格改定・特別契約変更・交渉中案件の追跡。提案→交渉→合意→契約反映までの記録。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>進行中の交渉</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">案件No</th><th class="c-code">荷主</th><th class="c-text">提案内容</th><th class="c-text">影響額（年）</th><th class="c-status">状態</th><th class="c-code">担当</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">NEG-2026-01</td><td class="c-code">PR001</td><td class="c-text">2027年度契約更新（夜間SLA緩和+単価-3%）</td><td class="text-alert c-text">-¥280,000</td><td class="c-status"><span class="pill alert">荷主回答待</span></td><td class="c-code">営業</td></tr>
+                <tr><td class="c-code">NEG-2026-02</td><td class="c-code">MK001</td><td class="c-text">3期制保管料の小幅改定（+1.5%）</td><td class="text-accent c-text">+¥320,000</td><td class="c-status"><span class="pill">提案中</span></td><td class="c-code">営業</td></tr>
+                <tr><td class="c-code">NEG-2026-03</td><td class="c-code">EC001</td><td class="c-text">API レート上限引き上げ + 単価維持</td><td class="c-text">±0</td><td class="c-status"><span class="pill">合意</span></td><td class="c-code">営業</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>過去の改定実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">案件No</th><th class="c-code">荷主</th><th class="c-text">合意日</th><th class="c-text">変更内容</th><th class="c-text">年間影響</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">NEG-2025-08</td><td class="c-code">EC001</td><td class="c-text">2025-12-15</td><td class="c-text">2026年度 階段料金改定</td><td class="text-accent c-text">+¥4,820,000</td></tr>
+                <tr><td class="c-code">NEG-2025-05</td><td class="c-code">AP001</td><td class="c-text">2025-09-30</td><td class="c-text">坪貸し単価 +3%</td><td class="text-accent c-text">+¥420,000</td></tr>
+                <tr><td class="c-code">NEG-2025-03</td><td class="c-code">MK001</td><td class="c-text">2025-04-15</td><td class="c-text">3期制標準単価据置 / Tier-3導入</td><td class="text-accent c-text">+¥280,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>NEG-2026-02 詳細</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">段階</th><th class="c-date">日時</th><th class="c-text">内容</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1. 内部提案</td><td class="c-date">2026-05-15</td><td class="c-text">営業会議で改定方針決定</td></tr>
+                <tr><td class="c-text">2. 荷主提案書作成</td><td class="c-date">2026-05-22</td><td class="c-text">営業＋経理</td></tr>
+                <tr><td class="c-text">3. 荷主提案</td><td class="c-date">2026-05-28</td><td class="c-text">MK001 物流G長 面談</td></tr>
+                <tr><td class="c-text">4. 検討中</td><td class="c-date">進行中</td><td class="c-text">荷主社内協議中（〜2026-06-15）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

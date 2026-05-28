@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>スキャンデバイス管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>スキャンデバイス管理（P-2 HT端末配備）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">HT端末・固定スキャナ管理（P-2）</div>
+          端末ID・MAC・配備場所・ファームウェアを管理。リモートで強制ログアウト／ファームウェア更新が可能。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>稼働中デバイス</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">端末ID</th><th class="c-text">機種</th><th class="c-text">配備</th><th class="c-code">MAC</th><th class="c-code">FW</th><th class="c-text">バッテリ</th><th class="c-status">状態</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">HT-001</td><td class="c-text">KEYENCE BT-A2000</td><td class="c-text">1F 入荷</td><td class="text-xs c-code">A0:BB:CC:11:22:33</td><td class="c-code">v2.4.1</td><td class="c-text">82%</td><td class="c-status"><span class="pill accent">稼働中</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+                <tr><td class="c-text">HT-002</td><td class="c-text">KEYENCE BT-A2000</td><td class="c-text">1F 入荷</td><td class="text-xs c-code">A0:BB:CC:11:22:34</td><td class="c-code">v2.4.1</td><td class="c-text">65%</td><td class="c-status"><span class="pill accent">稼働中</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+                <tr><td class="c-text">HT-005</td><td class="c-text">KEYENCE BT-A2000</td><td class="c-text">2F ピッキング</td><td class="text-xs c-code">A0:BB:CC:11:22:37</td><td class="c-code">v2.4.1</td><td class="c-text">45%</td><td class="c-status"><span class="pill accent">稼働中</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">HT-006</td><td class="c-text">KEYENCE BT-A2000</td><td class="c-text">2F ピッキング</td><td class="text-xs c-code">A0:BB:CC:11:22:38</td><td class="c-code">v2.3.8</td><td class="text-alert c-text">18%</td><td class="c-status"><span class="pill alert">バッテリ低下</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+                <tr><td class="c-text">HT-010</td><td class="c-text">KEYENCE BT-A2000</td><td class="c-text">1F 出荷</td><td class="text-xs c-code">A0:BB:CC:11:22:3C</td><td class="c-code">v2.4.1</td><td class="c-text">71%</td><td class="c-status"><span class="pill accent">稼働中</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+                <tr><td class="c-text">FX-001</td><td class="c-text">固定スキャナ（バース1）</td><td class="c-text">1F 入荷バース1</td><td class="text-xs c-code">B0:11:22:33:44:55</td><td class="c-code">v1.8.0</td><td class="c-text">電源</td><td class="c-status"><span class="pill accent">稼働中</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>デバイス統計</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>HT端末数</label><div class="text-mono" style="font-weight:600;">12台</div></div>
+              <div class="field"><label>稼働中</label><div class="text-mono text-accent" style="font-weight:600;">10台</div></div>
+              <div class="field"><label>充電中</label><div class="text-mono" style="font-weight:600;">2台</div></div>
+              <div class="field"><label>FW古い端末</label><div class="text-mono text-alert" style="font-weight:600;">1台</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「全端末FW更新」モック動作（実装は後続フェーズ）')">全端末FW更新</button>
+          <button class="btn primary" onclick="alert('「+ デバイス登録」モック動作（実装は後続フェーズ）')">+ デバイス登録</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

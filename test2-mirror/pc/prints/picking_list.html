@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ピッキングリスト印刷 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+@media print {
+  .layout > .sidebar, .topbar, .print-actions { display: none !important; }
+  .content { padding: 0 !important; }
+  body { background: white !important; }
+}
+.paper { background: white; padding: 30px; border: 1px solid var(--c-line); max-width: 800px; margin: 0 auto; }
+.paper h1 { text-align: center; font-size: 18px; margin-bottom: 20px; }
+.paper table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.paper table th, .paper table td { border: 1px solid #000; padding: 5px; text-align: left; }
+.paper table thead th { background: #ddd; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">印刷　/　<b>ピッキングリスト</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="print-actions" style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px;">
+        <button class="btn" onclick="history.back()">戻る</button>
+        <button class="btn primary" onclick="window.print()">印刷</button>
+      </div>
+
+      <div class="paper">
+        <h1>ピッキングリスト</h1>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:14px;">
+          <div>
+            <div><b>ウェーブNo:</b> WV-26060101</div>
+            <div><b>担当:</b> 田中 太郎（1F常温エリア）</div>
+            <div><b>発行日時:</b> 2026-06-01 12:00</div>
+          </div>
+          <div style="text-align:right;">
+            <div><b>荷主:</b> MK001 マルキ食品</div>
+            <div><b>締切:</b> 15:00</div>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:30px;">#</th>
+              <th>ロケ</th>
+              <th>SKU</th>
+              <th>商品名</th>
+              <th>ロット</th>
+              <th class="right">数量</th>
+              <th>賞味期限</th>
+              <th style="width:50px;">確認</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>3AP-02-001</td><td>SKU-MK001-001</td><td>シャンプー300ml</td><td>L260518-01</td><td style="text-align:right;">12</td><td>2027-05-18</td><td>□</td></tr>
+            <tr><td>2</td><td>3AP-02-002</td><td>SKU-MK001-002</td><td>コンディショナー300ml</td><td>L260520-01</td><td style="text-align:right;">8</td><td>2027-05-20</td><td>□</td></tr>
+            <tr><td>3</td><td>3AT-01-001</td><td>SKU-MK001-001</td><td>シャンプー300ml</td><td>L260520-02</td><td style="text-align:right;">6</td><td>2027-05-20</td><td>□</td></tr>
+            <tr><td>4</td><td>4AC-01-001</td><td>SKU-MK001-003</td><td>冷蔵牛乳1L</td><td>L260601-01</td><td style="text-align:right;">24</td><td>2026-06-10</td><td>□</td></tr>
+            <tr><td>5</td><td>3AT-01-001</td><td>SKU-MK001-002</td><td>コンディショナー300ml</td><td>L260520-03</td><td style="text-align:right;">4</td><td>2027-05-20</td><td>□</td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:14px; font-size:11px;">
+          <div>※ FEFO厳守：賞味期限の古い順から取り出してください</div>
+          <div>※ 数量相違は HT で「F2 部分ピック」or「F3 欠品報告」を選択</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

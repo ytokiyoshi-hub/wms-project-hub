@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>リサイクル品管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>リサイクル品管理（Q-28 段ボール・パレット再利用）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">梱包材リサイクル管理（Q-28）</div>
+          段ボール・木製パレット・折コン等の再利用追跡。回収→検査→再利用までを管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>リサイクル対象品在庫</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-status">区分</th><th class="c-text">回収済</th><th class="c-text">検査済</th><th class="c-text">再利用可</th><th class="c-text">廃棄予定</th><th class="c-num">再利用率</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-status">段ボール（A段）</td><td class="c-text">820 枚</td><td class="c-text">820 枚</td><td class="c-text">680 枚</td><td class="c-text">140 枚</td><td class="text-accent c-num">82.9%</td></tr>
+                <tr><td class="c-status">段ボール（B段）</td><td class="c-text">1,420 枚</td><td class="c-text">1,420 枚</td><td class="c-text">1,200 枚</td><td class="c-text">220 枚</td><td class="text-accent c-num">84.5%</td></tr>
+                <tr><td class="c-status">木製パレット</td><td class="c-text">128 枚</td><td class="c-text">128 枚</td><td class="c-text">120 枚</td><td class="c-text">8 枚</td><td class="text-accent c-num">93.7%</td></tr>
+                <tr><td class="c-status">折コン</td><td class="c-text">285 個</td><td class="c-text">285 個</td><td class="c-text">280 個</td><td class="c-text">5 個</td><td class="text-accent c-num">98.2%</td></tr>
+                <tr><td class="c-status">緩衝材（エアキャップ）</td><td class="c-text">320m</td><td class="c-text">220m</td><td class="c-text">180m</td><td class="c-text">100m</td><td class="c-num">81.8%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月削減効果</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>新規梱包材購入</label><div class="text-mono">¥325,000</div></div>
+              <div class="field"><label>再利用による節約</label><div class="text-mono text-accent" style="font-weight:600;">¥182,000</div></div>
+              <div class="field"><label>CO2削減</div><div class="text-mono text-accent" style="font-weight:600;">2.8 t-CO2</div></div>
+              <div class="field"><label>廃棄費用削減</label><div class="text-mono text-accent" style="font-weight:600;">¥42,000</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>運用フロー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">段階</th><th class="c-text">説明</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1. 配送先で回収</td><td class="c-text">運送会社が空容器を引取り</td></tr>
+                <tr><td class="c-text">2. WMSで受領</td><td class="c-text">状態確認・分類</td></tr>
+                <tr><td class="c-text">3. 検査</td><td class="c-text">強度・汚れ・破損確認</td></tr>
+                <tr><td class="c-text">4. 再利用 or 廃棄</td><td class="c-text">合格は再利用棚へ / 不合格はマニフェスト発行→廃棄</td></tr>
+                <tr><td class="c-text">5. 出荷時に再利用</td><td class="c-text">顧客同意があれば優先使用</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

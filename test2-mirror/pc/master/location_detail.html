@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ロケ詳細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　ロケ一覧　/　<b>3AP-02-001 詳細</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-header"><span>ロケ情報</span><button class="btn primary sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></div><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>ロケコード</label><div class="text-mono text-accent" style="font-size:18px; font-weight:700; letter-spacing:2px;">3AP-02-001</div></div>
+            <div class="field"><label>倉庫</label><div>WH001 東京DC</div></div>
+            <div class="field"><label>階・フロア</label><div>3F / Aフロア</div></div>
+            <div class="field"><label>種別</label><div>パレット (P)</div></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field"><label>通路</label><div class="text-mono">02</div></div>
+            <div class="field"><label>位置</label><div class="text-mono">001</div></div>
+            <div class="field"><label>温度帯</label><div>常温</div></div>
+            <div class="field"><label>専用荷主</label><div>MK001 専用</div></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field"><label>最大積載</label><div>パレット 1 枚</div></div>
+            <div class="field"><label>引当除外</label><div>対象</div></div>
+            <div class="field"><label>状態</label><div><span class="pill accent">使用中</span></div></div>
+            <div class="field"><label>更新</label><div class="text-mono">2026-06-01 10:30</div></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>現在の在庫</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-code">ロット</th><th class="c-date">賞味期限</th><th class="c-num">数量</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-MK001-001</td><td class="c-text">シャンプー300ml</td><td class="c-code">L260518-01</td><td class="c-date">2027-05-18</td><td class="c-num">120</td><td class="c-status"><span class="pill accent">良品</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>直近の動き</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日時</th><th class="c-text">種別</th><th class="c-text">商品</th><th class="c-num">数量</th><th class="c-code">担当</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">2026-06-01 10:30</td><td class="c-text">入庫</td><td class="c-text">SKU-MK001-001</td><td class="c-num">+120</td><td class="c-code">田中 太郎</td></tr>
+                <tr><td class="c-date">2026-05-28 14:20</td><td class="c-text">出庫</td><td class="c-text">SKU-MK001-001</td><td class="c-num">-50</td><td class="c-code">鈴木 一郎</td></tr>
+                <tr><td class="c-date">2026-05-25 09:15</td><td class="c-text">入庫</td><td class="c-text">SKU-MK001-001</td><td class="c-num">+50</td><td class="c-code">佐藤 花子</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

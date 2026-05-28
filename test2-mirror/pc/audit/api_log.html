@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>API呼出ログ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>API呼出ログ（A-6 アクセス記録）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">外部APIアクセス全記録（A-6）</div>
+          APIキー単位の呼出履歴。エンドポイント・引数・応答ステータス・処理時間を全件記録（13ヶ月保持）。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>期間</label><input type="text" value="2026-06-01 00:00 〜 23:59" class="text-mono"></div>
+            <div class="field"><label>APIキー</label><select><option>全キー</option><option>AK-001 MK001</option><option>AK-003 EC001</option></select></div>
+            <div class="field"><label>ステータス</label><select><option>全件</option><option>2xx</option><option>4xx</option><option>5xx</option></select></div>
+            <div class="field"><label>エンドポイント</label><input type="text" placeholder="部分一致"></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>呼出ログ（最新50件）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-text">キー</th><th class="c-text">メソッド</th><th class="c-text">エンドポイント</th><th class="c-code">IP</th><th class="c-code">HTTP</th><th class="c-num">応答時間</th><th class="c-num">サイズ</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">14:32:18</td><td class="c-text">AK-001</td><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/inventory/SKU-MK001-001</td><td class="c-code">10.0.5.42</td><td class="c-code"><span class="pill accent">200</span></td><td class="c-num">88ms</td><td class="c-num">2.1KB</td></tr>
+                <tr><td class="c-date">14:32:12</td><td class="c-text">AK-003</td><td class="c-text"><span class="pill accent">POST</span></td><td class="text-xs c-text">/api/v1/orders</td><td class="c-code">203.0.113.15</td><td class="c-code"><span class="pill accent">201</span></td><td class="c-num">220ms</td><td class="c-num">485B</td></tr>
+                <tr><td class="c-date">14:31:55</td><td class="c-text">AK-003</td><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/inventory?owner=EC001</td><td class="c-code">203.0.113.15</td><td class="c-code"><span class="pill accent">200</span></td><td class="c-num">320ms</td><td class="c-num">42.8KB</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">14:31:40</td><td class="c-text">AK-003</td><td class="c-text"><span class="pill accent">POST</span></td><td class="text-xs c-text">/api/v1/orders</td><td class="c-code">203.0.113.15</td><td class="c-code"><span class="pill alert">400</span></td><td class="c-num">35ms</td><td class="c-num">128B</td></tr>
+                <tr><td class="c-date">14:31:08</td><td class="c-text">AK-002</td><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/inventory/snapshot/daily</td><td class="c-code">198.51.100.10</td><td class="c-code"><span class="pill accent">200</span></td><td class="c-num">1,250ms</td><td class="c-num">182KB</td></tr>
+                <tr><td class="c-date">14:30:42</td><td class="c-text">AK-001</td><td class="c-text"><span class="pill accent">POST</span></td><td class="text-xs c-text">/api/v1/asn</td><td class="c-code">10.0.5.42</td><td class="c-code"><span class="pill accent">201</span></td><td class="c-num">142ms</td><td class="c-num">320B</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">14:30:15</td><td class="c-text">AK-003</td><td class="c-text"><span class="pill">GET</span></td><td class="text-xs c-text">/api/v1/orders/SO-99999</td><td class="c-code">203.0.113.15</td><td class="c-code"><span class="pill alert">404</span></td><td class="c-num">12ms</td><td class="c-num">96B</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日サマリ</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>呼出回数</label><div class="text-mono" style="font-weight:600;">28,420</div></div>
+              <div class="field"><label>成功</label><div class="text-mono text-accent" style="font-weight:600;">27,940</div></div>
+              <div class="field"><label>4xx</label><div class="text-mono" style="font-weight:600;">458</div></div>
+              <div class="field"><label>5xx</label><div class="text-mono text-alert" style="font-weight:600;">22</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>平均応答時間</label><div class="text-mono">142ms</div></div>
+              <div class="field"><label>P95応答時間</label><div class="text-mono">420ms</div></div>
+              <div class="field"><label>P99応答時間</label><div class="text-mono">1,250ms</div></div>
+              <div class="field"><label>レート超過</label><div class="text-mono">2回</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

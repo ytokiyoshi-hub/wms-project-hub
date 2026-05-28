@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT-403-1 検品：ASN選択 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-403 検品作業（入荷検品）</h1>
+<p class="subtitle">入荷現物をHTでスキャンして検品を実施 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/inspect/asn.html" class="active"><b>HT-403-1</b>ASN選択</a>
+  <a href="/ht/inspect/scan.html"><b>HT-403-2</b>スキャン</a>
+  <a href="/ht/inspect/done.html"><b>HT-403-3</b>完了</a>
+  <a href="/ht/putaway/instructions.html"><b>HT-406-1</b>棚入れ指示</a>
+  <a href="/ht/putaway/location.html"><b>HT-406-2</b>ロケスキャン</a>
+  <a href="/ht/putaway/done.html"><b>HT-406-3</b>棚入れ完了</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WMS-HT v0.2</span><span id="clock">--:-- ████</span></div>
+      <div class="ht-header">
+        <span>検品：ASN選択</span>
+        <span class="scr-id">SCR-403-1</span>
+      </div>
+      <div class="ht-body">
+        <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">荷主</div>
+        <div id="owner-display" style="font-size:12px; font-weight:600; color:var(--c-accent); margin-bottom:8px; padding:4px 6px; background:var(--c-accent-lt);">-</div>
+
+        <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">検品対象ASN（選択またはスキャン）</div>
+
+        <div id="asn-list" style="border:1px solid var(--c-line); background:var(--c-base); flex:1; overflow-y:auto;">
+          <div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">読み込み中...</div>
+        </div>
+
+        <div style="background:#1a1c22; color:#ffd966; text-align:center; padding:6px; font-size:9px; font-family:var(--f-mono); margin-top:auto;">▼ ASNラベルをスキャン</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F1</span>戻る</div>
+        <div class="key-lbl disabled"><span class="fn">F2</span>—</div>
+        <div class="key-lbl primary" id="key-select"><span class="fn">F3</span>選択</div>
+        <div class="key-lbl" onclick="location.href='/'"><span class="fn">F4</span>メニュー</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+        <div class="pkey scan" onclick="document.querySelector('.ht-list-item')?.click()">SCAN</div>
+        <div class="pkey f1" onclick="document.getElementById('key-select').click()">F3</div><div class="pkey f1">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-num-grid">
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+        </div>
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-403-1</span>検品 STEP1
+  <div class="desc-text">ASNを選択またはラベルをスキャンしてください</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} ████`; };
+setClock(); setInterval(setClock, 30000);
+
+let selected = null;
+
+async function init() {
+  const [owners, schedules] = await Promise.all([
+    fetch('/api/owners').then(r => r.json()),
+    fetch('/api/inbound-schedules').then(r => r.json()),
+  ]);
+  const owner = owners[0] || { code: '-', name: '-' };
+  document.getElementById('owner-display').textContent = owner.name;
+
+  const planned = (schedules || []).filter(s => s.status === 'planned' || !s.status);
+  const list = document.getElementById('asn-list');
+  if (planned.length === 0) {
+    list.innerHTML = '<div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">検品対象なし</div>';
+    return;
+  }
+  // 情報密度向上: 予定日・温度帯・優先度を一画面で
+  const today = new Date().toISOString().slice(0, 10);
+  list.innerHTML = planned.slice(0, 5).map((s, i) => {
+    const d = s.scheduled_date || '';
+    const isLate = d && d < today;
+    const isToday = d === today;
+    const dateBadge = isLate ? '<span style="background:var(--c-alert); color:#fff; font-size:8px; padding:1px 4px; margin-left:4px;">遅延</span>'
+                     : isToday ? '<span style="background:var(--c-accent); color:#fff; font-size:8px; padding:1px 4px; margin-left:4px;">本日</span>'
+                     : '';
+    const priority = i === 0 ? '★1' : i === 1 ? '★2' : '・';
+    // B: 普段は静か・選択行と遅延だけ色
+    const accentColor = (i === 0 || isLate) ? 'var(--c-accent)' : '#374151';
+    const dateColor = isLate ? 'var(--c-alert)' : '#9ca3af';
+    return `
+    <div class="ht-list-item" data-id="${s.id}" data-no="${escapeHtml(s.schedule_no)}" data-supplier="${escapeHtml(s.supplier_name || '')}" data-owner="${escapeHtml(s.owner_code || '')}"
+         style="padding:6px 8px; border-bottom:1px solid var(--c-line); cursor:pointer; ${i===0?'background:var(--c-accent-lt);':''}">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:${accentColor};">${escapeHtml(s.schedule_no)}${dateBadge}</div>
+        <div style="font-size:9px; color:#9ca3af;">${priority}</div>
+      </div>
+      <div style="font-size:9px; color:#6b7280; margin-top:2px;">${escapeHtml(s.supplier_name || '-')}</div>
+      <div style="font-size:9px; color:#374151; margin-top:2px; display:flex; justify-content:space-between;">
+        <span>${s.line_count || '?'}件 <span style="color:#9ca3af;">全数</span></span>
+        <span style="color:${dateColor};">${escapeHtml(d || '-')}</span>
+      </div>
+    </div>
+    `;
+  }).join('');
+  // 件数サマリを下部に表示
+  const lateCount = planned.filter(s => (s.scheduled_date || '') < today).length;
+  const todayCount = planned.filter(s => s.scheduled_date === today).length;
+  const sumDiv = document.createElement('div');
+  sumDiv.style.cssText = 'padding:4px 8px; background:var(--c-bg); border-top:1px solid var(--c-line); font-size:9px; color:var(--c-text-sub); display:flex; justify-content:space-between;';
+  sumDiv.innerHTML = `本日:${todayCount} / 遅延:${lateCount} / 計:${planned.length}`;
+  list.appendChild(sumDiv);
+  // 初期選択
+  const items = list.querySelectorAll('.ht-list-item');
+  if (items[0]) {
+    const el = items[0];
+    selected = { id: el.dataset.id, no: el.dataset.no, supplier: el.dataset.supplier, owner: el.dataset.owner };
+  }
+  items.forEach(el => {
+    el.addEventListener('click', () => {
+      items.forEach(x => x.style.background = '');
+      el.style.background = 'var(--c-accent-lt)';
+      selected = { id: el.dataset.id, no: el.dataset.no, supplier: el.dataset.supplier, owner: el.dataset.owner };
+    });
+  });
+}
+
+function gotoScan() {
+  if (!selected) { alert('ASNを選択してください'); return; }
+  const params = new URLSearchParams({ id: selected.id, no: selected.no, supplier: selected.supplier, owner: selected.owner });
+  location.href = '/ht/inspect/scan.html?' + params.toString();
+}
+document.getElementById('key-select').addEventListener('click', gotoScan);
+
+init();
+</script>
+</body>
+</html>

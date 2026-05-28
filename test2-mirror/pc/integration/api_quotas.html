@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>API利用量 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>API利用量（X-15 クォータ管理）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別API利用量とクォータ（X-15）</div>
+          荷主ごとの月間API利用量を集計。契約上限超過時の請求対応。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月 API利用量</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-num">月間呼出回数</th><th class="c-text">契約上限</th><th class="c-text">超過</th><th class="c-num">レート超過件数</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-num">52,000</td><td class="c-text">100,000</td><td class="c-text">-</td><td class="c-num">0</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-num">8,200</td><td class="c-text">50,000</td><td class="c-text">-</td><td class="c-num">0</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">EC001</td><td class="text-alert c-num">820,000</td><td class="c-text">600,000</td><td class="text-alert c-text">+220,000</td><td class="c-num">2</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-num">1,200</td><td class="c-text">10,000</td><td class="c-text">-</td><td class="c-num">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>EC001 超過対応</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>当月超過分</label><div class="text-mono text-alert" style="font-weight:600;">+220,000 calls</div></div>
+              <div class="field"><label>超過料金</label><div class="text-mono">¥18,000（@¥0.08/call×超過分）</div></div>
+              <div class="field"><label>請求書追加</label><div><span class="pill accent">適用予定</span></div></div>
+              <div class="field"><label>営業対応</label><div><button class="btn small" onclick="alert('「契約見直し提案」モック動作（実装は後続フェーズ）')">契約見直し提案</button></div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>エンドポイント別 利用量（EC001）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">エンドポイント</th><th class="c-text">月間呼出</th><th class="c-num">構成比</th></tr></thead>
+              <tbody>>
+                <tr><td class="text-xs c-text">GET /api/v1/inventory/{sku}</td><td class="c-text">420,000</td><td class="c-num">51%</td></tr>
+                <tr><td class="text-xs c-text">POST /api/v1/orders</td><td class="c-text">280,000</td><td class="c-num">34%</td></tr>
+                <tr><td class="text-xs c-text">GET /api/v1/orders/{so_no}</td><td class="c-text">82,000</td><td class="c-num">10%</td></tr>
+                <tr><td class="text-xs c-text">GET /api/v1/shipments/{so_no}/tracking</td><td class="c-text">38,000</td><td class="c-num">5%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>プリンタ割付 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>プリンタ割付（P-1 エリア×帳票×プリンタ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">帳票種別×エリアごとの既定プリンタ（P-1）</div>
+          ピッキングリスト・荷札・入荷検品書などをエリアごとの近接プリンタに自動振分。HT発行時も適用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>プリンタデバイス一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">プリンタID</th><th class="c-text">機種</th><th class="c-text">設置</th><th class="c-text">用紙</th><th class="c-status">状態</th><th class="c-text">キュー</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">PRT-001</td><td class="c-text">Brother HL-L8360CDW</td><td class="c-text">1F 入荷バース</td><td class="c-text">A4</td><td class="c-status"><span class="pill accent">稼働</span></td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">PRT-002</td><td class="c-text">Brother HL-L8360CDW</td><td class="c-text">2F ピッキング</td><td class="c-text">A4</td><td class="c-status"><span class="pill accent">稼働</span></td><td class="c-text">2</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PRT-003</td><td class="c-text">Zebra ZD230</td><td class="c-text">1F 出荷バース</td><td class="c-text">感熱ラベル4×6</td><td class="c-status"><span class="pill alert">用紙切れ</span></td><td class="c-text">5</td></tr>
+                <tr><td class="c-text">PRT-004</td><td class="c-text">Zebra ZD230</td><td class="c-text">2F 梱包台</td><td class="c-text">感熱ラベル4×6</td><td class="c-status"><span class="pill accent">稼働</span></td><td class="c-text">0</td></tr>
+                <tr><td class="c-text">PRT-005</td><td class="c-text">SATO CL4NX</td><td class="c-text">3F 検品台</td><td class="c-text">感熱ラベル100×150</td><td class="c-status"><span class="pill accent">稼働</span></td><td class="c-text">1</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>帳票×エリア 既定プリンタ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">帳票種別</th><th class="c-text">エリア</th><th class="c-text">既定プリンタ</th><th class="c-text">フォールバック</th><th class="c-text">用紙</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text"><span class="pill accent">ピッキングリスト</span></td><td class="c-text">2F 通常エリア</td><td class="c-text">PRT-002</td><td class="c-text">PRT-001</td><td class="c-text">A4</td></tr>
+                <tr><td class="c-text"><span class="pill accent">ピッキングリスト</span></td><td class="c-text">1F EC専用</td><td class="c-text">PRT-001</td><td class="c-text">PRT-002</td><td class="c-text">A4</td></tr>
+                <tr><td class="c-text"><span class="pill">荷札</span></td><td class="c-text">2F 梱包台</td><td class="c-text">PRT-004</td><td class="c-text">PRT-003</td><td class="c-text">感熱4×6</td></tr>
+                <tr><td class="c-text"><span class="pill">荷札</span></td><td class="c-text">1F 出荷バース</td><td class="c-text">PRT-003</td><td class="c-text">PRT-004</td><td class="c-text">感熱4×6</td></tr>
+                <tr><td class="c-text"><span class="pill">入荷検品書</span></td><td class="c-text">1F 入荷バース</td><td class="c-text">PRT-001</td><td class="c-text">PRT-002</td><td class="c-text">A4</td></tr>
+                <tr><td class="c-text"><span class="pill alert">SDS（危険物）</span></td><td class="c-text">3F 検品台</td><td class="c-text">PRT-005</td><td class="c-text">-</td><td class="c-text">100×150</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「テスト印刷」モック動作（実装は後続フェーズ）')">テスト印刷</button>
+          <button class="btn primary" onclick="alert('「+ プリンタ追加」モック動作（実装は後続フェーズ）')">+ プリンタ追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主通知設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主通知設定（N-4 イベント別の通知先）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主担当者別のイベント通知設定（N-4）</div>
+          荷主側担当のメール・LINE・Webhook送信先を設定。SLA違反など重要イベントは複数チャネル併用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主×イベント×通知先</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">イベント</th><th class="c-code">担当者</th><th class="c-text">メール</th><th class="c-code">LINE</th><th class="c-text">Webhook</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">入荷差異検出</td><td class="c-code">物流G 田中</td><td class="text-xs c-text">tanaka@marki.co.jp</td><td class="c-code">-</td><td class="c-text">https://mk-system.local/wms</td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-text">賞味期限切迫</td><td class="c-code">QA 山田</td><td class="text-xs c-text">qa@marki.co.jp</td><td class="c-code">連携済</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">出荷確定</td><td class="c-code">運用 鈴木</td><td class="c-text">-</td><td class="c-code">-</td><td class="c-text">https://ec01.shop.test/wms-callback</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">SLA違反</td><td class="c-code">物流統括</td><td class="text-xs c-text">logistics@apremium.jp</td><td class="c-code">-</td><td class="c-text">-</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-text">滞留在庫</td><td class="c-code">営業</td><td class="text-xs c-text">sales@pr-supply.local</td><td class="c-code">-</td><td class="c-text">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>送信頻度ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">イベント</th><th class="c-text">頻度</th><th class="c-text">夜間抑制</th><th class="c-text">レート制限</th><th class="c-text">失敗時リトライ</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">入荷確定</td><td class="c-text">即時</td><td class="c-text">なし</td><td class="c-text">10/分</td><td class="c-text">5回 指数バックオフ</td></tr>
+                <tr><td class="c-text">出荷確定</td><td class="c-text">即時</td><td class="c-text">なし</td><td class="c-text">30/分</td><td class="c-text">5回 指数バックオフ</td></tr>
+                <tr><td class="c-text">SLA違反</td><td class="c-text">即時</td><td class="c-text">なし</td><td class="c-text">1/分</td><td class="c-text">3回</td></tr>
+                <tr><td class="c-text">賞味期限切迫</td><td class="c-text">日次（08:00）</td><td class="c-text">あり</td><td class="c-text">-</td><td class="c-text">1回</td></tr>
+                <tr><td class="c-text">滞留在庫</td><td class="c-text">週次（月曜09:00）</td><td class="c-text">あり</td><td class="c-text">-</td><td class="c-text">1回</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「テスト送信」モック動作（実装は後続フェーズ）')">テスト送信</button>
+          <button class="btn primary" onclick="alert('「+ 通知先追加」モック動作（実装は後続フェーズ）')">+ 通知先追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主別利益詳細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">レポート　/　<b>荷主別利益詳細（R-14 P/L）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主×項目×月のP/L表（R-14）</div>
+          どの荷主のどの作業が黒字／赤字かをドリルダウン分析。料金単価の見直し交渉のベース資料。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>対象荷主</label><select><option>MK001 マルキ食品</option><option>AP001</option><option>EC001</option><option>PR001</option></select></div>
+            <div class="field"><label>期間</label><select><option>過去3ヶ月</option><option>過去6ヶ月</option><option>過去12ヶ月</option></select></div>
+            <div class="field"><label>表示</label><select><option>金額</option><option>件あたり原価</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>MK001 2026年5月 P/L詳細</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>項目</th><th class="right">売上</th><th class="right">原価</th><th class="right">利益</th><th class="right">利益率</th></tr></thead>
+              <tbody>
+                <tr><td>入庫料金</td><td class="right num">¥223,960</td><td class="right num">¥152,000</td><td class="right num text-accent">¥71,960</td><td class="right num text-accent">32.1%</td></tr>
+                <tr><td>出庫料金</td><td class="right num">¥182,160</td><td class="right num">¥125,000</td><td class="right num text-accent">¥57,160</td><td class="right num text-accent">31.4%</td></tr>
+                <tr><td>保管料金</td><td class="right num">¥218,400</td><td class="right num">¥175,000</td><td class="right num">¥43,400</td><td class="right num">19.9%</td></tr>
+                <tr><td>運送費転嫁</td><td class="right num">¥180,200</td><td class="right num">¥158,420</td><td class="right num">¥21,780</td><td class="right num">12.1%</td></tr>
+                <tr><td>梱包材実費</td><td class="right num">¥41,040</td><td class="right num">¥38,500</td><td class="right num">¥2,540</td><td class="right num">6.2%</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>SLA違反ペナルティ</td><td class="right num">¥10,000</td><td class="right num">¥0</td><td class="right num text-alert">¥10,000</td><td class="right num">100%</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>クレジット控除</td><td class="right num">-¥6,500</td><td class="right num">¥0</td><td class="right num text-alert">-¥6,500</td><td class="right num">-100%</td></tr>
+                <tr style="font-weight:600;background:#f0f8ff;"><td>合計</td><td class="right num">¥849,260</td><td class="right num">¥648,920</td><td class="right num">¥200,340</td><td class="right num">23.6%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>件あたり原価分析（MK001 出庫）</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>出庫件数</label><div class="text-mono">3,420件</div></div>
+              <div class="field"><label>件あたり売上</label><div class="text-mono text-accent" style="font-weight:600;">¥53.3</div></div>
+              <div class="field"><label>件あたり原価</label><div class="text-mono">¥36.5</div></div>
+              <div class="field"><label>件あたり利益</label><div class="text-mono text-accent" style="font-weight:600;">¥16.8</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>営業提案</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>項目</th><th>提案</th><th>影響</th></tr></thead>
+              <tbody>
+                <tr><td>保管料金（利益率19.9%）</td><td>3期制→Tier化、長期保管にプレミアム</td><td>+¥10,000/月</td></tr>
+                <tr><td>運送費転嫁（12.1%）</td><td>マージン1%上乗せ交渉</td><td>+¥1,800/月</td></tr>
+                <tr><td>SLA違反ペナルティ</td><td>QA担当2名体制で違反0を目指す</td><td>+¥10,000/月（ペナルティ回避）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-generic-stats.js?v=202605202324"></script>
+</body>
+</html>

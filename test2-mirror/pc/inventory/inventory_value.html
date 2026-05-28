@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫評価額 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>在庫評価額（Q-13 簿価集計）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主単位 / カテゴリ単位の在庫評価額（Q-13）</div>
+          荷主側で会計上 計上が必要な簿価（仕入単価ベース）を集計。月末スナップショットを送信。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>基準日</label><input type="date" value="2026-05-31" class="text-mono"></div>
+            <div class="field"><label>荷主</label><select><option>全荷主</option><option>MK001</option></select></div>
+            <div class="field"><label>単価種別</label><select><option>仕入単価</option><option>定価</option><option>平均原価</option></select></div>
+            <div class="field"><label>除外</label><select><option>出荷止め含む</option><option>出荷可能のみ</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主×カテゴリ別 在庫評価額（2026-05-31）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">カテゴリ</th><th class="c-num">SKU数</th><th class="c-num">数量</th><th class="c-text">平均原価</th><th class="c-text">評価額</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">常温食品</td><td class="c-num">82</td><td class="c-num">5,420</td><td class="c-text">¥420</td><td class="c-text">¥2,276,400</td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-text">冷蔵食品</td><td class="c-num">38</td><td class="c-num">2,440</td><td class="c-text">¥320</td><td class="c-text">¥780,800</td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-text">冷凍食品</td><td class="c-num">22</td><td class="c-num">605</td><td class="c-text">¥860</td><td class="c-text">¥520,300</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">メンズ</td><td class="c-num">28</td><td class="c-num">1,820</td><td class="c-text">¥2,800</td><td class="c-text">¥5,096,000</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">レディース</td><td class="c-num">34</td><td class="c-num">1,910</td><td class="c-text">¥1,650</td><td class="c-text">¥3,151,500</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">EC専用</td><td class="c-num">98</td><td class="c-num">14,562</td><td class="c-text">¥400</td><td class="c-text">¥5,824,800</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-text">化粧品</td><td class="c-num">35</td><td class="c-num">1,860</td><td class="c-text">¥1,180</td><td class="c-text">¥2,194,800</td></tr>
+                <tr style="font-weight:600;background:#f0f8ff;"><td class="c-code">合計</td><td class="c-text">-</td><td class="c-num">337</td><td class="c-num">28,617</td><td class="c-text">-</td><td class="c-text">¥19,844,600</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>月次推移（評価額）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">月末</th><th class="c-code">MK001</th><th class="c-code">AP001</th><th class="c-code">EC001</th><th class="c-code">PR001</th><th class="c-num">合計</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2026-02</td><td class="c-code">¥3,420,000</td><td class="c-code">¥7,820,000</td><td class="c-code">¥5,180,000</td><td class="c-code">¥2,420,000</td><td class="c-num">¥18,840,000</td></tr>
+                <tr><td class="c-text">2026-03</td><td class="c-code">¥3,520,000</td><td class="c-code">¥8,150,000</td><td class="c-code">¥5,420,000</td><td class="c-code">¥2,320,000</td><td class="c-num">¥19,410,000</td></tr>
+                <tr><td class="c-text">2026-04</td><td class="c-code">¥3,580,000</td><td class="c-code">¥8,250,000</td><td class="c-code">¥5,820,000</td><td class="c-code">¥2,180,000</td><td class="c-num">¥19,830,000</td></tr>
+                <tr><td class="c-text">2026-05</td><td class="c-code">¥3,577,500</td><td class="c-code">¥8,247,500</td><td class="c-code">¥5,824,800</td><td class="c-code">¥2,194,800</td><td class="c-num">¥19,844,600</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「荷主向けCSV送信」モック動作（実装は後続フェーズ）')">荷主向けCSV送信</button>
+          <button class="btn primary" onclick="alert('「月末スナップショット確定」モック動作（実装は後続フェーズ）')">月末スナップショット確定</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

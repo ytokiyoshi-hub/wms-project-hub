@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>セキュリティ鍵管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>セキュリティ鍵管理（A-13 暗号鍵ローテ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">暗号鍵・APIトークンのライフサイクル管理（A-13）</div>
+          ログ暗号化鍵 / HMAC共有鍵 / JWT署名鍵 / TLS証明書を定期ローテーション。漏洩時の緊急失効も対応。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>登録鍵一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">鍵ID</th><th class="c-text">種別</th><th class="c-text">用途</th><th class="c-text">アルゴリズム</th><th class="c-text">作成日</th><th class="c-text">次回更新</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">KEY-LOG-001</td><td class="c-text">対称鍵</td><td class="c-text">監査ログ暗号化</td><td class="c-text">AES-256-GCM</td><td class="c-text">2026-01-01</td><td class="c-text">2027-01-01</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">KEY-HMAC-MK</td><td class="c-text">共有鍵</td><td class="c-text">MK001 EDI署名</td><td class="c-text">HMAC-SHA256</td><td class="c-text">2026-04-01</td><td class="c-text">2026-10-01</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">KEY-HMAC-EC</td><td class="c-text">共有鍵</td><td class="c-text">EC001 Webhook署名</td><td class="c-text">HMAC-SHA256</td><td class="c-text">2026-04-01</td><td class="c-text">2026-10-01</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">KEY-JWT-001</td><td class="c-text">非対称鍵</td><td class="c-text">JWT署名（API認証）</td><td class="c-text">RS256</td><td class="c-text">2026-03-01</td><td class="c-text">2027-03-01</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">CERT-TLS-001</td><td class="c-text">TLS証明書</td><td class="c-text">HTTPS（wms.local）</td><td class="c-text">Let's Encrypt</td><td class="c-text">2026-04-15</td><td class="c-text">2026-07-15</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">KEY-OLD-001</td><td class="c-text">対称鍵</td><td class="c-text">旧S3暗号化（廃止予定）</td><td class="c-text">AES-256-CBC</td><td class="c-text">2024-01-01</td><td class="text-alert c-text">2025-06-30</td><td class="c-status"><span class="pill alert">期限切れ</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>更新スケジュール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">種別</th><th class="c-text">更新頻度</th><th class="c-text">引退手順</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">監査ログ暗号化鍵</td><td class="c-text">年次</td><td class="c-text">古い鍵で復号→新しい鍵で再暗号化→旧鍵失効</td></tr>
+                <tr><td class="c-text">HMAC共有鍵（EDI/Webhook）</td><td class="c-text">6ヶ月</td><td class="c-text">荷主と新鍵交換→検証期間→旧鍵失効</td></tr>
+                <tr><td class="c-text">JWT署名鍵</td><td class="c-text">年次</td><td class="c-text">新鍵をkid付きで追加→トークン徐々に新鍵に移行→旧鍵失効</td></tr>
+                <tr><td class="c-text">TLS証明書</td><td class="c-text">3ヶ月（Let's Encrypt）</td><td class="c-text">自動更新</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>緊急失効ボタン</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>失効対象</label><select><option>-</option></select></div>
+              <div class="field"><label>理由</label><select><option>漏洩疑い</option><option>担当者退職</option><option>その他</option></select></div>
+              <div class="field"><label>承認者</label><div class="text-mono">システム管理者 + マネージャー（2名）</div></div>
+              <div class="field"><label>操作</label><div><button class="btn small alert" onclick="alert('「緊急失効実行」モック動作（実装は後続フェーズ）')">緊急失効実行</button></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>配送KPI — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>配送KPI（R-25 配送品質KPI）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">配送工程の主要KPI（R-25）</div>
+          定時着率・破損率・誤配率・運送費比率・受領時間遵守率を月次集計。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>主要KPI（当月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">指標</th><th class="c-text">当月</th><th class="c-text">先月</th><th class="c-text">目標</th><th class="c-status">判定</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">定時着率（±15分）</td><td class="text-accent c-text">98.5%</td><td class="c-text">97.8%</td><td class="c-text">≥98%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">初回配達率（不在持戻りなし）</td><td class="text-accent c-text">94.2%</td><td class="c-text">93.5%</td><td class="c-text">≥90%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">破損率</td><td class="c-text">0.04%</td><td class="c-text">0.05%</td><td class="c-text">≤0.1%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">誤配率</td><td class="text-accent c-text">0.02%</td><td class="c-text">0.03%</td><td class="c-text">≤0.05%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">運送費／売上比</td><td class="c-text">15.3%</td><td class="c-text">14.8%</td><td class="c-text">≤18%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+                <tr><td class="c-text">受領時間遵守率</td><td class="c-text">96.8%</td><td class="c-text">96.2%</td><td class="c-text">≥95%</td><td class="c-status"><span class="pill accent">達成</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>方面別 配達品質</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">方面</th><th class="c-num">便数</th><th class="c-num">定時着率</th><th class="c-num">破損率</th><th class="c-num">誤配率</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">東京23区</td><td class="c-num">3,820</td><td class="text-accent c-num">99.2%</td><td class="c-num">0.03%</td><td class="c-num">0.01%</td></tr>
+                <tr><td class="c-text">神奈川</td><td class="c-num">1,820</td><td class="c-num">98.8%</td><td class="c-num">0.04%</td><td class="c-num">0.02%</td></tr>
+                <tr><td class="c-text">埼玉 / 千葉</td><td class="c-num">1,420</td><td class="c-num">98.5%</td><td class="c-num">0.04%</td><td class="c-num">0.02%</td></tr>
+                <tr><td class="c-text">北関東</td><td class="c-num">820</td><td class="c-num">98.0%</td><td class="c-num">0.05%</td><td class="c-num">0.03%</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">遠方（大阪以遠）</td><td class="c-num">280</td><td class="text-alert c-num">95.5%</td><td class="text-alert c-num">0.08%</td><td class="c-num">0.04%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

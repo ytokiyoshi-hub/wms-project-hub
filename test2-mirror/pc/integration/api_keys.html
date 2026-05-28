@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>APIキー管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>APIキー管理（X-7 シークレット管理）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主・委託先向けAPIキー発行（X-7）</div>
+          Bearer Token / HMAC-SHA256 を発行・失効。スコープ（読/書）・レート制限を制御。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>発行済APIキー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">キーID</th><th class="c-text">名称</th><th class="c-text">所有</th><th class="c-text">方式</th><th class="c-text">スコープ</th><th class="c-num">レート/分</th><th class="c-text">最終使用</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">AK-001</td><td class="c-text">MK001 EDI連携</td><td class="c-text">マルキ食品</td><td class="c-text">Bearer</td><td class="c-text">read/write</td><td class="c-num">300</td><td class="c-text">06-01 13:45</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">AK-002</td><td class="c-text">AP001 在庫照会</td><td class="c-text">アパレルプレミアム</td><td class="c-text">Bearer</td><td class="c-text">read</td><td class="c-num">60</td><td class="c-text">06-01 11:00</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">AK-003</td><td class="c-text">EC001 受注Push</td><td class="c-text">EC太郎</td><td class="c-text">HMAC-SHA256</td><td class="c-text">write</td><td class="c-num">600</td><td class="c-text">06-01 13:55</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">AK-098</td><td class="c-text">旧PR001キー</td><td class="c-text">プレミアム流通</td><td class="c-text">Bearer</td><td class="c-text">read/write</td><td class="c-num">60</td><td class="c-text">2026-04-10</td><td class="c-status"><span class="pill alert">未使用50日</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">AK-099</td><td class="c-text">テスト用</td><td class="c-text">開発</td><td class="c-text">Bearer</td><td class="c-text">read</td><td class="c-num">10</td><td class="c-text">-</td><td class="c-status"><span class="pill alert">失効推奨</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>使用統計（直近24時間）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">キーID</th><th class="c-num">呼出回数</th><th class="c-text">2xx</th><th class="c-text">4xx</th><th class="c-text">5xx</th><th class="c-text">平均レイテンシ</th><th class="c-text">レート超過</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">AK-001</td><td class="c-num">8,420</td><td class="c-text">8,400</td><td class="c-text">20</td><td class="c-text">0</td><td class="c-text">88ms</td><td class="c-text"><span class="pill">なし</span></td></tr>
+                <tr><td class="c-text">AK-002</td><td class="c-num">1,260</td><td class="c-text">1,258</td><td class="c-text">2</td><td class="c-text">0</td><td class="c-text">120ms</td><td class="c-text"><span class="pill">なし</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">AK-003</td><td class="c-num">15,680</td><td class="c-text">15,210</td><td class="c-text">450</td><td class="text-alert c-text">20</td><td class="c-text">220ms</td><td class="c-text"><span class="pill alert">2回</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「未使用キー一括失効」モック動作（実装は後続フェーズ）')">未使用キー一括失効</button>
+          <button class="btn primary" onclick="alert('「+ APIキー発行」モック動作（実装は後続フェーズ）')">+ APIキー発行</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>入庫返品詳細 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　入庫返品　/　<b>RIN-26060101 詳細</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">受領拒否・誤配送返却の入庫処理（W-411）</div>
+          運送会社が返送してきた荷物の入庫＋検品＋ロケ復帰までを管理。再出荷可否を判定。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>返品No選択</label><select id="f-id"></select></div>
+            <div class="field" style="display:flex; align-items:flex-end;"><button class="btn primary" onclick="loadDetail()">表示</button></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field"><label>返品No</label><div class="text-mono text-accent" style="font-weight:600;" id="d-no">-</div></div>
+            <div class="field"><label>荷主</label><div id="d-owner">-</div></div>
+            <div class="field"><label>顧客名</label><div id="d-customer">-</div></div>
+            <div class="field"><label>返品日</label><div class="text-mono" id="d-date">-</div></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field"><label>理由</label><div id="d-reason">-</div></div>
+            <div class="field"><label>状態</label><div id="d-status">-</div></div>
+            <div class="field"><label>登録日時</label><div class="text-mono" id="d-created">-</div></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>返送品明細</span><span class="meta" id="d-meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>SKU</th><th class="right">予定</th><th class="right">検品</th><th>外観</th><th>判定</th><th>戻入ロケ</th><th>ロット</th></tr></thead>
+              <tbody id="tb-lines"><tr><td colspan="7" style="text-align:center; padding:20px; color:var(--c-text-sub);">返品Noを選んでください</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>処理タイムライン</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="right">日時</th><th>イベント</th><th>担当</th><th>備考</th></tr></thead>
+              <tbody>
+                <tr><td class="right num">2026-05-30 11:15</td><td>出荷（元）</td><td>梱包：伊藤裕子</td><td>SO-26052810</td></tr>
+                <tr><td class="right num">2026-05-31 14:20</td><td>受取拒否</td><td>受取人</td><td>サイズ違い申告</td></tr>
+                <tr><td class="right num">2026-06-01 10:32</td><td>WMS受領</td><td>佐藤太郎</td><td>外観確認・問題なし</td></tr>
+                <tr><td class="right num">2026-06-01 10:45</td><td>QA判定</td><td>QA</td><td>良品戻入と判定</td></tr>
+                <tr><td class="right num">2026-06-01 11:08</td><td>ロケ戻入</td><td>鈴木花子</td><td>B-02-04</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>影響処理</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>在庫戻入</label><div><span class="pill accent">完了</span></div></div>
+              <div class="field"><label>請求調整</label><div><span class="pill">CN-26060001 発行予定</span></div></div>
+              <div class="field"><label>運送費</label><div class="text-mono">荷主負担（着払い）</div></div>
+              <div class="field"><label>EDI通知</label><div><span class="pill accent">送信済</span></div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let returns = [];
+(async () => {
+  returns = await fetch('/api/returns').then(r => r.json()).catch(() => []);
+  const sel = document.getElementById('f-id');
+  if (returns.length === 0) {
+    sel.insertAdjacentHTML('beforeend', '<option>返品レコードなし</option>');
+    return;
+  }
+  returns.forEach(r => sel.insertAdjacentHTML('beforeend', `<option value="${r.id}">${esc(r.return_no)} (${esc(r.owner_code)})</option>`));
+  if (returns.length) { sel.value = returns[0].id; await loadDetail(); }
+})();
+async function loadDetail() {
+  const id = document.getElementById('f-id').value;
+  if (!id || isNaN(Number(id))) return;
+  try {
+    const d = await fetch(`/api/returns/${id}`).then(r => r.json());
+    document.getElementById('d-no').textContent = d.return_no;
+    document.getElementById('d-owner').textContent = `${d.owner_code} ${d.owner_name || ''}`;
+    document.getElementById('d-customer').textContent = d.customer_name || '-';
+    document.getElementById('d-date').textContent = d.return_date || '-';
+    document.getElementById('d-reason').textContent = d.reason || '-';
+    document.getElementById('d-status').innerHTML = `<span class="pill ${d.status === 'completed' ? '' : 'accent'}">${esc(d.status)}</span>`;
+    document.getElementById('d-created').textContent = d.created_at || '-';
+    const lines = d.lines || [];
+    document.getElementById('d-meta').textContent = `${lines.length}行`;
+    const tb = document.getElementById('tb-lines');
+    tb.innerHTML = lines.length === 0 ? '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--c-text-sub);">明細なし</td></tr>'
+      : lines.map(l => `
+        <tr>
+          <td class="num">${esc(l.product_code)}</td>
+          <td class="right num">${l.expected_qty}</td>
+          <td class="right num">${l.inspected_qty ?? '-'}</td>
+          <td>${esc(l.condition || '-')}</td>
+          <td><span class="pill ${l.status === 'returned_stock' ? 'accent' : l.status === 'discarded' ? 'alert' : ''}">${esc(l.status)}</span></td>
+          <td class="num">${esc(l.putaway_location || '-')}</td>
+          <td class="num">${esc(l.lot_no || '-')}</td>
+        </tr>`).join('');
+  } catch (e) { alert('読込失敗: ' + e.message); }
+}
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

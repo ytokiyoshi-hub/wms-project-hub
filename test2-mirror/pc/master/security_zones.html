@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>セキュリティゾーン — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>セキュリティゾーン（S-47 立入制限）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">立入制限エリアの管理（S-47）</div>
+          ICカード認証で立入区分を制御。高単価品 / 危険物 / サーバ室など制限エリアを定義。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ゾーン定義</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ゾーン</th><th class="c-text">名称</th><th class="c-status">レベル</th><th class="c-text">立入可ロール</th><th class="c-text">監視カメラ</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">SZ-001</td><td class="c-text">一般エリア</td><td class="c-status"><span class="pill accent">Level 1</span></td><td class="c-text">全員</td><td class="c-text">あり</td></tr>
+                <tr><td class="c-text">SZ-002</td><td class="c-text">事務エリア</td><td class="c-status"><span class="pill">Level 2</span></td><td class="c-text">事務員以上</td><td class="c-text">あり</td></tr>
+                <tr><td class="c-text">SZ-003</td><td class="c-text">VIP品保管庫（プレミアム）</td><td class="c-status"><span class="pill alert">Level 3</span></td><td class="c-text">マネージャー以上 + 専任作業者</td><td class="c-text">あり + 録画</td></tr>
+                <tr><td class="c-text">SZ-004</td><td class="c-text">危険物保管庫</td><td class="c-status"><span class="pill alert">Level 3</span></td><td class="c-text">危険物取扱者のみ</td><td class="c-text">あり + 録画</td></tr>
+                <tr><td class="c-text">SZ-005</td><td class="c-text">サーバ室</td><td class="c-status"><span class="pill alert">Level 4</span></td><td class="c-text">システム管理者のみ</td><td class="c-text">あり + 録画 + 入退室ログ</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ロールごとの立入権限</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ロール</th><th class="c-code">SZ-001</th><th class="c-code">SZ-002</th><th class="c-code">SZ-003</th><th class="c-code">SZ-004</th><th class="c-code">SZ-005</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">システム管理者</td><td class="c-code">◎</td><td class="c-code">◎</td><td class="c-code">◎</td><td class="c-code">◎</td><td class="c-code">◎</td></tr>
+                <tr><td class="c-text">マネージャー</td><td class="c-code">◎</td><td class="c-code">◎</td><td class="c-code">◎</td><td class="c-code">◎</td><td class="c-code">-</td></tr>
+                <tr><td class="c-text">QA</td><td class="c-code">◎</td><td class="c-code">◎</td><td class="c-code">○</td><td class="c-code">◎</td><td class="c-code">-</td></tr>
+                <tr><td class="c-text">現場リーダー</td><td class="c-code">◎</td><td class="c-code">○</td><td class="c-code">-</td><td class="c-code">-</td><td class="c-code">-</td></tr>
+                <tr><td class="c-text">作業者（一般）</td><td class="c-code">◎</td><td class="c-code">-</td><td class="c-code">-</td><td class="c-code">-</td><td class="c-code">-</td></tr>
+                <tr><td class="c-text">作業者（危険物資格）</td><td class="c-code">◎</td><td class="c-code">-</td><td class="c-code">-</td><td class="c-code">◎</td><td class="c-code">-</td></tr>
+                <tr><td class="c-text">作業者（VIP専任）</td><td class="c-code">◎</td><td class="c-code">-</td><td class="c-code">◎</td><td class="c-code">-</td><td class="c-code">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の立入ログ（SZ-003 SZ-004 SZ-005）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-text">ゾーン</th><th class="c-text">氏名</th><th class="c-status">区分</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">09:15</td><td class="c-text">SZ-003</td><td class="c-text">佐藤太郎</td><td class="c-status"><span class="pill accent">入室</span></td><td class="c-text">PR001品ピック</td></tr>
+                <tr><td class="c-date">09:45</td><td class="c-text">SZ-003</td><td class="c-text">佐藤太郎</td><td class="c-status"><span class="pill">退室</span></td><td class="c-text">-</td></tr>
+                <tr><td class="c-date">10:30</td><td class="c-text">SZ-004</td><td class="c-text">QA</td><td class="c-status"><span class="pill accent">入室</span></td><td class="c-text">危険物在庫確認</td></tr>
+                <tr><td class="c-date">11:00</td><td class="c-text">SZ-004</td><td class="c-text">QA</td><td class="c-status"><span class="pill">退室</span></td><td class="c-text">-</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">13:42</td><td class="c-text">SZ-005</td><td class="c-text">不明（カード未認証）</td><td class="c-status"><span class="pill alert">アラート</span></td><td class="c-text">3回失敗 → 監視カメラ録画開始</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ログイン履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">設定　/　<b>ログイン履歴</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card">
+          <div class="card-header"><span>ログイン履歴</span><span class="meta">本日 25件</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日時</th><th class="c-code">ユーザー</th><th class="c-text">端末</th><th class="c-text">IPアドレス</th><th class="c-status">結果</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">2026-06-01 08:00</td><td class="c-code">USR-001 田中 太郎</td><td class="c-text">HT-4" (BT-A2000-001)</td><td class="c-text">192.168.1.42</td><td class="c-status"><span class="pill accent">成功</span></td></tr>
+                <tr><td class="c-date">2026-06-01 08:00</td><td class="c-code">USR-002 佐藤 花子</td><td class="c-text">PC (Windows)</td><td class="c-text">192.168.1.10</td><td class="c-status"><span class="pill accent">成功</span></td></tr>
+                <tr><td class="c-date">2026-06-01 08:00</td><td class="c-code">USR-003 鈴木 一郎</td><td class="c-text">HT-4" (BT-A2000-003)</td><td class="c-text">192.168.1.43</td><td class="c-status"><span class="pill accent">成功</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">2026-06-01 07:55</td><td class="c-code">UNKNOWN</td><td class="c-text">HT-4"</td><td class="c-text">192.168.1.99</td><td class="c-status"><span class="pill alert">失敗（ID誤り）</span></td></tr>
+                <tr><td class="c-date">2026-06-01 09:30</td><td class="c-code">USR-101 マルキ経理</td><td class="c-text">PC (Portal)</td><td class="c-text">203.0.113.45</td><td class="c-status"><span class="pill accent">成功</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

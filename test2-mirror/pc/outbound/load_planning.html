@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>積込計画 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>積込計画（W-322 車両積載計画）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">便×車両×積載計画（W-322）</div>
+          車両容積／重量制限を加味して積込順を決定。配送先順（最後に降ろす配送先を最初に積む）でロスなし。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日 13:30便 積込計画</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>車両</label><div class="text-mono">2t トラック / 自社便A号車</div></div>
+              <div class="field"><label>容積</label><div class="text-mono">12.5m³</div></div>
+              <div class="field"><label>最大重量</label><div class="text-mono">2,000kg</div></div>
+              <div class="field"><label>配送先数</label><div class="text-mono">5</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>合計容積</label><div class="text-mono text-accent" style="font-weight:600;">10.2m³（82%）</div></div>
+              <div class="field"><label>合計重量</label><div class="text-mono text-accent" style="font-weight:600;">1,620kg（81%）</div></div>
+              <div class="field"><label>余裕</label><div><span class="pill accent">適正</span></div></div>
+              <div class="field"><label>ルート所要</label><div class="text-mono">約3.5時間</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>積込順（逆順 / 最後に降ろす配送先を先に積む）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">順</th><th class="c-code">配送先</th><th class="c-code">SO番号</th><th class="c-text">容積</th><th class="c-num">重量</th><th class="c-num">カゴ数</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1</td><td class="c-code">埼玉物流ハブ（最遠）</td><td class="c-code">SO-26060115</td><td class="c-text">2.8m³</td><td class="c-num">420kg</td><td class="c-num">3</td><td class="c-text">奥</td></tr>
+                <tr><td class="c-text">2</td><td class="c-code">東京食品センター</td><td class="c-code">SO-26060101</td><td class="c-text">2.5m³</td><td class="c-num">350kg</td><td class="c-num">3</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">3</td><td class="c-code">営業課A</td><td class="c-code">SO-26060102</td><td class="c-text">1.8m³</td><td class="c-num">280kg</td><td class="c-num">2</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">4</td><td class="c-code">営業課B</td><td class="c-code">SO-26060128</td><td class="c-text">1.5m³</td><td class="c-num">220kg</td><td class="c-num">2</td><td class="c-text">-</td></tr>
+                <tr><td class="c-text">5</td><td class="c-code">東京食品センター 川崎店（最近）</td><td class="c-code">SO-26060122</td><td class="c-text">1.6m³</td><td class="c-num">350kg</td><td class="c-num">2</td><td class="c-text">手前</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>配送ルート</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">順</th><th class="c-code">配送先</th><th class="c-text">到着予定</th><th class="c-num">滞在時間</th><th class="c-text">次まで</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1</td><td class="c-code">出発（東京DC）</td><td class="c-text">13:30</td><td class="c-num">-</td><td class="c-text">25分</td></tr>
+                <tr><td class="c-text">2</td><td class="c-code">東京食品センター 川崎店</td><td class="c-text">13:55</td><td class="c-num">10分</td><td class="c-text">15分</td></tr>
+                <tr><td class="c-text">3</td><td class="c-code">営業課B</td><td class="c-text">14:20</td><td class="c-num">10分</td><td class="c-text">12分</td></tr>
+                <tr><td class="c-text">4</td><td class="c-code">営業課A</td><td class="c-text">14:42</td><td class="c-num">10分</td><td class="c-text">18分</td></tr>
+                <tr><td class="c-text">5</td><td class="c-code">東京食品センター</td><td class="c-text">15:10</td><td class="c-num">15分</td><td class="c-text">45分</td></tr>
+                <tr><td class="c-text">6</td><td class="c-code">埼玉物流ハブ</td><td class="c-text">16:10</td><td class="c-num">15分</td><td class="c-text">50分</td></tr>
+                <tr><td class="c-text">7</td><td class="c-code">東京DC 帰着</td><td class="c-text">17:15</td><td class="c-num">-</td><td class="c-text">-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

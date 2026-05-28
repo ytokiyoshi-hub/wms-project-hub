@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>安全管理ダッシュボード — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.sf-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+.sf-card { background:#fff; border:1px solid var(--c-border); border-radius:8px; padding:14px; text-align:center; }
+.sf-card .v { font-family:'Roboto Mono',monospace; font-size:22px; font-weight:700; color:var(--c-accent); }
+.sf-card .l { font-size:12px; color:var(--c-text-sub); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ダッシュボード　/　<b>安全管理（D-10 労災ゼロ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">安全衛生ダッシュボード（D-10）</div>
+          労災・ヒヤリハット・KY活動・健康診断受診率を集計。「安全第一」の経営方針を可視化。
+        </div>
+  
+        <div class="sf-grid">
+          <div class="sf-card"><div class="l">労災件数（当月）</div><div class="v">0</div></div>
+          <div class="sf-card"><div class="l">無事故継続日数</div><div class="v">412日</div></div>
+          <div class="sf-card"><div class="l">ヒヤリハット報告</div><div class="v">12</div></div>
+          <div class="sf-card"><div class="l">KY活動実施率</div><div class="v">100%</div></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ヒヤリハット集計</span></div>
+          <div class="card-body flush">
+            <table class="list">
+              <thead><tr><th class="c-text">事象分類</th><th class="c-text">当月</th><th class="c-text">前月</th><th class="c-text">過去12ヶ月平均</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">カゴ車・FL接触寸前</td><td class="c-text">3</td><td class="c-text">2</td><td class="c-text">2.5</td></tr>
+                <tr><td class="c-text">ピッカー同士衝突寸前</td><td class="c-text">2</td><td class="c-text">1</td><td class="c-text">1.5</td></tr>
+                <tr><td class="c-text">商品落下（軽微）</td><td class="c-text">4</td><td class="c-text">3</td><td class="c-text">3.5</td></tr>
+                <tr><td class="c-text">段差つまずき</td><td class="c-text">2</td><td class="c-text">1</td><td class="c-text">1.8</td></tr>
+                <tr><td class="c-text">その他</td><td class="c-text">1</td><td class="c-text">2</td><td class="c-text">1.5</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>健康診断・教育</span></div>
+          <div class="card-body flush">
+            <table class="list">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">対象</th><th class="c-text">完了</th><th class="c-num">完了率</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">定期健康診断（年次）</td><td class="c-text">68</td><td class="c-text">66</td><td class="text-accent c-num">97.0%</td></tr>
+                <tr><td class="c-text">ストレスチェック</td><td class="c-text">68</td><td class="c-text">68</td><td class="text-accent c-num">100%</td></tr>
+                <tr><td class="c-text">救命救急講習</td><td class="c-text">68</td><td class="c-text">52</td><td class="c-num">76.5%</td></tr>
+                <tr><td class="c-text">安全衛生委員会出席</td><td class="c-text">12</td><td class="c-text">12</td><td class="text-accent c-num">100%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>是正対策進捗</span></div>
+          <div class="card-body flush">
+            <table class="list">
+              <thead><tr><th class="c-text">対策</th><th class="c-date">期限</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2F C-EC 一方通行化</td><td class="c-date">2026-06-30</td><td class="c-status"><span class="pill">進行中</span></td></tr>
+                <tr><td class="c-text">FL速度制限見直し</td><td class="c-date">2026-05-30</td><td class="c-status"><span class="pill accent">完了</span></td></tr>
+                <tr><td class="c-text">段差解消（B通路出入口）</td><td class="c-date">2026-07-31</td><td class="c-status"><span class="pill">計画中</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

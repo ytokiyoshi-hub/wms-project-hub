@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>JANコード書式チェック — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>JANコード書式チェック（Q12-2 / U-3）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">JANコード書式チェック（Q12-2 確定: 荷主別切替 / U-3 Phase D）</div>
+          荷主マスタの jan_strict_mode で切替: <b>strict</b>=8桁/13桁数字必須、<b>loose</b>=チェックなし
+        </div>
+  
+        <div class="card"><div class="card-header"><span>テスト入力</span></div><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>荷主</label><select id="f-owner"><option value="loose">loose（チェックなし）</option><option value="strict">strict（厳格）</option></select></div>
+            <div class="field"><label>JAN入力</label><input id="f-jan" placeholder="例: 4901234567001"></div>
+          </div>
+          <div id="result" style="margin-top:14px; padding:10px; background:var(--c-bg); border:1px solid var(--c-line); font-size:13px;">入力待ち...</div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 jan_strict_mode 設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">jan_strict_mode</th><th class="c-text">許容書式</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001 マルキ食品</td><td class="c-text"><span class="pill accent">strict</span></td><td class="c-text">8桁 or 13桁の数字のみ</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">AP001 アパレル</td><td class="c-text"><span class="pill">loose</span></td><td class="c-text">制限なし（独自コード許可）</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">EC001 EC</td><td class="c-text"><span class="pill accent">strict</span></td><td class="c-text">8桁 or 13桁の数字のみ</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+                <tr><td class="c-code">PR001 精密機器</td><td class="c-text"><span class="pill">loose</span></td><td class="c-text">シリアルコード許可</td><td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function validate() {
+  const mode = document.getElementById('f-owner').value;
+  const jan = document.getElementById('f-jan').value.trim();
+  const r = document.getElementById('result');
+  if (!jan) { r.textContent = '入力待ち...'; r.style.background = 'var(--c-bg)'; return; }
+  if (mode === 'loose') {
+    r.textContent = `✓ loose モード: 入力 "${jan}" を許可（チェックなし）`;
+    r.style.background = 'var(--c-accent-lt)';
+    return;
+  }
+  if (!/^\d+$/.test(jan)) { r.textContent = `✗ 数字以外を含んでいます`; r.style.background = 'var(--c-alert-lt)'; return; }
+  if (jan.length !== 8 && jan.length !== 13) { r.textContent = `✗ 桁数エラー: ${jan.length}桁（8桁 or 13桁が必要）`; r.style.background = 'var(--c-alert-lt)'; return; }
+  r.textContent = `✓ strict モード: 入力 "${jan}" は ${jan.length}桁 数字でOK`;
+  r.style.background = 'var(--c-accent-lt)';
+}
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>倉庫レイアウト — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.warehouse-map { background:#f8f9fb; border:1px solid var(--c-border); border-radius:8px; padding:14px; margin-top:14px; font-family:'Roboto Mono', monospace; font-size:13px; }
+.floor { background:#fff; border:1px solid var(--c-border); border-radius:6px; padding:14px; margin-bottom:14px; }
+.floor h4 { margin:0 0 10px 0; color:var(--c-accent); font-size:14px; }
+.zones { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+.zone { background:#e7f3ff; border:1px solid var(--c-accent); border-radius:4px; padding:8px; text-align:center; font-size:11px; }
+.zone.cold { background:#e6f7ff; border-color:#2080cc; }
+.zone.frozen { background:#dde8ff; border-color:#1340a0; }
+.zone.haz { background:#ffe6e6; border-color:var(--c-alert, #c00000); }
+.zone .num { display:block; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>倉庫レイアウト（S-37 フロアマップ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">倉庫の物理レイアウト管理（S-37）</div>
+          フロア×通路×ロケのマップ。動線最適化／非常導線確認／消防計画にも利用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>東京DC 全体図</span></div>
+          <div class="card-body">
+            <div class="floor">
+              <h4>1F（バース / 高回転品）</h4>
+              <div class="zones">
+                <div class="zone"><span class="num">A通路</span>パレット 120ロケ</div>
+                <div class="zone"><span class="num">B通路</span>中量 100ロケ</div>
+                <div class="zone cold"><span class="num">REF冷蔵庫</span>36ロケ</div>
+                <div class="zone frozen"><span class="num">FRZ冷凍庫</span>16ロケ</div>
+                <div class="zone"><span class="num">バース1〜4</span>入出荷</div>
+                <div class="zone"><span class="num">梱包台</span>4台</div>
+                <div class="zone"><span class="num">引渡レーン</span>5レーン</div>
+                <div class="zone"><span class="num">通路</span>動線</div>
+              </div>
+            </div>
+  
+            <div class="floor">
+              <h4>2F（中回転品・EC専用）</h4>
+              <div class="zones">
+                <div class="zone"><span class="num">C通路</span>軽量 450ロケ</div>
+                <div class="zone"><span class="num">D通路</span>EC専用 200ロケ</div>
+                <div class="zone"><span class="num">梱包台</span>2台</div>
+                <div class="zone"><span class="num">休憩室</span>従業員用</div>
+              </div>
+            </div>
+  
+            <div class="floor">
+              <h4>3F（低回転品・定温）</h4>
+              <div class="zones">
+                <div class="zone"><span class="num">E通路</span>長期保管 42ロケ</div>
+                <div class="zone"><span class="num">定温エリア</span>化粧品 42ロケ</div>
+                <div class="zone haz"><span class="num">危険物専用</span>10ロケ</div>
+                <div class="zone"><span class="num">サーバー室</span>WMS基盤</div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>レイアウト情報サマリ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">数値</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">総床面積</td><td class="c-text">8,200 m²</td></tr>
+                <tr><td class="c-text">保管ロケ数</td><td class="c-text">1,066</td></tr>
+                <tr><td class="c-text">バース数</td><td class="c-text">4</td></tr>
+                <tr><td class="c-text">梱包台数</td><td class="c-text">6</td></tr>
+                <tr><td class="c-text">引渡レーン数</td><td class="c-text">5</td></tr>
+                <tr><td class="c-text">動線（人通路）合計</td><td class="c-text">1,820 m</td></tr>
+                <tr><td class="c-text">消防避難経路</td><td class="c-text">8 ルート</td></tr>
+                <tr><td class="c-text">監視カメラ</td><td class="c-text">42 台</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

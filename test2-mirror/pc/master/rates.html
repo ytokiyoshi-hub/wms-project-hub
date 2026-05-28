@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>料金単価マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>料金単価</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="btn primary" onclick="render()">検索</button>
+              </div>
+            <div class="field"><label>単価区分</label><select><option>全て</option><option>保管料</option><option>荷役料</option><option>梱包資材</option></select></div>
+            <div class="field"><label>有効期間</label><input type="date" value="2026-06-01"></div>
+          </div>
+        </div></div>
+        <div class="card">
+          <div class="card-header"><span>料金単価一覧</span><span class="meta">12件</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">荷主</th><th class="c-status">区分</th><th class="c-text">項目</th><th class="c-text">単位</th><th class="c-num">単価</th><th class="c-text">有効開始</th><th class="c-text">有効終了</th><th class="c-text">端数処理</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-status">保管料</td><td class="c-text">3期制保管料</td><td class="c-text">PL/期</td><td class="c-num">67.5</td><td class="c-text">2026-04-01</td><td class="c-text">-</td><td class="c-text">四捨五入</td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-status">荷役料</td><td class="c-text">入庫荷役</td><td class="c-text">件</td><td class="c-num">100</td><td class="c-text">2026-04-01</td><td class="c-text">-</td><td class="c-text">四捨五入</td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-status">荷役料</td><td class="c-text">出庫荷役</td><td class="c-text">件</td><td class="c-num">20</td><td class="c-text">2026-04-01</td><td class="c-text">-</td><td class="c-text">四捨五入</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-status">保管料</td><td class="c-text">坪貸し保管料</td><td class="c-text">坪/月</td><td class="c-num">8,000</td><td class="c-text">2026-04-01</td><td class="c-text">-</td><td class="c-text">切捨て</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-status">保管料</td><td class="c-text">2期制保管料</td><td class="c-text">CS/期</td><td class="c-num">45</td><td class="c-text">2026-04-01</td><td class="c-text">-</td><td class="c-text">四捨五入</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-status">荷役料</td><td class="c-text">EC小口荷役</td><td class="c-text">件</td><td class="c-num">180</td><td class="c-text">2026-04-01</td><td class="c-text">-</td><td class="c-text">四捨五入</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-status">保管料</td><td class="c-text">シリアル保管</td><td class="c-text">個/期</td><td class="c-num">700</td><td class="c-text">2026-04-01</td><td class="c-text">-</td><td class="c-text">切上げ</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+(async () => {
+  const owners = await fetch('/api/owners').then(r=>r.json()).catch(()=>[]);
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => { const opt = document.createElement('option'); opt.value = o.code; opt.textContent = `${o.code} ${o.name}`; sel.appendChild(opt); });
+})();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

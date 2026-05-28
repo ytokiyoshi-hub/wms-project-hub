@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>JIS単位変換 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>JIS単位変換（S-33 単位間換算）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">単位間換算ルール（S-33）</div>
+          荷主によってPCS/CS/PT/Boxなどの呼称・換算ルールが異なるため統一管理。EDI受信時の自動変換に利用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>基準単位</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-text">名称</th><th class="c-text">記号</th><th class="c-text">カテゴリ</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">UNT-001</td><td class="c-text">個（ピース）</td><td class="c-text">PCS</td><td class="c-text">基準</td></tr>
+                <tr><td class="c-code">UNT-002</td><td class="c-text">ケース</td><td class="c-text">CS</td><td class="c-text">派生</td></tr>
+                <tr><td class="c-code">UNT-003</td><td class="c-text">パレット</td><td class="c-text">PT</td><td class="c-text">派生</td></tr>
+                <tr><td class="c-code">UNT-004</td><td class="c-text">箱</td><td class="c-text">BOX</td><td class="c-text">派生</td></tr>
+                <tr><td class="c-code">UNT-005</td><td class="c-text">キログラム</td><td class="c-text">kg</td><td class="c-text">重量</td></tr>
+                <tr><td class="c-code">UNT-006</td><td class="c-text">リットル</td><td class="c-text">L</td><td class="c-text">容量</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SKU別換算（例）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-text">1 CS = PCS</th><th class="c-text">1 PT = CS</th><th class="c-num">1 PCS = kg</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-MK001-001</td><td class="c-text">シャンプー300ml</td><td class="c-text">24</td><td class="c-text">36</td><td class="c-num">0.35</td></tr>
+                <tr><td class="c-code">SKU-MK001-002</td><td class="c-text">コンディショナー300ml</td><td class="c-text">24</td><td class="c-text">36</td><td class="c-num">0.35</td></tr>
+                <tr><td class="c-code">SKU-MK001-003</td><td class="c-text">冷蔵牛乳1L</td><td class="c-text">12</td><td class="c-text">48</td><td class="c-num">1.05</td></tr>
+                <tr><td class="c-code">SKU-AP001-005</td><td class="c-text">春物ジャケット</td><td class="c-text">10</td><td class="c-text">12</td><td class="c-num">0.85</td></tr>
+                <tr><td class="c-code">SKU-EC001-008</td><td class="c-text">EC専用ギフトA</td><td class="c-text">20</td><td class="c-text">20</td><td class="c-num">0.25</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 単位呼称マッピング</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-text">PCS呼称</th><th class="c-text">CS呼称</th><th class="c-text">PT呼称</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-text">本 / 個</td><td class="c-text">箱</td><td class="c-text">P</td><td class="c-text">食品系</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-text">枚</td><td class="c-text">束</td><td class="c-text">PL</td><td class="c-text">アパレル系</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-text">個</td><td class="c-text">カートン</td><td class="c-text">PL</td><td class="c-text">EC系</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-text">本</td><td class="c-text">BOX</td><td class="c-text">PL</td><td class="c-text">化粧品</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

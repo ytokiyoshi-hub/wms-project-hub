@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>カゴ回収状況 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>カゴ回収状況（W-348 配送後回収）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">配送先からのカゴ回収追跡（W-348）</div>
+          配送時に置いてきたカゴを次便で回収。長期未回収は調査・補充購入の判断。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>カゴ保有状況</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>所有総数</label><div class="text-mono" style="font-weight:600;">820 個</div></div>
+              <div class="field"><label>WMS内</label><div class="text-mono">580 個</div></div>
+              <div class="field"><label>配送先預け</label><div class="text-mono">232 個</div></div>
+              <div class="field"><label>長期未回収</label><div class="text-mono text-alert" style="font-weight:600;">8 個</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>配送先別 カゴ預け状況</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">配送先</th><th class="c-num">預けカゴ数</th><th class="c-num">平均預け日数</th><th class="c-text">次回回収予定</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">東京食品センター</td><td class="c-num">42</td><td class="c-num">1.2日</td><td class="c-text">翌便（明日13:30便）</td></tr>
+                <tr><td class="c-code">営業課A</td><td class="c-num">28</td><td class="c-num">2.5日</td><td class="c-text">翌便（明日13:30便）</td></tr>
+                <tr><td class="c-code">北陸本部</td><td class="c-num">15</td><td class="c-num">3.8日</td><td class="c-text">06-05 便</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">関西流通センター</td><td class="text-alert c-num">8</td><td class="text-alert c-num">28日</td><td class="c-text">未確定（要連絡）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>長期未回収カゴ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">カゴID</th><th class="c-code">配送先</th><th class="c-text">最終預け日</th><th class="c-num">経過日数</th><th class="c-text">対応</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">CON-26050501</td><td class="c-code">関西流通センター</td><td class="c-text">2026-05-05</td><td class="text-alert c-num">28日</td><td class="c-text">営業から連絡</td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">CON-26050502</td><td class="c-code">関西流通センター</td><td class="c-text">2026-05-05</td><td class="text-alert c-num">28日</td><td class="c-text">営業から連絡</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月集計</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>当月配送数</label><div class="text-mono">3,420 カゴ</div></div>
+              <div class="field"><label>当月回収数</label><div class="text-mono text-accent" style="font-weight:600;">3,288 カゴ</div></div>
+              <div class="field"><label>回収率</label><div class="text-mono text-accent" style="font-weight:600;">96.1%</div></div>
+              <div class="field"><label>補充購入</label><div class="text-mono">0 個（当月）</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="hide-from-nav" content="true">
+<title>在庫照会 [列間隔C] — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.layout-switcher { background:#1a3a5c; color:#fff; padding:8px 14px; font-size:12px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.layout-switcher .lbl { font-weight:600; }
+.layout-switcher a { color:#fff; text-decoration:none; padding:3px 10px; border:1px solid rgba(255,255,255,0.3); font-size:11px; }
+.layout-switcher a.active { background:#fff; color:#1a3a5c; border-color:#fff; font-weight:600; }
+.layout-switcher .desc { color:rgba(255,255,255,0.7); font-size:11px; margin-left:auto; }
+/* C案: 2ペイン (左=一覧, 右=詳細パネル) */
+.two-pane { display:grid; grid-template-columns: minmax(0, 1fr) 320px; gap:14px; align-items:start; }
+.two-pane .left-pane { min-width:0; }
+.detail-card .card-header { font-weight:700; font-size:13px; }
+.detail-grid { display:grid; grid-template-columns:auto 1fr; gap:6px 12px; font-size:12px; padding:8px 4px; }
+.detail-grid .lbl { color:#9ca3af; font-size:11px; }
+.detail-grid .val { color:#374151; font-family:var(--f-mono); }
+.detail-grid .val.accent { color:var(--c-accent); font-weight:600; }
+.detail-grid .val.alert { color:var(--c-alert); }
+.attention-row { padding:6px 8px; border-top:1px solid var(--c-line); font-size:11px; line-height:1.4; }
+.attention-row:first-child { border-top:none; }
+.attention-row .top { display:flex; gap:8px; align-items:center; }
+.attention-row .lot { font-family:var(--f-mono); color:#374151; }
+.attention-row .note { color:#9ca3af; font-size:10px; margin-top:2px; }
+.attention-row.alert .lot { color:var(--c-alert); }
+table.list tbody tr.selected { background:#e8f0ff !important; }
+.mini-history { margin:4px 0 0; }
+.mini-history .row { display:flex; gap:8px; font-size:11px; padding:3px 0; border-bottom:1px dashed var(--c-line); }
+.mini-history .row:last-child { border-bottom:none; }
+.mini-history .row .date { color:#9ca3af; font-family:var(--f-mono); }
+.mini-history .row .qty { margin-left:auto; font-family:var(--f-mono); font-weight:600; }
+.mini-history .row .qty.plus { color:var(--c-accent); }
+.mini-history .row .qty.minus { color:var(--c-alert); }
+
+/* リスク3項目 (既定モード) */
+.risk-section { border-bottom:1px solid var(--c-line); }
+.risk-section:last-child { border-bottom:none; }
+.risk-head { display:flex; align-items:center; gap:8px; padding:8px 12px; cursor:pointer; user-select:none; }
+.risk-head:hover { background:#f9fafb; }
+.risk-head.active { background:#eff6ff; }
+.risk-ico { font-size:9px; }
+.risk-ico.alert { color:var(--c-alert); }
+.risk-ico.warn { color:#f59e0b; }
+.risk-ico.mute { color:#9ca3af; }
+.risk-name { font-weight:600; font-size:12px; color:#374151; }
+.risk-cnt { font-family:var(--f-mono); font-weight:700; font-size:14px; color:#374151; min-width:24px; text-align:right; }
+.risk-cnt.alert { color:var(--c-alert); }
+.risk-cnt.warn { color:#f59e0b; }
+.risk-desc { font-size:11px; color:#9ca3af; margin-left:auto; }
+.risk-list { padding:0 12px 8px; }
+.risk-list .row { display:flex; gap:8px; font-size:11px; padding:3px 0; border-top:1px dashed var(--c-line); align-items:center; }
+.risk-list .row:first-child { border-top:none; }
+.risk-list .row .lot { font-family:var(--f-mono); color:#374151; }
+.risk-list .row .code { font-family:var(--f-mono); color:#9ca3af; font-size:10px; }
+.risk-list .row .note { margin-left:auto; color:#9ca3af; font-size:10px; }
+.risk-list .row.alert .lot { color:var(--c-alert); }
+.risk-list .row.alert .note { color:var(--c-alert); }
+.risk-list .empty { font-size:11px; color:#9ca3af; padding:3px 0; }
+
+/* 引当 vs フリー 在庫バー */
+.alloc-bar { display:flex; height:14px; background:#f3f4f6; border:1px solid var(--c-line); overflow:hidden; margin-bottom:8px; }
+.alloc-allocated { background:#9ca3af; }
+.alloc-free { background:#1a73e8; }
+.alloc-num { display:flex; gap:14px; }
+.alloc-cell { flex:1; }
+.alloc-cell .lbl { font-size:11px; color:#9ca3af; }
+.alloc-cell .val { font-family:var(--f-mono); font-weight:600; font-size:14px; color:#374151; }
+.alloc-cell .val.accent { color:var(--c-accent); font-size:18px; }
+.alloc-cell .val.mute { color:#9ca3af; }
+
+/* mini-list (入荷予定・出荷予定) */
+.mini-list { font-size:11px; }
+.mini-list .row { display:flex; gap:8px; padding:3px 0; border-bottom:1px dashed var(--c-line); align-items:center; }
+.mini-list .row:last-child { border-bottom:none; }
+.mini-list .row .date { color:#9ca3af; font-family:var(--f-mono); }
+.mini-list .row .ref { color:#9ca3af; font-family:var(--f-mono); font-size:10px; }
+.mini-list .row .qty { margin-left:auto; font-family:var(--f-mono); font-weight:600; }
+.mini-list .row .qty.in { color:var(--c-accent); }
+.mini-list .row .qty.out { color:#6b7280; }
+.mini-list .empty { color:#9ca3af; padding:3px 0; }
+
+/* SP-C: セル padding を増やして列間を広く取る */
+.sp-mode-c table.list th, .sp-mode-c table.list td { padding: 10px 20px; }
+
+</style>
+</head>
+<body>
+<div class="layout sp-mode-c">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="layout-switcher">
+      <span class="lbl">列間隔バリエーション:</span>
+      <a href="/pc/inventory/layout_c_sp_a.html">A: 列タイプ別 固定幅</a>
+      <a href="/pc/inventory/layout_c_sp_b.html">B: 最小幅統一 (min-width)</a>
+      <a href="/pc/inventory/layout_c_sp_c.html" class="active">C: 列間 padding 増</a>
+      <a href="/pc/inventory/layout_c.html" style="margin-left:6px;">→ 元の layout_c</a>
+      <span class="desc">セル左右 padding を 14×20 に。列幅は中身のまま・隙間広く</span>
+    </div>
+    <div class="topbar"><div class="crumb">在庫　/　<b>在庫照会 (W-201)</b><span class="badge">列間隔 C: padding 増</span></div></div>
+    <div class="content">
+
+      <div class="two-pane">
+
+        <!-- 左: 一覧 -->
+        <div class="left-pane">
+          <div class="card">
+            <div class="card-body" style="padding-bottom:0;">
+              <div class="filter-row">
+                <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn primary" onclick="render()">検索</button>
+            </div>
+                <div class="field"><label>商品コード/JAN</label><input id="f-product" placeholder="例: S-00321"></div>
+                <div class="field"><label>ロケコード</label><input id="f-location" placeholder="例: 3AP-02-134"></div>
+              </div>
+              <div style="display:flex; gap:14px; margin-top:8px; font-size:11px; color:#6b7280; flex-wrap:wrap;">
+                <span>行: <b id="s-rows">-</b></span>
+                <span>SKU: <b id="s-products">-</b></span>
+                <span>ロケ: <b id="s-locations">-</b></span>
+                <span>合計数量: <b id="s-total">-</b></span>
+                <span style="margin-left:auto;" id="filter-meta">-</span>
+              </div>
+            </div>
+            <div class="card-body flush">
+              <table class="list list-full">
+                <thead><tr>
+                  <th class="c-code">荷主</th>
+                  <th class="c-code">商品コード</th>
+                  <th class="c-text">商品名</th>
+                  <th class="c-code">ロケ</th>
+                  <th class="c-code">ロット</th>
+                  <th class="c-num">数量</th>
+                  <th class="c-code">単位</th>
+                  <th class="c-date">更新日時</th>
+                </tr></thead>
+                <tbody id="tb-inv"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右: 詳細/要対応パネル -->
+        <div class="right-pane">
+
+          <!-- 既定モード: この倉庫の在庫で「気にすべきこと」(リスク重視) -->
+          <div class="card detail-card" id="right-default">
+            <div class="card-header"><span>在庫の気がかり</span><span class="meta" style="font-size:11px; color:#9ca3af;">※サマリ値はモック含む</span></div>
+            <div class="card-body" style="padding:0;">
+
+              <!-- リスク3項目 -->
+              <div class="risk-section">
+                <div class="risk-head" data-filter="shortage" onclick="riskFilter('shortage')">
+                  <span class="risk-ico alert">●</span>
+                  <span class="risk-name">欠品リスク</span>
+                  <span class="risk-cnt alert" id="risk-shortage-cnt">-</span>
+                  <span class="risk-desc">フリー在庫 &lt; 安全在庫</span>
+                </div>
+                <div class="risk-list" id="risk-shortage-list"></div>
+              </div>
+
+              <div class="risk-section">
+                <div class="risk-head" data-filter="expiry" onclick="riskFilter('expiry')">
+                  <span class="risk-ico warn">●</span>
+                  <span class="risk-name">期限切迫</span>
+                  <span class="risk-cnt warn" id="risk-expiry-cnt">-</span>
+                  <span class="risk-desc">残30日以内</span>
+                </div>
+                <div class="risk-list" id="risk-expiry-list"></div>
+              </div>
+
+              <div class="risk-section">
+                <div class="risk-head" data-filter="stale" onclick="riskFilter('stale')">
+                  <span class="risk-ico mute">●</span>
+                  <span class="risk-name">長期滞留</span>
+                  <span class="risk-cnt" id="risk-stale-cnt">-</span>
+                  <span class="risk-desc">90日以上動きなし</span>
+                </div>
+                <div class="risk-list" id="risk-stale-list"></div>
+              </div>
+
+            </div>
+            <div style="padding:6px 12px; font-size:11px; color:#9ca3af; border-top:1px solid var(--c-line);">行をクリックで在庫実態へ・項目クリックで一覧絞込</div>
+          </div>
+
+          <!-- 行選択モード: この在庫の「実態」(引当/フリー/予定/期限/履歴) -->
+          <div class="card detail-card" id="right-detail" style="display:none;">
+            <div class="card-header"><span id="rd-product">-</span><span class="meta" id="rd-pcode" style="font-size:11px; color:#9ca3af; font-family:var(--f-mono);">-</span></div>
+
+            <!-- 在庫の内訳: 総 = 引当 + フリー (フリーを強調) -->
+            <div class="card-body" style="padding:10px 12px 6px;">
+              <div style="font-size:11px; color:#9ca3af; margin-bottom:6px;">在庫の内訳</div>
+              <div class="alloc-bar">
+                <div class="alloc-allocated" id="alloc-allocated-bar"></div>
+                <div class="alloc-free" id="alloc-free-bar"></div>
+              </div>
+              <div class="alloc-num">
+                <div class="alloc-cell">
+                  <div class="lbl">引当済</div>
+                  <div class="val mute" id="alloc-allocated">-</div>
+                </div>
+                <div class="alloc-cell">
+                  <div class="lbl">フリー在庫 <span style="color:var(--c-accent); font-weight:600;">★</span></div>
+                  <div class="val accent" id="alloc-free">-</div>
+                </div>
+                <div class="alloc-cell">
+                  <div class="lbl">総在庫</div>
+                  <div class="val" id="alloc-total">-</div>
+                </div>
+              </div>
+              <div style="font-size:10px; color:#9ca3af; margin-top:4px;">※引当数はモック (実APIは後続フェーズ)</div>
+            </div>
+
+            <!-- 基本情報 -->
+            <div class="card-body" style="padding:6px 12px; border-top:1px solid var(--c-line);">
+              <div class="detail-grid">
+                <div class="lbl">荷主</div><div class="val" id="rd-owner">-</div>
+                <div class="lbl">ロケ</div><div class="val" id="rd-location">-</div>
+                <div class="lbl">ロット</div><div class="val" id="rd-lot">-</div>
+                <div class="lbl">期限</div><div class="val" id="rd-expiry">-</div>
+                <div class="lbl">単位</div><div class="val" id="rd-unit">-</div>
+                <div class="lbl">更新日時</div><div class="val" id="rd-updated">-</div>
+              </div>
+            </div>
+
+            <!-- これから入る / これから出る -->
+            <div class="card-header" style="border-top:1px solid var(--c-line); padding:8px 12px;"><span style="font-size:12px;">これから入る (入荷予定)</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:4px 12px;">
+              <div class="mini-list" id="rd-inbound"></div>
+            </div>
+
+            <div class="card-header" style="border-top:1px solid var(--c-line); padding:8px 12px;"><span style="font-size:12px;">これから出る (出荷予定)</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:4px 12px;">
+              <div class="mini-list" id="rd-outbound"></div>
+            </div>
+
+            <!-- 直近の入出庫履歴 -->
+            <div class="card-header" style="border-top:1px solid var(--c-line); padding:8px 12px;"><span style="font-size:12px;">入出庫履歴 (直近)</span></div>
+            <div class="card-body" style="padding:6px 12px 10px;">
+              <div class="mini-history" id="rd-history"></div>
+            </div>
+
+            <div style="padding:6px 12px; font-size:11px; color:var(--c-accent); border-top:1px solid var(--c-line); cursor:pointer;" onclick="clearSelection()">← 気がかり一覧に戻る</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = new Date().toISOString().slice(0, 10);
+let allRows = [];
+let selectedKey = null;
+
+async function loadOwners() {
+  const owners = await fetch('/api/owners').then(r => r.json()).catch(() => []);
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => sel.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(o.code)}">${escapeHtml(o.code)} ${escapeHtml(o.name)}</option>`));
+}
+async function loadInventory() {
+  allRows = await fetch('/api/inventory').then(r => r.json()).catch(() => []);
+  render();
+  renderSummary();
+}
+
+// 引当・安全在庫はDBに無いのでモック計算 (キー = product+location+lot で一意)
+function mockAllocated(r) {
+  // 簡易: ハッシュベースで 0-50% を引当済扱い
+  const key = `${r.product_code}|${r.location_code}|${r.lot_no || ''}`;
+  let h = 0; for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
+  const pct = Math.abs(h % 50); // 0-49%
+  return Math.floor((r.qty || 0) * pct / 100);
+}
+function mockSafetyStock(r) {
+  // 簡易: 商品コードの末尾文字で安全在庫を決定 (10-80)
+  const c = (r.product_code || '').slice(-1).charCodeAt(0) || 0;
+  return (c % 7 + 1) * 10;  // 10, 20, ..., 70
+}
+
+function renderSummary() {
+  // === 既定モード: 3つのリスク ===
+  // 1. 欠品リスク = フリー在庫 < 安全在庫
+  const shortageRows = allRows.map(r => {
+    const allocated = mockAllocated(r);
+    const free = (r.qty || 0) - allocated;
+    const safety = mockSafetyStock(r);
+    return { ...r, allocated, free, safety };
+  }).filter(r => r.free < r.safety).sort((a, b) => (a.free - a.safety) - (b.free - b.safety));
+
+  // 2. 期限切迫 (30日以内)
+  const expiryRows = allRows
+    .filter(r => r.expiry_date)
+    .map(r => ({ ...r, days: Math.floor((new Date(r.expiry_date) - new Date(today)) / 86400000) }))
+    .filter(r => r.days >= 0 && r.days <= 30)
+    .sort((a, b) => a.days - b.days);
+
+  // 3. 長期滞留 (90日以上更新なし)
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 90);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+  const staleRows = allRows
+    .filter(r => r.updated_at && (r.updated_at || '').slice(0, 10) < cutoffStr)
+    .sort((a, b) => (a.updated_at || '').localeCompare(b.updated_at || ''));
+
+  // カウント
+  document.getElementById('risk-shortage-cnt').textContent = shortageRows.length;
+  document.getElementById('risk-expiry-cnt').textContent = expiryRows.length;
+  document.getElementById('risk-stale-cnt').textContent = staleRows.length;
+
+  // 各リスクの小リスト (3件まで)
+  const sList = document.getElementById('risk-shortage-list');
+  sList.innerHTML = shortageRows.length === 0 ? '<div class="empty">該当なし</div>'
+    : shortageRows.slice(0, 3).map(r => `
+        <div class="row alert">
+          <span class="lot">${escapeHtml(r.lot_no || '-')}</span>
+          <span class="code">${escapeHtml(r.product_code)}</span>
+          <span class="note">フリー ${r.free} / 安全 ${r.safety}</span>
+        </div>`).join('');
+
+  const eList = document.getElementById('risk-expiry-list');
+  eList.innerHTML = expiryRows.length === 0 ? '<div class="empty">該当なし</div>'
+    : expiryRows.slice(0, 3).map(r => `
+        <div class="row">
+          <span class="lot">${escapeHtml(r.lot_no || '-')}</span>
+          <span class="code">${escapeHtml(r.product_code)}</span>
+          <span class="note">残${r.days}日 (${r.expiry_date})</span>
+        </div>`).join('');
+
+  const stList = document.getElementById('risk-stale-list');
+  stList.innerHTML = staleRows.length === 0 ? '<div class="empty">該当なし</div>'
+    : staleRows.slice(0, 3).map(r => `
+        <div class="row">
+          <span class="lot">${escapeHtml(r.lot_no || '-')}</span>
+          <span class="code">${escapeHtml(r.product_code)}</span>
+          <span class="note">更新 ${(r.updated_at || '').slice(0, 10)}</span>
+        </div>`).join('');
+}
+
+// リスク項目クリックで一覧側を絞り込み
+let currentRiskFilter = null;
+function riskFilter(kind) {
+  // 切替: 同じ項目を再クリックで解除
+  if (currentRiskFilter === kind) {
+    currentRiskFilter = null;
+    document.querySelectorAll('.risk-head.active').forEach(el => el.classList.remove('active'));
+    render();
+    return;
+  }
+  currentRiskFilter = kind;
+  document.querySelectorAll('.risk-head').forEach(el => {
+    el.classList.toggle('active', el.dataset.filter === kind);
+  });
+  render();
+}
+
+function render() {
+  const ownerF = document.getElementById('f-owner').value;
+  const prodF = document.getElementById('f-product').value.trim().toLowerCase();
+  const locF = document.getElementById('f-location').value.trim().toLowerCase();
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 90);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+  let rows = allRows.filter(r => {
+    if (ownerF && r.owner_code !== ownerF) return false;
+    if (prodF && !(r.product_code || '').toLowerCase().includes(prodF) && !(r.jan_code || '').toLowerCase().includes(prodF)) return false;
+    if (locF && !(r.location_code || '').toLowerCase().includes(locF)) return false;
+    return true;
+  });
+  // リスクフィルタ
+  if (currentRiskFilter === 'shortage') {
+    rows = rows.filter(r => {
+      const free = (r.qty || 0) - mockAllocated(r);
+      return free < mockSafetyStock(r);
+    });
+  } else if (currentRiskFilter === 'expiry') {
+    rows = rows.filter(r => {
+      if (!r.expiry_date) return false;
+      const days = Math.floor((new Date(r.expiry_date) - new Date(today)) / 86400000);
+      return days >= 0 && days <= 30;
+    });
+  } else if (currentRiskFilter === 'stale') {
+    rows = rows.filter(r => r.updated_at && (r.updated_at || '').slice(0, 10) < cutoffStr);
+  }
+  const DISPLAY_LIMIT = 200;
+  const shown = Math.min(rows.length, DISPLAY_LIMIT);
+  document.getElementById('s-rows').textContent = rows.length;
+  document.getElementById('s-products').textContent = new Set(rows.map(r => r.product_code)).size;
+  document.getElementById('s-locations').textContent = new Set(rows.map(r => r.location_code)).size;
+  document.getElementById('s-total').textContent = rows.reduce((s, r) => s + (r.qty || 0), 0);
+  document.getElementById('filter-meta').textContent = `全${allRows.length} / 該当${rows.length} / 表示${shown}`;
+  const tb = document.getElementById('tb-inv');
+  if (rows.length === 0) {
+    tb.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:#9ca3af;">在庫データなし</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.slice(0, DISPLAY_LIMIT).map((r, i) => {
+    const key = `${r.product_code}|${r.location_code}|${r.lot_no || ''}`;
+    const sel = key === selectedKey ? ' class="selected clickable"' : ' class="clickable"';
+    return `
+    <tr${sel} onclick='showRowDetail(${JSON.stringify(key).replace(/'/g, "&#39;")}, ${i})'>
+      <td class="c-code">${escapeHtml(r.owner_code || '-')}</td>
+      <td class="c-code">${escapeHtml(r.product_code || '-')}</td>
+      <td class="c-text">${escapeHtml(r.product_name || '-')}</td>
+      <td class="c-code">${escapeHtml(r.location_code || '-')}</td>
+      <td class="c-code">${escapeHtml(r.lot_no || '-')}</td>
+      <td class="c-num text-accent" style="font-weight:600;">${r.qty ?? '-'}</td>
+      <td class="c-code">${escapeHtml(r.unit_top || '-')}</td>
+      <td class="c-date">${escapeHtml(r.updated_at || '-')}</td>
+    </tr>`;
+  }).join('');
+}
+
+// モックデータ生成 (本物のAPI実装は後続フェーズ)
+function mockHistory(r) {
+  return [
+    { date: '06-01 14:35', kind: 'outbound', qty: -12, ref: 'SO-26060101' },
+    { date: '06-01 10:30', kind: 'inbound',  qty: +120, ref: 'IN-26060101' },
+    { date: '05-31 18:00', kind: 'stocktake', qty: -2, ref: 'STK-2605-001' },
+    { date: '05-30 09:15', kind: 'move',     qty:  0,  ref: 'MV-26053001' },
+  ];
+}
+function mockInboundPlans(r) {
+  const allocated = mockAllocated(r);
+  const safety = mockSafetyStock(r);
+  // 欠品リスクあれば多めに、安定なら少なめ
+  if ((r.qty - allocated) < safety) {
+    return [
+      { date: '06-03', qty: 60, ref: 'IN-26060301' },
+      { date: '06-07', qty: 24, ref: 'IN-26060701' },
+    ];
+  }
+  return [
+    { date: '06-05', qty: 24, ref: 'IN-26060501' },
+  ];
+}
+function mockOutboundPlans(r) {
+  const allocated = mockAllocated(r);
+  if (allocated === 0) return [];
+  // 引当分を 1-3 件に分散
+  return [
+    { date: '今日', qty: Math.floor(allocated * 0.4), ref: 'SO-26060101' },
+    { date: '明日', qty: Math.floor(allocated * 0.3), ref: 'SO-26060201' },
+    { date: '06-03', qty: allocated - Math.floor(allocated * 0.4) - Math.floor(allocated * 0.3), ref: 'SO-26060301' },
+  ].filter(x => x.qty > 0);
+}
+
+function showRowDetail(key, idx) {
+  selectedKey = key;
+  const r = allRows.find(x => `${x.product_code}|${x.location_code}|${x.lot_no || ''}` === key);
+  if (!r) return;
+  document.getElementById('right-default').style.display = 'none';
+  document.getElementById('right-detail').style.display = 'block';
+  document.getElementById('rd-product').textContent = r.product_name || '(商品名なし)';
+  document.getElementById('rd-pcode').textContent = r.product_code || '-';
+  document.getElementById('rd-owner').textContent = r.owner_code || '-';
+  document.getElementById('rd-location').textContent = r.location_code || '-';
+  document.getElementById('rd-lot').textContent = r.lot_no || '-';
+  document.getElementById('rd-unit').textContent = r.unit_top || '-';
+  document.getElementById('rd-updated').textContent = r.updated_at || '-';
+  // 期限と残日数 (赤化)
+  const expEl = document.getElementById('rd-expiry');
+  if (r.expiry_date) {
+    const days = Math.floor((new Date(r.expiry_date) - new Date(today)) / 86400000);
+    expEl.textContent = `${r.expiry_date} (残${days}日)`;
+    expEl.className = 'val' + (days >= 0 && days <= 30 ? ' alert' : '');
+  } else {
+    expEl.textContent = '-';
+    expEl.className = 'val muted';
+  }
+
+  // 引当 / フリー 在庫の内訳
+  const total = r.qty || 0;
+  const allocated = mockAllocated(r);
+  const free = total - allocated;
+  document.getElementById('alloc-total').textContent = total.toLocaleString();
+  document.getElementById('alloc-allocated').textContent = allocated.toLocaleString();
+  document.getElementById('alloc-free').textContent = free.toLocaleString();
+  const denom = total > 0 ? total : 1;
+  document.getElementById('alloc-allocated-bar').style.flex = allocated / denom;
+  document.getElementById('alloc-free-bar').style.flex = free / denom;
+
+  // 入荷予定
+  const ins = mockInboundPlans(r);
+  document.getElementById('rd-inbound').innerHTML = ins.length === 0
+    ? '<div class="empty">予定なし</div>'
+    : ins.map(x => `<div class="row"><span class="date">${x.date}</span><span class="ref">${x.ref}</span><span class="qty in">+${x.qty}</span></div>`).join('');
+
+  // 出荷予定 (引当分)
+  const outs = mockOutboundPlans(r);
+  document.getElementById('rd-outbound').innerHTML = outs.length === 0
+    ? '<div class="empty">引当なし</div>'
+    : outs.map(x => `<div class="row"><span class="date">${x.date}</span><span class="ref">${x.ref}</span><span class="qty out">-${x.qty}</span></div>`).join('');
+
+  // 入出庫履歴
+  const hist = mockHistory(r);
+  document.getElementById('rd-history').innerHTML = hist.map(h => `
+    <div class="row">
+      <span class="date">${h.date}</span>
+      <span style="color:#6b7280;">${h.kind}</span>
+      <span style="color:#9ca3af; font-family:var(--f-mono); font-size:10px;">${h.ref}</span>
+      <span class="qty ${h.qty > 0 ? 'plus' : h.qty < 0 ? 'minus' : ''}">${h.qty > 0 ? '+' + h.qty : h.qty}</span>
+    </div>
+  `).join('');
+
+  // 一覧の selected 強調
+  render();
+}
+
+function clearSelection() {
+  selectedKey = null;
+  document.getElementById('right-default').style.display = 'block';
+  document.getElementById('right-detail').style.display = 'none';
+  render();
+}
+(async () => { await loadOwners(); await loadInventory(); })();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

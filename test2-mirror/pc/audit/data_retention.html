@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>データ保持・削除 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>データ保持・削除（A-11 GDPR/個人情報）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">個人情報・保持期間管理（A-11）</div>
+          個人情報・取引データの保持期間ごとに自動削除/匿名化を実行。GDPR/個人情報保護法準拠。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>保持期間ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">データ種別</th><th class="c-text">保持期間</th><th class="c-text">削除方法</th><th class="c-text">次回実行</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">受領者個人情報（氏名/住所/電話）</td><td class="c-text">配達完了+7年</td><td class="c-text">匿名化</td><td class="c-text">2026-06-15</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">API呼出ログ</td><td class="c-text">13ヶ月</td><td class="c-text">完全削除</td><td class="c-text">2026-06-08</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">監視カメラ動画</td><td class="c-text">2年</td><td class="c-text">完全削除</td><td class="c-text">2026-06-01 03:00</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">退職者ログイン履歴</td><td class="c-text">退職後3年</td><td class="c-text">匿名化</td><td class="c-text">月次</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">支払情報（クレカ末尾4桁）</td><td class="c-text">取引完了+2年</td><td class="c-text">マスキング</td><td class="c-text">月次</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-text">マスタ変更履歴</td><td class="c-text">5年</td><td class="c-text">暗号化アーカイブ</td><td class="c-text">月次</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>削除依頼受付（個人情報開示・削除請求）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">受付No</th><th class="c-text">受付日</th><th class="c-code">顧客</th><th class="c-text">依頼種別</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">PIR-26052501</td><td class="c-text">2026-05-25</td><td class="c-code">山田次郎様</td><td class="c-text">削除請求</td><td class="c-status"><span class="pill accent">処理済</span></td></tr>
+                <tr><td class="c-code">PIR-26060101</td><td class="c-text">2026-06-01</td><td class="c-code">佐藤花子様</td><td class="c-text">開示請求</td><td class="c-status"><span class="pill">処理中</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>当月削除実行サマリ</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>削除対象レコード</label><div class="text-mono" style="font-weight:600;">128,420</div></div>
+              <div class="field"><label>匿名化</label><div class="text-mono">88,520</div></div>
+              <div class="field"><label>完全削除</label><div class="text-mono">39,900</div></div>
+              <div class="field"><label>削除ログ保管</label><div class="text-mono">10年</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

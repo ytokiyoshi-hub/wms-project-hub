@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ピッキング機器 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>ピッキング機器（S-57 ピックライト/音声）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ピッキング支援機器の管理（S-57）</div>
+          ピックライト（Pick-to-Light） / ボイスピッキング / ARグラス等の生産性向上機器を管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>機器一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">機器ID</th><th class="c-text">種別</th><th class="c-text">機種</th><th class="c-text">設置場所</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">PTL-001</td><td class="c-text">ピックライト</td><td class="c-text">OEM PtL-V2</td><td class="c-text">1F バラピック棚</td><td class="c-status"><span class="pill accent">稼働中</span></td></tr>
+                <tr><td class="c-text">PTL-002</td><td class="c-text">ピックライト</td><td class="c-text">OEM PtL-V2</td><td class="c-text">1F バラピック棚</td><td class="c-status"><span class="pill accent">稼働中</span></td></tr>
+                <tr><td class="c-text">VOI-001</td><td class="c-text">音声端末</td><td class="c-text">Voiteq VoiceMan</td><td class="c-text">2F EC専用</td><td class="c-status"><span class="pill accent">稼働中</span></td></tr>
+                <tr><td class="c-text">VOI-002</td><td class="c-text">音声端末</td><td class="c-text">Voiteq VoiceMan</td><td class="c-text">2F EC専用</td><td class="c-status"><span class="pill accent">稼働中</span></td></tr>
+                <tr><td class="c-text">AR-001</td><td class="c-text">ARグラス</td><td class="c-text">RealWear HMT-1</td><td class="c-text">1F フロント</td><td class="c-status"><span class="pill">試験中</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>機器別 生産性比較</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">方式</th><th class="c-text">平均行/h/人</th><th class="c-num">誤ピック率</th><th class="c-text">学習期間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">HT（標準）</td><td class="c-text">28.8</td><td class="c-num">0.32%</td><td class="c-text">1週</td></tr>
+                <tr><td class="c-text">ピックライト</td><td class="text-accent c-text">38.2</td><td class="text-accent c-num">0.18%</td><td class="c-text">1日</td></tr>
+                <tr><td class="c-text">音声</td><td class="text-accent c-text">42.5</td><td class="text-accent c-num">0.12%</td><td class="c-text">3日</td></tr>
+                <tr><td class="c-text">ARグラス</td><td class="c-text">35.8</td><td class="c-num">0.20%</td><td class="c-text">1週</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>導入ROI試算</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">機器</th><th class="c-text">導入コスト</th><th class="c-text">月間効果</th><th class="c-text">回収期間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">ピックライト（80ロケ）</td><td class="c-text">¥2,400,000</td><td class="text-accent c-text">+¥125,000</td><td class="c-text">19ヶ月</td></tr>
+                <tr><td class="c-text">音声端末（5台）</td><td class="c-text">¥1,200,000</td><td class="text-accent c-text">+¥185,000</td><td class="c-text">7ヶ月</td></tr>
+                <tr><td class="c-text">ARグラス（3台）</td><td class="c-text">¥1,800,000</td><td class="c-text">+¥85,000</td><td class="c-text">21ヶ月</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

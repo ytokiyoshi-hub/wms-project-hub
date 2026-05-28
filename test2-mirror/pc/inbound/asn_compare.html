@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ASN差分比較 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>ASN差分比較（W-408 旧→新ASN差分）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ASN改訂（再送信）時の旧→新差分（W-408）</div>
+          仕入先からの再送信ASNの追加／変更／削除明細をハイライト。誤った受領を防止。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>入荷No (左)</label><select id="f-left"></select></div>
+            <div class="field"><label>入荷No (右)</label><select id="f-right"></select></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn primary" onclick="compare()">比較実行</button>
+            <span id="meta" style="margin-left:auto; font-size:12px; color:var(--c-text-sub);">2件の入荷の明細を並べて差分表示</span>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>差分明細</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>区分</th><th>SKU</th><th class="right">左 予定</th><th class="right">右 予定</th><th class="right">差</th></tr></thead>
+              <tbody id="tb-diff"><tr><td colspan="5" style="text-align:center; padding:20px; color:var(--c-text-sub);">入荷Noを2つ選んで「比較実行」を押してください</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>サマリ</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>左 明細数</label><div class="text-mono" id="sum-l-lines">-</div></div>
+              <div class="field"><label>右 明細数</label><div class="text-mono" id="sum-r-lines">-</div></div>
+              <div class="field"><label>変更</label><div class="text-mono" id="sum-changed">-</div></div>
+              <div class="field"><label>追加</label><div class="text-mono text-accent" id="sum-added">-</div></div>
+              <div class="field"><label>削除</label><div class="text-mono text-alert" id="sum-removed">-</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>左 合計qty</label><div class="text-mono" id="sum-l-qty">-</div></div>
+              <div class="field"><label>右 合計qty</label><div class="text-mono" id="sum-r-qty">-</div></div>
+              <div class="field"><label>増減</label><div class="text-mono" style="font-weight:600;" id="sum-diff">-</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let schedules = [];
+(async () => {
+  schedules = await fetch('/api/inbound-schedules').then(r => r.json()).catch(() => []);
+  const left = document.getElementById('f-left');
+  const right = document.getElementById('f-right');
+  schedules.slice(0, 50).forEach(s => {
+    const label = `${s.schedule_no} (${s.owner_code} / ${s.supplier_name || '-'} / ${s.scheduled_date})`;
+    left.insertAdjacentHTML('beforeend', `<option value="${s.id}">${esc(label)}</option>`);
+    right.insertAdjacentHTML('beforeend', `<option value="${s.id}">${esc(label)}</option>`);
+  });
+  if (schedules.length >= 2) {
+    left.value = schedules[0].id;
+    right.value = schedules[1].id;
+  }
+})();
+async function compare() {
+  const leftId = document.getElementById('f-left').value;
+  const rightId = document.getElementById('f-right').value;
+  if (!leftId || !rightId) { alert('比較対象を2件選択'); return; }
+  try {
+    const [l, r] = await Promise.all([
+      fetch(`/api/inbound-schedules/${leftId}`).then(r => r.json()),
+      fetch(`/api/inbound-schedules/${rightId}`).then(r => r.json()),
+    ]);
+    const lLines = l.lines || [];
+    const rLines = r.lines || [];
+    const skus = new Set([...lLines.map(x => x.product_code), ...rLines.map(x => x.product_code)]);
+    const lMap = Object.fromEntries(lLines.map(x => [x.product_code, x]));
+    const rMap = Object.fromEntries(rLines.map(x => [x.product_code, x]));
+    let changed = 0, added = 0, removed = 0;
+    const rows = [...skus].map(code => {
+      const lQty = lMap[code]?.expected_qty;
+      const rQty = rMap[code]?.expected_qty;
+      let kind = '変更なし', cls = '';
+      if (lQty == null && rQty != null) { kind = '追加'; cls = 'accent'; added++; }
+      else if (lQty != null && rQty == null) { kind = '削除'; cls = 'alert'; removed++; }
+      else if (lQty !== rQty) { kind = '変更'; cls = 'accent'; changed++; }
+      const diff = (rQty || 0) - (lQty || 0);
+      return `<tr ${cls === 'alert' ? 'style="background:var(--c-alert-lt);"' : cls === 'accent' ? 'style="background:#fff9e6;"' : ''}>
+        <td><span class="pill ${cls}">${kind}</span></td>
+        <td class="num">${esc(code)}</td>
+        <td class="right num">${lQty ?? '-'}</td>
+        <td class="right num">${rQty ?? '-'}</td>
+        <td class="right num ${diff !== 0 ? (diff > 0 ? 'text-accent' : 'text-alert') : ''}">${diff > 0 ? '+' : ''}${diff}</td>
+      </tr>`;
+    });
+    document.getElementById('tb-diff').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--c-text-sub);">差分なし</td></tr>';
+    const lQtySum = lLines.reduce((a, x) => a + (x.expected_qty || 0), 0);
+    const rQtySum = rLines.reduce((a, x) => a + (x.expected_qty || 0), 0);
+    document.getElementById('sum-l-lines').textContent = lLines.length;
+    document.getElementById('sum-r-lines').textContent = rLines.length;
+    document.getElementById('sum-changed').textContent = changed;
+    document.getElementById('sum-added').textContent = added;
+    document.getElementById('sum-removed').textContent = removed;
+    document.getElementById('sum-l-qty').textContent = lQtySum;
+    document.getElementById('sum-r-qty').textContent = rQtySum;
+    const diff = rQtySum - lQtySum;
+    const dEl = document.getElementById('sum-diff');
+    dEl.textContent = (diff > 0 ? '+' : '') + diff;
+    dEl.className = 'text-mono ' + (diff > 0 ? 'text-accent' : diff < 0 ? 'text-alert' : '');
+  } catch (e) { alert('比較失敗: ' + e.message); }
+}
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

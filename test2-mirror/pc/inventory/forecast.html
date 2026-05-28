@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>需要予測・補充推奨 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>需要予測・補充推奨（F-3 安全在庫計算）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">過去出荷×イベント補正による需要予測（F-3）</div>
+          移動平均＋指数平滑＋販促イベント補正で7日先の出荷数を予測。安全在庫を下回るSKUに発注推奨。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>予測期間</label><select><option>7日先</option><option>14日先</option><option>30日先</option></select></div>
+            <div class="field"><label>荷主</label><select><option>全荷主</option><option>MK001</option></select></div>
+            <div class="field"><label>イベント補正</label><select><option>適用</option><option>適用なし</option></select></div>
+            <div class="field"><label>安全在庫倍率</label><select><option>×2.0</option><option>×1.5</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>補充推奨（在庫 ≤ 安全在庫）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-text">直近30日平均</th><th class="c-text">7日予測</th><th class="c-num">現在庫</th><th class="c-num">安全在庫</th><th class="c-text">推奨発注</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">SKU-MK001-002</td><td class="c-text">コンディショナー300ml</td><td class="c-text">12 PCS/日</td><td class="c-text">120</td><td class="text-alert c-num">80</td><td class="c-num">168</td><td class="text-accent c-text">88 PCS</td><td class="c-status"><span class="pill alert">即発注</span></td></tr>
+                <tr><td class="c-code">SKU-EC001-008</td><td class="c-text">EC専用ギフトA</td><td class="c-text">82 PCS/日</td><td class="c-text">820</td><td class="c-num">580</td><td class="c-num">1,148</td><td class="text-accent c-text">568 PCS</td><td class="c-status"><span class="pill alert">即発注</span></td></tr>
+                <tr><td class="c-code">SKU-AP001-005</td><td class="c-text">春物ジャケット</td><td class="c-text">3 PCS/日</td><td class="c-text">25</td><td class="c-num">45</td><td class="c-num">42</td><td class="text-accent c-text">-</td><td class="c-status"><span class="pill accent">余裕</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">SKU-MK001-015</td><td class="c-text">冷蔵ヨーグルト</td><td class="c-text">24 PCS/日</td><td class="c-text">208</td><td class="text-alert c-num">42</td><td class="c-num">336</td><td class="text-accent c-text">294 PCS</td><td class="c-status"><span class="pill alert">緊急</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>イベント補正詳細（適用中）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">イベント</th><th class="c-text">期間</th><th class="c-code">影響SKU</th><th class="c-num">補正倍率</th><th class="c-text">反映</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">ECモール ハーフ祭</td><td class="c-text">2026-06-01〜06-07</td><td class="c-code">EC001 全SKU</td><td class="text-accent c-num">×2.5</td><td class="c-text"><span class="pill accent">適用中</span></td></tr>
+                <tr><td class="c-text">夏物セール</td><td class="c-text">2026-06-15〜06-30</td><td class="c-code">AP001 春夏物</td><td class="c-num">×1.8</td><td class="c-text"><span class="pill">予定</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「荷主CSV送信」モック動作（実装は後続フェーズ）')">荷主CSV送信</button>
+          <button class="btn primary" onclick="alert('「補充指示一括起票」モック動作（実装は後続フェーズ）')">補充指示一括起票</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

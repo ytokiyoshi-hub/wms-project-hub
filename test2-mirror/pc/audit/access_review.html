@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>アクセス権レビュー — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>アクセス権レビュー（A-3 定期棚卸）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">権限の定期見直し（A-3）</div>
+          四半期に1回、各ユーザーの権限を棚卸。退職者・部署異動・未使用権限を抽出して整理する。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>レビュー対象（2026 Q2 / 5月〜7月）</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>対象ユーザー数</label><div class="text-mono" style="font-weight:600;">68</div></div>
+              <div class="field"><label>レビュー完了</label><div class="text-mono text-accent" style="font-weight:600;">52</div></div>
+              <div class="field"><label>残対象</label><div class="text-mono text-alert" style="font-weight:600;">16</div></div>
+              <div class="field"><label>期限</label><div class="text-mono">2026-07-31</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>要対応ユーザー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">ユーザー</th><th class="c-text">権限ロール</th><th class="c-text">最終ログイン</th><th class="c-text">所属</th><th class="c-text">所属異動</th><th class="c-status">判定</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">USR-018 高橋一郎</td><td class="c-text">マネージャー</td><td class="c-text">2026-02-28</td><td class="c-text">東京DC 入荷</td><td class="c-text">大阪DCへ異動済</td><td class="c-status"><span class="pill alert">権限見直し</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">USR-025 退職予定者</td><td class="c-text">作業者</td><td class="c-text">2026-05-30</td><td class="c-text">東京DC 出荷</td><td class="c-text">2026-06-30 退職予定</td><td class="c-status"><span class="pill alert">期日後失効</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+                <tr><td class="c-code">USR-040 佐藤次郎</td><td class="c-text">システム管理者</td><td class="c-text">2026-05-30</td><td class="c-text">本部 IT</td><td class="c-text">変更なし</td><td class="c-status"><span class="pill accent">承認</span></td><td class="c-action"><button class="btn small" onclick="alert('「承認」モック動作（実装は後続フェーズ）')">承認</button></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">USR-099 テスト用</td><td class="c-text">マネージャー</td><td class="c-text">2025-12-10</td><td class="c-text">不明</td><td class="c-text">誰も使っていない</td><td class="c-status"><span class="pill alert">削除推奨</span></td><td class="c-action"><button class="btn small" onclick="alert('「操作」モック動作（実装は後続フェーズ）')">操作</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>レビュー履歴</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">四半期</th><th class="c-num">対象数</th><th class="c-action">削除</th><th class="c-text">変更</th><th class="c-text">継続</th><th class="c-text">レビュー実施者</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2026 Q1</td><td class="c-num">62</td><td class="c-action">3</td><td class="c-text">8</td><td class="c-text">51</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-text">2025 Q4</td><td class="c-num">58</td><td class="c-action">5</td><td class="c-text">4</td><td class="c-text">49</td><td class="c-text">マネージャー</td></tr>
+                <tr><td class="c-text">2025 Q3</td><td class="c-num">56</td><td class="c-action">2</td><td class="c-text">6</td><td class="c-text">48</td><td class="c-text">マネージャー</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

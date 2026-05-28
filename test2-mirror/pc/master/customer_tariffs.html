@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>顧客タリフ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>顧客タリフ（B-12 個別運賃契約）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">大口取引先の個別運賃契約（B-12）</div>
+          標準タリフではなく、特定取引先との契約レートを管理。大口・常連向けの値引き対応。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>個別契約一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">契約No</th><th class="c-text">取引先</th><th class="c-code">運送会社</th><th class="c-num">適用条件</th><th class="c-num">割引率</th><th class="c-text">有効期間</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">CT-001</td><td class="c-text">東京食品センター</td><td class="c-code">カントウ運送</td><td class="c-num">月100便以上</td><td class="c-num"><span class="pill accent">-12%</span></td><td class="c-text">〜2027-03-31</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">CT-002</td><td class="c-text">横浜EC物流</td><td class="c-code">佐川</td><td class="c-num">同梱まとめ便</td><td class="c-num"><span class="pill accent">-8%</span></td><td class="c-text">〜2026-12-31</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">CT-003</td><td class="c-text">北陸本部</td><td class="c-code">ヤマト</td><td class="c-num">大口契約</td><td class="c-num"><span class="pill accent">-15%</span></td><td class="c-text">〜2026-09-30</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-code">CT-004</td><td class="c-text">関西流通センター</td><td class="c-code">佐川</td><td class="c-num">月50便以上</td><td class="c-num"><span class="pill">-5%</span></td><td class="text-alert c-text">2026-06-30</td><td class="c-status"><span class="pill alert">更新間近</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>CT-001 詳細（東京食品センター×カントウ運送）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-num">サイズ</th><th class="c-text">標準タリフ</th><th class="c-num">契約レート（-12%）</th><th class="c-text">差額</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-num">60</td><td class="c-text">¥780</td><td class="text-accent c-num">¥686</td><td class="c-text">-¥94</td></tr>
+                <tr><td class="c-num">80</td><td class="c-text">¥1,000</td><td class="text-accent c-num">¥880</td><td class="c-text">-¥120</td></tr>
+                <tr><td class="c-num">100</td><td class="c-text">¥1,250</td><td class="text-accent c-num">¥1,100</td><td class="c-text">-¥150</td></tr>
+                <tr><td class="c-num">120</td><td class="c-text">¥1,520</td><td class="text-accent c-num">¥1,338</td><td class="c-text">-¥182</td></tr>
+                <tr><td class="c-num">140</td><td class="c-text">¥1,820</td><td class="text-accent c-num">¥1,602</td><td class="c-text">-¥218</td></tr>
+                <tr><td class="c-num">160</td><td class="c-text">¥2,180</td><td class="text-accent c-num">¥1,918</td><td class="c-text">-¥262</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>適用条件モニター</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>当月便数（条件: 月100便以上）</label><div class="text-mono text-accent" style="font-weight:600;">128便（達成）</div></div>
+              <div class="field"><label>当月割引総額</label><div class="text-mono text-accent" style="font-weight:600;">¥-19,200</div></div>
+              <div class="field"><label>適用判定</label><div><span class="pill accent">適用中</span></div></div>
+              <div class="field"><label>次回更新</label><div class="text-mono">2027-04-01 自動更新予定</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

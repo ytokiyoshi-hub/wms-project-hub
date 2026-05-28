@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>クロスドック操作卓 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>クロスドック操作卓（W-420 即時振分）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">クロスドックリアル操作（W-420）</div>
+          到着即時の受注紐付け・引渡レーン振分。検品完了→棚入れスキップ→引渡レーン直行の操作卓。
+          <div style="margin-top:6px; font-size:11px; color:var(--c-text-sub);">※ クロスドック操作API未実装。下表はモック。在庫側の <a href="/pc/inventory/cross_dock.html">クロスドッキング管理</a> へ。</div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日のクロスドック候補（到着済）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>ASN</th><th>SKU</th><th class="right">入荷数</th><th>紐付受注</th><th class="right">出荷便</th><th>振分先</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td class="num">ASN-26060101</td><td class="num">SKU-MK001-003</td><td class="right num">36</td><td class="num">SO-26060101</td><td class="right num">13:30便</td><td>レーン1</td><td><button class="btn sm primary" onclick="assignLane('ASN-26060101', 'レーン1')">振分実行</button></td></tr>
+                <tr><td class="num">ASN-26060102</td><td class="num">SKU-MK001-015</td><td class="right num">120</td><td class="num">SO-26060105</td><td class="right num">15:00便</td><td>レーン2</td><td><button class="btn sm primary" onclick="assignLane('ASN-26060102', 'レーン2')">振分実行</button></td></tr>
+                <tr><td class="num">ASN-26060104</td><td class="num">SKU-EC001-008</td><td class="right num">82</td><td class="num">複数SO（マルチオーダー）</td><td class="right num">15:00便</td><td>レーン2 + 一時棚</td><td><button class="btn sm primary" onclick="assignLane('ASN-26060104', 'レーン2+一時棚')">振分実行</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日 クロスドック実績</span></div>
+          <div class="card-body">
+            <div class="filter-row">
+              <div class="field"><label>クロスドック件数</label><div class="text-mono text-accent" style="font-weight:600;">28</div></div>
+              <div class="field"><label>クロスドック量</div><div class="text-mono">328 PCS</div></div>
+              <div class="field"><label>削減棚入工程</label><div class="text-mono">56 工程</div></div>
+              <div class="field"><label>削減LT</label><div class="text-mono text-accent" style="font-weight:600;">平均 3.5時間</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>振分ルール</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>条件</th><th>振分先</th></tr></thead>
+              <tbody>
+                <tr><td>当日出荷便への紐付け済受注がある</td><td>引渡レーン直行</td></tr>
+                <tr><td>翌日早朝便への紐付け済受注がある</td><td>一時保管棚（棚入れ簡略）</td></tr>
+                <tr><td>紐付け受注なし</td><td>通常棚入れ（クロスドック対象外）</td></tr>
+                <tr><td>温度逸脱品</td><td>検疫優先（クロスドック停止）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連業務画面</span></div>
+          <div class="card-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn" href="/pc/inventory/cross_dock.html">クロスドッキング</a>
+              <a class="btn" href="/pc/inbound/inbound_priority.html">入荷優先度</a>
+              <a class="btn" href="/pc/inbound/inspection_status.html">検品進捗</a>
+              <a class="btn" href="/pc/outbound/shipment_orders.html">出荷オーダー</a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function assignLane(asn, lane) {
+  if (!confirm(`${asn} を ${lane} に振分実行しますか？`)) return;
+  alert(`${asn} → ${lane} 振分完了（モック）`);
+}
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

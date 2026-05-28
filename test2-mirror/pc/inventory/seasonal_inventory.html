@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>季節在庫管理 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>季節在庫管理（Q-38 シーズン商品）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">季節商品の在庫管理（Q-38）</div>
+          春夏秋冬・年間イベント連動の商品を別管理。シーズン前の早期入庫・シーズン後の処分判断。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>シーズン区分</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">シーズン</th><th class="c-text">期間</th><th class="c-text">主要商品</th><th class="c-num">該当SKU数</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">春物</td><td class="c-text">3月〜5月</td><td class="c-text">春物アパレル / ギフト</td><td class="c-num">42</td></tr>
+                <tr><td class="c-text">夏物</td><td class="c-text">6月〜8月</td><td class="c-text">夏物アパレル / 冷たい飲料</td><td class="c-num">68</td></tr>
+                <tr><td class="c-text">秋物</td><td class="c-text">9月〜11月</td><td class="c-text">秋物アパレル / 鍋商材</td><td class="c-num">52</td></tr>
+                <tr><td class="c-text">冬物</td><td class="c-text">12月〜2月</td><td class="c-text">冬物アパレル / 防寒</td><td class="c-num">58</td></tr>
+                <tr><td class="c-text">母の日</td><td class="c-text">5月初旬</td><td class="c-text">ギフトセット</td><td class="c-num">12</td></tr>
+                <tr><td class="c-text">お中元</td><td class="c-text">7月</td><td class="c-text">食品ギフト</td><td class="c-num">18</td></tr>
+                <tr><td class="c-text">お歳暮</td><td class="c-text">12月</td><td class="c-text">食品ギフト</td><td class="c-num">22</td></tr>
+                <tr><td class="c-text">正月用品</td><td class="c-text">12月後半</td><td class="c-text">装飾 / 食品</td><td class="c-num">15</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>現在の夏物在庫（2026年6月）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-num">在庫</th><th class="c-text">予定出荷</th><th class="c-num">残在庫予測</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-AP001-122</td><td class="c-text">夏物ワンピース</td><td class="c-num">25</td><td class="c-text">120</td><td class="text-alert c-num">-95（要追加発注）</td><td class="c-status"><span class="pill alert">不足</span></td></tr>
+                <tr><td class="c-code">SKU-AP001-150</td><td class="c-text">サンドレス</td><td class="c-num">82</td><td class="c-text">85</td><td class="c-num">-3</td><td class="c-status"><span class="pill">適正</span></td></tr>
+                <tr><td class="c-code">SKU-MK001-220</td><td class="c-text">冷たい清涼飲料</td><td class="c-num">420</td><td class="c-text">380</td><td class="c-num">+40</td><td class="c-status"><span class="pill accent">余裕</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>シーズン後 処分予測</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">シーズン</th><th class="c-text">終了月</th><th class="c-text">処分対象（過去実績）</th><th class="c-text">処分方針</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">夏物 2026</td><td class="c-text">2026-08</td><td class="c-text">5〜10 SKU</td><td class="c-text">9月セール / 廃番交渉</td></tr>
+                <tr><td class="c-text">秋物 2025</td><td class="c-text">2025-11</td><td class="c-text">3 SKU</td><td class="c-text">処分済（2025-12）</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

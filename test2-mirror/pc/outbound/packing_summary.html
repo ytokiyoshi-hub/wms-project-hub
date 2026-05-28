@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>梱包実績集計 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">出荷　/　<b>梱包実績集計（S-8/S-10）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="stats">
+          <div class="stat"><div class="label">本日梱包</div><div class="value" id="kpi-today-pkg">-</div><span class="unit">個口</span></div>
+          <div class="stat"><div class="label">使用資材</div><div class="value" id="kpi-mat-types">-</div><span class="unit">種類</span></div>
+          <div class="stat"><div class="label">資材コスト</div><div class="value" id="kpi-cost">-</div><span class="unit">円</span></div>
+          <div class="stat"><div class="label">梱包実績数</div><div class="value" id="kpi-records">-</div><span class="unit">件</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>梱包資材使用量（本日）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">梱包材</th><th class="c-text">使用量</th><th class="c-num">単価</th><th class="c-text">コスト</th><th class="c-num">使用率</th></tr></thead>
+              <tbody id="mat-tbody">
+                <tr><td colspan="5" style="text-align:center; padding:14px; color:var(--c-text-sub);">読み込み中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>最近の梱包実績</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">出荷No</th><th class="c-code">荷主</th><th class="c-text">梱包材</th><th class="c-text">個口</th><th class="c-num">重量(kg)</th></tr></thead>
+              <tbody id="rec-tbody">
+                <tr><td colspan="5" style="text-align:center; padding:14px; color:var(--c-text-sub);">読み込み中...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtNum = n => Number(n || 0).toLocaleString();
+
+(async () => {
+  try {
+    const [packings, materials] = await Promise.all([
+      fetch('/api/packings').then(r => r.json()),
+      fetch('/api/packing-materials').then(r => r.json()),
+    ]);
+    const today = new Date().toISOString().slice(0, 10);
+    const matByCode = Object.fromEntries((materials || []).map(m => [m.code, m]));
+
+    const todayPkgs = (packings || []).filter(p => (p.created_at || '').startsWith(today));
+    const todayCount = todayPkgs.reduce((a, p) => a + (p.package_count || 0), 0);
+    const matAgg = {};
+    todayPkgs.forEach(p => {
+      const k = p.material_code;
+      if (!matAgg[k]) matAgg[k] = { code: k, name: p.material_name || k, count: 0, cost: 0 };
+      const unit = (matByCode[k] && matByCode[k].unit_cost) || 0;
+      matAgg[k].count += (p.package_count || 0);
+      matAgg[k].cost += (p.package_count || 0) * unit;
+    });
+    const matArr = Object.values(matAgg).sort((a, b) => b.count - a.count);
+    const totalCount = matArr.reduce((a, m) => a + m.count, 0) || 1;
+    const totalCost = matArr.reduce((a, m) => a + m.cost, 0);
+
+    document.getElementById('kpi-today-pkg').textContent = fmtNum(todayCount);
+    document.getElementById('kpi-mat-types').textContent = matArr.length;
+    document.getElementById('kpi-cost').textContent = fmtNum(totalCost);
+    document.getElementById('kpi-records').textContent = todayPkgs.length;
+
+    const mtbody = document.getElementById('mat-tbody');
+    if (matArr.length === 0) {
+      mtbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:14px; color:var(--c-text-sub);">本日の梱包実績なし</td></tr>';
+    } else {
+      mtbody.innerHTML = matArr.map(m => {
+        const unit = (matByCode[m.code] && matByCode[m.code].unit_cost) || 0;
+        const pct = Math.round((m.count / totalCount) * 100);
+        return `<tr><td>${esc(m.code)} ${esc(m.name)}</td><td class="right num">${fmtNum(m.count)}</td><td class="right num">${fmtNum(unit)}</td><td class="right num">${fmtNum(m.cost)}</td><td><div style="display:flex; gap:6px; align-items:center;"><div style="width:80px; height:6px; background:var(--c-line);"><div style="height:100%; background:var(--c-accent); width:${pct}%;"></div></div>${pct}%</div></td></tr>`;
+      }).join('');
+    }
+
+    const rtbody = document.getElementById('rec-tbody');
+    const recent = (packings || []).slice(0, 10);
+    if (recent.length === 0) {
+      rtbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:14px; color:var(--c-text-sub);">実績なし</td></tr>';
+    } else {
+      rtbody.innerHTML = recent.map(p => `<tr>
+        <td class="num">${esc(p.order_no)}</td>
+        <td>${esc(p.owner_name || '-')}</td>
+        <td>${esc(p.material_code)} ${esc(p.material_name || '')}</td>
+        <td class="right num">${fmtNum(p.package_count)}</td>
+        <td class="right num">${p.total_weight_kg != null ? Number(p.total_weight_kg).toFixed(1) : '-'}</td>
+      </tr>`).join('');
+    }
+  } catch (e) {
+    document.getElementById('mat-tbody').innerHTML = `<tr><td colspan="5" style="text-align:center; padding:14px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+    document.getElementById('rec-tbody').innerHTML = `<tr><td colspan="5" style="text-align:center; padding:14px; color:var(--c-alert);">読込失敗</td></tr>`;
+  }
+})();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

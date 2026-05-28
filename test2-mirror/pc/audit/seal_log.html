@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>封緘ログ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">監査　/　<b>封緘ログ（A-12 高単価品の改ざん検知）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">高単価品 / 危険物の封緘ログ（A-12）</div>
+          専用シール（封緘）を貼付し、貼付・剥がし・破損を全件記録。横流し・改ざん検知。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日の封緘ログ</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-status">区分</th><th class="c-text">対象</th><th class="c-text">封緘ID</th><th class="c-text">作業者</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">10:30</td><td class="c-status"><span class="pill accent">貼付</span></td><td class="c-text">SKU-PR001-088 LOT-2604</td><td class="c-text">SEAL-26060101</td><td class="c-text">QA</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-date">11:42</td><td class="c-status"><span class="pill accent">貼付</span></td><td class="c-text">SKU-PR001-100 シリアル SN-001</td><td class="c-text">SEAL-26060102</td><td class="c-text">佐藤太郎</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-date">13:30</td><td class="c-status"><span class="pill">剥がし</span></td><td class="c-text">SKU-PR001-088 LOT-2604</td><td class="c-text">SEAL-26060101</td><td class="c-text">梱包担当</td><td class="c-status"><span class="pill accent">出荷時剥がし</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">14:08</td><td class="c-status"><span class="pill alert">破損</span></td><td class="c-text">SKU-PR001-045 LOT-2510</td><td class="c-text">SEAL-26052801</td><td class="c-text">QA</td><td class="c-status"><span class="pill alert">調査開始</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>封緘破損 調査</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>封緘ID</label><div class="text-mono text-alert" style="font-weight:600;">SEAL-26052801</div></div>
+              <div class="field"><label>対象</label><div class="text-mono">SKU-PR001-045 限定香水（SS22）</div></div>
+              <div class="field"><label>貼付日</label><div class="text-mono">2026-05-28 14:00</div></div>
+              <div class="field"><label>破損発覚日</label><div class="text-mono">2026-06-01 14:08</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>調査担当</label><div class="text-mono">マネージャー + QA</div></div>
+              <div class="field"><label>監視カメラ確認</label><div><span class="pill">確認中</span></div></div>
+              <div class="field"><label>立入ログ確認</label><div><span class="pill accent">完了 / SZ-003アクセス記録あり</span></div></div>
+              <div class="field"><label>処置</label><div><button class="btn small primary" onclick="alert('「監視カメラ録画再生」モック動作（実装は後続フェーズ）')">監視カメラ録画再生</button></div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>封緘実績（過去30日）</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>封緘総数</label><div class="text-mono" style="font-weight:600;">142</div></div>
+              <div class="field"><label>正常剥がし</label><div class="text-mono text-accent" style="font-weight:600;">138</div></div>
+              <div class="field"><label>破損</label><div class="text-mono text-alert" style="font-weight:600;">1</div></div>
+              <div class="field"><label>保管中</label><div class="text-mono">3</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 監査系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>期間サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">本日件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">今週累計</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">今月累計</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>成功 / 失敗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">成功</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">失敗</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">成功率</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近アラート</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">INFO</span><span class="name">情報通知</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">直近のアラート2</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-audit-stats.js?v=202605202313"></script>
+</body>
+</html>

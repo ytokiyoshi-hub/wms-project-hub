@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ASN受信履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">入荷　/　<b>ASN受信履歴（W-416 受信ログ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ASN受信履歴（W-416）</div>
+          荷主・仕入先からのASN受信全ログ。改訂回数も追跡可能。再処理／差分参照に利用。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>荷主</label><select id="f-owner"><option value="">全荷主</option></select></div>
+            <div class="field"><label>仕入先（部分一致）</label><input type="text" id="f-supplier" placeholder="例: 関東食品"></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn primary" onclick="loadData()">検索</button>
+            <span id="meta" style="margin-left:auto; font-size:12px; color:var(--c-text-sub);">-</span>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>ASN受信履歴（実 API: inbound-schedules）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>登録日時</th><th>入荷No</th><th>ASN No</th><th>荷主</th><th>仕入先</th><th>予定日</th><th class="right">明細数</th><th>方式</th><th>状態</th><th class="center">操作</th></tr></thead>
+              <tbody id="tb"><tr><td colspan="10" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>集計</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>表示件数</label><div class="text-mono" style="font-weight:600;" id="sum-total">-</div></div>
+              <div class="field"><label>処理済 (completed)</label><div class="text-mono text-accent" style="font-weight:600;" id="sum-done">-</div></div>
+              <div class="field"><label>未処理 (planned)</label><div class="text-mono" style="font-weight:600;" id="sum-planned">-</div></div>
+              <div class="field"><label>検品中 (inspected)</label><div class="text-mono" style="font-weight:600;" id="sum-inspecting">-</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let allRows = [];
+
+async function loadOwners() {
+  const owners = await fetch('/api/owners').then(r => r.json()).catch(() => []);
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => sel.insertAdjacentHTML('beforeend', `<option value="${esc(o.code)}">${esc(o.code)} ${esc(o.name)}</option>`));
+}
+
+async function loadData() {
+  try {
+    allRows = await fetch('/api/inbound-schedules').then(r => r.json());
+    render();
+  } catch (e) {
+    document.getElementById('tb').innerHTML = `<tr><td colspan="10" style="text-align:center; padding:20px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+function render() {
+  const ownerF = document.getElementById('f-owner').value;
+  const supF = document.getElementById('f-supplier').value.trim().toLowerCase();
+  const rows = allRows.filter(r => {
+    if (ownerF && r.owner_code !== ownerF) return false;
+    if (supF && !(r.supplier_name || '').toLowerCase().includes(supF)) return false;
+    return true;
+  });
+  const DISPLAY_LIMIT = 100;
+  const shown = Math.min(rows.length, DISPLAY_LIMIT);
+  document.getElementById('meta').textContent = `全${allRows.length}件 / 該当${rows.length}件 / 表示${shown}件${rows.length > DISPLAY_LIMIT ? ' (絞り込みで件数を減らしてください)' : ''}`;
+  document.getElementById('sum-total').textContent = rows.length;
+  document.getElementById('sum-done').textContent = rows.filter(r => r.status === 'completed').length;
+  document.getElementById('sum-planned').textContent = rows.filter(r => r.status === 'planned' || !r.status).length;
+  document.getElementById('sum-inspecting').textContent = rows.filter(r => r.status === 'inspected' || r.status === 'inspecting').length;
+
+  const tb = document.getElementById('tb');
+  if (rows.length === 0) {
+    tb.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:20px; color:var(--c-text-sub);">該当データなし</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.slice(0, DISPLAY_LIMIT).map(r => {
+    const statusPill = { planned: '<span class="pill">未処理</span>', inspected: '<span class="pill accent">検品済</span>', inspecting: '<span class="pill accent">検品中</span>', completed: '<span class="pill">完了</span>' }[r.status] || `<span class="pill">${esc(r.status)}</span>`;
+    return `
+      <tr>
+        <td class="num">${esc(r.created_at || '-')}</td>
+        <td class="num">${esc(r.schedule_no)}</td>
+        <td class="num">${esc(r.asn_no || '-')}</td>
+        <td class="num">${esc(r.owner_code)}</td>
+        <td>${esc(r.supplier_name || '-')}</td>
+        <td class="num">${esc(r.scheduled_date)}</td>
+        <td class="right num">${r.line_count || 0}</td>
+        <td>${esc(r.order_type || 'normal')}</td>
+        <td>${statusPill}</td>
+        <td class="center"><button class="btn sm" onclick="location.href='/pc/inbound/plans.html'">詳細</button></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+document.getElementById('f-owner').addEventListener('change', render);
+document.getElementById('f-supplier').addEventListener('input', render);
+(async () => { await loadOwners(); await loadData(); })();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

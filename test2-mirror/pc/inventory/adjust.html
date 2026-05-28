@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫調整 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>在庫調整（QA-9 承認フロー / 実 API: /api/inventory-adjustments）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box warn">
+          <div class="text-bold text-alert" style="margin-bottom:4px;">在庫調整は必ず本画面経由・荷主承認必須（QA-9 確定）</div>
+          過去データ直接書換は不可。<code>inventory_adjustments</code> テーブルに記録 → 荷主承認後に inventory に反映。
+        </div>
+  
+        <div class="card"><div class="card-header"><span>調整申請</span></div><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>商品コード</label><input id="f-product" placeholder="SKU-MK001-001"></div>
+            <div class="field"><label>ロケコード</label><input id="f-loc"></div>
+            <div class="field"><label>ロット</label><input id="f-lot"></div>
+            <div class="field"><label>調整後数量（差分でなく合計）</label><input type="number" id="f-qty" placeholder="例: 95"></div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field"><label>理由コード</label>
+              <select id="f-reason">
+                <option value="R001">R001 棚卸差異</option>
+                <option value="R002">R002 破損</option>
+                <option value="R003">R003 紛失</option>
+                <option value="R004">R004 入荷誤数</option>
+                <option value="R005">R005 出荷誤数</option>
+                <option value="R006">R006 期限切れ</option>
+                <option value="R007">R007 サンプル提供</option>
+                <option value="R008">R008 自社使用</option>
+                <option value="R009">R009 その他</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column:span 3;"><label>備考（必須）</label><input id="f-note"></div>
+          </div>
+          <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+            <button class="btn" onclick="clearForm()">クリア</button>
+            <button class="btn primary" onclick="apply()">調整申請（pending）</button>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>申請一覧（実 API: /api/inventory-adjustments）</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">申請No</th><th class="c-text">申請日</th><th class="c-text">商品</th><th class="c-code">ロケ</th><th class="c-code">ロット</th><th class="c-num">差分</th><th class="c-text">理由</th><th class="c-status">状態</th><th class="c-action" style="width:200px;">操作</th>
+              </tr></thead>
+              <tbody id="tb"><tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-text-sub);">読み込み中...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function loadData() {
+  try {
+    const rows = await fetch('/api/inventory-adjustments').then(r => r.json());
+    const list = Array.isArray(rows) ? rows : [];
+    const pending = list.filter(r => r.status === 'pending');
+    document.getElementById('meta').textContent = `全${list.length}件 / pending ${pending.length}件`;
+    const tb = document.getElementById('tb');
+    if (list.length === 0) {
+      tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-text-sub);">申請なし</td></tr>';
+      return;
+    }
+    tb.innerHTML = list.slice(0, 50).map(r => {
+      const diff = r.difference || 0;
+      const pill = r.status === 'approved' ? 'accent' : r.status === 'rejected' ? 'alert' : '';
+      const actions = r.status === 'pending'
+        ? `<button class="btn sm primary" onclick="approveAdj(${r.id})">承認</button> <button class="btn sm" onclick="rejectAdj(${r.id})">差戻</button>`
+        : `<span style="color:var(--c-text-sub); font-size:11px;">処理済</span>`;
+      return `
+        <tr>
+          <td class="c-code">${esc(r.adjustment_no)}</td>
+          <td class="c-text">${esc(r.created_at || '').slice(0, 10)}</td>
+          <td class="c-text">${esc(r.product_code)}</td>
+          <td class="c-code">${esc(r.location_code || '-')}</td>
+          <td class="c-code">${esc(r.lot_no || '-')}</td>
+          <td class="c-num ${diff < 0 ? 'text-alert' : diff > 0 ? 'text-accent' : ''}">${diff > 0 ? '+' : ''}${diff}</td>
+          <td class="c-text">${esc(r.reason_code || '-')}</td>
+          <td class="c-status"><span class="pill ${pill}">${esc(r.status)}</span></td>
+          <td class="c-action">${actions}</td>
+        </tr>
+      `;
+    }).join('');
+  } catch (e) {
+    document.getElementById('tb').innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--c-alert);">読込失敗: ${esc(e.message)}</td></tr>`;
+  }
+}
+async function apply() {
+  const product = document.getElementById('f-product').value.trim();
+  const loc = document.getElementById('f-loc').value.trim();
+  const lot = document.getElementById('f-lot').value.trim();
+  const qty = parseInt(document.getElementById('f-qty').value, 10);
+  const reason = document.getElementById('f-reason').value;
+  const note = document.getElementById('f-note').value.trim();
+  if (!product || !loc || isNaN(qty) || !note) { alert('商品・ロケ・調整後数量・備考は必須'); return; }
+  if (!confirm(`調整申請を登録しますか？\n${product} ${loc} ${lot || ''}\n調整後数量: ${qty}\n理由: ${reason}\n備考: ${note}`)) return;
+  try {
+    const r = await fetch('/api/inventory-adjustments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_code: product, location_code: loc, lot_no: lot || '', qty_after: qty, reason_code: reason, reason_detail: note })
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      alert(`申請失敗: ${err.error || r.status}`);
+      return;
+    }
+    alert('申請を登録しました（pending → 荷主承認待ち）');
+    clearForm();
+    loadData();
+  } catch (e) { alert(`通信失敗: ${e.message}`); }
+}
+async function approveAdj(id) {
+  if (!confirm(`申請 #${id} を承認しますか？\n承認後 inventory が更新されます。`)) return;
+  try {
+    const r = await fetch(`/api/inventory-adjustments/${id}/approve`, { method: 'POST' });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      alert(`承認失敗: ${err.error || r.status}`);
+      return;
+    }
+    alert('承認しました');
+    loadData();
+  } catch (e) { alert(`通信失敗: ${e.message}`); }
+}
+async function rejectAdj(id) {
+  if (!confirm(`申請 #${id} を差戻しますか？`)) return;
+  try {
+    const r = await fetch(`/api/inventory-adjustments/${id}/reject`, { method: 'POST' });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      alert(`差戻失敗: ${err.error || r.status}`);
+      return;
+    }
+    alert('差戻しました');
+    loadData();
+  } catch (e) { alert(`通信失敗: ${e.message}`); }
+}
+function clearForm() {
+  ['f-product','f-loc','f-lot','f-qty','f-note'].forEach(id => document.getElementById(id).value = '');
+}
+loadData();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

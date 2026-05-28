@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SFTP連携 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>SFTP連携（X-3 ファイル送受信）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主・取引先とのファイル送受信（X-3）</div>
+          SFTP接続でCSV/XML/EDIファイルを定期的に取込／配信。鍵管理・受信フォルダ振分・処理結果記録。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SFTPエンドポイント</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">名称</th><th class="c-text">ホスト</th><th class="c-code">ユーザー</th><th class="c-text">方向</th><th class="c-text">頻度</th><th class="c-text">最終実行</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">MK001 ASN取込</td><td class="text-xs c-text">sftp.marki.co.jp</td><td class="c-code">wms-import</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">10分毎</td><td class="c-text">06-01 14:30</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">MK001 出荷確定送信</td><td class="text-xs c-text">sftp.marki.co.jp</td><td class="c-code">wms-export</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">15分毎</td><td class="c-text">06-01 14:25</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr><td class="c-text">AP001 日次在庫</td><td class="text-xs c-text">sftp.apremium.jp</td><td class="c-code">wms</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">日次06:00</td><td class="c-text">06-01 06:00</td><td class="c-status"><span class="pill accent">正常</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-text">PR001 受注取込</td><td class="text-xs c-text">sftp.pr-supply.local</td><td class="c-code">wms-recv</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">30分毎</td><td class="text-alert c-text">06-01 12:00</td><td class="c-status"><span class="pill alert">接続失敗</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>直近24時間 転送履歴</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-text">方向</th><th class="c-text">エンドポイント</th><th class="c-text">ファイル</th><th class="c-num">サイズ</th><th class="c-status">結果</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">14:30:12</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">MK001 ASN取込</td><td class="text-xs c-text">asn_20260601_1430.csv</td><td class="c-num">8.2 KB</td><td class="c-status"><span class="pill accent">成功</span></td></tr>
+                <tr><td class="c-date">14:25:08</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">MK001 出荷確定</td><td class="text-xs c-text">shipped_20260601_1425.csv</td><td class="c-num">12.4 KB</td><td class="c-status"><span class="pill accent">成功</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">14:00:00</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">PR001 受注</td><td class="text-xs c-text">-</td><td class="c-num">-</td><td class="c-status"><span class="pill alert">接続失敗</span></td></tr>
+                <tr><td class="c-date">13:30:11</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">MK001 ASN取込</td><td class="text-xs c-text">asn_20260601_1330.csv</td><td class="c-num">6.8 KB</td><td class="c-status"><span class="pill accent">成功</span></td></tr>
+                <tr><td class="c-date">06:00:02</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">AP001 日次在庫</td><td class="text-xs c-text">inventory_20260601.csv</td><td class="c-num">142 KB</td><td class="c-status"><span class="pill accent">成功</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+          <button class="btn" onclick="alert('「PR001 手動再試行」モック動作（実装は後続フェーズ）')">PR001 手動再試行</button>
+          <button class="btn primary" onclick="alert('「+ エンドポイント追加」モック動作（実装は後続フェーズ）')">+ エンドポイント追加</button>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

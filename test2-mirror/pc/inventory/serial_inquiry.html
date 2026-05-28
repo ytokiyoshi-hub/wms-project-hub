@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>シリアル個別照会 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>シリアル個別照会（Q-10 トレーサビリティ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">シリアル番号からの履歴照会（Q-10）</div>
+          個別シリアル番号で「いつ入庫したか／どこに移動したか／いつ誰に出荷したか」を一気通貫で追跡。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>シリアル番号</label><input type="text" value="SN-PR001-20260415-0042" class="text-mono"></div>
+            <div class="field"><label>SKU</label><div class="text-mono text-accent" style="font-weight:600;">SKU-PR001-012</div></div>
+            <div class="field"><label>商品名</label><div>プレミアム化粧水</div></div>
+            <div class="field"><label>現在状態</label><div><span class="pill accent">出荷済</span></div></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>履歴タイムライン</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日時</th><th class="c-text">イベント</th><th class="c-text">場所</th><th class="c-code">担当</th><th class="c-code">関連No</th><th class="c-text">備考</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">2026-04-15 10:32</td><td class="c-text"><span class="pill">入荷検品</span></td><td class="c-text">東京DC 1F バース</td><td class="c-code">佐藤太郎</td><td class="c-code">ASN-26041501</td><td class="c-text">仕入先ロット PR-2604A</td></tr>
+                <tr><td class="c-date">2026-04-15 11:08</td><td class="c-text"><span class="pill">棚入れ</span></td><td class="c-text">東京DC C-05-08</td><td class="c-code">鈴木花子</td><td class="c-code">-</td><td class="c-text">軽量棚</td></tr>
+                <tr><td class="c-date">2026-05-22 14:25</td><td class="c-text"><span class="pill">在庫移動</span></td><td class="c-text">東京DC C-05-08 → C-05-12</td><td class="c-code">山本健介</td><td class="c-code">-</td><td class="c-text">レイアウト変更</td></tr>
+                <tr><td class="c-date">2026-05-28 09:55</td><td class="c-text"><span class="pill alert">出荷止め</span></td><td class="c-text">東京DC C-05-12</td><td class="c-code">QA</td><td class="c-code">-</td><td class="c-text">外箱破損疑義</td></tr>
+                <tr><td class="c-date">2026-05-29 14:00</td><td class="c-text"><span class="pill">出荷止め解除</span></td><td class="c-text">東京DC C-05-12</td><td class="c-code">マネージャー</td><td class="c-code">-</td><td class="c-text">軽微と判定</td></tr>
+                <tr><td class="c-date">2026-05-30 10:48</td><td class="c-text"><span class="pill">ピック</span></td><td class="c-text">東京DC C-05-12</td><td class="c-code">田中一郎</td><td class="c-code">WAVE-26053005</td><td class="c-text">-</td></tr>
+                <tr><td class="c-date">2026-05-30 11:15</td><td class="c-text"><span class="pill">梱包</span></td><td class="c-text">東京DC 梱包台</td><td class="c-code">伊藤裕子</td><td class="c-code">CON-26053005</td><td class="c-text">-</td></tr>
+                <tr><td class="c-date">2026-05-30 13:30</td><td class="c-text"><span class="pill accent">出荷</span></td><td class="c-text">東京DC → 横浜EC物流</td><td class="c-code">佐川</td><td class="c-code">SO-26053005</td><td class="c-text">追跡番号 7777-8888-9999</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>関連書類</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">種別</th><th class="c-text">発行日</th><th class="c-code">関連No</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">入荷検品書</td><td class="c-text">2026-04-15</td><td class="c-code">ASN-26041501</td><td class="c-action"><button class="btn small" onclick="alert('「PDF」モック動作（実装は後続フェーズ）')">PDF</button></td></tr>
+                <tr><td class="c-text">出荷止め指示書</td><td class="c-text">2026-05-28</td><td class="c-code">QRN-26052801</td><td class="c-action"><button class="btn small" onclick="alert('「PDF」モック動作（実装は後続フェーズ）')">PDF</button></td></tr>
+                <tr><td class="c-text">納品書</td><td class="c-text">2026-05-30</td><td class="c-code">SO-26053005</td><td class="c-action"><button class="btn small" onclick="alert('「PDF」モック動作（実装は後続フェーズ）')">PDF</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 在庫系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>在庫サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">総在庫</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">フリー在庫</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">引当済</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">使用ロケ数</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応在庫</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">欠品リスク</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">期限切迫 (30日)</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">長期滞留 (90日)</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近の変動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">入荷</span><span class="name">直近の入荷</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">出荷</span><span class="name">直近の出荷</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">調整</span><span class="name">在庫調整</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inventory-stats.js?v=202605202324"></script>
+</body>
+</html>

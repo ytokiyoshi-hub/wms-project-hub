@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主別ダッシュボード — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ダッシュボード　/　<b>荷主別ダッシュボード（D-5 社内営業向け）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">社内営業担当向け荷主俯瞰（D-5）</div>
+          荷主別の業績・SLA達成・利益・支払状況を一画面で俯瞰。営業会議での共有用。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>対象荷主</label><select><option>MK001 マルキ食品</option><option>AP001 アパレル</option><option>EC001 EC太郎</option><option>PR001 プレミアム流通</option></select></div>
+            <div class="field"><label>期間</label><select><option>当月</option><option>過去3ヶ月</option><option>過去6ヶ月</option></select></div>
+            <div class="field"><label>営業担当</label><div class="text-mono">佐藤 営業</div></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>MK001 マルキ食品 サマリ（2026年5月）</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>当月売上</label><div class="text-mono text-accent" style="font-weight:600;">¥934,186</div></div>
+              <div class="field"><label>前月比</label><div class="text-mono">+2.8%</div></div>
+              <div class="field"><label>当月コスト</label><div class="text-mono">¥720,000</div></div>
+              <div class="field"><label>当月利益</label><div class="text-mono text-accent" style="font-weight:600;">¥214,186</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>SLA達成率</label><div class="text-mono text-accent" style="font-weight:600;">98.9%</div></div>
+              <div class="field"><label>SLA違反件数</label><div class="text-mono">2</div></div>
+              <div class="field"><label>請求差異</label><div class="text-mono text-alert" style="font-weight:600;">1件係争中（¥48,200）</div></div>
+              <div class="field"><label>入金状況</label><div><span class="pill accent">入金済</span></div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>月次推移</span></div>
+          <div class="card-body flush">
+            <table class="list">
+              <thead><tr><th class="c-text">月</th><th class="c-text">売上</th><th class="c-text">コスト</th><th class="c-text">利益</th><th class="c-num">利益率</th><th class="c-text">SLA達成</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">2026-02</td><td class="c-text">¥920,000</td><td class="c-text">¥740,000</td><td class="c-text">¥180,000</td><td class="c-num">19.6%</td><td class="c-text">97.8%</td></tr>
+                <tr><td class="c-text">2026-03</td><td class="c-text">¥912,000</td><td class="c-text">¥720,000</td><td class="c-text">¥192,000</td><td class="c-num">21.1%</td><td class="c-text">98.1%</td></tr>
+                <tr><td class="c-text">2026-04</td><td class="c-text">¥909,000</td><td class="c-text">¥710,000</td><td class="c-text">¥199,000</td><td class="c-num">21.9%</td><td class="c-text">98.6%</td></tr>
+                <tr><td class="c-text">2026-05</td><td class="c-text">¥934,186</td><td class="c-text">¥720,000</td><td class="c-text">¥214,186</td><td class="text-accent c-num">22.9%</td><td class="text-accent c-text">98.9%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>営業アクション提案</span></div>
+          <div class="card-body flush">
+            <table class="list">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">提案</th><th class="c-status">優先度</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">請求差異1件係争中</td><td class="c-text">顧客との議論を早期決着、和解金額の合意形成</td><td class="c-status"><span class="pill alert">高</span></td></tr>
+                <tr><td class="c-text">SLA違反 差異対応で2件</td><td class="c-text">差異対応SLAの基準を24h→36h見直しを荷主と交渉</td><td class="c-status"><span class="pill">中</span></td></tr>
+                <tr><td class="c-text">利益率改善トレンド</td><td class="c-text">次回契約更新でTier-2/Tier-3階段見直し提案</td><td class="c-status"><span class="pill accent">低</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

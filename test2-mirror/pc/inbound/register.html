@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>W-402 入荷予定登録 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+/* 見せ方B: 強弱 / 色は要対応のみ */
+.form-section { border-top:1px solid var(--c-line); padding-top:14px; margin-top:14px; }
+.form-section:first-child { border-top:none; padding-top:0; margin-top:0; }
+.required-mark { color:var(--c-alert); margin-left:2px; font-weight:700; }
+.help-note { font-size:11px; color:#9ca3af; margin-top:4px; }
+.bar-actions { position:sticky; bottom:0; background:#fff; border-top:1px solid var(--c-line); padding:10px 14px; margin:14px -14px -14px -14px; display:flex; gap:8px; justify-content:flex-end; }
+/* 主役 = フォーム */
+.card-header span { font-weight:700; font-size:13px; }
+/* 脇役 = 右パネル: 薄く */
+.side-panel .card-header span { font-weight:600; font-size:12px; color:#6b7280; }
+.side-panel table.list td, .side-panel table.list th { padding:5px 8px; }
+.side-panel .meta { color:#9ca3af; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">
+        <a href="/" style="color:var(--c-accent); text-decoration:none;">📋 トップ</a>
+        <span style="color:var(--c-line-dk); margin:0 6px;">/</span>
+        <a href="/pc/inbound/plans.html" style="color:var(--c-accent); text-decoration:none;">入荷予定一覧 (W-401)</a>
+        <span style="color:var(--c-line-dk); margin:0 6px;">/</span>
+        <b>入荷予定登録 (W-402)</b>
+        <span class="badge">フォーム型</span>
+      </div>
+    </div>
+    <div class="content">
+
+      <div style="display:flex; gap:8px; margin-bottom:14px;">
+        <a class="btn" href="/pc/inbound/plans.html">← 一覧へ戻る</a>
+      </div>
+  
+        <!-- のっぺり対策: 主作業（左 2/3）＋ 参考情報（右 1/3）の2カラム -->
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:14px;">
+        <div>
+  
+        <div class="card"><div class="card-header"><span>① ヘッダ情報</span><span class="meta">必須項目: 荷主 / 予定日</span></div><div class="card-body">
+          <div class="form-row">
+            <div class="field">
+              <label>荷主<span class="required-mark">*</span></label>
+              <select id="f-owner"></select>
+              <div class="help-note">どの荷主の入荷かを選択</div>
+            </div>
+            <div class="field">
+              <label>入荷種別</label>
+              <select id="f-type"><option value="normal">通常入荷</option><option value="return">返品入荷</option></select>
+              <div class="help-note">返品の場合は RMA番号 自動採番</div>
+            </div>
+            <div class="field">
+              <label>予定日<span class="required-mark">*</span></label>
+              <input type="date" id="f-date">
+              <div class="help-note">既定値=翌日</div>
+            </div>
+            <div class="field">
+              <label>ASN番号</label>
+              <input id="f-asn" placeholder="ASN-XXXXXX">
+              <div class="help-note">仕入先から事前通知された ASN を入力（任意）</div>
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:14px;">
+            <div class="field" style="grid-column:span 2;"><label>仕入先</label><input id="f-supplier" placeholder="例: 関東食品㈱"></div>
+            <div class="field" style="grid-column:span 2;"><label>備考</label><input id="f-note" placeholder="任意"></div>
+          </div>
+        </div></div>
+  
+        <div class="card"><div class="card-header"><span>② 明細</span><button class="btn sm primary" onclick="addLine()">+ 行追加</button></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-num">No</th>
+                <th class="c-code">商品コード<span class="required-mark">*</span></th>
+                <th class="c-text">商品名</th>
+                <th class="c-num">予定数<span class="required-mark">*</span></th>
+                <th class="c-code">単位</th>
+                <th class="c-code">ロット</th>
+                <th class="c-action">削除</th>
+              </tr></thead>
+              <tbody id="tb-lines"></tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card"><div class="card-header"><span>③ 確認 → 登録</span></div><div class="card-body">
+          <div style="background:var(--c-bg); padding:10px; border:1px solid var(--c-line); font-size:12px; color:var(--c-text-sub);">
+            「登録」を押すと、確認ダイアログ → POST → 成功時に W-401 入荷予定一覧 へ自動遷移し、登録した予定が一覧上に表示されます。失敗時はエラーメッセージを表示。
+          </div>
+          <div class="bar-actions">
+            <button class="btn" onclick="location.href='/pc/inbound/plans.html'">キャンセル</button>
+            <button class="btn primary" onclick="register()">登録</button>
+          </div>
+        </div></div>
+  
+        </div>
+  
+        <!-- 右カラム: 参考情報パネル (脇役・薄く) -->
+        <div class="side-panel" style="display:flex; flex-direction:column; gap:14px;">
+          <div class="card">
+            <div class="card-header"><span>選択中 荷主の直近入荷</span><span class="meta" id="sup-meta">-</span></div>
+            <div class="card-body flush">
+              <table class="list list-panel" style="font-size:11px;">
+                <thead><tr><th class="c-code">入荷No</th><th class="c-date">予定日</th><th class="c-num">明細</th></tr></thead>
+                <tbody id="tb-recent"><tr><td colspan="3" style="text-align:center; padding:14px; color:var(--c-text-sub);">荷主を選択…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+  
+          <div class="card">
+            <div class="card-header"><span>使用頻度の高い商品 TOP5</span></div>
+            <div class="card-body flush">
+              <table class="list list-panel" style="font-size:11px;">
+                <thead><tr><th class="c-text">商品</th><th class="c-code">出典</th></tr></thead>
+                <tbody id="tb-top-products"><tr><td colspan="2" style="text-align:center; padding:14px; color:var(--c-text-sub);">荷主を選択…</td></tr></tbody>
+              </table>
+              <div style="padding:8px 12px; font-size:11px; color:var(--c-text-sub);">クリックで明細に追加（モック）</div>
+            </div>
+          </div>
+  
+          <div class="card">
+            <div class="card-header"><span>規模ヒント</span></div>
+            <div class="card-body" id="scale-hint" style="font-size:12px; color:var(--c-text-sub);">
+              明細行数・予定数に応じて 推定パレット数・推定検品時間 を表示します。
+            </div>
+          </div>
+        </div>
+
+        </div>
+
+    </div>
+  </main>
+</div>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let lineNo = 0;
+let products = [];
+
+async function init() {
+  const owners = await fetch('/api/owners').then(r=>r.json()).catch(()=>[]);
+  products = await fetch('/api/products').then(r=>r.json()).catch(()=>[]);
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => { const opt = document.createElement('option'); opt.value = o.code; opt.textContent = `${o.code} ${o.name}`; sel.appendChild(opt); });
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('f-date').value = tomorrow.toISOString().slice(0, 10);
+  if (new URLSearchParams(location.search).get('no_asn') === '1') {
+    document.getElementById('f-asn').value = '';
+    document.getElementById('f-asn').placeholder = '(ASNなし)';
+    document.getElementById('f-note').value = 'ASNなし入荷';
+  }
+  addLine();
+  sel.addEventListener('change', updateRefPanels);
+  await updateRefPanels();
+}
+
+async function updateRefPanels() {
+  const owner = document.getElementById('f-owner').value;
+  if (!owner) return;
+  try {
+    const schedules = await fetch(`/api/inbound-schedules?owner=${encodeURIComponent(owner)}`).then(r => r.json());
+    const recent = (schedules || []).slice(0, 5);
+    document.getElementById('sup-meta').textContent = `全${(schedules || []).length}件`;
+    const tbR = document.getElementById('tb-recent');
+    if (recent.length === 0) {
+      tbR.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:14px; color:var(--c-text-sub);">過去入荷なし</td></tr>';
+    } else {
+      tbR.innerHTML = recent.map(r => `
+        <tr>
+          <td class="c-code"><a href="/pc/inbound/plan_detail.html?id=${r.id}" style="color:var(--c-accent); font-size:11px;">${escapeHtml(r.schedule_no)}</a></td>
+          <td class="c-date" style="font-size:11px;">${escapeHtml(r.scheduled_date || '-')}</td>
+          <td class="c-num" style="font-size:11px;">${r.line_count ?? '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // 頻出商品 TOP5（過去スケジュールのlines全部取って集計するのは重いので簡易: 最近5件のline_countを使う）
+    const topProducts = products.filter(p => p.owner_code === owner).slice(0, 5);
+    const tbTop = document.getElementById('tb-top-products');
+    if (topProducts.length === 0) {
+      tbTop.innerHTML = '<tr><td colspan="2" style="text-align:center; padding:14px; color:var(--c-text-sub);">該当商品なし</td></tr>';
+    } else {
+      tbTop.innerHTML = topProducts.map(p => `
+        <tr class="clickable" onclick="quickAddLine('${escapeHtml(p.code)}')">
+          <td class="c-text" style="font-size:11px;"><span style="font-family:var(--f-mono);">${escapeHtml(p.code)}</span><br><span style="color:var(--c-text-sub);">${escapeHtml(p.name)}</span></td>
+          <td class="c-code" style="font-size:11px;">マスタ</td>
+        </tr>
+      `).join('');
+    }
+    updateScaleHint();
+  } catch (e) {
+    document.getElementById('tb-recent').innerHTML = `<tr><td colspan="3" style="text-align:center; padding:14px; color:var(--c-alert);">${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+
+function quickAddLine(code) {
+  // 既存行が未選択ならその行のproductを設定。それ以外なら新規行追加
+  const rows = document.querySelectorAll('#tb-lines tr');
+  let target = rows[rows.length - 1];
+  // 最終行のproductを書き換え
+  const sel = target.querySelector('.line-product');
+  sel.value = code;
+  sel.dispatchEvent(new Event('change'));
+  updateScaleHint();
+}
+
+function updateScaleHint() {
+  const rows = document.querySelectorAll('#tb-lines tr');
+  let lineCount = 0, qtySum = 0;
+  rows.forEach(tr => {
+    const code = tr.querySelector('.line-product').value;
+    const q = parseInt(tr.querySelector('.line-qty').value, 10) || 0;
+    if (code && q > 0) { lineCount++; qtySum += q; }
+  });
+  // 簡易推定: 1パレット = 60ケース・1ケース検品 = 30秒
+  const palletEst = Math.ceil(qtySum / 60);
+  const minutesEst = Math.ceil(qtySum * 0.5 / 60);
+  document.getElementById('scale-hint').innerHTML = lineCount === 0
+    ? '<span style="color:var(--c-text-sub);">明細を入力すると規模ヒントが表示されます</span>'
+    : `明細 <b>${lineCount} 行</b> / 予定数合計 <b>${qtySum.toLocaleString()} 点</b><br>
+       推定パレット数: <b>${palletEst} PT</b> (1PT=60換算)<br>
+       推定検品時間: <b>約 ${minutesEst} 分</b> (1点30秒換算)`;
+}
+
+function addLine() {
+  lineNo++;
+  // 商品コード欄は code のみ表示 (品名は line-name 列で別表示)
+  const opts = products.map(p => `<option value="${p.code}">${escapeHtml(p.code)}</option>`).join('');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="num">${lineNo}</td>
+    <td><select class="line-product" style="width:100%; font-family:var(--f-mono);">${opts}</select></td>
+    <td class="line-name">-</td>
+    <td><input class="line-qty" type="number" value="120" min="1" style="width:80px; text-align:right; font-family:var(--f-mono);"></td>
+    <td><select><option>ケース</option><option>ピース</option></select></td>
+    <td><input class="line-lot" placeholder="L260601-01" style="width:120px; font-family:var(--f-mono);"></td>
+    <td class="center"><button class="btn sm" onclick="this.closest('tr').remove()">×</button></td>
+  `;
+  document.getElementById('tb-lines').appendChild(tr);
+  const sel = tr.querySelector('.line-product');
+  const qty = tr.querySelector('.line-qty');
+  const updateName = () => {
+    const p = products.find(x => x.code === sel.value);
+    tr.querySelector('.line-name').textContent = p ? p.name : '-';
+  };
+  sel.addEventListener('change', () => { updateName(); updateScaleHint(); });
+  qty.addEventListener('input', updateScaleHint);
+  updateName();
+  updateScaleHint();
+}
+
+async function register() {
+  const owner = document.getElementById('f-owner').value;
+  const date = document.getElementById('f-date').value;
+  if (!owner) { alert('荷主を選択してください'); return; }
+  if (!date) { alert('予定日を指定してください'); return; }
+  const lines = Array.from(document.querySelectorAll('#tb-lines tr')).map(tr => ({
+    product_code: tr.querySelector('.line-product').value,
+    expected_qty: parseInt(tr.querySelector('.line-qty').value, 10),
+    lot_no: tr.querySelector('.line-lot').value,
+  })).filter(l => l.product_code && l.expected_qty > 0);
+  if (lines.length === 0) { alert('明細を1行以上、商品と数量を入力してください'); return; }
+  const body = {
+    owner_code: owner,
+    order_type: document.getElementById('f-type').value,
+    scheduled_date: date,
+    asn_no: document.getElementById('f-asn').value || null,
+    supplier_name: document.getElementById('f-supplier').value || '',
+    note: document.getElementById('f-note').value || '',
+    lines: lines,
+  };
+  if (!confirm(`入荷予定を登録しますか？\n荷主: ${owner}\n予定日: ${date}\n明細: ${lines.length}行`)) return;
+  try {
+    const res = await fetch('/api/inbound-schedules', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      alert(`登録失敗: ${data.error || res.status}`);
+      return;
+    }
+    alert(`入荷予定 ${data.schedule_no} を登録しました\nW-401 入荷予定一覧で確認できます`);
+    location.href = '/pc/inbound/plans.html';
+  } catch (e) {
+    alert('通信エラー: ' + e.message);
+  }
+}
+init();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

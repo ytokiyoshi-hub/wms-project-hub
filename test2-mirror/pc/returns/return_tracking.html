@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>返品物追跡 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">返品　/　<b>返品物追跡（W-1007 顧客発→WMS着）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">顧客発送後の追跡（W-1007）</div>
+          着払いラベル発行→顧客発送→運送中→WMS着の状況を時系列追跡。長期未着は催促連絡。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>状態</label><select><option>全て</option><option>未着</option><option>運送中</option><option>到着</option></select></div>
+            <div class="field"><label>発行後経過</label><select><option>全期間</option><option>7日以内</option><option>7-14日</option><option>14日超</option></select></div>
+            <div class="field"><label>荷主</label><select><option>EC001 EC太郎</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>返品ラベル発行→受領 状況</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>ラベルNo</th><th>顧客</th><th>関連受注</th><th class="right">ラベル発行日</th><th>追跡番号</th><th>運送状況</th><th class="right">経過日数</th><th>状態</th></tr></thead>
+              <tbody>
+                <tr><td class="num">RTL-26060101</td><td>山田次郎様</td><td class="num">SO-26052801</td><td class="right num">06-01</td><td class="num">7777-8888-9012</td><td>WMS受領</td><td class="right num">0日</td><td><span class="pill accent">完了</span></td></tr>
+                <tr><td class="num">RTL-26060102</td><td>佐藤花子様</td><td class="num">SO-26052810</td><td class="right num">06-01</td><td class="num">7777-8888-9013</td><td>運送中</td><td class="right num">0日</td><td><span class="pill">追跡中</span></td></tr>
+                <tr><td class="num">RTL-26060103</td><td>鈴木太郎様</td><td class="num">SO-26052815</td><td class="right num">06-01</td><td class="num">8888-9999-1234</td><td>WMS受領</td><td class="right num">0日</td><td><span class="pill accent">完了</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="num">RTL-26052701</td><td>高橋勇様</td><td class="num">SO-26052201</td><td class="right num">05-27</td><td class="num">8888-9999-1208</td><td>未発送（顧客）</td><td class="right num text-alert">5日</td><td><span class="pill alert">未着</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="num">RTL-26051801</td><td>渡辺次郎様</td><td class="num">SO-26051301</td><td class="right num">05-18</td><td class="num">8888-9999-1108</td><td>未発送（顧客）</td><td class="right num text-alert">14日</td><td><span class="pill alert">期限超過</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>未着対応</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>経過日数</th><th>アクション</th><th>担当</th></tr></thead>
+              <tbody>
+                <tr><td>3日</td><td>顧客向け確認メール送信</td><td>顧客サポート</td></tr>
+                <tr><td>7日</td><td>電話連絡</td><td>顧客サポート</td></tr>
+                <tr><td>14日</td><td>返品申請を一旦クローズ通知</td><td>営業</td></tr>
+                <tr><td>30日</td><td>関連受注の返金処理を停止</td><td>マネージャー</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

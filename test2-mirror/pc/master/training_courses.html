@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>研修コースマスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>研修コースマスタ（H-11 教材定義）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">教育・訓練コース定義（H-11）</div>
+          必修研修と任意研修を体系化。新規入社時 / 昇格時 / 定期更新で必要なコースを管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>研修コース一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">コースID</th><th class="c-text">名称</th><th class="c-status">区分</th><th class="c-num">所要時間</th><th class="c-text">講師</th><th class="c-text">更新周期</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">TRN-001</td><td class="c-text">新人HT操作研修</td><td class="c-status"><span class="pill alert">必修</span></td><td class="c-num">8h</td><td class="c-text">佐藤太郎</td><td class="c-text">都度</td></tr>
+                <tr><td class="c-text">TRN-002</td><td class="c-text">FL技能講習</td><td class="c-status"><span class="pill alert">必修</span></td><td class="c-num">11h</td><td class="c-text">外部</td><td class="c-text">3年</td></tr>
+                <tr><td class="c-text">TRN-003</td><td class="c-text">危険物取扱者乙4</td><td class="c-status"><span class="pill">推奨</span></td><td class="c-num">15h</td><td class="c-text">外部</td><td class="c-text">無期限</td></tr>
+                <tr><td class="c-text">TRN-004</td><td class="c-text">梱包品質基準研修</td><td class="c-status"><span class="pill alert">必修</span></td><td class="c-num">4h</td><td class="c-text">マネージャー</td><td class="c-text">1年</td></tr>
+                <tr><td class="c-text">TRN-005</td><td class="c-text">サブリーダー研修</td><td class="c-status"><span class="pill">昇格時</span></td><td class="c-num">16h</td><td class="c-text">マネージャー</td><td class="c-text">都度</td></tr>
+                <tr><td class="c-text">TRN-006</td><td class="c-text">マネージャー研修</td><td class="c-status"><span class="pill">昇格時</span></td><td class="c-num">32h</td><td class="c-text">本社</td><td class="c-text">都度</td></tr>
+                <tr><td class="c-text">TRN-007</td><td class="c-text">食品衛生基礎</td><td class="c-status"><span class="pill alert">必修</span></td><td class="c-num">2h</td><td class="c-text">QA</td><td class="c-text">1年</td></tr>
+                <tr><td class="c-text">TRN-008</td><td class="c-text">救命救急講習</td><td class="c-status"><span class="pill">推奨</span></td><td class="c-num">3h</td><td class="c-text">外部</td><td class="c-text">3年</td></tr>
+                <tr><td class="c-text">TRN-009</td><td class="c-text">個人情報保護</td><td class="c-status"><span class="pill alert">必修</span></td><td class="c-num">1h</td><td class="c-text">e-learning</td><td class="c-text">1年</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>必修研修 ロール別マッピング</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">ロール</th><th class="c-text">必修コース</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">作業者</td><td class="c-text">TRN-001 / TRN-007 / TRN-009</td></tr>
+                <tr><td class="c-text">現場リーダー</td><td class="c-text">作業者+ TRN-004 / TRN-005</td></tr>
+                <tr><td class="c-text">マネージャー</td><td class="c-text">現場リーダー+ TRN-006</td></tr>
+                <tr><td class="c-text">QA</td><td class="c-text">作業者+ TRN-007</td></tr>
+                <tr><td class="c-text">FL運転者</td><td class="c-text">作業者+ TRN-002</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

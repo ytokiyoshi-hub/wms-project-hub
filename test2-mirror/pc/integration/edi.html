@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>EDI連携設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>EDI連携設定（W-510）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card">
+          <div class="card-header"><span>荷主別 EDI設定</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">荷主</th><th class="c-text">プロトコル</th><th class="c-text">送信先</th><th class="c-text">受信ポート</th><th class="c-text">頻度</th><th class="c-status">状態</th><th class="c-action" style="width:120px;">操作</th>
+              </tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001 マルキ食品</td><td class="c-text">JX手順</td><td class="c-text">edi.maruki.example.jp</td><td class="c-text">9101</td><td class="c-text">30分毎</td><td class="c-status"><span class="pill accent">有効</span></td><td class="c-action"><button class="btn sm" onclick="alert('「設定」モック動作（実装は後続フェーズ）')">設定</button> <button class="btn sm" onclick="alert('「テスト」モック動作（実装は後続フェーズ）')">テスト</button></td></tr>
+                <tr><td class="c-code">EC001 食品EC</td><td class="c-text">REST API</td><td class="c-text">api.ec-food.example.jp</td><td class="c-text">-</td><td class="c-text">15分毎</td><td class="c-status"><span class="pill accent">有効</span></td><td class="c-action"><button class="btn sm" onclick="alert('「設定」モック動作（実装は後続フェーズ）')">設定</button> <button class="btn sm" onclick="alert('「テスト」モック動作（実装は後続フェーズ）')">テスト</button></td></tr>
+                <tr><td class="c-code">AP001 アパレル</td><td class="c-text">CSV (FTP)</td><td class="c-text">ftp.apparel.example.jp</td><td class="c-text">21</td><td class="c-text">日次</td><td class="c-status"><span class="pill">無効</span></td><td class="c-action"><button class="btn sm" onclick="alert('「設定」モック動作（実装は後続フェーズ）')">設定</button></td></tr>
+                <tr><td class="c-code">PR001 精密機器</td><td class="c-text">SOAP</td><td class="c-text">soap.precision.example.jp</td><td class="c-text">8443</td><td class="c-text">リアルタイム</td><td class="c-status"><span class="pill accent">有効</span></td><td class="c-action"><button class="btn sm" onclick="alert('「設定」モック動作（実装は後続フェーズ）')">設定</button> <button class="btn sm" onclick="alert('「テスト」モック動作（実装は後続フェーズ）')">テスト</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>業界標準フォーマット対応</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">フォーマット</th><th class="c-text">用途</th><th class="c-code">採用荷主</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">JX手順</td><td class="c-text">出荷実績送信</td><td class="c-code">MK001</td><td class="c-status"><span class="pill accent">対応</span></td></tr>
+                <tr><td class="c-text">EOS</td><td class="c-text">受発注</td><td class="c-code">MK001 (検討)</td><td class="c-status"><span class="pill">予定</span></td></tr>
+                <tr><td class="c-text">業務用CSV（DPS互換）</td><td class="c-text">各種</td><td class="c-code">EC001</td><td class="c-status"><span class="pill accent">対応</span></td></tr>
+                <tr><td class="c-text">業界標準SCM ラベル</td><td class="c-text">送り状</td><td class="c-code">全荷主</td><td class="c-status"><span class="pill accent">対応</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

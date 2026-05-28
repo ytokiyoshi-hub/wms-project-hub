@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>輸送包装規格 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>輸送包装規格（S-40 ISO/JIS準拠）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">輸送包装の規格管理（S-40）</div>
+          ISO 3394（モジュール寸法）/ JIS Z 1532（段ボール）/ ASTM D4169 等の試験規格を商品マスタに紐付け。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>包装規格</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">規格</th><th class="c-text">分類</th><th class="c-text">仕様</th><th class="c-text">適用</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">ISO 3394</td><td class="c-text">モジュール寸法</td><td class="c-text">パレット 1200×1000mm 系</td><td class="c-text">欧米向け輸出</td></tr>
+                <tr><td class="c-text">JIS Z 0601</td><td class="c-text">パレット</td><td class="c-text">1100×1100mm 標準</td><td class="c-text">国内標準</td></tr>
+                <tr><td class="c-text">JIS Z 1532</td><td class="c-text">段ボール強度</td><td class="c-text">A段 / B段 / W段</td><td class="c-text">段ボール仕様</td></tr>
+                <tr><td class="c-text">ASTM D4169</td><td class="c-text">輸送試験</td><td class="c-text">振動・衝撃・落下</td><td class="c-text">輸出品事前検証</td></tr>
+                <tr><td class="c-text">ISTA 3A</td><td class="c-text">少量積み輸送</td><td class="c-text">包装単位試験</td><td class="c-text">EC個別配送</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SKU別 推奨包装</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">SKU</th><th class="c-text">商品名</th><th class="c-text">推奨外装</th><th class="c-text">緩衝材</th><th class="c-text">表示</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">SKU-MK001-001</td><td class="c-text">シャンプー300ml</td><td class="c-text">段ボール B段</td><td class="c-text">仕切板</td><td class="c-text">「天地」「水濡れ禁止」</td></tr>
+                <tr><td class="c-code">SKU-PR001-012</td><td class="c-text">プレミアム化粧水</td><td class="c-text">段ボール A段 + 個別箱</td><td class="c-text">エアキャップ</td><td class="c-text">「天地」「割れ物」</td></tr>
+                <tr><td class="c-code">SKU-AP001-005</td><td class="c-text">春物ジャケット</td><td class="c-text">OPP袋 + 段ボール B段</td><td class="c-text">不要</td><td class="c-text">「水濡れ禁止」</td></tr>
+                <tr><td class="c-code">SKU-PR001-100</td><td class="c-text">大型家電</td><td class="c-text">木枠 + 緩衝材</td><td class="c-text">発泡スチロール</td><td class="c-text">「天地」「衝撃禁止」</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

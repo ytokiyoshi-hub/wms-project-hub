@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>請求書一覧 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">請求　/　<b>請求書一覧</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div class="filter-row">
+            <div class="field"><label>対象年</label><select id="f-year"><option>2026年</option><option>2025年</option></select></div>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="btn primary" onclick="render()">検索</button>
+              </div>
+            <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+            <div class="field"><label>状態</label><select><option>全て</option><option>発行済</option><option>入金済</option></select></div>
+          </div>
+        </div></div>
+        <div class="card">
+          <div class="card-header"><span>請求書一覧</span><span class="meta" id="meta">月次4社 × 6ヶ月分</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th>請求書番号</th><th>荷主</th><th>請求対象期間</th><th class="right">金額（税込）</th><th>支払期限</th><th class="center">状態</th><th class="center" style="width:200px;">操作</th>
+              </tr></thead>
+              <tbody>
+                <tr><td class="num">INV-2606-MK001</td><td>MK001 マルキ食品</td><td class="num">2026/06</td><td class="right num">380,000</td><td class="num">2026/07/31</td><td class="center"><span class="pill accent">発行済</span></td><td class="center"><button class="btn sm" onclick="alert('「PDF」モック動作（実装は後続フェーズ）')">PDF</button> <button class="btn sm" onclick="alert('「明細」モック動作（実装は後続フェーズ）')">明細</button></td></tr>
+                <tr><td class="num">INV-2606-AP001</td><td>AP001 アパレル雑貨</td><td class="num">2026/06</td><td class="right num">104,000</td><td class="num">2026/07/31</td><td class="center"><span class="pill accent">発行済</span></td><td class="center"><button class="btn sm" onclick="alert('「PDF」モック動作（実装は後続フェーズ）')">PDF</button> <button class="btn sm" onclick="alert('「明細」モック動作（実装は後続フェーズ）')">明細</button></td></tr>
+                <tr><td class="num">INV-2606-EC001</td><td>EC001 食品EC</td><td class="num">2026/06</td><td class="right num">360,000</td><td class="num">2026/07/31</td><td class="center"><span class="pill accent">発行済</span></td><td class="center"><button class="btn sm" onclick="alert('「PDF」モック動作（実装は後続フェーズ）')">PDF</button> <button class="btn sm" onclick="alert('「明細」モック動作（実装は後続フェーズ）')">明細</button></td></tr>
+                <tr><td class="num">INV-2606-PR001</td><td>PR001 精密機器</td><td class="num">2026/06</td><td class="right num">74,000</td><td class="num">2026/07/31</td><td class="center"><span class="pill accent">発行済</span></td><td class="center"><button class="btn sm" onclick="alert('「PDF」モック動作（実装は後続フェーズ）')">PDF</button> <button class="btn sm" onclick="alert('「明細」モック動作（実装は後続フェーズ）')">明細</button></td></tr>
+                <tr><td class="num">INV-2605-MK001</td><td>MK001 マルキ食品</td><td class="num">2026/05</td><td class="right num">365,000</td><td class="num">2026/06/30</td><td class="center"><span class="pill">入金済</span></td><td class="center"><button class="btn sm" onclick="alert('「PDF」モック動作（実装は後続フェーズ）')">PDF</button> <button class="btn sm" onclick="alert('「明細」モック動作（実装は後続フェーズ）')">明細</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+(async () => {
+  const owners = await fetch('/api/owners').then(r=>r.json()).catch(()=>[]);
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => { const opt = document.createElement('option'); opt.value = o.code; opt.textContent = `${o.code} ${o.name}`; sel.appendChild(opt); });
+})();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-generic-stats.js?v=202605202324"></script>
+</body>
+</html>

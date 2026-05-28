@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>在庫明細書印刷 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+@media print { .layout > .sidebar, .topbar, .print-actions { display: none !important; } .content { padding: 0 !important; } }
+.paper { background: white; padding: 30px; max-width: 900px; margin: 0 auto; border: 1px solid var(--c-line); }
+.paper h1 { text-align: center; font-size: 18px; margin-bottom: 16px; }
+.paper table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.paper table th, .paper table td { border: 1px solid #000; padding: 4px 6px; }
+.paper table thead th { background: #ddd; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">印刷　/　<b>在庫明細書</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="print-actions" style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:14px;">
+        <button class="btn" onclick="history.back()">戻る</button>
+        <button class="btn primary" onclick="window.print()">印刷（PDF保存）</button>
+      </div>
+      <div class="paper">
+        <h1>在庫明細書（月末時点）</h1>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:14px;">
+          <div><b>荷主:</b> MK001 株式会社マルキ食品</div>
+          <div><b>対象月:</b> 2026年6月</div>
+          <div><b>発行日:</b> 2026-07-01</div>
+        </div>
+        <table>
+          <thead>
+            <tr><th>SKU</th><th>商品名</th><th>ロケ</th><th>ロット</th><th>賞味期限</th><th class="right">数量(PL)</th><th class="right">数量(CS)</th><th class="right">単価</th><th class="right">金額</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>SKU-MK001-001</td><td>シャンプー300ml</td><td>3AP-02-001</td><td>L260518-01</td><td>2027-05-18</td><td style="text-align:right;">2.5</td><td style="text-align:right;">120</td><td style="text-align:right;">450</td><td style="text-align:right;">54,000</td></tr>
+            <tr><td>SKU-MK001-001</td><td>シャンプー300ml</td><td>3AP-02-002</td><td>L260520-01</td><td>2027-05-20</td><td style="text-align:right;">1.8</td><td style="text-align:right;">85</td><td style="text-align:right;">450</td><td style="text-align:right;">38,250</td></tr>
+            <tr><td>SKU-MK001-002</td><td>コンディショナー300ml</td><td>3AT-01-001</td><td>L260520-02</td><td>2027-05-20</td><td style="text-align:right;">0</td><td style="text-align:right;">48</td><td style="text-align:right;">460</td><td style="text-align:right;">22,080</td></tr>
+            <tr><td>SKU-MK001-003</td><td>冷蔵牛乳1L</td><td>4AC-01-001</td><td>L260601-01</td><td>2026-06-15</td><td style="text-align:right;">1.0</td><td style="text-align:right;">36</td><td style="text-align:right;">980</td><td style="text-align:right;">35,280</td></tr>
+            <tr><td colspan="5" style="text-align:right;"><b>合計</b></td><td style="text-align:right;"><b>5.3</b></td><td style="text-align:right;"><b>289</b></td><td></td><td style="text-align:right;"><b>149,610</b></td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px; margin-top:14px; line-height:1.7;">
+          ※ 月末0時時点のスナップショット<br>
+          ※ 在庫データの修正は inventory_adjustments 経由のみ（QA-9 確定）
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

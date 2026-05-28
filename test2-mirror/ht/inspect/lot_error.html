@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HT-403-5 ロット異常 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605202341">
+</head>
+<body>
+
+<h1 class="page-title">HT-403-5 ロット異常</h1>
+<p class="subtitle">賞味期限切迫・ロット不一致の検出 (BT-A2000 / 4インチ)</p>
+
+<div class="ht-nav">
+  <span class="label">画面ジャンプ：</span>
+  <a href="/ht/inspect/asn.html"><b>HT-403-1</b>ASN選択</a>
+  <a href="/ht/inspect/scan.html"><b>HT-403-2</b>スキャン</a>
+  <a href="/ht/inspect/done.html"><b>HT-403-3</b>完了</a>
+  <a href="/ht/inspect/discrepancy.html"><b>HT-403-4</b>差異処理</a>
+  <a href="/ht/inspect/lot_error.html" class="active"><b>HT-403-5</b>ロット異常</a>
+  <a href="/">トップ</a>
+</div>
+
+<div class="ht-wrap">
+  <div class="ht-device">
+    <div class="brand">KEYENCE</div>
+    <div class="model">BT-A2000</div>
+    <div class="ht-screen">
+      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">10:10 84%</span></div>
+      <div class="ht-header" style="background:var(--c-alert);">
+        <span>ロット異常</span>
+        <span class="scr-id">HT-403-5</span>
+      </div>
+      <div class="ht-body">
+        <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:10px; text-align:center;">
+          <div style="font-size:30px; color:var(--c-alert);">⚠</div>
+          <div style="font-size:12px; color:var(--c-alert); font-weight:700; margin-top:4px;">賞味期限切迫</div>
+        </div>
+
+        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:6px;">
+          <div style="font-size:9px; color:var(--c-text-sub);">商品</div>
+          <div style="font-family:var(--f-mono); font-size:11px; font-weight:600;">SKU-MK001-003 冷蔵牛乳1L</div>
+
+          <div style="height:1px; background:var(--c-line); margin:6px 0;"></div>
+
+          <div style="display:flex; justify-content:space-between; font-size:10px;">
+            <span style="color:var(--c-text-sub);">ロット</span>
+            <span class="text-mono">L260518-03</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:3px;">
+            <span style="color:var(--c-text-sub);">賞味期限</span>
+            <span class="text-mono" style="color:var(--c-alert); font-weight:600;">2026-06-08</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:3px;">
+            <span style="color:var(--c-text-sub);">残日数</span>
+            <span class="text-mono" style="color:var(--c-alert); font-weight:700;">7日</span>
+          </div>
+        </div>
+
+        <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">どう処理しますか？</div>
+
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div onclick="pickLotAction('accept')" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:10px; font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">1. 受入（要注意品として登録）</div>
+          <div onclick="pickLotAction('reject')" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">2. 受入拒否（仕入先返品）</div>
+          <div onclick="pickLotAction('escalate')" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">3. リーダー確認</div>
+        </div>
+
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:9px;">
+          ※ 受入時は FEFO 優先引当で早期出荷
+        </div>
+
+        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">テンキー1〜3で選択</div>
+      </div>
+      <div class="ht-key-labels">
+        <div class="key-lbl primary" onclick="alert('ロット異常処理登録')"><span class="fn">F1</span>確定</div>
+        <div class="key-lbl"><span class="fn">F2</span>備考</div>
+        <div class="key-lbl"><span class="fn">F3</span>リーダー</div>
+        <div class="key-lbl" onclick="history.back()"><span class="fn">F4</span>戻る</div>
+      </div>
+    </div>
+    <div class="ht-keypad">
+      <div class="row">
+        <div class="pkey f1">F1</div><div class="pkey f1">F2</div>
+        <div class="pkey scan">SCAN</div>
+        <div class="pkey f1">F3</div><div class="pkey f1">F4</div>
+      </div>
+      <div class="ht-dpad-row">
+        <div class="ht-num-grid">
+          <div class="pkey">7</div><div class="pkey">8</div><div class="pkey">9</div>
+          <div class="pkey">4</div><div class="pkey">5</div><div class="pkey">6</div>
+          <div class="pkey">1</div><div class="pkey">2</div><div class="pkey">3</div>
+          <div class="pkey">CLR</div><div class="pkey">0</div><div class="pkey" style="background:var(--c-accent);">ENT</div>
+        </div>
+        <div class="ht-dpad"><div class="ok">OK</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="device-label">
+  <span class="id">HT-403-5</span>ロット異常
+  <div class="desc-text">賞味期限切迫・ロット不一致検出時の3アクション</div>
+</div>
+
+<script src="js/ht-keypad.js?v=202605202341"></script>
+<script>
+const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 84%`; };
+setClock(); setInterval(setClock, 30000);
+function pickLotAction(a) {
+  const label = { accept: '要注意品として受入', reject: '受入拒否（返品）', escalate: 'リーダー確認' }[a] || a;
+  if (!confirm(`ロット異常処理: 「${label}」で確定しますか？`)) return;
+  alert(`「${label}」で登録しました（モック動作）`);
+  if (a === 'accept') location.href = '/ht/inspect/done.html';
+  else history.back();
+}
+</script>
+</body>
+</html>

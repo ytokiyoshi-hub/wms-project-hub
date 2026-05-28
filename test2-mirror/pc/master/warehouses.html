@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>倉庫マスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>倉庫マスタ</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="card"><div class="card-body">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input id="f-q" placeholder="検索" style="flex:1; border:1px solid var(--c-line-dk); padding:7px 10px;">
+            <button class="btn primary" onclick="alert('「検索」モック動作（実装は後続フェーズ）')">検索</button>
+            <button class="btn primary" style="margin-left:auto;" onclick="alert('「新規登録」モック動作（実装は後続フェーズ）')">新規登録</button>
+          </div>
+        </div></div>
+        <div class="card">
+          <div class="card-header"><span>倉庫一覧</span><span class="meta" id="meta">-</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">コード</th><th class="c-text">名称</th><th class="c-num">運営区分</th><th class="c-text">住所</th><th class="c-action" style="width:140px;">操作</th>
+              </tr></thead>
+              <tbody id="tb"></tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TYPE_LABEL = { self: '自社', external: '外部委託' };
+let all = [];
+async function init() {
+  all = await fetch('/api/warehouses').then(r=>r.json()).catch(()=>[]);
+  render();
+}
+function render() {
+  const q = document.getElementById('f-q').value.trim().toLowerCase();
+  const rows = (all || []).filter(w => !q || w.code.toLowerCase().includes(q) || (w.name||'').toLowerCase().includes(q));
+  document.getElementById('meta').textContent = `${(all||[]).length}件中 ${rows.length}件表示`;
+  const tb = document.getElementById('tb');
+  tb.innerHTML = rows.length ? rows.map(w => `
+    <tr>
+      <td class="text-accent text-bold c-code">${escapeHtml(w.code)}</td>
+      <td class="c-text">${escapeHtml(w.name)}</td>
+      <td class="c-num">${TYPE_LABEL[w.operation_type] || w.operation_type || '-'}</td>
+      <td class="c-text">${escapeHtml(w.address || '-')}</td>
+      <td class="c-action"><button class="btn sm" onclick="alert('「編集」モック動作（実装は後続フェーズ）')">編集</button> <button class="btn sm" onclick="alert('「詳細」モック動作（実装は後続フェーズ）')">詳細</button></td>
+    </tr>
+  `).join('') : '<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--c-text-sub);">倉庫データなし</td></tr>';
+}
+document.getElementById('f-q').addEventListener('input', render);
+init();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

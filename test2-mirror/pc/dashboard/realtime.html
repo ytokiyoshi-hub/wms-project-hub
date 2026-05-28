@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>リアルタイム監視 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.bigstat { background:#fff; border:1px solid var(--c-border); border-radius:8px; padding:16px; }
+.bigstat .val { font-family:'Roboto Mono',monospace; font-size:32px; font-weight:700; color:var(--c-accent); line-height:1.0; }
+.bigstat .lab { font-size:12px; color:var(--c-text-sub); margin-bottom:6px; }
+.bigstat .sub { font-size:11px; color:var(--c-text-sub); margin-top:6px; }
+.bigstat.alert .val { color:var(--c-alert, #c00000); }
+.grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.timeline { font-size:12px; max-height:280px; overflow-y:auto; }
+.timeline .row { padding:6px 0; border-bottom:1px solid var(--c-border); display:grid; grid-template-columns:80px 80px 1fr; gap:10px; }
+.timeline .row.alert { background:var(--c-alert-lt); }
+.timeline .t { font-family:'Roboto Mono',monospace; color:var(--c-text-sub); }
+.timeline .who { color:var(--c-accent); font-family:'Roboto Mono',monospace; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">ダッシュボード　/　<b>リアルタイム監視（D-2 オペレーション可視化）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">5秒ポーリングのライブ状況（D-2）</div>
+          現場の今この瞬間。最新作業／滞留／例外が発生するたびに更新。
+        </div>
+  
+        <div class="grid4" style="margin-bottom:14px;">
+          <div class="bigstat"><div class="lab">稼働HT端末</div><div class="val">10</div><div class="sub">/ 12台</div></div>
+          <div class="bigstat"><div class="lab">処理中ピック</div><div class="val">15</div><div class="sub">残行 124</div></div>
+          <div class="bigstat alert"><div class="lab">SLA超過件数</div><div class="val">1</div><div class="sub">SO-26060104</div></div>
+          <div class="bigstat"><div class="lab">本日の出荷完了</div><div class="val">82</div><div class="sub">予定120 / 68%</div></div>
+        </div>
+  
+        <div class="grid4" style="margin-bottom:14px;">
+          <div class="bigstat"><div class="lab">入荷検品中</div><div class="val">3</div><div class="sub">ASN残2件</div></div>
+          <div class="bigstat"><div class="lab">梱包中</div><div class="val">8</div><div class="sub">残35行</div></div>
+          <div class="bigstat"><div class="lab">引渡待ち</div><div class="val">4</div><div class="sub">レーン1〜3</div></div>
+          <div class="bigstat alert"><div class="lab">例外</div><div class="val">2</div><div class="sub">引当失敗1 / 配送不可1</div></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>ライブイベント（最新50件）</span></div>
+          <div class="card-body">
+            <div class="timeline">
+              <div class="row"><span class="t">14:22:15</span><span class="who">HT-005</span><span>SO-26060108 ピック完了 / SKU-MK001-001×24</span></div>
+              <div class="row alert"><span class="t">14:22:08</span><span class="who">SYS</span><span>⚠️ SO-26060104 引当失敗（在庫不足 必要48/残32）</span></div>
+              <div class="row"><span class="t">14:21:55</span><span class="who">HT-010</span><span>SO-26060107 検品完了 / 出荷待ちへ</span></div>
+              <div class="row"><span class="t">14:21:40</span><span class="who">HT-002</span><span>ASN-26060102 入荷検品 完了</span></div>
+              <div class="row"><span class="t">14:21:22</span><span class="who">PRT-002</span><span>WAVE-3 ピッキングリスト印刷</span></div>
+              <div class="row"><span class="t">14:20:58</span><span class="who">HT-006</span><span>SO-26060105 引渡レーン3 着</span></div>
+              <div class="row alert"><span class="t">14:20:30</span><span class="who">SYS</span><span>⚠️ HT-006 バッテリ低下（18%）</span></div>
+              <div class="row"><span class="t">14:20:12</span><span class="who">PC</span><span>佐藤太郎 WAVE-3 起票（5行 / 13:30便）</span></div>
+              <div class="row"><span class="t">14:19:48</span><span class="who">HT-001</span><span>SKU-MK001-003 棚入れ完了 / REF-01</span></div>
+              <div class="row"><span class="t">14:19:30</span><span class="who">EDI</span><span>MK001 ASN-26060103 受信</span></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 汎用業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>関連情報</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">関連1</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+              <div class="row"><span class="code">関連2</span><span class="name">関連項目の一例</span><span class="when">→</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の活動</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">更新</span><span class="name">直近の更新</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">本日の追加</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

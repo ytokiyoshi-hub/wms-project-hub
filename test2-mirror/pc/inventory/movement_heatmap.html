@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>動線ヒートマップ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+<style>
+.heatmap-grid { display:grid; grid-template-columns: repeat(10, 1fr); gap:2px; margin-top:10px; }
+.heatmap-cell { aspect-ratio:1; padding:6px 2px; font-family:'Roboto Mono',monospace; font-size:10px; text-align:center; border-radius:3px; color:#fff; }
+.h0 { background:#e7f3ff; color:#666; } .h1 { background:#a8c8e6; } .h2 { background:#5e9bd4; } .h3 { background:#2e7cc7; } .h4 { background:var(--c-accent); } .h5 { background:var(--c-alert, #c00000); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">在庫　/　<b>動線ヒートマップ（Q-21 訪問頻度可視化）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">ロケ訪問頻度のヒートマップ（Q-21）</div>
+          過去30日のピッカー訪問回数をロケ単位で色分け。動線が偏ると赤色、空きが多いと薄色。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>1F フロント A通路 訪問頻度（10×10）</span></div>
+          <div class="card-body">
+            <div class="heatmap-grid">
+              <div class="heatmap-cell h5">128</div><div class="heatmap-cell h4">92</div><div class="heatmap-cell h4">85</div><div class="heatmap-cell h3">62</div><div class="heatmap-cell h3">58</div>
+              <div class="heatmap-cell h2">42</div><div class="heatmap-cell h2">38</div><div class="heatmap-cell h2">35</div><div class="heatmap-cell h1">22</div><div class="heatmap-cell h1">18</div>
+  
+              <div class="heatmap-cell h5">115</div><div class="heatmap-cell h4">88</div><div class="heatmap-cell h4">78</div><div class="heatmap-cell h3">55</div><div class="heatmap-cell h3">52</div>
+              <div class="heatmap-cell h2">40</div><div class="heatmap-cell h2">32</div><div class="heatmap-cell h2">28</div><div class="heatmap-cell h1">15</div><div class="heatmap-cell h1">12</div>
+  
+              <div class="heatmap-cell h4">82</div><div class="heatmap-cell h3">65</div><div class="heatmap-cell h3">58</div><div class="heatmap-cell h2">45</div><div class="heatmap-cell h2">38</div>
+              <div class="heatmap-cell h1">25</div><div class="heatmap-cell h1">22</div><div class="heatmap-cell h1">18</div><div class="heatmap-cell h0">8</div><div class="heatmap-cell h0">5</div>
+  
+              <div class="heatmap-cell h3">55</div><div class="heatmap-cell h2">42</div><div class="heatmap-cell h2">38</div><div class="heatmap-cell h2">32</div><div class="heatmap-cell h1">25</div>
+              <div class="heatmap-cell h1">18</div><div class="heatmap-cell h1">15</div><div class="heatmap-cell h0">10</div><div class="heatmap-cell h0">6</div><div class="heatmap-cell h0">3</div>
+  
+              <div class="heatmap-cell h2">35</div><div class="heatmap-cell h2">28</div><div class="heatmap-cell h1">22</div><div class="heatmap-cell h1">18</div><div class="heatmap-cell h1">15</div>
+              <div class="heatmap-cell h0">10</div><div class="heatmap-cell h0">8</div><div class="heatmap-cell h0">5</div><div class="heatmap-cell h0">3</div><div class="heatmap-cell h0">2</div>
+            </div>
+  
+            <div style="margin-top:14px; font-size:11px; color:var(--c-text-sub);">
+              色凡例：<span style="display:inline-block; width:12px; height:12px; background:#e7f3ff; margin:0 4px;"></span>≤10
+              <span style="display:inline-block; width:12px; height:12px; background:#a8c8e6; margin:0 4px;"></span>11〜30
+              <span style="display:inline-block; width:12px; height:12px; background:#5e9bd4; margin:0 4px;"></span>31〜50
+              <span style="display:inline-block; width:12px; height:12px; background:#2e7cc7; margin:0 4px;"></span>51〜80
+              <span style="display:inline-block; width:12px; height:12px; background:var(--c-accent); margin:0 4px;"></span>81〜100
+              <span style="display:inline-block; width:12px; height:12px; background:#c00000; margin:0 4px;"></span>&gt;100
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>分析</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">所見</th><th class="c-text">提案</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">1〜2列目（フロント側）に集中</td><td class="c-text">A品が適切に配置されている / 維持</td></tr>
+                <tr><td class="c-text">9〜10列目（奥）の訪問極小</td><td class="c-text">滞留候補 / ABC-XYZ Z象限の検証</td></tr>
+                <tr><td class="c-text">2行目（A-02通路）の集中度高い</td><td class="c-text">動線交錯の懸念 / ピッカーゾーン分割検討</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

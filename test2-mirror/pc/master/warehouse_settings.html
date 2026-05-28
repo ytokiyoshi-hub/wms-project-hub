@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>倉庫個別設定 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>倉庫個別設定（S-42 倉庫別パラメータ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">倉庫別のシステムパラメータ（S-42）</div>
+          各倉庫固有の業務時間・バース数・自動連携設定・印刷設定などを個別管理。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>東京DC WH001 設定</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>営業時間</label><div class="text-mono">07:00〜19:00（平日）</div></div>
+              <div class="field"><label>土曜営業</label><div class="text-mono">09:00〜17:00</div></div>
+              <div class="field"><label>日曜祝日</label><div class="text-mono">休</div></div>
+              <div class="field"><label>夜間運用</label><div class="text-mono">EC仕分け（22-06時）</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>バース数</label><div class="text-mono">4</div></div>
+              <div class="field"><label>梱包台数</label><div class="text-mono">6</div></div>
+              <div class="field"><label>HT端末数</label><div class="text-mono">12</div></div>
+              <div class="field"><label>稼働中</label><div class="text-mono text-accent" style="font-weight:600;">10</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>倉庫別 比較</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">項目</th><th class="c-text">東京DC WH001</th><th class="c-text">大阪DC WH002</th><th class="c-text">九州DC WH003</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">稼働時間</td><td class="c-text">07-19</td><td class="c-text">08-18</td><td class="c-text">08-17</td></tr>
+                <tr><td class="c-text">バース数</td><td class="c-text">4</td><td class="c-text">3</td><td class="c-text">2</td></tr>
+                <tr><td class="c-text">梱包台数</td><td class="c-text">6</td><td class="c-text">4</td><td class="c-text">2</td></tr>
+                <tr><td class="c-text">HT端末数</td><td class="c-text">12</td><td class="c-text">8</td><td class="c-text">5</td></tr>
+                <tr><td class="c-text">冷凍庫</td><td class="c-text">有</td><td class="c-text">有</td><td class="c-text">無</td></tr>
+                <tr><td class="c-text">危険物保管</td><td class="c-text">少量</td><td class="c-text">少量</td><td class="c-text">無</td></tr>
+                <tr><td class="c-text">夜間運用</td><td class="c-text">EC仕分け</td><td class="c-text">無</td><td class="c-text">無</td></tr>
+                <tr><td class="c-text">主荷主</td><td class="c-text">MK001 / EC001</td><td class="c-text">AP001 / MK001(西)</td><td class="c-text">MK001(九) / 地場</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>機能フラグ（倉庫別）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">機能</th><th class="c-code">WH001</th><th class="c-code">WH002</th><th class="c-code">WH003</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">クロスドック自動化</td><td class="c-code">有効</td><td class="c-code">有効</td><td class="c-code">無効</td></tr>
+                <tr><td class="c-text">ABC再配置自動提案</td><td class="c-code">有効</td><td class="c-code">有効</td><td class="c-code">無効</td></tr>
+                <tr><td class="c-text">温度センサー監視</td><td class="c-code">有効</td><td class="c-code">有効</td><td class="c-code">常温のみ</td></tr>
+                <tr><td class="c-text">API荷主ポータル</td><td class="c-code">有効</td><td class="c-code">有効</td><td class="c-code">有効</td></tr>
+                <tr><td class="c-text">サイクルカウント</td><td class="c-code">有効</td><td class="c-code">有効</td><td class="c-code">有効</td></tr>
+                <tr><td class="c-text">マルチDC引当</td><td class="c-code">有効</td><td class="c-code">有効</td><td class="c-code">有効</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

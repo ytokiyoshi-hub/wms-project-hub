@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>例外タグマスタ — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>例外タグマスタ（S-34 タグ分類）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">例外を整理する自由タグ体系（S-34）</div>
+          例外種別とは別軸でタグ付け。「再発」「VIP」「学習対象」など分析しやすい切り口を作る。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>登録タグ一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">コード</th><th class="c-text">名称</th><th class="c-text">色</th><th class="c-text">用途</th><th class="c-num">付与件数（過去30日）</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">TAG-RP</td><td class="c-text">再発</td><td class="c-text"><span class="pill alert">赤</span></td><td class="c-text">過去3ヶ月で2回以上同パターン</td><td class="c-num">12</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">TAG-VIP</td><td class="c-text">VIP対応</td><td class="c-text"><span class="pill accent">青</span></td><td class="c-text">VIP顧客／重要荷主</td><td class="c-num">4</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">TAG-LRN</td><td class="c-text">学習対象</td><td class="c-text"><span class="pill">黄</span></td><td class="c-text">研修ケーススタディ</td><td class="c-num">8</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">TAG-CMP</td><td class="c-text">クレーム</td><td class="c-text"><span class="pill alert">橙</span></td><td class="c-text">苦情伴うインシデント</td><td class="c-num">6</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">TAG-MED</td><td class="c-text">マスコミ案件</td><td class="c-text"><span class="pill alert">赤</span></td><td class="c-text">外部公表リスク</td><td class="c-num">0</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">TAG-FIX</td><td class="c-text">システム改修候補</td><td class="c-text"><span class="pill">緑</span></td><td class="c-text">システム側で防止可能</td><td class="c-num">5</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">TAG-AUD</td><td class="c-text">監査対応</td><td class="c-text"><span class="pill">紫</span></td><td class="c-text">監査人に共有</td><td class="c-num">3</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>「再発」タグの傾向（過去30日）</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">パターン</th><th class="c-num">件数</th><th class="c-text">主因</th><th class="c-text">対応提案</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">誤梱包（伊藤裕子）</td><td class="c-num">5</td><td class="c-text">新人OJT期</td><td class="c-text">研修延長 + ペア作業</td></tr>
+                <tr><td class="c-text">SLA超過（PR001 夜間）</td><td class="c-num">4</td><td class="c-text">夜間人員不足</td><td class="c-text">派遣手配 / 締切調整</td></tr>
+                <tr><td class="c-text">EDI連携失敗（PR001 SFTP）</td><td class="c-num">3</td><td class="c-text">仕入先側不安定</td><td class="c-text">仕入先側調査依頼</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>W-201 在庫照会 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">在庫管理　/　<b>在庫照会 (W-201)</b><span class="badge">PHASE 0</span></div>
+    </div>
+    <div class="content dashboard-compact">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="stats">
+          <div class="stat"><div class="label">在庫行数</div><div class="value" id="s-rows">-</div><span class="unit">行</span></div>
+          <div class="stat"><div class="label">商品種別</div><div class="value" id="s-products">-</div><span class="unit">SKU</span></div>
+          <div class="stat"><div class="label">ロケ種別</div><div class="value" id="s-locations">-</div><span class="unit">件</span></div>
+          <div class="stat"><div class="label">総数量</div><div class="value" id="s-total">-</div><span class="unit">ケース</span></div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header">
+            <span>在庫一覧</span>
+            <span class="meta" id="filter-meta">荷主：全件</span>
+          </div>
+          <div class="card-body" style="padding-bottom:0;">
+            <div class="filter-row">
+              <div class="field"><label>荷主</label><select id="f-owner"><option value="">全件</option></select></div>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="btn primary" onclick="render()">検索</button>
+              </div>
+              <div class="field"><label>商品コード/JAN</label><input id="f-product" placeholder="例: S-00321"></div>
+              <div class="field"><label>ロケコード</label><input id="f-location" placeholder="例: 3AP-02-134"></div>
+            </div>
+          </div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr>
+                <th class="c-code">荷主</th>
+                <th class="c-code">商品コード</th>
+                <th class="c-text">商品名</th>
+                <th class="c-code">ロケ</th>
+                <th class="c-code">ロット</th>
+                <th class="c-num">数量</th>
+                <th class="c-code">単位</th>
+                <th class="c-date">更新日時</th>
+              </tr></thead>
+              <tbody id="tb-inv"></tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: ダッシュボード補助情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日のKPI</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">処理件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了率</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">遅延件数</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>比較指標</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">昨日比</span><span class="val accent">+5%</span></div>
+              <div class="summary-row"><span class="lbl">先週比</span><span class="val mute">±0%</span></div>
+              <div class="summary-row"><span class="lbl">月初累計</span><span class="val">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">承認</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let allRows = [];
+
+async function loadOwners() {
+  const owners = await fetch('/api/owners').then(r => r.json()).catch(() => []);
+  const sel = document.getElementById('f-owner');
+  owners.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o.code;
+    opt.textContent = `${o.code} ${o.name}`;
+    sel.appendChild(opt);
+  });
+}
+
+async function loadInventory() {
+  allRows = await fetch('/api/inventory').then(r => r.json()).catch(() => []);
+  render();
+}
+
+function render() {
+  const ownerF = document.getElementById('f-owner').value;
+  const prodF = document.getElementById('f-product').value.trim().toLowerCase();
+  const locF = document.getElementById('f-location').value.trim().toLowerCase();
+  const rows = allRows.filter(r => {
+    if (ownerF && r.owner_code !== ownerF) return false;
+    if (prodF && !(r.product_code || '').toLowerCase().includes(prodF) && !(r.jan_code || '').toLowerCase().includes(prodF)) return false;
+    if (locF && !(r.location_code || '').toLowerCase().includes(locF)) return false;
+    return true;
+  });
+  const DISPLAY_LIMIT = 200;
+  const shown = Math.min(rows.length, DISPLAY_LIMIT);
+  document.getElementById('s-rows').textContent = rows.length;
+  document.getElementById('s-products').textContent = new Set(rows.map(r => r.product_code)).size;
+  document.getElementById('s-locations').textContent = new Set(rows.map(r => r.location_code)).size;
+  document.getElementById('s-total').textContent = rows.reduce((s, r) => s + (r.qty || 0), 0);
+  document.getElementById('filter-meta').textContent = `全${allRows.length}行 / 該当${rows.length}行 / 表示${shown}行${rows.length > DISPLAY_LIMIT ? ' (絞り込みで件数を減らしてください)' : ''}`;
+
+  const tb = document.getElementById('tb-inv');
+  if (rows.length === 0) {
+    tb.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--c-text-sub);">在庫データなし</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.slice(0, DISPLAY_LIMIT).map(r => `
+    <tr>
+      <td class="c-code">${escapeHtml(r.owner_code || '-')}</td>
+      <td class="c-code">${escapeHtml(r.product_code || '-')}</td>
+      <td class="c-text">${escapeHtml(r.product_name || '-')}</td>
+      <td class="c-code">${escapeHtml(r.location_code || '-')}</td>
+      <td class="c-code">${escapeHtml(r.lot_no || '-')}</td>
+      <td class="c-num text-accent" style="font-weight:600;">${r.qty ?? '-'}</td>
+      <td class="c-code">${escapeHtml(r.unit_top || '-')}</td>
+      <td class="c-date">${escapeHtml(r.updated_at || '-')}</td>
+    </tr>
+  `).join('');
+}
+(async () => {
+  await loadOwners();
+  await loadInventory();
+})();
+</script>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+</body>
+</html>

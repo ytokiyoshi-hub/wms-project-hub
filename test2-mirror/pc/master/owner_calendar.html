@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>荷主稼働カレンダー — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>荷主稼働カレンダー（S-25 荷主別営業日）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別の営業日／休業日定義（S-25）</div>
+          荷主自体の営業日と取引先（配送先）の受領可能日を別管理。SLA計算・配達予定日計算で参照。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 2026年6月 稼働カレンダー</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">日付</th><th class="c-text">曜日</th><th class="c-text">祝日</th><th class="c-code">MK001</th><th class="c-code">AP001</th><th class="c-code">EC001</th><th class="c-code">PR001</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">2026-06-01</td><td class="c-text">月</td><td class="c-text">-</td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td></tr>
+                <tr><td class="c-date">2026-06-02</td><td class="c-text">火</td><td class="c-text">-</td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td></tr>
+                <tr style="background:#fff9e6;"><td class="c-date">2026-06-06</td><td class="c-text">土</td><td class="c-text">-</td><td class="c-code"><span class="pill alert">休</span></td><td class="c-code"><span class="pill alert">休</span></td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill alert">休</span></td></tr>
+                <tr style="background:#fff9e6;"><td class="c-date">2026-06-07</td><td class="c-text">日</td><td class="c-text">-</td><td class="c-code"><span class="pill alert">休</span></td><td class="c-code"><span class="pill alert">休</span></td><td class="c-code"><span class="pill alert">休</span></td><td class="c-code"><span class="pill alert">休</span></td></tr>
+                <tr><td class="c-date">2026-06-08</td><td class="c-text">月</td><td class="c-text">-</td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">2026-06-15</td><td class="c-text">月</td><td class="c-text">-</td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill alert">創立記念日</span></td><td class="c-code"><span class="pill accent">稼働</span></td><td class="c-code"><span class="pill accent">稼働</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主×営業時間</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-num">受注可能時間（平日）</th><th class="c-num">受注可能時間（土曜）</th><th class="c-num">EDI停止時間</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-num">08:00〜18:00</td><td class="c-num">09:00〜13:00</td><td class="c-num">22:00〜06:00 メンテ</td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-num">09:00〜17:30</td><td class="c-num">休</td><td class="c-num">20:00〜08:00</td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-num">24時間</td><td class="c-num">24時間</td><td class="c-num">03:00〜04:00 メンテ</td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-num">10:00〜17:00</td><td class="c-num">休</td><td class="c-num">22:00〜08:00</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>

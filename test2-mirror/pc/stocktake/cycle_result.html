@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>循環棚卸結果 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">棚卸　/　<b>循環棚卸結果（Q-6 月次サマリ）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">サイクルカウント結果集計（Q-6）</div>
+          ロット差異・要因不明分・在庫精度を月次集計。荷主報告とSLA達成判定に利用。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>2026年5月 月次サマリ</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>カウント実施日数</label><div class="text-mono" style="font-weight:600;">22日</div></div>
+              <div class="field"><label>カウントロケ数</label><div class="text-mono" style="font-weight:600;">220</div></div>
+              <div class="field"><label>カウントSKU数</label><div class="text-mono" style="font-weight:600;">286</div></div>
+              <div class="field"><label>在庫精度</label><div class="text-mono text-accent" style="font-weight:600;">99.6%</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <div class="field"><label>差異一致</label><div class="text-mono" style="font-weight:600;">214 ロケ</div></div>
+              <div class="field"><label>差異あり</label><div class="text-mono text-alert" style="font-weight:600;">6 ロケ</div></div>
+              <div class="field"><label>要因判明</label><div class="text-mono" style="font-weight:600;">5</div></div>
+              <div class="field"><label>要因不明</label><div class="text-mono text-alert" style="font-weight:600;">1</div></div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>荷主別 在庫精度</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>荷主</th><th class="right">カウントSKU</th><th class="right">差異一致</th><th class="right">差異</th><th class="right">精度</th><th class="right">SLA目標</th><th>判定</th></tr></thead>
+              <tbody>
+                <tr><td>MK001</td><td class="right num">85</td><td class="right num">83</td><td class="right num">2</td><td class="right num text-accent">97.6%</td><td class="right num">95.0%</td><td><span class="pill accent">達成</span></td></tr>
+                <tr><td>AP001</td><td class="right num">62</td><td class="right num">62</td><td class="right num">0</td><td class="right num text-accent">100.0%</td><td class="right num">99.9%</td><td><span class="pill accent">達成</span></td></tr>
+                <tr><td>EC001</td><td class="right num">98</td><td class="right num">95</td><td class="right num">3</td><td class="right num">96.9%</td><td class="right num">95.0%</td><td><span class="pill accent">達成</span></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td>PR001</td><td class="right num">41</td><td class="right num">40</td><td class="right num">1</td><td class="right num">97.6%</td><td class="right num">99.0%</td><td><span class="pill alert">未達</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>差異要因分析</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th>要因</th><th class="right">件数</th><th class="right">構成比</th><th>対策</th></tr></thead>
+              <tbody>
+                <tr><td>誤ピック→未補正</td><td class="right num">3</td><td class="right num">50%</td><td>ピック後ダブルチェック</td></tr>
+                <tr><td>棚入れ漏れ</td><td class="right num">1</td><td class="right num">17%</td><td>棚入完了スキャン徹底</td></tr>
+                <tr><td>誤入力（数量）</td><td class="right num">1</td><td class="right num">17%</td><td>2回入力UI導入</td></tr>
+                <tr><td>要因不明</td><td class="right num">1</td><td class="right num">17%</td><td>監視カメラ確認</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 入出荷/業務系情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>本日サマリ</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">合計</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">完了</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">進行中</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">待ち</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>進捗</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">SLA達成</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">SLA遅延</span><span class="val alert">-</span></div>
+              <div class="summary-row"><span class="lbl">平均処理時間</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>要対応</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">遅延</span><span class="name">SLA超過案件</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">差異</span><span class="name">数量不一致</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">保留</span><span class="name">承認待ち</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-inout-stats.js?v=202605202324"></script>
+</body>
+</html>

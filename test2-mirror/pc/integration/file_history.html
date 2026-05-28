@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>連携ファイル履歴 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">外部連携　/　<b>連携ファイル履歴（X-8 入出力ファイル管理）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">送受信ファイルの履歴（X-8）</div>
+          過去13ヶ月分の入出力ファイルを保管。ダウンロード／再処理可能。
+        </div>
+  
+        <div class="card"><div class="card-body">
+          <div class="form-row">
+            <div class="field"><label>方向</label><select><option>全て</option><option>送信</option><option>受信</option></select></div>
+            <div class="field"><label>連携先</label><select><option>全先</option><option>MK001</option><option>EC001</option></select></div>
+            <div class="field"><label>期間</label><input type="text" value="2026-06-01" class="text-mono"></div>
+            <div class="field"><label>処理結果</label><select><option>全件</option><option>成功</option><option>失敗</option></select></div>
+          </div>
+        </div></div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日のファイル</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-date">時刻</th><th class="c-text">方向</th><th class="c-text">連携先</th><th class="c-text">ファイル名</th><th class="c-num">行数</th><th class="c-num">サイズ</th><th class="c-text">処理結果</th><th class="c-action">操作</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-date">14:30:12</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">MK001</td><td class="text-xs c-text">asn_20260601_1430.csv</td><td class="c-num">5</td><td class="c-num">8.2KB</td><td class="c-text"><span class="pill accent">成功</span></td><td class="c-action"><button class="btn small" onclick="alert('「DL」モック動作（実装は後続フェーズ）')">DL</button></td></tr>
+                <tr><td class="c-date">14:25:08</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">MK001</td><td class="text-xs c-text">shipped_20260601_1425.csv</td><td class="c-num">38</td><td class="c-num">12.4KB</td><td class="c-text"><span class="pill accent">成功</span></td><td class="c-action"><button class="btn small" onclick="alert('「DL」モック動作（実装は後続フェーズ）')">DL</button></td></tr>
+                <tr><td class="c-date">13:30:11</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">MK001</td><td class="text-xs c-text">asn_20260601_1330.csv</td><td class="c-num">3</td><td class="c-num">6.8KB</td><td class="c-text"><span class="pill accent">成功</span></td><td class="c-action"><button class="btn small" onclick="alert('「DL」モック動作（実装は後続フェーズ）')">DL</button></td></tr>
+                <tr style="background:var(--c-alert-lt);"><td class="c-date">12:00:00</td><td class="c-text"><span class="pill">受信</span></td><td class="c-text">PR001</td><td class="text-xs c-text">order_20260601_1200.csv</td><td class="c-num">2</td><td class="c-num">1.2KB</td><td class="c-text"><span class="pill alert">VAL-005 失敗</span></td><td class="c-action"><button class="btn small" onclick="alert('「DL」モック動作（実装は後続フェーズ）')">DL</button></td></tr>
+                <tr><td class="c-date">06:00:02</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">AP001</td><td class="text-xs c-text">inventory_20260601.csv</td><td class="c-num">3,730</td><td class="c-num">142KB</td><td class="c-text"><span class="pill accent">成功</span></td><td class="c-action"><button class="btn small" onclick="alert('「DL」モック動作（実装は後続フェーズ）')">DL</button></td></tr>
+                <tr><td class="c-date">00:00:01</td><td class="c-text"><span class="pill accent">送信</span></td><td class="c-text">EC001</td><td class="text-xs c-text">snapshot_20260531.csv</td><td class="c-num">14,562</td><td class="c-num">820KB</td><td class="c-text"><span class="pill accent">成功</span></td><td class="c-action"><button class="btn small" onclick="alert('「DL」モック動作（実装は後続フェーズ）')">DL</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>本日サマリ</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="field"><label>送信ファイル数</label><div class="text-mono" style="font-weight:600;">42</div></div>
+              <div class="field"><label>受信ファイル数</label><div class="text-mono" style="font-weight:600;">128</div></div>
+              <div class="field"><label>合計サイズ</label><div class="text-mono">2.4 MB</div></div>
+              <div class="field"><label>処理失敗</label><div class="text-mono text-alert" style="font-weight:600;">2</div></div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: 統合系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>連携状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">本日</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">停止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">エラー中</span><span class="val alert">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>直近エラー</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー1</span><span class="when">14:20</span></div>
+              <div class="row"><span class="code">ERR</span><span class="name">直近のエラー2</span><span class="when">12:08</span></div>
+              <div class="row"><span class="code">WARN</span><span class="name">警告</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>接続先</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">ERP</span><span class="name">SAP S/4 HANA</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">EDI</span><span class="name">取引先A EDI</span><span class="when">OK</span></div>
+              <div class="row"><span class="code">TMS</span><span class="name">輸配送システム</span><span class="when">OK</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-integration-stats.js?v=202605202320"></script>
+</body>
+</html>

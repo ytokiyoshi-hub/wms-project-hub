@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>SLA定義 — WMS テストサイト2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/test2.css?v=202605282215">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar"><div class="crumb">マスタ　/　<b>SLA定義（S-13 契約SLAの個別設定）</b><span class="badge">PHASE 1</span></div></div>
+    <div class="content">
+      <div class="two-pane">
+
+        <!-- 左ペイン: 本体 -->
+        <div class="left-pane">
+  <div class="note-box">
+          <div class="text-bold text-accent" style="margin-bottom:4px;">荷主別のSLA基準値（S-13）</div>
+          当日出荷／入荷検品／差異対応など、契約で定めるSLAを荷主×イベント単位で登録。レポート集計の母数になる。
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SLA定義一覧</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-code">荷主</th><th class="c-code">SLAコード</th><th class="c-text">SLA項目</th><th class="c-text">基準</th><th class="c-num">目標達成率</th><th class="c-text">違反時のペナルティ</th><th class="c-status">状態</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-code">MK001</td><td class="c-code">SLA-MK-001</td><td class="c-text">当日出荷</td><td class="c-text">締切+4h以内に出荷完了</td><td class="c-num">99.0%</td><td class="c-text">違反1件あたり ¥3,000</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-code">SLA-MK-002</td><td class="c-text">入荷検品</td><td class="c-text">荷下ろし+2h以内に検品完了</td><td class="c-num">95.0%</td><td class="c-text">違反1件あたり ¥1,500</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">MK001</td><td class="c-code">SLA-MK-003</td><td class="c-text">差異対応</td><td class="c-text">検知+24h以内に荷主回答</td><td class="c-num">90.0%</td><td class="c-text">違反1件あたり ¥5,000</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-code">SLA-EC-001</td><td class="c-text">EC即日出荷</td><td class="c-text">14:30までの受注を当日出荷</td><td class="c-num">99.0%</td><td class="c-text">違反1件あたり ¥1,000</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">EC001</td><td class="c-code">SLA-EC-002</td><td class="c-text">欠品手数料</td><td class="c-text">引当失敗率 &lt;0.5%</td><td class="c-num">99.5%</td><td class="c-text">違反月 ¥50,000</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-code">SLA-AP-001</td><td class="c-text">翌日出荷</td><td class="c-text">前日17:00締→翌13:30便</td><td class="c-num">98.0%</td><td class="c-text">違反1件あたり ¥2,000</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">AP001</td><td class="c-code">SLA-AP-002</td><td class="c-text">誤出荷率</td><td class="c-text">誤出荷 &lt;0.1%</td><td class="c-num">99.9%</td><td class="c-text">違反月 ¥100,000</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+                <tr><td class="c-code">PR001</td><td class="c-code">SLA-PR-001</td><td class="c-text">当日出荷</td><td class="c-text">15:00締切+4h以内</td><td class="c-num">95.0%</td><td class="c-text">違反1件あたり ¥3,000</td><td class="c-status"><span class="pill accent">有効</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <div class="card">
+          <div class="card-header"><span>SLA違反時の自動アクション</span></div>
+          <div class="card-body flush">
+            <table class="list list-full">
+              <thead><tr><th class="c-text">違反パターン</th><th class="c-text">通知先</th><th class="c-text">エスカレ</th><th class="c-text">記録</th></tr></thead>
+              <tbody>>
+                <tr><td class="c-text">達成率が目標を1%下回る</td><td class="c-text">マネージャー</td><td class="c-text">翌営業日</td><td class="c-text">監査ログ</td></tr>
+                <tr><td class="c-text">達成率が目標を5%下回る</td><td class="c-text">マネージャー + 営業担当</td><td class="c-text">当日</td><td class="c-text">監査ログ + 報告書</td></tr>
+                <tr><td class="c-text">1件でも違反した</td><td class="c-text">担当オペレーター</td><td class="c-text">即時</td><td class="c-text">監査ログ</td></tr>
+                <tr><td class="c-text">ペナルティ累計が月¥100k超え</td><td class="c-text">営業部長</td><td class="c-text">即時</td><td class="c-text">クレジット起票</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        </div>
+
+        <!-- 右ペイン: マスタ系業務情報 -->
+        <div class="right-pane">
+
+          <div class="card">
+            <div class="card-header"><span>マスタの状況</span><span class="meta" style="font-size:11px; color:#9ca3af;">※モック含</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">登録件数</span><span class="val accent">-</span></div>
+              <div class="summary-row"><span class="lbl">アクティブ</span><span class="val">-</span></div>
+              <div class="summary-row"><span class="lbl">休止</span><span class="val mute">-</span></div>
+              <div class="summary-row"><span class="lbl">本日追加</span><span class="val mute">-</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>データ品質</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="card-body" style="padding:0;">
+              <div class="summary-row"><span class="lbl">必須項目欠損</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">コード重複</span><span class="val mute">0件</span></div>
+              <div class="summary-row"><span class="lbl">未使用</span><span class="val mute">0件</span></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div class="card-header"><span>最近の追加・編集</span><span class="meta" style="font-size:10px; color:#9ca3af;">モック</span></div>
+            <div class="mini-list">
+              <div class="row"><span class="code">追加</span><span class="name">最新エントリ</span><span class="when">14:35</span></div>
+              <div class="row"><span class="code">編集</span><span class="name">直前の編集</span><span class="when">11:02</span></div>
+              <div class="row"><span class="code">追加</span><span class="name">2つ前</span><span class="when">昨日</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="js/nav-manifest.js?v=202605282215"></script>
+<script src="js/common-layout.js?v=202605282215"></script>
+<script src="js/common-master-stats.js?v=202605202258"></script>
+</body>
+</html>
