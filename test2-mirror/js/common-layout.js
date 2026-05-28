@@ -5,6 +5,26 @@
 (function () {
   if (typeof window === 'undefined') return;
 
+  // === API 静的JSON ブリッジ ===
+  // GitHub Pages 等の静的環境では /api/* を <base>/api/<path>.json に振り替える
+  // localhost:8778 (Express) などのサーバ環境ではそのまま素通り
+  (function setupStaticApiBridge() {
+    if (window.__WMS_API_BRIDGE__) return;
+    window.__WMS_API_BRIDGE__ = true;
+    // /wms-project-hub/test2-mirror/* または /test2-mirror/* を base として抽出
+    const m = location.pathname.match(/^(.*?\/test2-mirror)\//);
+    const apiBase = m ? m[1] : '';
+    if (!apiBase) return; // ローカル直配信時はブリッジ不要
+    const _origFetch = window.fetch.bind(window);
+    window.fetch = function(url, init) {
+      if (typeof url === 'string' && url.startsWith('/api/')) {
+        const stripped = url.replace(/^\/api\//, '').replace(/\?.*$/, '');
+        return _origFetch(apiBase + '/api/' + stripped + '.json', init);
+      }
+      return _origFetch(url, init);
+    };
+  })();
+
   // === 配色テーマ（ユーザー設定）===
   // 編集可能な CSS 変数: 罫線 / アクセント / アラート / 背景。
   // localStorage に保存された値を起動時に :root に適用する。
