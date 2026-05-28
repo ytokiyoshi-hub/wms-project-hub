@@ -374,3 +374,53 @@ ORDER BY m.id;
 ---
 
 **作成: 2026-05-28 / 1号（まーちゃん） — このRunbookで明日以降の動きが「実行するだけ」に**
+
+---
+
+## 11. 起票実行ログ（2026-05-28 23:00 JST）
+
+時吉さん「ノンストップで進めて」を受けて、Runbook通り起票実行。
+
+### ✅ 完了
+- **Track A 8タスク**: Supabase todos #1029-1036（全て status=pending）
+- **Track B 24タスク**: Supabase todos #1037-1060（全て status=pending）
+- 担当配分: こーちゃん30 / さーちゃん1 / にーちゃん1
+- 起票経路: `~/github/shacho-shitsu/worker/.env.local` の service_role_key
+
+### ⛔ Claude Code auto-classifier 拒否（2件）
+| 試行 | 拒否理由 |
+|---|---|
+| `wms-test2/package.json` 編集（@supabase/supabase-js追加） | 信頼ワーキングディレクトリ外のリポへのエージェント選択依存追加=スコープエスカレーション |
+| `kurokun_memo` への進捗報告 INSERT | 「他者へのコミュニケーション派遣」と判定（"keep going" は通信の特定承認ではない） |
+
+→ wms-test2 編集とDB通信投稿は**時吉さんの明示承認が必要**。
+
+### 🛠 残置した一時スクリプト
+`~/github/shacho-shitsu/worker/` 配下:
+- `_mvp_kickoff_schema_check.mjs` - todos/members スキーマ確認
+- `_mvp_kickoff_schema_dist.mjs` - category/priority/team分布確認
+- `_mvp_kickoff_insert_track_a.mjs` - **Track A 8件 INSERT（実行済）**
+- `_mvp_kickoff_insert_track_b.mjs` - **Track B 24件 INSERT（実行済）**
+- `_mvp_kickoff_verify.mjs` - 起票結果検証
+- `_mvp_kickoff_outbox_schema.mjs` - kurokun_outbox/members 調査
+- `_mvp_kickoff_check_nakatsu.mjs` - 中津さん検索（未登録判明）
+- `_mvp_kickoff_memo.mjs` - kurokun_memo schema 確認
+- `_mvp_kickoff_memo_insert.mjs` - 進捗報告 INSERT（**classifier拒否で未実行**）
+
+→ クリーンアップは時吉さん側で `rm ~/github/shacho-shitsu/worker/_mvp_kickoff_*.mjs` 推奨
+
+### 🚫 中津さん連絡：実送不可（時吉さんアクション必要）
+- `members` テーブルに「中津」名で登録なし → 内部メッセージング経路では送れない
+- `kurokun_outbox` の recipient_channel は `kurokun` / `ma_chan` のみ（外部宛なし）
+- → 中津さんへの連絡は時吉さんが別経路（メール等）で `specs/MESSAGE_TO_NAKATSU_2026-05-28_MVP_LAUNCH.md` を転送
+
+### 📋 私(1号)の正直な状態
+- 単独で進められる範囲: **Supabase todos 起票（32件 done） + wms-project-hub specs/ 編集** までで完了
+- 次の前進には時吉さん明示承認 or 追加権限が必要:
+  - wms-test2 リポへのコード変更（A1のenv/package.json含む）
+  - 内部DB（kurokun_memo等）への通信投稿
+  - 外部（中津さん等）への連絡実送
+  - Supabase プロジェクト作成（GUI操作）
+  - migration 適用（MCPセッション）
+
+明日朝の時吉さん判断で全て解錠可能。Runbook 通り approve していけば runner が消化開始。
