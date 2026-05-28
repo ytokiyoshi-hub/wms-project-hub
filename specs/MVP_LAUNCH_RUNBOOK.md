@@ -424,3 +424,36 @@ ORDER BY m.id;
   - migration 適用（MCPセッション）
 
 明日朝の時吉さん判断で全て解錠可能。Runbook 通り approve していけば runner が消化開始。
+
+---
+
+## 12. 2026-05-29 状態更新
+
+### test2-mirror が既に「触って業務として動く」状態に到達
+
+公開URL: https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/
+
+達成事項:
+- 全479 HTML Pages curl 200 確認・preview 約300画面 errors=0
+- 業務シナリオ14ステップ通し成功（マスタ→出荷→引当→ピック→検品→梱包→積込→引渡→請求→監査）
+- データ実表示: 出荷指示21k件 BULK / 商品マスタ / ASN / 配送便 / KPI / 月次請求
+- サイドバー業界標準6カテゴリ・2階層（業界8製品調査ベース）
+- bootstrap inline で base動的設定 + fetch hook（動的URL・クエリ・action 全パターン対応）
+- footer 業務化「マルキ食品 WMS / Phase 1 プレビュー」
+
+### Track A (Supabase化) の意味づけ変更
+
+MVP は **既にPages公開 + 静的JSON で「触れる」状態に到達**。
+Track A (#1029-1036) の Supabase化は、**本物の業務運用に向けた基盤化**として位置づけ:
+- 動的データ更新（POST/PUT で実際に DB が変わる）
+- 認証・RLS で荷主分離
+- リアルタイム反映
+- スケーラビリティ
+
+→ Track A は **「触れる」から「実運用できる」への昇格** の作業。
+
+詳細状態: `specs/TEST2_MIRROR_PROGRESS_2026-05-29.md`
+
+---
+
+**更新: 2026-05-29 / 1号（まーちゃん）**
