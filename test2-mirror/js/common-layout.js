@@ -16,13 +16,40 @@
     const apiBase = m ? m[1] : '';
     if (!apiBase) return; // ローカル直配信時はブリッジ不要
     const _origFetch = window.fetch.bind(window);
+    const jsonResponse = (data, status) => new Response(
+      JSON.stringify(data), { status: status || 200, headers: { 'Content-Type': 'application/json' } }
+    );
     window.fetch = function(url, init) {
       if (typeof url === 'string') {
-        // /api/X, api/X どちらも catch、クエリ・末尾スラッシュ対応
-        const m = url.match(/^\/?api\/(.+?)\/?(\?.*)?$/);
-        if (m) {
-          return _origFetch(apiBase + '/api/' + m[1] + '.json', init);
+        const method = (init && init.method) || 'GET';
+        const isApi = /^\/?api\//.test(url);
+        if (!isApi) return _origFetch(url, init);
+
+        // POST/PUT/DELETE/PATCH: dummy 成功応答（書き込み系mock）
+        if (method !== 'GET') {
+          return Promise.resolve(jsonResponse({ ok: true, id: Date.now(), mock: true }));
         }
+
+        // GET: /api/path[?query] → /api/path.json を試行、ダメなら親fallback
+        const m = url.match(/^\/?api\/(.+?)\/?(\?.*)?$/);
+        if (!m) return _origFetch(url, init);
+        const path = m[1].replace(/\/$/, '');
+        const fullUrl = apiBase + '/api/' + path + '.json';
+
+        return _origFetch(fullUrl, init).then(r => {
+          if (r.ok) return r;
+          // 404 fallback: 親collection から最初の要素 / 空配列
+          const segs = path.split('/');
+          if (segs.length === 1) return jsonResponse([]);
+          const parent = segs[0];
+          return _origFetch(apiBase + '/api/' + parent + '.json', init).then(pr => {
+            if (!pr.ok) return jsonResponse({});
+            return pr.json().then(d => {
+              const item = Array.isArray(d) && d.length > 0 ? d[0] : (typeof d === 'object' ? d : {});
+              return jsonResponse(item);
+            });
+          });
+        }).catch(() => jsonResponse([]));
       }
       return _origFetch(url, init);
     };
