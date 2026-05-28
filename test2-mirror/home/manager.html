@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>倉庫責任者ホーム — マルキ食品 WMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: #f4f5f7; color: #1a1f29; }
+  .header { background: #1a3a5c; color: white; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 18px; font-weight: 600; }
+  .header .user { font-size: 13px; opacity: 0.9; }
+  .header .user .role { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+  .back { color: white; opacity: 0.85; text-decoration: none; font-size: 13px; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  @media (max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: white; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .stat .label { font-size: 12px; color: #6c7280; margin-bottom: 4px; }
+  .stat .value { font-size: 28px; font-weight: 700; color: #1a3a5c; }
+  .stat .delta { font-size: 11px; color: #16a34a; margin-top: 4px; }
+  .stat .delta.alert { color: #b8002e; }
+  .section-title { font-size: 14px; font-weight: 600; color: #1a3a5c; margin: 24px 0 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .flow { background: white; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 24px; }
+  .flow-title { font-size: 16px; font-weight: 600; color: #1a3a5c; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .flow-steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  @media (max-width: 1024px) { .flow-steps { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px) { .flow-steps { grid-template-columns: repeat(2, 1fr); } }
+  .step { background: #f4f5f7; border-radius: 6px; padding: 12px; text-align: center; text-decoration: none; color: #1a1f29; transition: all 0.15s; position: relative; }
+  .step:hover { background: #e4e7eb; transform: translateY(-1px); }
+  .step.done { background: #d1fae5; }
+  .step.current { background: #fef3c7; border: 2px solid #f59e0b; }
+  .step .num { font-size: 10px; color: #6c7280; margin-bottom: 4px; }
+  .step .name { font-size: 13px; font-weight: 600; }
+  .step .count { font-size: 11px; color: #4a5568; margin-top: 4px; }
+  .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 768px) { .quick-grid { grid-template-columns: 1fr; } }
+  .quick-card { background: white; border-radius: 8px; padding: 20px; text-decoration: none; color: inherit; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: all 0.15s; display: block; }
+  .quick-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .quick-card .icon { font-size: 28px; margin-bottom: 8px; }
+  .quick-card .title { font-size: 15px; font-weight: 600; color: #1a3a5c; margin-bottom: 4px; }
+  .quick-card .desc { font-size: 12px; color: #6c7280; line-height: 1.5; }
+  .pill { display: inline-block; padding: 2px 8px; background: #1a3a5c; color: white; border-radius: 10px; font-size: 10px; margin-left: 6px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div style="display: flex; align-items: center; gap: 16px;">
+    <a href="../index.html" class="back">← ログイン画面</a>
+    <h1>マルキ食品 倉庫管理</h1>
+  </div>
+  <div class="user">山田 太郎<span class="role">倉庫責任者</span></div>
+</div>
+
+<div class="container">
+  <div class="section-title">本日 2026-05-29 の業務サマリ</div>
+  <div class="stats">
+    <div class="stat">
+      <div class="label">入荷予定</div>
+      <div class="value">12</div>
+      <div class="delta">検品待ち 5 / 完了 7</div>
+    </div>
+    <div class="stat">
+      <div class="label">出荷指示</div>
+      <div class="value">48</div>
+      <div class="delta">ピック中 12 / 完了 8</div>
+    </div>
+    <div class="stat">
+      <div class="label">在庫アラート</div>
+      <div class="value">3</div>
+      <div class="delta alert">補充必要 SKU</div>
+    </div>
+    <div class="stat">
+      <div class="label">作業進捗</div>
+      <div class="value">62%</div>
+      <div class="delta">目標まで 17件</div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">📦 本日の出庫フロー進捗</div>
+    <div class="flow-steps">
+      <a href="../pc/outbound/orders.html" class="step done">
+        <div class="num">STEP 1</div>
+        <div class="name">出荷指示</div>
+        <div class="count">48件 受領</div>
+      </a>
+      <a href="../pc/outbound/allocate.html" class="step done">
+        <div class="num">STEP 2</div>
+        <div class="name">引当・ウェーブ</div>
+        <div class="count">3波 編成済</div>
+      </a>
+      <a href="../ht/pick/wave.html" class="step current">
+        <div class="num">STEP 3</div>
+        <div class="name">ピッキング</div>
+        <div class="count">12 / 48 中</div>
+      </a>
+      <a href="../ht/inspect/asn.html" class="step">
+        <div class="num">STEP 4</div>
+        <div class="name">検品</div>
+        <div class="count">0 / 12</div>
+      </a>
+      <a href="../ht/packing/order.html" class="step">
+        <div class="num">STEP 5</div>
+        <div class="name">梱包</div>
+        <div class="count">0 / 12</div>
+      </a>
+      <a href="../ht/handover/lane.html" class="step">
+        <div class="num">STEP 6</div>
+        <div class="name">引渡</div>
+        <div class="count">0 / 12</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="section-title">よく使う操作</div>
+  <div class="quick-grid">
+    <a href="../pc/outbound/orders.html" class="quick-card">
+      <div class="icon">📤</div>
+      <div class="title">出荷指示の管理</div>
+      <div class="desc">本日の出荷指示一覧・新規登録・状態確認</div>
+    </a>
+    <a href="../pc/inbound/expected.html" class="quick-card">
+      <div class="icon">📥</div>
+      <div class="title">入荷予定の確認</div>
+      <div class="desc">本日の入荷予定・ASN管理・検品差異対応</div>
+    </a>
+    <a href="../pc/inventory/inventory_search.html" class="quick-card">
+      <div class="icon">📦</div>
+      <div class="title">在庫照会</div>
+      <div class="desc">SKU・ロケ・ロット別の在庫検索・移動指示</div>
+    </a>
+    <a href="../pc/outbound/wave_plan.html" class="quick-card">
+      <div class="icon">🌊</div>
+      <div class="title">ウェーブ計画</div>
+      <div class="desc">出荷指示の波編成・ピッキング指示生成</div>
+    </a>
+    <a href="../pc/outbound/loading.html" class="quick-card">
+      <div class="icon">🚚</div>
+      <div class="title">積込・配送手配</div>
+      <div class="desc">運送業者別の積込便管理・引渡確定</div>
+    </a>
+    <a href="../pc/reports/realtime_kpi.html" class="quick-card">
+      <div class="icon">📊</div>
+      <div class="title">本日のKPI</div>
+      <div class="desc">作業進捗・処理件数・遅延状況</div>
+    </a>
+  </div>
+</div>
+</body>
+</html>
