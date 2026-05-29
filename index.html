@@ -583,7 +583,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
   <main class="main">
     <div class="topbar">
       <div class="crumb"><b id="crumb-current">ダッシュボード</b></div>
-      <div class="last-updated">最終更新：2026/05/29</div>
+      <div class="last-updated">最終更新：2026/05/30</div>
     </div>
 
     <div class="content">
@@ -643,11 +643,11 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
         </div>
 
-        <div class="section-title">徹底Bug Hunt 進捗（2026-05-29）</div>
+        <div class="section-title">徹底Bug Hunt 進捗（2026-05-30 更新・Wave1 全完了）</div>
         <div class="card" style="margin-bottom:24px;">
           <div class="card-h">
-            <span>QA8観点で他メンバー（にーちゃん / にーちゃん2号 / さーちゃん2号）に徹底bug hunt 実施中</span>
-            <span class="meta">8タスク Supabase todos #1062-1069 で進行</span>
+            <span>QA8観点で他メンバー（にーちゃん / にーちゃん2号 / さーちゃん2号）に徹底bug hunt 実施 → Wave1 QA12タスク + 修正5タスク 全完了</span>
+            <span class="meta">Supabase todos #1062-1069・#1072-1080 全完了（2026-05-29）</span>
           </div>
           <div class="card-b" style="padding:0;">
             <table class="tbl">
@@ -657,12 +657,19 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
               <tbody>
                 <tr><td class="id">BH-Q1</td><td>全479画面 preview 巡回・errors/console 全収集</td><td>にーちゃん</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q1_REPORT.md">Q1 レポート</a></td></tr>
                 <tr><td class="id">BH-Q2</td><td>14ステップ業務シナリオ通し + データ齟齬検査</td><td>にーちゃん</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q2_REPORT.md">Q2 レポート</a></td></tr>
-                <tr><td class="id">BH-Q3</td><td>モーダル網羅検証 (100+ボタン × 8分類 classify)</td><td>にーちゃん2号</td><td><span class="pill pill-warning">進行中</span></td><td>—</td></tr>
-                <tr><td class="id">BH-Q4</td><td>全画面フィルタ動作の網羅検証</td><td>にーちゃん2号</td><td><span class="pill pill-pending">approved</span></td><td>—</td></tr>
+                <tr><td class="id">BH-Q3</td><td>モーダル網羅検証 (100+ボタン × 8分類 classify)</td><td>にーちゃん</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q3_REPORT.md">Q3 レポート</a></td></tr>
+                <tr><td class="id">BH-Q4</td><td>全画面フィルタ動作の網羅検証</td><td>にーちゃん</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q4_REPORT.md">Q4 レポート</a></td></tr>
                 <tr><td class="id">BH-Q5</td><td>api/*.json 30個の外部キー整合性検査</td><td>さーちゃん2号</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q5_REPORT.md">Q5 レポート</a>（locations 22件+ / products 16件+追加）</td></tr>
                 <tr><td class="id">BH-Q6</td><td>HT BT-A2000 全業務フロー完走検証</td><td>にーちゃん</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q6_REPORT.md">Q6 レポート</a></td></tr>
-                <tr><td class="id">BH-Q7</td><td>印刷帳票6種 + バーコード 実データ反映確認</td><td>にーちゃん2号</td><td><span class="pill pill-pending">approved</span></td><td>—</td></tr>
+                <tr><td class="id">BH-Q7</td><td>印刷帳票6種 + バーコード 実データ反映確認</td><td>にーちゃん</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q7_REPORT.md">Q7 レポート</a></td></tr>
                 <tr><td class="id">BH-Q8</td><td>エッジケース挙動検証（空データ・特殊文字・null fetch）</td><td>さーちゃん2号</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q8_REPORT.md">Q8 レポート</a></td></tr>
+                <tr><td class="id">BH-Q9</td><td>レスポンシブ/実機サイズ表示検証（CRITICAL×2/HIGH×5/MEDIUM×4/LOW×1）</td><td>にーちゃん</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q9_REPORT.md">Q9 レポート</a></td></tr>
+                <tr><td class="id">BH-Q10</td><td>ナビゲーション到達性・リンクグラフ網羅検証（HIGH×1/MEDIUM×1/LOW×1・全481ファイル実在確認）</td><td>にーちゃん2号</td><td><span class="pill pill-success">完了</span></td><td>—</td></tr>
+                <tr><td class="id">BH-Q11</td><td>数値・集計整合（KPI/合計/進捗）検証（高×9/中×3/低×1 計13件）</td><td>さーちゃん2号</td><td><span class="pill pill-success">完了</span></td><td>—</td></tr>
+                <tr><td class="id">BH-Q12</td><td>入力フォーム・バリデーション網羅検証（CRITICAL×1/HIGH×4/MEDIUM×8/LOW×3）</td><td>にーちゃん</td><td><span class="pill pill-success">完了</span></td><td><a href="specs/BUG_HUNT_Q12_REPORT.md">Q12 レポート</a></td></tr>
+              </tbody>
+              <tbody>
+                <tr><td colspan="5" style="padding:8px 14px;font-size:12px;color:var(--text-sub);background:var(--bg-pill);">Wave1 修正タスク（こーちゃん / さーちゃん）全5件完了 — Q1修正 commit 6bfd801 / Q2修正 commit 164d309 / Q5修正 commit 87e68d6 / Q6修正 commit bcc38c8 / Q8修正（既修正確認）</td></tr>
               </tbody>
             </table>
           </div>
