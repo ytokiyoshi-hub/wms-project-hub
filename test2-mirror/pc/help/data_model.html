@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>WMS データモデル ER図 v3.0</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans JP", sans-serif;
+    background: #f4f5f7; color: #1a1f29;
+    margin: 0; padding: 32px 24px 80px;
+    line-height: 1.7;
+  }
+  h1 { font-size: 28px; color: #1a3a5c; margin-bottom: 4px; font-weight: 700; }
+  .subtitle { color: #6c7280; margin-bottom: 32px; font-size: 14px; }
+  .version-note {
+    max-width: 1500px; margin: 0 auto 24px;
+    background: #fff; border-left: 4px solid #b8002e;
+    padding: 14px 18px; font-size: 13px; line-height: 1.7;
+  }
+  .version-note b { color: #b8002e; }
+  .section {
+    background: #fff; border: 1px solid #d8dde3;
+    padding: 24px; margin-bottom: 24px;
+    max-width: 1500px; margin-left: auto; margin-right: auto;
+  }
+  h2 {
+    font-size: 18px; color: #1a3a5c; font-weight: 700;
+    padding-bottom: 6px; border-bottom: 2px solid #1a3a5c;
+    margin-bottom: 12px;
+  }
+  h2 .id {
+    color: #fff; font-family: 'Roboto Mono', monospace;
+    background: #1a3a5c; padding: 2px 10px;
+    font-size: 14px; margin-right: 12px;
+    vertical-align: middle; font-weight: 600;
+  }
+  h2 .new-badge {
+    color: #fff; background: #b8002e;
+    padding: 1px 8px; font-size: 11px;
+    margin-left: 12px; font-weight: 600;
+    font-family: 'Roboto Mono', monospace;
+  }
+  .desc {
+    color: #404040; font-size: 13px;
+    line-height: 1.7; margin-bottom: 16px;
+  }
+  .desc b { color: #1a1f29; }
+  .mermaid {
+    background: #fafbfc; padding: 24px;
+    overflow-x: auto; text-align: center;
+    border: 1px solid #d8dde3;
+  }
+  .legend {
+    background: #fff4e0; border-left: 4px solid #d97706;
+    padding: 12px 16px; margin-bottom: 24px;
+    font-size: 12px; line-height: 1.7;
+    max-width: 1500px; margin-left: auto; margin-right: auto;
+  }
+  .legend strong { color: #d97706; }
+  .legend code {
+    background: #fff; padding: 1px 6px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    margin-top: 12px; font-size: 12px;
+  }
+  th, td {
+    border: 1px solid #d8dde3;
+    padding: 6px 10px; text-align: left;
+  }
+  th {
+    background: #1a3a5c; color: #fff;
+    font-weight: 600; font-size: 11px;
+  }
+  tr:nth-child(even) td { background: #f4f5f7; }
+  td.num { font-family: 'Roboto Mono', monospace; }
+  td.new {
+    background: #fbe9ed !important;
+    font-weight: 500;
+  }
+  .change-summary {
+    max-width: 1500px; margin: 0 auto 32px;
+    background: #fff; border: 1px solid #d8dde3;
+    padding: 20px;
+  }
+  .change-summary h3 {
+    font-size: 14px; color: #1a3a5c;
+    margin-bottom: 8px; font-weight: 600;
+  }
+  .change-summary ul {
+    margin-left: 20px; font-size: 13px;
+    color: #404040;
+  }
+  .change-summary ul li { padding: 2px 0; }
+</style>
+</head>
+<body>
+
+<h1>WMS データモデル ER図 v3.0</h1>
+<div class="subtitle">3PL対応 / 出庫拡張 / ピッキングエリア分割 / 引渡・積込工程 / 実績送信</div>
+
+<div class="version-note">
+  <b>v3.0 主要変更</b>：3PL（複数荷主）対応・在庫ステータスマスタ化・ピッキングエリア管理・受注を伴わない出庫・引渡仮置工程・積込管理・出荷実績送信・課金請求機能を追加。
+  全テーブル数：v2.0 = 30 → <b>v3.0 = 60+ テーブル</b>。
+</div>
+
+<div class="legend">
+  <strong>記号凡例</strong><br>
+  PK = 主キー / FK = 外部キー / UK = 一意キー<br>
+  関連線：<code>||--o{</code> 1対多必須 ／ <code>}o--||</code> 多対1<br>
+  <b>赤バッジ「NEW」</b> = v3.0 新規追加 ／ <b>「拡張」</b> = v2.0 から項目追加
+</div>
+
+<!-- ========== 1. 3PL基盤・荷主管理 ========== -->
+<div class="section">
+  <h2><span class="id">1</span>3PL基盤・荷主管理<span class="new-badge">NEW</span></h2>
+  <div class="desc">
+    3PL運用の核となるテナント管理。すべての業務データに <b>owner_code</b> を紐付け、荷主ごとのデータ分離を実現する。
+  </div>
+  <div class="mermaid">
+erDiagram
+    OWNER ||--o{ OWNER_CONTRACT : "契約"
+    OWNER ||--o{ USER_OWNER_ACCESS : "アクセス権"
+    OWNER ||--o{ OWNER_BILLING_RULE : "課金条件"
+    OWNER ||--o{ OWNER_INTEGRATION : "連携設定"
+    OWNER ||--o{ OWNER_PORTAL_USER : "ポータルユーザー"
+    USER ||--o{ USER_OWNER_ACCESS : ""
+    OWNER_BILLING_RULE ||--o{ BILLING_INVOICE : "請求生成"
+
+    OWNER {
+        string owner_code PK
+        string name
+        string name_kana
+        string contact_name
+        string contact_email
+        string contact_tel
+        string address
+        date contract_start
+        date contract_end
+        string status "active/suspended/terminated"
+        string default_currency
+        datetime created_at
+    }
+    OWNER_CONTRACT {
+        bigint id PK
+        string owner_code FK
+        string contract_no
+        date period_start
+        date period_end
+        string service_type "保管のみ/保管+荷役/フル"
+        json sla_terms
+        string status
+    }
+    USER_OWNER_ACCESS {
+        bigint id PK
+        string user_id FK
+        string owner_code FK
+        string access_level "operator/viewer/admin"
+        date valid_from
+        date valid_to
+    }
+    OWNER_BILLING_RULE {
+        bigint id PK
+        string owner_code FK
+        string rule_type "保管料/入荷料/出荷料/その他"
+        string unit "坪/パレット/ケース/件"
+        decimal unit_price
+        json conditions "適用条件"
+        date valid_from
+        date valid_to
+    }
+    OWNER_INTEGRATION {
+        bigint id PK
+        string owner_code FK
+        string integration_type "受注取込/実績送信/在庫連携"
+        string protocol "REST/SFTP/EDI/MAIL"
+        string endpoint_url
+        json credentials_encrypted
+        string data_format "JSON/CSV/XML/EDI"
+        json mapping_rules
+        string schedule "realtime/hourly/daily"
+        string status
+    }
+    OWNER_PORTAL_USER {
+        string portal_user_id PK
+        string owner_code FK
+        string email UK
+        string name
+        string password_hash
+        json permissions "view_stock/view_shipment/etc"
+        bool active
+        datetime last_login_at
+    }
+    BILLING_INVOICE {
+        bigint id PK
+        string owner_code FK
+        string invoice_no UK
+        date period_start
+        date period_end
+        decimal subtotal
+        decimal tax
+        decimal total
+        string status "draft/issued/paid/cancelled"
+        datetime issued_at
+    }
+  </div>
+</div>
+
+<!-- ========== 2. マスタモデル（拡張） ========== -->
+<div class="section">
+  <h2><span class="id">2</span>マスタモデル（v2.0から拡張）</h2>
+  <div class="desc">
+    商品・ロケ・取引先・ユーザーに <b>owner_code</b> を追加し3PL対応。<b>STATUS_MASTER</b> と <b>PICKING_AREA</b> を新規追加。
+  </div>
+  <div class="mermaid">
+erDiagram
+    OWNER ||--o{ ITEM : "荷主別"
+    WAREHOUSE ||--o{ LOCATION : ""
+    PICKING_AREA ||--o{ LOCATION : "エリア所属"
+    LOCATION ||--o{ LOCATION_OWNER_ASSIGNMENT : "荷主専用ロケ"
+    OWNER ||--o{ LOCATION_OWNER_ASSIGNMENT : ""
+    STATUS_MASTER ||--o{ STOCK : "ステータス参照"
+    ITEM ||--o{ ITEM_BARCODE : ""
+    USER ||--o{ USER_WAREHOUSE : ""
+    USER ||--o{ USER_DAILY_AREA : "日次担当エリア"
+    PICKING_AREA ||--o{ USER_DAILY_AREA : ""
+    CARRIER ||--o{ CARRIER_ROUTE : "便・方面"
+
+    WAREHOUSE {
+        string warehouse_code PK
+        string name
+        string address
+        string timezone
+        string operator_company "倉庫運営会社"
+    }
+    PICKING_AREA {
+        string area_code PK
+        string warehouse_code FK
+        string name "1階常温/2階常温/冷蔵/冷凍"
+        string floor "1F/2F/B1"
+        string temp_zone "AMB/COLD/FROZ"
+        bool requires_special_skill
+        int sort_order "動線順"
+    }
+    LOCATION {
+        string location_code PK
+        string warehouse_code FK
+        string area_code FK "ピッキングエリア"
+        string zone "保管/ピック/返品/不適合品/廃棄/STAGE"
+        string aisle
+        string rack
+        string level
+        string bin
+        string abc_class
+        bool   pickable
+        bool   mixed_allowed
+        bool   mixed_owner_allowed "複数荷主混載可"
+        string default_status "良品/不適合等の既定値"
+        string temp_zone
+        int    capacity_weight
+        int    capacity_volume
+        bool   active
+    }
+    LOCATION_OWNER_ASSIGNMENT {
+        bigint id PK
+        string location_code FK
+        string owner_code FK
+        string assignment_type "exclusive/shared"
+    }
+    STATUS_MASTER {
+        string status_code PK
+        string status_name "良品/不良/保留/検品中/廃棄/再検査中等"
+        string status_name_alt "ユーザー任意名"
+        bool allocatable "引当対象か"
+        bool shippable "出荷可能か"
+        string color_hint "UI色指定"
+        bool deletable "システム標準ステータスは不可"
+        int  display_order
+    }
+    ITEM {
+        string item_code PK
+        string owner_code FK "荷主別SKU管理"
+        string item_name
+        string category
+        string uom
+        int    case_qty
+        int    pallet_qty
+        int    weight_g
+        bool   lot_managed
+        bool   expiry_managed
+        bool   serial_managed
+        string temp_zone
+        int    expiry_warning_days
+        bool   active
+    }
+    ITEM_BARCODE {
+        bigint id PK
+        string item_code FK
+        string barcode UK
+        string type
+        int    qty_per_scan
+    }
+    USER {
+        string user_id PK
+        string emp_code UK
+        string name
+        string nfc_uid
+        string role_code FK
+        bool   active
+    }
+    USER_WAREHOUSE {
+        string user_id FK
+        string warehouse_code FK
+    }
+    USER_DAILY_AREA {
+        bigint id PK
+        string user_id FK
+        string warehouse_code FK
+        string area_code FK
+        date   work_date
+        string assigned_by
+    }
+    CARRIER {
+        string carrier_code PK
+        string name
+        string api_endpoint
+        json credentials
+        string label_format
+        bool active
+    }
+    CARRIER_ROUTE {
+        string route_code PK
+        string carrier_code FK
+        string area_name "関東/関西/中部等"
+        time   pickup_time
+        string lane_code "STAGE-XXX"
+    }
+  </div>
+</div>
+
+<!-- ========== 3. 在庫モデル（拡張） ========== -->
+<div class="section">
+  <h2><span class="id">3</span>在庫モデル（v2.0から拡張）</h2>
+  <div class="desc">
+    在庫ステータスをマスタ化し、引当可否を柔軟に制御。<b>STOCK_STATUS_HISTORY</b> でステータス遷移を追跡。<b>LOT_HOLD</b> でロット単位の出荷止め管理。
+  </div>
+  <div class="mermaid">
+erDiagram
+    ITEM ||--o{ STOCK : ""
+    LOCATION ||--o{ STOCK : ""
+    STATUS_MASTER ||--o{ STOCK : ""
+    STOCK ||--o{ STOCK_HISTORY : ""
+    STOCK ||--o{ STOCK_STATUS_HISTORY : "ステータス遷移"
+    LOT ||--o{ LOT_HOLD : "ロット出荷止め"
+    OWNER ||--o{ STOCK : "荷主別"
+
+    STOCK {
+        bigint stock_id PK
+        string item_code FK
+        string location_code FK
+        string lot_no
+        date   expiry_date
+        string serial_no
+        string status_code FK
+        decimal qty_on_hand
+        decimal qty_allocated
+        decimal qty_available
+        string owner_code FK
+        datetime received_at
+        datetime updated_at
+        bigint version
+    }
+    LOT {
+        string lot_no PK
+        string item_code FK
+        date   mfg_date
+        date   expiry_date
+        string supplier_code FK
+        string status
+    }
+    LOT_HOLD {
+        bigint id PK
+        string lot_no FK
+        string item_code FK
+        string hold_reason "製造不具合/品質検査中/その他"
+        string hold_status "active/released"
+        string requested_by
+        string approved_by
+        datetime hold_at
+        datetime released_at
+        text  notes
+    }
+    SERIAL {
+        string serial_no PK
+        string item_code FK
+        string current_status
+        datetime created_at
+    }
+    STOCK_HISTORY {
+        bigint id PK
+        bigint stock_id FK
+        string txn_type "RECEIPT/PICK/MOVE/ADJUST/SHIP/RETURN/COUNT/STATUS_CHANGE"
+        string ref_no
+        decimal qty_before
+        decimal qty_change
+        decimal qty_after
+        string user_id FK
+        string device_id
+        datetime occurred_at
+        string remark
+    }
+    STOCK_STATUS_HISTORY {
+        bigint id PK
+        bigint stock_id FK
+        string status_before FK
+        string status_after FK
+        string change_reason
+        string changed_by FK
+        string approved_by FK
+        datetime changed_at
+        text  notes
+    }
+  </div>
+</div>
+
+<!-- ========== 4. 入荷モデル（変更最小） ========== -->
+<div class="section">
+  <h2><span class="id">4</span>入荷モデル（v2.0からの軽微拡張）</h2>
+  <div class="desc">
+    既存構造を維持。<b>owner_code</b> 追加のみ。差異承認のフローは現状を流用。
+  </div>
+  <div class="mermaid">
+erDiagram
+    INBOUND_ORDER ||--|{ INBOUND_ORDER_LINE : ""
+    INBOUND_ORDER ||--o{ INBOUND_RECEIPT : ""
+    INBOUND_RECEIPT ||--|{ INBOUND_RECEIPT_LINE : ""
+    INBOUND_RECEIPT_LINE ||--o{ INBOUND_VARIANCE : ""
+    INBOUND_RECEIPT_LINE ||--o{ PUTAWAY_TASK : ""
+    OWNER ||--o{ INBOUND_ORDER : ""
+
+    INBOUND_ORDER {
+        string asn_no PK
+        string warehouse_code FK
+        string owner_code FK
+        string supplier_code FK
+        date   eta_date
+        string status
+    }
+    INBOUND_ORDER_LINE {
+        bigint id PK
+        string asn_no FK
+        int    line_no
+        string item_code FK
+        decimal qty_planned
+        string lot_no
+        date   expiry_date
+    }
+    INBOUND_RECEIPT {
+        string receipt_no PK
+        string asn_no FK
+        datetime received_at
+        string vehicle_no
+        string status
+    }
+    INBOUND_RECEIPT_LINE {
+        bigint id PK
+        string receipt_no FK
+        string item_code FK
+        decimal qty_received
+        string lot_no
+        date   expiry_date
+        string status_code FK
+    }
+    INBOUND_VARIANCE {
+        bigint id PK
+        bigint receipt_line_id FK
+        decimal qty_variance
+        string reason
+        string approved_by
+        datetime approved_at
+    }
+    PUTAWAY_TASK {
+        bigint id PK
+        bigint receipt_line_id FK
+        string suggested_location FK
+        string actual_location FK
+        decimal qty
+        string status
+        string assigned_to FK
+    }
+  </div>
+</div>
+
+<!-- ========== 5. 出荷モデル（大幅拡張） ========== -->
+<div class="section">
+  <h2><span class="id">5</span>出荷モデル（v2.0から大幅拡張）<span class="new-badge">大幅変更</span></h2>
+  <div class="desc">
+    <b>WAVE</b> にエリア分割対応、<b>SUB_WAVE</b> 追加（ゾーンリレー/エリア並行）。<b>CONTAINER</b>（カゴ・カートン）でピック→引渡→積込まで一貫追跡。
+  </div>
+  <div class="mermaid">
+erDiagram
+    OUTBOUND_ORDER ||--|{ OUTBOUND_ORDER_LINE : ""
+    OUTBOUND_ORDER_LINE ||--o{ ALLOCATION : ""
+    WAVE ||--o{ SUB_WAVE : "エリア分割"
+    SUB_WAVE ||--o{ ALLOCATION : ""
+    SUB_WAVE ||--o{ PICK_TASK : ""
+    PICK_TASK }o--|| USER : "作業者"
+    PICK_TASK ||--o{ CONTAINER_ITEM : "カゴへ投入"
+    CONTAINER ||--o{ CONTAINER_ITEM : ""
+    CONTAINER ||--o{ CONTAINER_HANDOVER : "エリア間引継"
+    OUTBOUND_ORDER ||--o{ SHIPMENT : ""
+    SHIPMENT ||--|{ PACKAGE : ""
+    OWNER ||--o{ OUTBOUND_ORDER : ""
+
+    OUTBOUND_ORDER {
+        string order_no PK
+        string warehouse_code FK
+        string owner_code FK
+        string customer_code FK
+        date   ship_date
+        string priority
+        string temp_zone
+        string carrier_code FK
+        string route_code FK
+        string status
+    }
+    OUTBOUND_ORDER_LINE {
+        bigint id PK
+        string order_no FK
+        int    line_no
+        string item_code FK
+        decimal qty_ordered
+        decimal qty_allocated
+        decimal qty_picked
+        decimal qty_shipped
+    }
+    WAVE {
+        string wave_no PK
+        string warehouse_code FK
+        string strategy "SINGLE/MULTI/TOTAL"
+        string area_split_mode "PARALLEL/RELAY/NONE"
+        string status
+        datetime created_at
+    }
+    SUB_WAVE {
+        bigint id PK
+        string wave_no FK
+        string area_code FK
+        string assigned_to FK
+        int    sequence_in_relay
+        string status "未/作業中/完了/引継待ち"
+    }
+    ALLOCATION {
+        bigint id PK
+        bigint order_line_id FK
+        bigint stock_id FK
+        bigint sub_wave_id FK
+        decimal qty
+        string status
+    }
+    PICK_TASK {
+        bigint id PK
+        bigint sub_wave_id FK
+        bigint allocation_id FK
+        string location_code FK
+        string item_code FK
+        decimal qty_required
+        decimal qty_picked
+        string assigned_to FK
+        bigint container_id FK
+        string status
+        datetime started_at
+        datetime completed_at
+    }
+    CONTAINER {
+        string container_id PK
+        string container_type "CAGE/CARTON/PALLET"
+        string current_location FK
+        string current_status "PICKING/STAGING/PACKED/HANDED"
+        string for_order_no FK
+        string area_code FK
+    }
+    CONTAINER_ITEM {
+        bigint id PK
+        string container_id FK
+        string item_code FK
+        decimal qty
+        bigint pick_task_id FK
+        datetime added_at
+    }
+    CONTAINER_HANDOVER {
+        bigint id PK
+        string container_id FK
+        string from_area_code FK
+        string to_area_code FK
+        string from_user_id FK
+        string to_user_id FK
+        datetime handed_at
+    }
+    SHIPMENT {
+        string shipment_no PK
+        string order_no FK
+        string carrier_code FK
+        string tracking_no
+        datetime shipped_at
+        string status
+    }
+    PACKAGE {
+        bigint id PK
+        string shipment_no FK
+        string box_type
+        decimal weight_kg
+    }
+  </div>
+</div>
+
+<!-- ========== 6. 引渡・積込・出荷工程 NEW ========== -->
+<div class="section">
+  <h2><span class="id">6</span>引渡・積込・出荷工程<span class="new-badge">NEW</span></h2>
+  <div class="desc">
+    <b>STAGING</b>（仮置きエリア管理）、<b>LOADING</b>（積込管理）、<b>HANDOVER</b>（引き渡し記録）、<b>DELIVERY_TRACKING</b>（配送追跡）の4機能を新規追加。
+  </div>
+  <div class="mermaid">
+erDiagram
+    STAGING_AREA ||--o{ STAGING_RECORD : ""
+    STAGING_RECORD }o--|| OUTBOUND_ORDER : ""
+    STAGING_RECORD }o--|| CONTAINER : ""
+    LOADING_PLAN ||--o{ LOADING_DETAIL : ""
+    LOADING_PLAN }o--|| CARRIER_ROUTE : ""
+    LOADING_DETAIL }o--|| SHIPMENT : ""
+    LOADING_PLAN ||--o{ LOADING_HANDOVER : ""
+    SHIPMENT ||--o{ DELIVERY_TRACKING : ""
+
+    STAGING_AREA {
+        string staging_code PK
+        string warehouse_code FK
+        string lane_code "STAGE-YMT-A14"
+        string carrier_code FK
+        string route_code FK
+        time   pickup_time
+        date   work_date
+        string status
+    }
+    STAGING_RECORD {
+        bigint id PK
+        string staging_code FK
+        string container_id FK
+        string order_no FK
+        int   package_seq
+        int   total_packages_expected
+        int   total_packages_arrived
+        bool  is_complete "受注全梱包揃ったか"
+        datetime arrived_at
+    }
+    LOADING_PLAN {
+        string loading_no PK
+        string warehouse_code FK
+        string carrier_code FK
+        string route_code FK
+        date   load_date
+        time   pickup_time
+        string vehicle_no
+        string driver_name
+        int    total_packages
+        decimal total_weight_kg
+        string status "予定/積込中/完了"
+    }
+    LOADING_DETAIL {
+        bigint id PK
+        string loading_no FK
+        string shipment_no FK
+        int   package_seq
+        bool  loaded
+        datetime loaded_at
+        string loaded_by FK
+    }
+    LOADING_HANDOVER {
+        bigint id PK
+        string loading_no FK
+        string warehouse_user_id FK
+        string driver_name
+        string driver_signature_url
+        datetime handover_at
+        text  remarks
+    }
+    DELIVERY_TRACKING {
+        bigint id PK
+        string shipment_no FK
+        string tracking_no
+        string status "PICKED_UP/IN_TRANSIT/DELIVERED/RETURNED"
+        datetime status_at
+        string location_text
+        text  raw_response
+    }
+  </div>
+</div>
+
+<!-- ========== 7. その他出庫 NEW ========== -->
+<div class="section">
+  <h2><span class="id">7</span>その他出庫（受注を伴わない出庫）<span class="new-badge">NEW</span></h2>
+  <div class="desc">
+    社内移動・廃棄・サンプル・仕入先返品など、受注を伴わない出庫専用機能。
+  </div>
+  <div class="mermaid">
+erDiagram
+    MISC_OUTBOUND ||--|{ MISC_OUTBOUND_LINE : ""
+    MISC_OUTBOUND_LINE }o--|| STOCK : "対象在庫"
+
+    MISC_OUTBOUND {
+        string misc_no PK
+        string warehouse_code FK
+        string owner_code FK
+        string outbound_type "INTER_WH/DISPOSAL/SAMPLE/RETURN_SUPPLIER/OTHER"
+        string destination "送り先記載"
+        string reason
+        string requested_by FK
+        string approved_by FK
+        date   outbound_date
+        string status "申請中/承認済/出庫済/取消"
+        text  notes
+    }
+    MISC_OUTBOUND_LINE {
+        bigint id PK
+        string misc_no FK
+        bigint stock_id FK
+        string item_code FK
+        decimal qty
+        string lot_no
+        string serial_no
+    }
+  </div>
+</div>
+
+<!-- ========== 8. 棚卸・調整・移動 ========== -->
+<div class="section">
+  <h2><span class="id">8</span>棚卸・移動・調整（v2.0から軽微拡張）</h2>
+  <div class="desc">既存維持、owner_code追加。</div>
+  <div class="mermaid">
+erDiagram
+    STOCKTAKE_PLAN ||--|{ STOCKTAKE_TASK : ""
+    STOCKTAKE_TASK ||--o{ STOCKTAKE_COUNT : ""
+    STOCKTAKE_TASK ||--o{ ADJUSTMENT : ""
+
+    STOCKTAKE_PLAN {
+        string plan_no PK
+        string warehouse_code FK
+        string owner_code FK
+        string type
+        date   target_date
+        string status
+        json   target_filter
+    }
+    STOCKTAKE_TASK {
+        bigint id PK
+        string plan_no FK
+        string location_code FK
+        string status
+    }
+    STOCKTAKE_COUNT {
+        bigint id PK
+        bigint task_id FK
+        int    count_round
+        string item_code FK
+        decimal qty_counted
+        string counted_by FK
+    }
+    ADJUSTMENT {
+        bigint id PK
+        bigint stock_id FK
+        string txn_type
+        decimal qty_change
+        string reason_code
+        string approved_by FK
+    }
+    MOVEMENT {
+        bigint id PK
+        bigint stock_id FK
+        string from_location FK
+        string to_location FK
+        decimal qty
+        string moved_by FK
+    }
+    REPLENISHMENT {
+        bigint id PK
+        string item_code FK
+        string from_location FK
+        string to_location FK
+        decimal qty_required
+        decimal qty_replenished
+        string status
+    }
+  </div>
+</div>
+
+<!-- ========== 9. 実績送信・連携 NEW ========== -->
+<div class="section">
+  <h2><span class="id">9</span>実績送信・配送連携<span class="new-badge">NEW</span></h2>
+  <div class="desc">
+    荷主別の実績送信ジョブ管理。リアルタイム送信と日次バッチ両対応。
+  </div>
+  <div class="mermaid">
+erDiagram
+    OWNER_INTEGRATION ||--o{ INTEGRATION_JOB : ""
+    INTEGRATION_JOB ||--o{ INTEGRATION_LOG : ""
+    SHIPMENT ||--o{ INTEGRATION_JOB : "実績通知"
+
+    INTEGRATION_JOB {
+        bigint id PK
+        string owner_code FK
+        bigint integration_id FK
+        string job_type "受注取込/実績送信/在庫連携"
+        string trigger_type "realtime/batch"
+        string ref_entity "shipment/inbound/etc"
+        string ref_id
+        json   payload
+        string status "queued/sending/success/failed"
+        int    retry_count
+        datetime scheduled_at
+        datetime executed_at
+    }
+    INTEGRATION_LOG {
+        bigint id PK
+        bigint job_id FK
+        int    http_status
+        text   response_body
+        datetime executed_at
+    }
+  </div>
+</div>
+
+<!-- ========== 10. 課金・請求 NEW ========== -->
+<div class="section">
+  <h2><span class="id">10</span>課金・請求<span class="new-badge">NEW</span></h2>
+  <div class="desc">
+    保管料・荷役料の自動計算、月次請求書生成。
+  </div>
+  <div class="mermaid">
+erDiagram
+    OWNER ||--o{ BILLING_DAILY_USAGE : ""
+    OWNER ||--o{ BILLING_INVOICE : ""
+    BILLING_INVOICE ||--|{ BILLING_INVOICE_LINE : ""
+    OWNER_BILLING_RULE ||--o{ BILLING_INVOICE_LINE : ""
+
+    BILLING_DAILY_USAGE {
+        bigint id PK
+        string owner_code FK
+        date   usage_date
+        string usage_type "STORAGE/INBOUND/OUTBOUND/RETURN/STOCKTAKE"
+        decimal quantity
+        string unit
+        json   detail
+    }
+    BILLING_INVOICE {
+        bigint id PK
+        string owner_code FK
+        string invoice_no UK
+        date   period_start
+        date   period_end
+        decimal subtotal
+        decimal tax
+        decimal total
+        string status
+        datetime issued_at
+    }
+    BILLING_INVOICE_LINE {
+        bigint id PK
+        bigint invoice_id FK
+        bigint billing_rule_id FK
+        string item_description
+        decimal quantity
+        decimal unit_price
+        decimal amount
+    }
+  </div>
+</div>
+
+<!-- ========== 11. 全体結合（簡略） ========== -->
+<div class="section">
+  <h2><span class="id">11</span>全体結合（簡略図）</h2>
+  <div class="desc">主要エンティティのみ抜粋。owner_code でテナント分離されているのが3PL設計の中核。</div>
+  <div class="mermaid">
+erDiagram
+    OWNER ||--o{ ITEM : ""
+    OWNER ||--o{ STOCK : ""
+    OWNER ||--o{ INBOUND_ORDER : ""
+    OWNER ||--o{ OUTBOUND_ORDER : ""
+    OWNER ||--o{ MISC_OUTBOUND : ""
+    OWNER ||--o{ BILLING_INVOICE : ""
+
+    INBOUND_ORDER ||--o{ STOCK : "計上"
+    OUTBOUND_ORDER ||--o{ WAVE : ""
+    WAVE ||--o{ SUB_WAVE : "エリア分割"
+    SUB_WAVE ||--o{ PICK_TASK : ""
+    PICK_TASK ||--o{ CONTAINER : ""
+    CONTAINER ||--o{ STAGING_RECORD : "仮置"
+    STAGING_RECORD ||--o{ LOADING_DETAIL : "積込"
+    LOADING_PLAN ||--o{ LOADING_HANDOVER : "引渡"
+    SHIPMENT ||--o{ DELIVERY_TRACKING : "配送追跡"
+    SHIPMENT ||--o{ INTEGRATION_JOB : "実績送信"
+
+    OWNER { string owner_code PK }
+    ITEM { string item_code PK }
+    STOCK { bigint stock_id PK }
+    INBOUND_ORDER { string asn_no PK }
+    OUTBOUND_ORDER { string order_no PK }
+    MISC_OUTBOUND { string misc_no PK }
+    WAVE { string wave_no PK }
+    SUB_WAVE { bigint id PK }
+    PICK_TASK { bigint id PK }
+    CONTAINER { string container_id PK }
+    STAGING_RECORD { bigint id PK }
+    LOADING_PLAN { string loading_no PK }
+    LOADING_DETAIL { bigint id PK }
+    LOADING_HANDOVER { bigint id PK }
+    SHIPMENT { string shipment_no PK }
+    DELIVERY_TRACKING { bigint id PK }
+    INTEGRATION_JOB { bigint id PK }
+    BILLING_INVOICE { bigint id PK }
+  </div>
+</div>
+
+<!-- ========== 全テーブル一覧 ========== -->
+<div class="section">
+  <h2><span class="id">12</span>全テーブル一覧（v3.0）</h2>
+  <div class="desc">v2.0からの追加・拡張を網羅。</div>
+  <table>
+    <thead>
+      <tr><th>領域</th><th>テーブル名</th><th>状態</th><th>概要</th></tr>
+    </thead>
+    <tbody>
+      <tr class="new"><td>3PL基盤</td><td class="num">OWNER</td><td>NEW</td><td>荷主マスタ</td></tr>
+      <tr class="new"><td>3PL基盤</td><td class="num">OWNER_CONTRACT</td><td>NEW</td><td>荷主契約</td></tr>
+      <tr class="new"><td>3PL基盤</td><td class="num">USER_OWNER_ACCESS</td><td>NEW</td><td>ユーザー荷主アクセス権</td></tr>
+      <tr class="new"><td>3PL基盤</td><td class="num">OWNER_BILLING_RULE</td><td>NEW</td><td>荷主課金ルール</td></tr>
+      <tr class="new"><td>3PL基盤</td><td class="num">OWNER_INTEGRATION</td><td>NEW</td><td>荷主連携設定</td></tr>
+      <tr class="new"><td>3PL基盤</td><td class="num">OWNER_PORTAL_USER</td><td>NEW</td><td>荷主ポータル用ユーザー</td></tr>
+
+      <tr><td>マスタ</td><td class="num">WAREHOUSE</td><td>拡張</td><td>倉庫運営会社追加</td></tr>
+      <tr class="new"><td>マスタ</td><td class="num">PICKING_AREA</td><td>NEW</td><td>ピッキングエリア</td></tr>
+      <tr><td>マスタ</td><td class="num">LOCATION</td><td>拡張</td><td>area_code, mixed_owner_allowed等</td></tr>
+      <tr class="new"><td>マスタ</td><td class="num">LOCATION_OWNER_ASSIGNMENT</td><td>NEW</td><td>荷主専用ロケ</td></tr>
+      <tr class="new"><td>マスタ</td><td class="num">STATUS_MASTER</td><td>NEW</td><td>在庫ステータスマスタ（任意追加可）</td></tr>
+      <tr><td>マスタ</td><td class="num">ITEM</td><td>拡張</td><td>owner_code追加</td></tr>
+      <tr><td>マスタ</td><td class="num">ITEM_BARCODE</td><td>維持</td><td>商品バーコード</td></tr>
+      <tr><td>マスタ</td><td class="num">USER</td><td>維持</td><td>ユーザー</td></tr>
+      <tr><td>マスタ</td><td class="num">USER_WAREHOUSE</td><td>維持</td><td>所属倉庫</td></tr>
+      <tr class="new"><td>マスタ</td><td class="num">USER_DAILY_AREA</td><td>NEW</td><td>日次担当エリア割当</td></tr>
+      <tr class="new"><td>マスタ</td><td class="num">CARRIER</td><td>NEW</td><td>配送業者マスタ</td></tr>
+      <tr class="new"><td>マスタ</td><td class="num">CARRIER_ROUTE</td><td>NEW</td><td>便・方面マスタ</td></tr>
+
+      <tr><td>在庫</td><td class="num">STOCK</td><td>拡張</td><td>status_code (FK化)</td></tr>
+      <tr><td>在庫</td><td class="num">LOT</td><td>維持</td><td>ロット</td></tr>
+      <tr class="new"><td>在庫</td><td class="num">LOT_HOLD</td><td>NEW</td><td>ロット出荷止め</td></tr>
+      <tr><td>在庫</td><td class="num">SERIAL</td><td>維持</td><td>シリアル</td></tr>
+      <tr><td>在庫</td><td class="num">STOCK_HISTORY</td><td>維持</td><td>在庫履歴</td></tr>
+      <tr class="new"><td>在庫</td><td class="num">STOCK_STATUS_HISTORY</td><td>NEW</td><td>ステータス遷移履歴</td></tr>
+
+      <tr><td>入荷</td><td class="num">INBOUND_ORDER</td><td>拡張</td><td>owner_code追加</td></tr>
+      <tr><td>入荷</td><td class="num">INBOUND_ORDER_LINE</td><td>維持</td><td></td></tr>
+      <tr><td>入荷</td><td class="num">INBOUND_RECEIPT</td><td>維持</td><td></td></tr>
+      <tr><td>入荷</td><td class="num">INBOUND_RECEIPT_LINE</td><td>拡張</td><td>status_code (FK化)</td></tr>
+      <tr><td>入荷</td><td class="num">INBOUND_VARIANCE</td><td>維持</td><td></td></tr>
+      <tr><td>入荷</td><td class="num">PUTAWAY_TASK</td><td>維持</td><td></td></tr>
+
+      <tr><td>出荷</td><td class="num">OUTBOUND_ORDER</td><td>拡張</td><td>owner_code, route_code等</td></tr>
+      <tr><td>出荷</td><td class="num">OUTBOUND_ORDER_LINE</td><td>維持</td><td></td></tr>
+      <tr><td>出荷</td><td class="num">WAVE</td><td>拡張</td><td>area_split_mode追加</td></tr>
+      <tr class="new"><td>出荷</td><td class="num">SUB_WAVE</td><td>NEW</td><td>エリア別サブウェーブ</td></tr>
+      <tr><td>出荷</td><td class="num">ALLOCATION</td><td>拡張</td><td>sub_wave_id参照に変更</td></tr>
+      <tr><td>出荷</td><td class="num">PICK_TASK</td><td>拡張</td><td>container_id追加</td></tr>
+      <tr class="new"><td>出荷</td><td class="num">CONTAINER</td><td>NEW</td><td>カゴ・カートン追跡</td></tr>
+      <tr class="new"><td>出荷</td><td class="num">CONTAINER_ITEM</td><td>NEW</td><td>カゴ内商品</td></tr>
+      <tr class="new"><td>出荷</td><td class="num">CONTAINER_HANDOVER</td><td>NEW</td><td>エリア間引継</td></tr>
+      <tr><td>出荷</td><td class="num">SHIPMENT</td><td>維持</td><td></td></tr>
+      <tr><td>出荷</td><td class="num">PACKAGE</td><td>維持</td><td></td></tr>
+
+      <tr class="new"><td>引渡・積込</td><td class="num">STAGING_AREA</td><td>NEW</td><td>仮置きエリア・レーン</td></tr>
+      <tr class="new"><td>引渡・積込</td><td class="num">STAGING_RECORD</td><td>NEW</td><td>仮置き到着記録</td></tr>
+      <tr class="new"><td>引渡・積込</td><td class="num">LOADING_PLAN</td><td>NEW</td><td>積込予定</td></tr>
+      <tr class="new"><td>引渡・積込</td><td class="num">LOADING_DETAIL</td><td>NEW</td><td>積込明細</td></tr>
+      <tr class="new"><td>引渡・積込</td><td class="num">LOADING_HANDOVER</td><td>NEW</td><td>引き渡し記録</td></tr>
+      <tr class="new"><td>配送追跡</td><td class="num">DELIVERY_TRACKING</td><td>NEW</td><td>配送状況追跡</td></tr>
+
+      <tr class="new"><td>その他出庫</td><td class="num">MISC_OUTBOUND</td><td>NEW</td><td>受注を伴わない出庫</td></tr>
+      <tr class="new"><td>その他出庫</td><td class="num">MISC_OUTBOUND_LINE</td><td>NEW</td><td>その他出庫明細</td></tr>
+
+      <tr><td>棚卸</td><td class="num">STOCKTAKE_PLAN</td><td>拡張</td><td>owner_code追加</td></tr>
+      <tr><td>棚卸</td><td class="num">STOCKTAKE_TASK</td><td>維持</td><td></td></tr>
+      <tr><td>棚卸</td><td class="num">STOCKTAKE_COUNT</td><td>維持</td><td></td></tr>
+
+      <tr><td>調整・移動</td><td class="num">ADJUSTMENT</td><td>維持</td><td></td></tr>
+      <tr><td>調整・移動</td><td class="num">MOVEMENT</td><td>維持</td><td></td></tr>
+      <tr><td>調整・移動</td><td class="num">REPLENISHMENT</td><td>維持</td><td></td></tr>
+
+      <tr><td>連携</td><td class="num">INTEGRATION_JOB</td><td>拡張</td><td>OWNER_INTEGRATION参照、payload保持</td></tr>
+      <tr><td>連携</td><td class="num">INTEGRATION_LOG</td><td>維持</td><td></td></tr>
+
+      <tr class="new"><td>課金・請求</td><td class="num">BILLING_DAILY_USAGE</td><td>NEW</td><td>日次課金実績</td></tr>
+      <tr class="new"><td>課金・請求</td><td class="num">BILLING_INVOICE</td><td>NEW</td><td>請求書ヘッダ</td></tr>
+      <tr class="new"><td>課金・請求</td><td class="num">BILLING_INVOICE_LINE</td><td>NEW</td><td>請求書明細</td></tr>
+
+      <tr><td>共通</td><td class="num">AUDIT_LOG</td><td>維持</td><td>監査ログ</td></tr>
+      <tr><td>共通</td><td class="num">DEVICE</td><td>維持</td><td>HT端末</td></tr>
+      <tr><td>共通</td><td class="num">DEVICE_SYNC</td><td>維持</td><td>HT同期</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="change-summary">
+  <h3>v3.0 変更サマリ</h3>
+  <ul>
+    <li><b>新規追加</b>：33テーブル</li>
+    <li><b>項目拡張</b>：10テーブル</li>
+    <li><b>合計テーブル数</b>：v2.0 = 30 → v3.0 = 60</li>
+    <li><b>大規模変更領域</b>：3PL基盤、ピッキングエリア・サブウェーブ、引渡・積込工程、課金・請求</li>
+    <li><b>反映済み追加機能</b>：A-1（その他出庫）、B-1〜B-4（在庫ステータス）、C-1〜C-7（ピッキングエリア）、D-1〜D-6（積込）、F-1〜F-5（引渡・仮置き）、G-1〜G-7（実績送信）、H-1〜H-11（3PL）</li>
+  </ul>
+</div>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'default', er: { useMaxWidth: true } });
+</script>
+
+</body>
+</html>

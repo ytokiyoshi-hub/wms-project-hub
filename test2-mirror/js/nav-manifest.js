@@ -443,7 +443,7 @@ window.NAV_ITEMS = [
       { "url": "pc/workforce/shift_template.html", "title": "shift template" },
       { "url": "pc/workforce/shifts.html", "title": "shifts" }
     ] },
-  // === システム設定（4項目） ===
+  // === システム設定（5項目） ===
   { "url": "pc/settings/system.html", "title": "全般設定", "section": "settings", "sub": null,
     "children": [
       { "url": "pc/audit/access_review.html", "title": "access review" },
@@ -513,6 +513,8 @@ window.NAV_ITEMS = [
       { "url": "pc/integration/api_quotas.html", "title": "api quotas" },
       { "url": "pc/integration/webhook.html", "title": "webhook" }
     ] },
+  { "url": "pc/help/data_model.html", "title": "データモデル ER図", "section": "settings", "sub": null,
+    "children": [] },
 
   // === ハンディ端末（HT） — 別カテゴリ ===
   { "url": "ht/login.html", "title": "HT ログイン", "section": "ht", "sub": null, "children": [] },

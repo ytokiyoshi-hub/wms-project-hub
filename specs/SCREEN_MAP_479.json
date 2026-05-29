@@ -602,6 +602,12 @@
         "pc/integration/api_quotas.html",
         "pc/integration/webhook.html"
       ]
+    },
+    {
+      "section": "システム設定",
+      "title": "データモデル ER図",
+      "url": "pc/help/data_model.html",
+      "children": []
     }
   ],
   "ht": [
@@ -662,7 +668,7 @@
     "pc/returns/quality_check.html",
     "pc/returns/restock_approval.html"
   ],
-  "total": 479,
-  "parent_count": 29,
+  "total": 480,
+  "parent_count": 30,
   "children_classified": 402
 }
