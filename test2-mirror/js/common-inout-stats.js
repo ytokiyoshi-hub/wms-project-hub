@@ -43,7 +43,12 @@
     // セクション別に主データを変える
     let primary = '/api/inbound-schedules';
     let primaryDateField = 'scheduled_date';
-    if (path.startsWith('/pc/outbound')) { primary = '/api/shipment-orders'; primaryDateField = 'scheduled_date'; }
+    if (path.startsWith('/pc/outbound')) {
+      primary = '/api/shipment-orders'; primaryDateField = 'scheduled_date';
+      // BUG-Q8-D01: 本体APIが別物の出荷ページで 9.4MB shipment-orders を不要 fetch しない
+      if (/\/packing/.test(path)) { primary = '/api/packings'; primaryDateField = 'packed_at'; }
+      else if (/\/(loading|handover)/.test(path)) { primary = '/api/loadings'; primaryDateField = 'scheduled_at'; }
+    }
     if (path.startsWith('/pc/returns')) { primary = '/api/inbound-schedules'; primaryDateField = 'scheduled_date'; } // 返品入荷
     if (path.startsWith('/pc/stocktake')) { primary = '/api/inventory-adjustments'; primaryDateField = 'updated_at'; }
     if (path.startsWith('/pc/workforce')) { primary = '/api/employees'; primaryDateField = 'updated_at'; }

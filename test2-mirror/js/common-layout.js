@@ -422,7 +422,7 @@
     const t = document.createElement('div');
     t.className = 'cl-toast' + (kind ? ' ' + kind : '');
     // 改行 (\n) を <br> に
-    const msg = String(message ?? '').replace(/[&<>]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[c])).replace(/\n/g, '<br>');
+    const msg = String(message ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])).replace(/\n/g, '<br>');
     const lbl = KIND_LABEL[kind] ? `<span class="kind-lbl">${KIND_LABEL[kind]}</span>` : '';
     t.innerHTML = `<span class="close" title="閉じる">×</span>${lbl}${msg}`;
     t.querySelector('.close').addEventListener('click', () => t.remove());
@@ -454,7 +454,7 @@
       back.innerHTML = `
         <div class="cl-modal">
           <div class="cl-modal-head">${(opts && opts.title) || '確認'}</div>
-          <div class="cl-modal-body">${String(message ?? '').replace(/[&<>]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;' }[c]))}</div>
+          <div class="cl-modal-body">${String(message ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]))}</div>
           <div class="cl-modal-foot">
             <button class="btn" data-act="no">${(opts && opts.cancelLabel) || 'キャンセル'}</button>
             <button class="btn primary" data-act="yes">${(opts && opts.okLabel) || 'OK'}</button>

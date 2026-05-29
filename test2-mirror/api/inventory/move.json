@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>Cannot GET /api/inventory/move</pre>
-</body>
-</html>
+[
+  {"id":3001,"product_code":"SKU-MK001-003","product_name":"冷蔵牛乳1L","lot_no":"LOT-26052001","from_location":"3AP-02-001","to_location":"3AP-02-002","qty":12,"reason":"ロケ集約","note":"冷蔵帯まとめ","moved_at":"2026-05-28 14:20:00","moved_by":"佐藤健一"},
+  {"id":3002,"product_code":"SKU-MK001-006","product_name":"ヨーグルト","lot_no":"LOT-26052701","from_location":"3AP-03-001","to_location":"3AP-03-002","qty":6,"reason":"先入先出整列","note":"期限近接ロット手前出し","moved_at":"2026-05-28 16:05:00","moved_by":"田中太郎"},
+  {"id":3003,"product_code":"SKU-AP001-001","product_name":"Tシャツ Mサイズ","lot_no":"","from_location":"3BT-01-001","to_location":"3BT-01-010","qty":20,"reason":"補充","note":"ピックフェイス補充","moved_at":"2026-05-29 09:40:00","moved_by":"鈴木一郎"},
+  {"id":3004,"product_code":"SKU-EC001-001","product_name":"EC定番セット","lot_no":"L260601-EC","from_location":"4FE-01-001","to_location":"4FE-01-005","qty":10,"reason":"ロケ変更","note":"流動棚再配置","moved_at":"2026-05-29 11:15:00","moved_by":"佐藤健一"}
+]

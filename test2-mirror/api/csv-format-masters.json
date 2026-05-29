@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>Cannot GET /api/csv-format-masters</pre>
-</body>
-</html>
+[
+  {"id":1,"owner_code":"MK001","data_type":"ASN（入荷予定）","format_name":"マルキ標準ASN","encoding":"UTF-8","delimiter":"カンマ","is_default":true},
+  {"id":2,"owner_code":"MK001","data_type":"出荷実績","format_name":"マルキ出荷実績連携","encoding":"Shift_JIS","delimiter":"カンマ","is_default":false},
+  {"id":3,"owner_code":"EC001","data_type":"ASN（入荷予定）","format_name":"食品EC ASN取込","encoding":"UTF-8","delimiter":"タブ","is_default":true},
+  {"id":4,"owner_code":"EC001","data_type":"出荷指示","format_name":"EC出荷指示（モール連携）","encoding":"UTF-8","delimiter":"カンマ","is_default":false},
+  {"id":5,"owner_code":"AP001","data_type":"ASN（入荷予定）","format_name":"アパレル雑貨ASN","encoding":"UTF-8","delimiter":"カンマ","is_default":true},
+  {"id":6,"owner_code":"PR001","data_type":"在庫連携","format_name":"プロサポ在庫マスタ","encoding":"Shift_JIS","delimiter":"カンマ","is_default":true}
+]

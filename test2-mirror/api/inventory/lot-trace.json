@@ -1,0 +1,17 @@
+{
+  "product_code": "SKU-MK001-001",
+  "product_name": "シャンプー300ml",
+  "lot_no": "LOT-26050801",
+  "owner_code": "MK001",
+  "owner_name": "株式会社マルキ食品",
+  "expiry_date": "2026-12-31",
+  "stocks": [
+    {"location_code":"3AP-01-001","qty":250,"received_at":"2026-05-08 09:00:00","expiry_date":"2026-12-31"}
+  ],
+  "transactions": [
+    {"created_at":"2026-05-08 09:00:00","tx_type":"inbound","location_code":"3AP-01-001","qty":300,"ref_type":"ASN","ref_id":48021},
+    {"created_at":"2026-05-12 13:20:00","tx_type":"outbound","location_code":"3AP-01-001","qty":-30,"ref_type":"SO","ref_id":26051201},
+    {"created_at":"2026-05-19 10:05:00","tx_type":"outbound","location_code":"3AP-01-001","qty":-20,"ref_type":"SO","ref_id":26051902},
+    {"created_at":"2026-05-24 15:40:00","tx_type":"adjust","location_code":"3AP-01-001","qty":0,"ref_type":"棚卸","ref_id":1}
+  ]
+}

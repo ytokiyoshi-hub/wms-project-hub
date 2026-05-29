@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>Cannot GET /api/stocktake-sessions</pre>
-</body>
-</html>
+[
+  {"id":1,"session_no":"ST-260525-01","warehouse_code":"WH001","warehouse_name":"本社倉庫","method":"循環棚卸","scope":"3Aフロア パレットロケ","status":"完了","planned_locations":40,"counted_locations":40,"diff_count":2,"started_at":"2026-05-25 08:00:00","ended_at":"2026-05-25 11:30:00","operator":"田中太郎"},
+  {"id":2,"session_no":"ST-260520-01","warehouse_code":"WH001","warehouse_name":"本社倉庫","method":"循環棚卸","scope":"3Bフロア 棚ロケ","status":"完了","planned_locations":36,"counted_locations":36,"diff_count":0,"started_at":"2026-05-20 08:00:00","ended_at":"2026-05-20 10:15:00","operator":"佐藤健一"},
+  {"id":3,"session_no":"ST-260530-01","warehouse_code":"WH001","warehouse_name":"本社倉庫","method":"一斉棚卸","scope":"4Fフロア 流動棚","status":"進行中","planned_locations":24,"counted_locations":9,"diff_count":1,"started_at":"2026-05-30 08:00:00","ended_at":null,"operator":"鈴木一郎"},
+  {"id":4,"session_no":"ST-260531-01","warehouse_code":"WH002","warehouse_name":"外部委託倉庫A","method":"循環棚卸","scope":"1Aフロア パレット","status":"予定","planned_locations":18,"counted_locations":0,"diff_count":0,"started_at":null,"ended_at":null,"operator":"未割当"}
+]
