@@ -628,7 +628,7 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                 <tr><th>項目</th><th>状態</th><th>備考</th></tr>
               </thead>
               <tbody>
-                <tr><td>サイドバー構成</td><td><span class="pill pill-success">完了</span></td><td>業界標準6カテゴリ・28項目（入荷/出荷/在庫/棚卸/マスタ/設定）</td></tr>
+                <tr><td>サイドバー構成（3階層化）</td><td><span class="pill pill-success">完了</span></td><td>業界標準6カテゴリ・親28項目 + 親→子サブメニュー展開で全479画面到達可能（合計505リンク）</td></tr>
                 <tr><td>全HTML 200確認</td><td><span class="pill pill-success">完了</span></td><td>479 / 479 ファイル curl 200（FAIL=0）</td></tr>
                 <tr><td>API静的JSON</td><td><span class="pill pill-success">完了</span></td><td>30個配備（BULK 21k件 + 拡充データ）</td></tr>
                 <tr><td>bootstrap 一体型</td><td><span class="pill pill-success">完了</span></td><td>base href + fetch hook + クエリfilter + modal classify</td></tr>
@@ -636,6 +636,8 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
                 <tr><td>ブランド統一</td><td><span class="pill pill-success">完了</span></td><td>478HTML「テストサイト2」→「マルキ食品 WMS」/ Phase 0・wms-impl・v0.2 等の旧記述完全除去</td></tr>
                 <tr><td>14ステップ業務シナリオ</td><td><span class="pill pill-success">完了</span></td><td>引当→ピック→梱包→積込→引渡→請求 通し成功</td></tr>
                 <tr><td>業務帳票6種</td><td><span class="pill pill-success">完了</span></td><td>picking_list / loading / invoice / inbound_receipt / inventory / hub</td></tr>
+                <tr><td>配色テーマカスタマイズ</td><td><span class="pill pill-success">完了</span></td><td>6プリセット + 9色カスタム / localStorage保存で全画面即反映（<a href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/settings/appearance.html" target="_blank">外観設定</a>）</td></tr>
+                <tr><td>連携可視化（2図）</td><td><span class="pill pill-success">完了</span></td><td><a href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/help/data_model.html" target="_blank">🗃 データモデル ER図</a>（60+テーブル/11図）+ <a href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/help/business_flow.html" target="_blank">🔀 業務フロー連携図</a>（6カテゴリ/Mermaid）</td></tr>
               </tbody>
             </table>
           </div>
@@ -1070,6 +1072,8 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
               <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/billing/monthly.html" target="_blank">月次請求書</a>
               <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/prints/picking_list.html" target="_blank">ピッキングリスト印刷</a>
               <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/settings/appearance.html" target="_blank">外観設定（配色テーマ）</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/help/data_model.html" target="_blank">🗃 データモデル ER図</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/help/business_flow.html" target="_blank">🔀 業務フロー連携図</a>
             </div>
           </div>
         </div>
@@ -1123,14 +1127,27 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
           <div class="doc-card">
             <div class="top">
-              <div class="title">ER図</div>
+              <div class="title">ER図（データモデル）</div>
               <span class="pill pill-progress">v3.0</span>
             </div>
-            <div class="desc">60テーブル。Mermaid記法でテーブル間の関係を可視化。</div>
+            <div class="desc">60+テーブル × 11 Mermaid ER図。3PL対応・全業務テーブル間の関係を可視化。</div>
             <div class="meta">WMS_ER図_v3.0.html / 36KB</div>
             <div class="actions">
-              <a class="btn btn-sm" href="WMS_ER図_v3.0.html" target="_blank">表示</a>
+              <a class="btn btn-sm" href="WMS_ER図_v3.0.html" target="_blank">Hub内表示</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/help/data_model.html" target="_blank">test2-mirror</a>
               <span class="pill pill-warning">v4.0反映待ち</span>
+            </div>
+          </div>
+          <div class="doc-card">
+            <div class="top">
+              <div class="title">業務フロー連携図</div>
+              <span class="pill pill-success">v1.0 新規</span>
+            </div>
+            <div class="desc">14ステップ業務シナリオの可視化。入荷→在庫→出荷→請求 6カテゴリ × Mermaid フロー図 / 画面・テーブル・API の連携。</div>
+            <div class="meta">test2-mirror/pc/help/business_flow.html / 2026-05-30 新規</div>
+            <div class="actions">
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/help/business_flow.html" target="_blank">表示</a>
+              <span class="pill pill-success">業務視点</span>
             </div>
           </div>
           <div class="doc-card">
