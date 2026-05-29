@@ -611,8 +611,8 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
           </div>
           <div class="kpi">
             <div class="lbl">画面モック</div>
-            <div class="val" id="screen-count-kpi">91</div>
-            <div class="delta" id="screen-count-delta">PC 66 / HT 13 / Mobile 3 / Portal 9</div>
+            <div class="val" id="screen-count-kpi">570</div>
+            <div class="delta" id="screen-count-delta">仕様策定 91 + Phase 1 プレビュー 479（test2-mirror）</div>
           </div>
         </div>
 
@@ -1048,8 +1048,32 @@ html, body { height: 100%; background: var(--bg-app); font-family: var(--f-base)
       <!-- ============ 画面モック ============ -->
       <div class="page" id="page-screens">
         <div class="page-title">画面モック</div>
-        <div class="page-subtitle">確認済みの全画面（クリックで確認）</div>
+        <div class="page-subtitle">仕様策定モック（91画面）+ Phase 1 プレビューサイト（479画面）</div>
 
+        <div class="section-title">Phase 1 プレビューサイト（test2-mirror / 2026-05-29 追加）</div>
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-h">
+            <span>マルキ食品 WMS — 業界標準サイドバー6カテゴリ・28項目 / HT・PC 全業務フロー連携</span>
+            <span class="meta">479 HTML / 30 API JSON / 14ステップ業務シナリオ通し成功</span>
+          </div>
+          <div class="card-b" style="padding:14px;">
+            <p style="margin:0 0 14px; font-size:13px; color:#4a5568;">
+              実装プレビュー版。 業界標準サイドバー（入荷6 / 出荷6 / 在庫5 / 棚卸3 / マスタ5 / 設定3 = 28画面）+ HT全業務フロー（pick/pack/load/handover/inspect/putaway/move/return/owner-switch/stocktake）+ 印刷帳票6種 + 業務ダッシュボード。<br>
+              静的JSON + fetch hook（クエリフィルタ対応）で 100% 動作中。次フェーズで Supabase バックエンドに切替予定。
+            </p>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/" target="_blank" style="background:#1a3a5c; color:#fff;">プレビューサイトを開く</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/ht/login.html" target="_blank">HT ログイン画面</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/master/products.html" target="_blank">商品マスタ</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/outbound/orders.html" target="_blank">出荷指示一覧</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/dashboard.html" target="_blank">工程管理ダッシュボード</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/billing/monthly.html" target="_blank">月次請求書</a>
+              <a class="btn btn-sm" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/pc/prints/picking_list.html" target="_blank">ピッキングリスト印刷</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">仕様策定モック（91画面 / 単発HTML）</div>
         <input type="text" class="search-input" placeholder="画面ID・名称で検索（W-XXX, HT-XXX...）" id="screen-search">
 
         <div class="tabs">
