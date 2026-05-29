@@ -113,3 +113,25 @@ specs/SELF_REFLECTION_STOP_PATTERN.md 参照。
 ---
 
 **作成: 2026-05-29 / 1号（まーちゃん）**
+
+---
+
+## 追記: フィルタ動作の責務分離
+
+### bootstrap v3.1 / fetch hook（1号担当範囲）
+- `?status=picking&owner_code=MK001` 等のクエリで配列を絞り込み
+- 全API URL で動作確認: products 12→7→1件、shipment-orders 21k→7k→1件
+
+### 画面JS（時吉さん / runner 担当範囲）
+- 商品マスタ画面: 内部filter 実装あり → 動作OK
+- 出荷指示一覧画面: 初回fetch後の再fetchロジック未実装 → サーバ filter依存
+- → 各画面の filter 実装は Track A 完了後の本物 Supabase API で server-side filter にする方が筋（client-side filter は性能負荷もある）
+
+### 動作確認証拠
+| クエリ | 件数 |
+|---|---|
+| products?owner_code=MK001 | 7件 |
+| products?temperature_zone=冷蔵 | 1件 |
+| shipment-orders?status=picking | 1件 |
+| shipment-orders?status=shipped | 21119件 |
+| shipment-orders?owner_code=MK001 | 7051件 |
