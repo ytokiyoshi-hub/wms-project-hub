@@ -167,6 +167,14 @@
   };
   const writeOpen = (set) => sessionStorage.setItem(KEY, JSON.stringify([...set]));
 
+  // 親項目の sub-children 展開状態
+  const KEY_PARENT = 'wms-sidebar-open-parents';
+  const readOpenParent = () => {
+    try { return new Set(JSON.parse(sessionStorage.getItem(KEY_PARENT) || '[]')); }
+    catch { return new Set(); }
+  };
+  const writeOpenParent = (set) => sessionStorage.setItem(KEY_PARENT, JSON.stringify([...set]));
+
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
   // セクションごとに items をグルーピング
@@ -226,10 +234,27 @@
       const expanded = isOpen || containsActive;
       html.push(`<div class="cl-section ${expanded ? 'cl-open' : ''}" data-section="${esc(g.section)}">`);
       html.push(`<button type="button" class="cl-section-head" data-toggle="${esc(g.section)}"><span>${esc(m.label)}</span><span class="cl-count">${g.items.length}</span><span class="cl-caret">▾</span></button>`);
+      const openParents = readOpenParent();
       html.push('<div class="cl-section-body">');
       for (const it of g.items) {
-        const active = (it.url === location.pathname) ? ' class="active"' : '';
-        html.push(`<a href="${esc(it.url)}"${active}>${esc(it.title)}</a>`);
+        const active = (it.url === location.pathname) ? ' active' : '';
+        const hasChildren = Array.isArray(it.children) && it.children.length > 0;
+        if (!hasChildren) {
+          html.push(`<a href="${esc(it.url)}" class="cl-item${active}">${esc(it.title)}</a>`);
+        } else {
+          // 子有り：行を「親リンク + 展開トグル」の2要素にする
+          const childActive = it.children.some(c => c.url === location.pathname);
+          const isParentOpen = openParents.has(it.url) || active || childActive;
+          html.push(`<div class="cl-parent ${isParentOpen ? 'cl-parent-open' : ''}">`);
+          html.push(`<a href="${esc(it.url)}" class="cl-item cl-parent-link${active}">${esc(it.title)}</a>`);
+          html.push(`<button type="button" class="cl-parent-toggle" data-parent="${esc(it.url)}" aria-label="子画面を展開"><span class="cl-count-sm">${it.children.length}</span><span class="cl-caret-sm">▾</span></button>`);
+          html.push('<div class="cl-children">');
+          for (const c of it.children) {
+            const cactive = (c.url === location.pathname) ? ' active' : '';
+            html.push(`<a href="${esc(c.url)}" class="cl-child${cactive}">${esc(c.title)}</a>`);
+          }
+          html.push('</div></div>');
+        }
       }
       html.push('</div></div>');
     }
@@ -238,7 +263,7 @@
 
     aside.innerHTML = html.join('');
 
-    // toggle bind
+    // toggle bind (section)
     aside.querySelectorAll('.cl-section-head').forEach(btn => {
       btn.addEventListener('click', () => {
         const sec = btn.dataset.toggle;
@@ -247,6 +272,19 @@
         const set = readOpen();
         if (isNowOpen) set.add(sec); else set.delete(sec);
         writeOpen(set);
+      });
+    });
+    // toggle bind (parent expand)
+    aside.querySelectorAll('.cl-parent-toggle').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const url = btn.dataset.parent;
+        const wrapper = btn.closest('.cl-parent');
+        const isNowOpen = wrapper.classList.toggle('cl-parent-open');
+        const set = readOpenParent();
+        if (isNowOpen) set.add(url); else set.delete(url);
+        writeOpenParent(set);
       });
     });
   }
@@ -271,6 +309,22 @@
       .cl-section.cl-open .cl-caret { transform:rotate(180deg); }
       .cl-section-body { display:none; padding:0 0 6px 0; }
       .cl-section.cl-open .cl-section-body { display:block; }
+      /* === 3階層: 親リンク + サブ展開 === */
+      .cl-item { display:block; padding:6px 14px; color:var(--c-text); text-decoration:none; font-size:12px; border-left:3px solid transparent; }
+      .cl-item:hover { background:var(--c-bg); }
+      .cl-item.active { background:var(--c-accent-lt, #e6f3ff); border-left-color:var(--c-accent, #1a73e8); font-weight:600; }
+      .cl-parent { display:block; position:relative; }
+      .cl-parent-link { padding-right:42px; }
+      .cl-parent-toggle { position:absolute; right:6px; top:3px; background:transparent; border:1px solid var(--c-line); border-radius:3px; padding:1px 5px; cursor:pointer; display:flex; align-items:center; gap:3px; color:var(--c-text-sub); }
+      .cl-parent-toggle:hover { background:var(--c-bg); color:var(--c-text); }
+      .cl-count-sm { font-size:10px; font-weight:600; }
+      .cl-caret-sm { font-size:9px; transition:transform .15s; }
+      .cl-parent.cl-parent-open .cl-caret-sm { transform:rotate(180deg); }
+      .cl-children { display:none; background:var(--c-bg, #f8fafc); border-top:1px dashed var(--c-line, #eee); }
+      .cl-parent.cl-parent-open .cl-children { display:block; }
+      .cl-child { display:block; padding:4px 14px 4px 28px; color:var(--c-text-sub); text-decoration:none; font-size:11px; border-left:3px solid transparent; }
+      .cl-child:hover { background:var(--c-base); color:var(--c-text); }
+      .cl-child.active { background:var(--c-accent-lt, #e6f3ff); border-left-color:var(--c-accent, #1a73e8); color:var(--c-text); font-weight:600; }
       .sb-footer { padding:10px 14px; font-size:10px; color:var(--c-text-sub, #999); border-top:1px solid var(--c-line, #eee); margin-top:auto; }
       .sidebar { display:flex; flex-direction:column; overflow-y:auto; }
 

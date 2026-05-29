@@ -18,18 +18,10 @@
 
 ---
 
-## 入荷管理（親 6項目・子 44画面）
+## 入荷管理（親 6項目・子 36画面）
 
-### 入荷予定一覧（pc/inbound/plans.html） — 子 34 画面
+### 入荷予定一覧（pc/inbound/plans.html） — 子 26 画面
 
-- `pc/dashboard/cost_view.html`
-- `pc/dashboard/inbound_view.html`
-- `pc/dashboard/manager_view.html`
-- `pc/dashboard/operations_kpi.html`
-- `pc/dashboard/owner_view.html`
-- `pc/dashboard/realtime.html`
-- `pc/dashboard/safety_view.html`
-- `pc/dashboard/site_overview.html`
 - `pc/inbound/asn_compare.html`
 - `pc/inbound/asn_history.html`
 - `pc/inbound/asn_import.html`
@@ -192,10 +184,18 @@
 
 ---
 
-## 在庫管理（親 5項目・子 73画面）
+## 在庫管理（親 5項目・子 81画面）
 
-### 在庫照会（商品軸）（pc/inventory/inventory_kpi.html） — 子 47 画面
+### 在庫照会（商品軸）（pc/inventory/inventory_kpi.html） — 子 55 画面
 
+- `pc/dashboard/cost_view.html`
+- `pc/dashboard/inbound_view.html`
+- `pc/dashboard/manager_view.html`
+- `pc/dashboard/operations_kpi.html`
+- `pc/dashboard/owner_view.html`
+- `pc/dashboard/realtime.html`
+- `pc/dashboard/safety_view.html`
+- `pc/dashboard/site_overview.html`
 - `pc/inventory/abc_analysis.html`
 - `pc/inventory/abc_recalc_log.html`
 - `pc/inventory/abc_recommendation.html`
@@ -301,9 +301,9 @@
 
 ---
 
-## マスタ管理（親 5項目・子 156画面）
+## マスタ管理（親 5項目・子 138画面）
 
-### 商品マスタ（pc/master/products.html） — 子 113 画面
+### 商品マスタ（pc/master/products.html） — 子 98 画面
 
 - `pc/calendars/events.html`
 - `pc/calendars/list.html`
@@ -394,21 +394,6 @@
 - `pc/master/units.html`
 - `pc/master/vehicles.html`
 - `pc/master/yard_management.html`
-- `pc/reports/abc_turnover.html`
-- `pc/reports/co2_emission.html`
-- `pc/reports/complaint_summary.html`
-- `pc/reports/cost_breakdown.html`
-- `pc/reports/exceptions_summary.html`
-- `pc/reports/hourly.html`
-- `pc/reports/incident_report.html`
-- `pc/reports/kpi.html`
-- `pc/reports/productivity.html`
-- `pc/reports/profit.html`
-- `pc/reports/quality_summary.html`
-- `pc/reports/return_kpi.html`
-- `pc/reports/sla.html`
-- `pc/reports/throughput_kpi.html`
-- `pc/reports/yard_dwell_kpi.html`
 - `pc/workforce/assignment.html`
 - `pc/workforce/attendance.html`
 - `pc/workforce/employees.html`
@@ -432,7 +417,7 @@
 - `pc/master/warehouse_settings.html`
 - `pc/master/warehouses.html`
 
-### 取引先（pc/master/customers.html） — 子 28 画面
+### 取引先（pc/master/customers.html） — 子 25 画面
 
 - `pc/master/contact_persons.html`
 - `pc/master/customer_detail.html`
@@ -459,9 +444,6 @@
 - `pc/master/owner_template_set.html`
 - `pc/master/owner_volume_discount.html`
 - `pc/master/owners.html`
-- `pc/reports/customer_kpi.html`
-- `pc/reports/owner_kpi.html`
-- `pc/reports/owner_profit_detail.html`
 
 ### 配送業者（pc/master/carriers.html） — 子 1 画面
 
@@ -476,9 +458,9 @@
 
 ---
 
-## システム設定（親 4項目・子 40画面）
+## システム設定（親 4項目・子 58画面）
 
-### 全般設定（pc/settings/system.html） — 子 24 画面
+### 全般設定（pc/settings/system.html） — 子 42 画面
 
 - `pc/audit/access_review.html`
 - `pc/audit/configuration_history.html`
@@ -503,6 +485,24 @@
 - `pc/notifications/notes.html`
 - `pc/notifications/subscriptions.html`
 - `pc/notifications/templates.html`
+- `pc/reports/abc_turnover.html`
+- `pc/reports/co2_emission.html`
+- `pc/reports/complaint_summary.html`
+- `pc/reports/cost_breakdown.html`
+- `pc/reports/customer_kpi.html`
+- `pc/reports/exceptions_summary.html`
+- `pc/reports/hourly.html`
+- `pc/reports/incident_report.html`
+- `pc/reports/kpi.html`
+- `pc/reports/owner_kpi.html`
+- `pc/reports/owner_profit_detail.html`
+- `pc/reports/productivity.html`
+- `pc/reports/profit.html`
+- `pc/reports/quality_summary.html`
+- `pc/reports/return_kpi.html`
+- `pc/reports/sla.html`
+- `pc/reports/throughput_kpi.html`
+- `pc/reports/yard_dwell_kpi.html`
 - `pc/settings/security.html`
 
 ### 外観設定（配色テーマ）（pc/settings/appearance.html） — 子 0 画面
