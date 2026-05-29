@@ -213,3 +213,42 @@ HT全画面で F4 → メインメニュー戻る動作。確認: ht/inspect/don
 
 → 時吉さんが触ってどう判定されるかが本当の評価。
 私の確認はその前提条件の動作チェックに過ぎない。
+
+---
+
+## 続き作業: ブランド統一・残「未実装ボタン」処理（2026-05-29 続行）
+
+### href="" → index.html 一括置換
+- 46件の空href（HT/PC 全47ファイル「トップ」リンク）→ `href="index.html"`
+- base href 経由で `test2-mirror/index.html` に解決
+- preview eval で ht/login.html「トップ」クリック→ index.html 遷移確認
+
+### ブランド統一: 「WMS テストサイト2」→「マルキ食品 WMS」
+- HTML 478ファイル 484箇所一括置換
+- ht/login ロゴ下「テストサイト2 / v0.2」→「マルキ食品 WMS / Phase 1 プレビュー」
+- pc/master/owner_email_templates 「テストサイト2運用センター」→「マルキ食品 WMS 運用センター」
+- 残存「テストサイト」「WMSテストサイト」検索: 0件
+
+### index.html トップ画面: Phase 0 表記の更新
+- `<title>` 「Phase 0 試作」→「Phase 1 プレビュー」
+- crumb badge: PHASE 0 → PHASE 1 プレビュー
+- note-box 古い「忠実再現中」記述削除 → サイドバー6カテゴリ案内
+- 「テストサイト2 構成情報」カード →「システム情報」: マルキ食品3PL運用情報
+- 「HT 15画面 + PC 1画面」→「HT 画面ショートカット」
+
+### 全般設定画面 (pc/settings/system.html): 実態に揃える
+- アプリバージョン: v0.2.0 → Phase 1 プレビュー
+- サーバURL: localhost:8778 → 公開Pages URL
+- DB: SQLite → Phase 1:静的JSON / Phase 2:Supabase 切替予定
+- 並走サーバ wms-impl 言及削除 → 運用形態 3PL
+
+### Pages 配信状態（curl 確認済）
+- live title: `マルキ食品 WMS — Phase 1 プレビュー`
+- HT login title: `HT-000 ログイン — マルキ食品 WMS`
+- 主要 URL 200確認 (index/ht-login/products/orders)
+- 全 479 HTML 200 (curl 全件確認・FAIL=0)
+
+### bootstrap v6.1 modal 動作確認（preview）
+- pc/master/products.html「詳細」クリック → modal 開く・detail table 6行表示・OK="閉じる"
+- 「編集」クリック → form 6入力・行値プレフィル (S-00001 等)・OK="保存"/Cancel="キャンセル"
+- errors=0 維持
