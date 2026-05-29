@@ -1,0 +1,6 @@
+[
+  {"owner_code":"MK001","owner_name":"株式会社マルキ食品","plan":"standard","storage_rate_per_pallet_per_day":120,"handling_in_per_case":45,"handling_out_per_case":50,"cold_surcharge_ratio":0.20,"currency":"JPY","effective_from":"2026-04-01","effective_to":null},
+  {"owner_code":"AP001","owner_name":"アパレル雑貨株式会社","plan":"premium","storage_rate_per_pallet_per_day":180,"handling_in_per_case":60,"handling_out_per_case":65,"cold_surcharge_ratio":0,"currency":"JPY","effective_from":"2026-04-01","effective_to":null},
+  {"owner_code":"EC001","owner_name":"ECダイレクト合同会社","plan":"ec_pack","storage_rate_per_pallet_per_day":100,"handling_in_per_case":40,"handling_out_per_case":35,"cold_surcharge_ratio":0,"currency":"JPY","effective_from":"2026-04-01","effective_to":null},
+  {"owner_code":"PR001","owner_name":"株式会社PRコスメ","plan":"standard","storage_rate_per_pallet_per_day":150,"handling_in_per_case":55,"handling_out_per_case":60,"cold_surcharge_ratio":0,"currency":"JPY","effective_from":"2026-04-01","effective_to":null}
+]
