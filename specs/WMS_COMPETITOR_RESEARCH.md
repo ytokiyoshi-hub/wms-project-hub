@@ -4,7 +4,8 @@
 - 作成: 1号（時吉さん依頼）
 - 目的: WMS Hub（公開サイト/プロダクト）の競合理解・自社ポジショニング検討の基礎資料
 - スコープ: 日本国内主要 18 社 + 海外主要 12 社
-- 出典: 各社公式・ITトレンド・LISKUL・Gartner Peer Insights・Manhattan Associates・LogiToday 等（章末リンク）
+- 出典: 各社公式・ITトレンド・LISKUL・LogiToday 等（章末リンク）
+- **全URL検証済み**: 本資料内のすべての公式URLは作成日時点で curl により HTTP 200 を確認（一部、bot対策で 403 を返すが実ブラウザで開けるサイトはその旨を注記）
 
 ---
 
@@ -72,19 +73,26 @@
 - **弱み**: ロジザードと比較して EC スタートアップ向けの軽量プランが弱い
 
 ### 1-3. AiR Logi（株式会社コマースロボティクス）
-- **URL**: https://www.commerce-robotics.com/
+- **URL（サービス）**: https://www.ec-zaiko.net/
+- **URL（運営会社）**: https://commerce-robotics.com/
 - **提供形態**: クラウド
 - **シェア**: クラウドWMS導入シェア **3.1%（3位）**
 - **ターゲット**: EC、3PL 事業者
 - **主要機能**: ロット・消費期限・シリアル管理、入出荷、在庫、ピッキング
-- **料金**: **月額 10,000 円〜** （業界最低水準）
+- **料金**:
+  - 初期費用 35,000 円
+  - WMS 3PL 倉庫プラン: **月額 10,000 円〜**（月 1,000 件まで）
+  - WMS Shop プラン: 月額 30,000 円〜
+  - ハンディ端末レンタル: 1 台あたり月 6,500 円
 - **強み**:
-  - **約 829 社導入実績**、東証 1 部上場企業の採用も
+  - **2024 年時点で約 1,500〜1,600 社、年間出荷 4,000 万件**
   - 導入工事不要、**最短 5 日**で稼働
+  - 東証一部上場企業など大規模 EC の導入実績
 - **弱み**: 大規模オペレーション向け機能は薄い
 
 ### 1-4. クラウドトーマス / THOMAS（株式会社関通）
-- **URL**: https://www.kantsu.com/services/
+- **URL（クラウドトーマス公式）**: https://xn--gckr5a9ce1k1c3h.jp/ （ブラウザで「クラウドトーマス.jp」と表示）
+- **URL（運営会社）**: https://www.kantsu.com/
 - **提供形態**: クラウド
 - **ターゲット**: アパレル・食品・化粧品の EC / 3PL
 - **主要機能**: レイアウト/ロケーション作成、データ取り込み、入出荷、在庫管理
@@ -97,7 +105,7 @@
 - **弱み**: 月 9 万円〜は EC スタートアップにはやや重い
 
 ### 1-5. COOOLa（株式会社ブライセン）
-- **URL**: https://www.coooola.com/
+- **URL**: https://cooola.jp/
 - **提供形態**: クラウド
 - **ターゲット**: 250〜5,000 名規模の中堅企業
 - **主要機能**:
@@ -109,16 +117,20 @@
 - **弱み**: 価格非公開、SMB 取り込みが弱い
 
 ### 1-6. W3 mimosa（株式会社ダイアログ）
-- **URL**: https://w3mimosa.com/
-- **提供形態**: クラウド
+- **URL**: https://www.dialog-inc.com/service/w3-wms/
+- **提供形態**: クラウド（SaaS）
 - **ターゲット**: 中〜大規模物流企業
-- **主要機能**: 在庫・入出荷管理、ダッシュボード、**150 以上の標準機能**
+- **主要機能**: 在庫・入出荷管理、ダッシュボード、**150 以上の標準機能**、ロケ・ケース・ロット・賞味期限管理を標準搭載、複数拠点の一元管理ユニット
 - **料金**: 初期 200,000 円 + **月額 37,500 円〜**
-- **強み**: 標準機能の数 / 単価のコスパが高い
+- **強み**:
+  - 標準機能数 / 単価のコスパが高い
+  - 40 以上の販売管理 / 配送管理システムとの連携実績
+  - リリース 5 年で **累計導入 550 社超**
+  - 中小企業庁認定「スマート SME サポーター」
 - **弱み**: EC 特化機能は薄い
 
 ### 1-7. SLIMS（株式会社セイノー情報サービス）
-- **URL**: https://www.siscloud.jp/slims/
+- **URL**: https://www.siscloud.jp/logistics-it-cloud/solution/slims/
 - **提供形態**: クラウド / オンプレ
 - **ターゲット**: 250 名以上の中〜大規模
 - **主要機能**: 入荷・出荷・在庫、リアルタイム作業進捗、業界特有機能の標準化
@@ -212,30 +224,32 @@
 - **弱み**: SMB 向けではない、初期投資が大きい
 
 ### 1-14. logiec（株式会社はぴロジ）
-- **URL**: https://www.hapilogi.com/
-- **提供形態**: クラウド（流通統合 OMS+WMS）
-- **ターゲット**: EC 中小〜中堅、Shopify 連携層
-- **主要機能**: OMS / WMS / EC 連携、受注〜出荷自動化
+- **URL（サービス）**: https://www.hapilogi.co.jp/service/logiec/
+- **URL（会社）**: https://www.hapilogi.co.jp/
+- **提供形態**: クラウド型流通統合システム（SaaS / iPaaS）
+- **ターゲット**: EC 中小〜中堅、Shopify / カート 接続層、3PL
+- **主要機能**: OMS と WMS を内蔵、API / FTP の自動連携、はぴロジ帳票機能、倉庫管理機能
 - **料金**: **月額 15,000 円〜**
-- **強み**: 中堅 EC のコスト・機能バランス
+- **強み**: あらゆるシステムと物流を繋ぐ iPaaS 思想、Shopify 連携アプリ提供
 - **弱み**: LOGILESS と顧客層が重複、シェアは追いかけ側
 
 ### 1-15. タナヨミ（株式会社ロジ・グレス）
-- **URL**: （ロジ・グレス公式）
-- **提供形態**: クラウド
+- **URL（サービス）**: https://tanayomi.jp/
+- **URL（会社）**: https://logigress.co.jp/
+- **提供形態**: クラウド（2022/08 リリース）
 - **ターゲット**: 中小物流企業
-- **主要機能**: 入出荷、棚卸
-- **料金**: 月額 10,000 円〜（**端末レンタルから請負までセットで提供可**）
+- **主要機能**: 在庫一元管理、入出荷処理、ロケーション管理、帳票作成
+- **料金**: 初期 147,000 円 + **月額 24,000 円〜**（端末レンタル / 請負サービスとセット提供可）
 - **強み**: SaaS 単体ではなく現場運用込みのサポート
-- **弱み**: 機能の幅は限定的
+- **弱み**: 機能の幅は限定的、新興で実績はこれから
 
 ### 1-16. LIFE-Vision（株式会社東計電算）
-- **URL**: https://www.tkc-net.co.jp/
-- **提供形態**: 業種特化型
-- **ターゲット**: ドラッグストア、ホームセンター、流通業
-- **主要機能**: 入出荷、期限管理、業種特化機能
+- **URL（会社）**: https://www.toukei.co.jp/
+- **提供形態**: クラウド型 WMS（業種特化）
+- **ターゲット**: ドラッグストア、ホームセンター、ディスカウントストア、生活雑貨流通
+- **主要機能**: TC / DC 管理、ケース・バラ管理、フリーロケーション、多品種少量対応、カテゴリ別/部門別梱包、賞味期限・ロット管理、汎用在庫引当ロジック
 - **料金**: 要問い合わせ
-- **強み**: 流通業特化の業務テンプレート
+- **強み**: 流通業（特に日用品/生活雑貨）特化の業務テンプレート
 - **弱み**: 業種が外れると採用候補に入らない
 
 ### 1-17. ZAICO（株式会社 ZAICO）
@@ -502,43 +516,53 @@
 
 ## 6. 出典・参考リンク
 
-### 国内
-- ITトレンド WMSランキング / 比較記事: https://it-trend.jp/warehouse_management_system/
-- LISKUL WMS 比較: https://liskul.com/wms-comparison-150902
-- ITreview WMS カテゴリ: https://www.itreview.jp/categories/wms
-- LogiToday クラウドWMS導入ランキング: https://www.logi-today.com/544572
-- システム幹事 WMS 費用目安: https://system-kanji.com/posts/wms-cost
-- ロジザード: https://www.logizard-zero.com/
-- シーネット: https://www.cross-docking.com/
-- 関通 クラウドトーマス: https://www.kantsu.com/
-- ブライセン COOOLa: https://www.coooola.com/
-- ダイアログ W3 mimosa: https://w3mimosa.com/
-- セイノー情報サービス SLIMS: https://www.siscloud.jp/slims/
-- ロジレス: https://www.logiless.com/
-- ロジスティードソリューションズ ONEsLOGI: https://sol.logisteed.com/
-- 富士通 Logifit WM: https://www.fujitsu.com/jp/solutions/industry/logistics/product/center/logifitwm/
-- ロジクラ: https://logikura.jp/
-- mylogi: https://www.mylogi.jp/
-- INTER-STOCK: https://www.inter-stock.net/
-- はぴロジ logiec: https://www.hapilogi.com/
-- ZAICO: https://www.zaico.co.jp/
-- スマートマットクラウド: https://www.smartmat.io/
+> 以下のリンクは 2026-05-28 時点で curl により HTTP 200 を確認済み。`(※)` 印は curl で 403（bot 対策）を返すが実ブラウザでアクセス可能な公式ページ。
 
-### 海外
-- Manhattan Associates: https://www.manh.com/ / Best WMS Brands: https://www.manh.com/our-insights/comparisons/best-wms-brands
-- Blue Yonder: https://blueyonder.com/
-- SAP EWM: https://www.sap.com/products/scm/extended-warehouse-management.html
-- Oracle WMS Cloud: https://www.oracle.com/scm/logistics/warehouse-management/
-- Körber Supply Chain: https://www.koerber-supplychain.com/
-- Infor WMS: https://www.infor.com/solutions/scm/warehouse-management
-- Microsoft Dynamics 365 SCM: https://www.microsoft.com/dynamics-365/products/supply-chain-management
-- Extensiv: https://www.extensiv.com/extensiv-3pl-warehouse-manager
-- Logiwa: https://www.logiwa.com/
-- ShipBob: https://www.shipbob.com/
-- Softeon: https://softeon.com/
-- Tecsys: https://www.tecsys.com/
-- Gartner Peer Insights Manhattan vs Blue Yonder: https://www.gartner.com/reviews/market/warehouse-management-systems/compare/blue-yonder-vs-manhattan-associates
-- SelectHub Manhattan vs Blue Yonder: https://www.selecthub.com/warehouse-management-software/manhattan-active-wm-vs-blue-yonder-wms/
+### メディア・比較サイト（市場概況の出典）
+- [ITトレンド WMSランキング / 比較記事](https://it-trend.jp/warehouse_management_system/)
+- [LISKUL WMS 比較記事](https://liskul.com/wms-comparison-150902)
+- [ITreview WMS カテゴリ](https://www.itreview.jp/categories/wms)
+- [LogiToday クラウドWMS導入ランキング](https://www.logi-today.com/544572)
+- [システム幹事 WMS 費用目安](https://system-kanji.com/posts/wms-cost)
+- [Manhattan Associates Best WMS Brands](https://www.manh.com/our-insights/comparisons/best-wms-brands)
+
+### 国内ベンダー公式
+- [ロジザードZERO（株式会社ロジザード）](https://www.logizard-zero.com/)
+- [ci.Himalayas（株式会社シーネット）](https://www.cross-docking.com/)
+- [AiR Logi サービス（株式会社コマースロボティクス）](https://www.ec-zaiko.net/)
+- [株式会社コマースロボティクス（運営会社）](https://commerce-robotics.com/)
+- [クラウドトーマス（株式会社関通）](https://xn--gckr5a9ce1k1c3h.jp/)
+- [株式会社関通（運営会社）](https://www.kantsu.com/)
+- [COOOLa（株式会社ブライセン）](https://cooola.jp/)
+- [W3 mimosa（株式会社ダイアログ）](https://www.dialog-inc.com/service/w3-wms/)
+- [SLIMS（株式会社セイノー情報サービス）](https://www.siscloud.jp/logistics-it-cloud/solution/slims/)
+- [LOGILESS（株式会社ロジレス）](https://www.logiless.com/)
+- [ONEsLOGI / WMS Cloud（ロジスティードソリューションズ）](https://sol.logisteed.com/solution/wms/)
+- [Logifit WM（富士通）](https://www.fujitsu.com/jp/solutions/industry/logistics/product/center/logifitwm/)
+- [ロジクラ（株式会社ロジクラ）](https://logikura.jp/)
+- [mylogi（アートトレーディング株式会社）](https://www.mylogi.jp/)
+- [INTER-STOCK（株式会社オンザリンクス）](https://www.inter-stock.net/)
+- [logiec（株式会社はぴロジ）](https://www.hapilogi.co.jp/service/logiec/)
+- [株式会社はぴロジ（会社）](https://www.hapilogi.co.jp/)
+- [タナヨミ（株式会社ロジ・グレス）](https://tanayomi.jp/)
+- [株式会社ロジ・グレス（会社）](https://logigress.co.jp/)
+- [株式会社東計電算（LIFE-Vision 提供元）](https://www.toukei.co.jp/)
+- [ZAICO（株式会社 ZAICO）](https://www.zaico.co.jp/)
+- [スマートマットクラウド（株式会社スマートショッピング）](https://www.smartmat.io/)
+
+### 海外ベンダー公式
+- [Manhattan Associates](https://www.manh.com/)
+- [Blue Yonder](https://blueyonder.com/)
+- [SAP Extended Warehouse Management（SAPジャパン）](https://www.sap.com/japan/products/scm/extended-warehouse-management.html) `(※)`
+- [Oracle Warehouse Management Cloud](https://www.oracle.com/scm/logistics/warehouse-management/)
+- [Körber Supply Chain](https://koerber-supplychain.com/)
+- [Infor WMS](https://www.infor.com/solutions/scm/warehouse-management-system)
+- [Microsoft Dynamics 365 Supply Chain Management](https://www.microsoft.com/ja-jp/dynamics-365/products/supply-chain-management)
+- [Extensiv 3PL Warehouse Manager](https://www.extensiv.com/extensiv-3pl-warehouse-manager)
+- [Logiwa](https://www.logiwa.com/)
+- [ShipBob](https://www.shipbob.com/)
+- [Softeon](https://www.softeon.com/)
+- [Tecsys](https://www.tecsys.com/)
 
 ---
 
