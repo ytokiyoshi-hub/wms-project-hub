@@ -26,7 +26,7 @@
     <div class="brand">KEYENCE</div>
     <div class="model">BT-A2000</div>
     <div class="ht-screen">
-      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">11:30 78%</span></div>
+      <div class="ht-statusbar"><span>WMS-HT Phase 1</span><span id="clock">11:30 78%</span></div>
       <div class="ht-header">
         <span>補充作業 REP-2606-001</span>
         <span class="scr-id">HT-407</span>
@@ -95,6 +95,14 @@
 const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 78%`; };
 setClock(); setInterval(setClock, 30000);
 window.htSimulateScan = () => { document.getElementById('scan-input').value = '3AP-02-001'; };
+document.getElementById('scan-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const v = e.target.value.trim();
+    if (!v) return;
+    e.target.value = '';
+    e.target.focus();
+  }
+});
 document.getElementById('key-confirm').addEventListener('click', () => alert('補充作業登録'));
 </script>
 </body>

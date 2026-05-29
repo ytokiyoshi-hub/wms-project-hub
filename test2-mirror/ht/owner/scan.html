@@ -35,7 +35,7 @@
     <div class="brand">KEYENCE</div>
     <div class="model">BT-A2000</div>
     <div class="ht-screen">
-      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">10:05 82%</span></div>
+      <div class="ht-statusbar"><span>WMS-HT Phase 1</span><span id="clock">10:05 82%</span></div>
       <div class="ht-header">
         <span>荷主切替</span>
         <span class="scr-id">HT-1101</span>
@@ -60,7 +60,7 @@
           <div style="font-size:9px; color:var(--c-text-sub);">荷主バーコードシートを読み取り<br>または F1 で手入力</div>
         </div>
 
-        <input id="owner-input" placeholder="荷主コード入力 (MK001/AP001/EC001/PR001)" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+        <input id="owner-input" placeholder="荷主コード入力 (MK001/AP001/EC001/PR001)" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
 
         <div id="candidate" style="font-size:9px; color:var(--c-text-sub);"></div>
 
@@ -126,6 +126,10 @@ window.htSimulateScan = () => {
   document.getElementById('owner-input').value = codes[Math.floor(Math.random() * 4)];
   document.getElementById('owner-input').dispatchEvent(new Event('input'));
 };
+
+document.getElementById('owner-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('key-enter').click();
+});
 
 document.getElementById('key-enter').addEventListener('click', async () => {
   const v = document.getElementById('owner-input').value.trim().toUpperCase();

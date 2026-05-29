@@ -27,7 +27,7 @@
     <div class="brand">KEYENCE</div>
     <div class="model">BT-A2000</div>
     <div class="ht-screen">
-      <div class="ht-statusbar"><span>WiFi 5GHz</span><span id="clock">11:00 80%</span></div>
+      <div class="ht-statusbar"><span>WMS-HT Phase 1</span><span id="clock">11:00 80%</span></div>
       <div class="ht-header">
         <span>在庫移動</span>
         <span class="scr-id">HT-505</span>
@@ -94,6 +94,15 @@ window.htSimulateScan = () => {
 document.getElementById('loc-from').addEventListener('input', (e) => {
   if (e.target.value.trim()) {
     document.getElementById('loc-info').textContent = `ロケコード: ${e.target.value} (在庫照会中...)`;
+  }
+});
+document.getElementById('loc-from').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const v = e.target.value.trim();
+    if (!v) return;
+    document.getElementById('loc-info').textContent = `ロケコード: ${v} - 確定`;
+    e.target.value = '';
+    e.target.focus();
   }
 });
 function next() { alert('移動先ロケスキャン画面へ（実装は次フェーズ）'); }
