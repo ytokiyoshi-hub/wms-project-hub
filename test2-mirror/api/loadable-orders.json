@@ -1,4 +1,4 @@
 [
-  {"id":1,"order_no":"LD-ORDER-260601-001","owner_code":"MK001","owner_name":"株式会社マルキ食品","carrier_code":"YMT","carrier_name":"ヤマト運輸","route_code":"RT-001","total_lines":3,"total_cartons":12,"scheduled_dispatch":"2026-06-01T15:00:00","status":"ready"},
-  {"id":2,"order_no":"LD-ORDER-260601-002","owner_code":"EC001","owner_name":"食品EC株式会社","carrier_code":"SAG","carrier_name":"佐川急便","route_code":"RT-002","total_lines":5,"total_cartons":20,"scheduled_dispatch":"2026-06-01T16:30:00","status":"ready"}
+  {"id":1,"order_no":"LD-ORDER-260601-001","owner_code":"MK001","owner_name":"株式会社マルキ食品","carrier_code":"CR001","carrier_name":"ヤマト運輸","route_code":"RT-001","total_lines":3,"total_cartons":12,"scheduled_dispatch":"2026-06-01T15:00:00","status":"ready"},
+  {"id":2,"order_no":"LD-ORDER-260601-002","owner_code":"EC001","owner_name":"食品EC株式会社","carrier_code":"CR002","carrier_name":"佐川急便","route_code":"RT-002","total_lines":5,"total_cartons":20,"scheduled_dispatch":"2026-06-01T16:30:00","status":"ready"}
 ]
