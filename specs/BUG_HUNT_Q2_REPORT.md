@@ -146,4 +146,57 @@
 
 ---
 
+---
+
+## 5. 追加調査結果（2026-05-29 にーちゃん再検証）
+
+### 5-1. ❌ CRITICAL: picking-tasks.order_id と shipment-orders.id の全面的不一致
+
+| order_no | task.order_id | shipment-orders.id | 状態 |
+|---------|--------------|-------------------|------|
+| SO-26060101 | 100 | 3 | ❌ MISMATCH |
+| SO-26060102 | 101 | 4 | ❌ MISMATCH |
+| SO-26060103 | 102 | 5 | ❌ MISMATCH |
+| SO-26060104 | 103 | NOT FOUND | ❌ MISMATCH + 欠損 |
+| SO-26060105 | 104 | NOT FOUND | ❌ MISMATCH + 欠損 |
+
+**影響**: order_id で shipment-orders を JOIN すると全件ミス。order_no での検索は正常動作するが FK 整合が壊れている。
+
+### 5-2. ❌ picking-task 2002 の lot_no が inventory と不一致
+
+- task 2002: product=SKU-MK001-003, loc=3AP-02-001, lot_no="LOT-26060101"
+- inventory 3AP-02-001: lot_no="LOT-26052001"
+- **LOT-26060101 は inventory に存在しない** → lot-based scan で拒否される
+
+### 5-3. ❌ SKU-EC001-001（task 2005）の inventory レコードなし
+
+- task 2005: SKU-EC001-001, loc=3BT-02-001, pick_qty=4
+- inventory に 3BT-02-001 の EC001-001 レコードが存在しない → 在庫不足エラー相当
+
+### 5-4. ❌ FIFO 違反（SKU-MK001-001）
+
+inventory の received_at 順:
+- 3AP-04-001 (LOT-26050501, received=2026-05-05) ← OLDEST
+- 3AP-01-001 (LOT-26050801, received=2026-05-08) ← NEWER
+
+picking-task 2000 は 3AP-01-001（新ロット）を指定 → 3AP-04-001（旧ロット）を飛ばしている。
+**修正**: task 2000 の location_code を "3AP-04-001" に変更。
+
+### 5-5. ⚠️ packings の order_id FK が混在
+
+packing.id=545: order_id=3（shipment-orders.id 方式）  
+packing.id=546〜550: order_id=100〜104（picking-tasks 仮ID 方式）  
+同一テーブル内で FK 参照先が統一されていない。
+
+### 5-6. ⚠️ packing.id=545 の inspected_by = NULL
+
+SO-26060101 の packing（id=545）は inspected_by が未設定。他6件は設定済み（田中太郎、佐藤健一等）。
+
+### 5-7. ⚠️ shipment-orders.id=3 の line_count=2 と picking-tasks 3件の不一致
+
+SO-26060101: shipment-orders.line_count=2, done_count=2  
+SO-26060101 の picking-tasks: 3件（task 2000, 2001, 2002）→ **line_count が 1 件不足**
+
+---
+
 *BH-Q2検証完了 / 次: BH-Q6（HT BT-A2000 全業務フロー完走検証）*
