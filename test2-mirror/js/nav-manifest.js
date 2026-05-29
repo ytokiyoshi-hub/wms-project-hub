@@ -51,8 +51,9 @@ window.NAV_ITEMS = [
   { "url": "pc/master/carriers.html",  "title": "配送業者",         "section": "master", "sub": null },
   { "url": "pc/master/users.html",     "title": "ユーザー・権限",   "section": "master", "sub": null },
 
-  // === システム設定（3） ===
-  { "url": "pc/settings/system.html",   "title": "全般設定",   "section": "settings", "sub": null },
-  { "url": "pc/audit/log.html",         "title": "操作履歴",   "section": "settings", "sub": null },
-  { "url": "pc/integration/edi.html",   "title": "外部連携",   "section": "settings", "sub": null }
+  // === システム設定（4） ===
+  { "url": "pc/settings/system.html",     "title": "全般設定",             "section": "settings", "sub": null },
+  { "url": "pc/settings/appearance.html", "title": "外観設定（配色テーマ）", "section": "settings", "sub": null },
+  { "url": "pc/audit/log.html",           "title": "操作履歴",             "section": "settings", "sub": null },
+  { "url": "pc/integration/edi.html",     "title": "外部連携",             "section": "settings", "sub": null }
 ];
