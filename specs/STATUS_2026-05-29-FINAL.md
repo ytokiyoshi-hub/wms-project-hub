@@ -135,3 +135,18 @@ specs/SELF_REFLECTION_STOP_PATTERN.md 参照。
 | shipment-orders?status=picking | 1件 |
 | shipment-orders?status=shipped | 21119件 |
 | shipment-orders?owner_code=MK001 | 7051件 |
+
+### HT業務フロー連続遷移成功
+login.html → menu.html → pick/wave.html の3画面業務フロー連続遷移確認。
+- USR-001 ログイン → 田中太郎/MK001 マルキ食品でメインメニュー → ピッキングタイルclickで HT-804 wave遷移
+- errors=0
+
+### location.href 絶対パス問題 修正
+画面JS内 `location.href = '/ht/menu.html'` (35件) → `'ht/menu.html'` 相対パスに sed一括変換。
+これで `<base href>` 経由で正しく `/test2-mirror/...` に resolveされる。
+
+### 業務帳票6種完全動作
+- ピッキングリスト印刷: WV-26060101 / 田中太郎 / 1F常温エリア / 5明細
+- 積込明細書: 13:30便 / ヤマト運輸 / 渡辺大輔 / SO-26060101-103
+- 請求書: INV-2606-MK001 / 株式会社マルキ食品御中 / 2026-07-01 / ¥380,000
+- 入荷受領書 / 在庫棚卸表 / 帳票ハブ も全200
