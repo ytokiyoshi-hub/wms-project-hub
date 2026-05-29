@@ -143,3 +143,21 @@ p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24p
 .text-mono { font-family:var(--f-mono); }
 .text-accent { color: var(--c-accent); }
 .text-bold { font-weight: 600; }
+
+/* === レスポンシブ対応 (BH-Q9修正) === */
+
+/* Q9-LT-002: 長商品名・ロット番号の複数行折り返し防止 */
+#sku-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Q9-HT-001: BT-A1000 (320px) で .ht-device (280px) が水平オーバーフローする問題 */
+/* Q9-HT-003: .ht-nav が 320px で 3〜4 行に折り返し → 非表示に */
+@media (max-width: 340px) {
+  html, body { padding: 24px 12px 48px; }
+  .ht-device { width: 290px; }
+  .ht-nav { display: none; }
+}
+
+/* Q9-HT-004: BT-A1000 縦持ち 480px viewport で .ht-screen の aspect-ratio が超過 */
+@media (max-height: 520px) {
+  .ht-screen { aspect-ratio: auto; max-height: calc(100vh - 80px); }
+}

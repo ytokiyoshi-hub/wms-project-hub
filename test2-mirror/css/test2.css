@@ -350,3 +350,28 @@ table.list thead th.c-action { text-align: center; }
 /* --- 2カラム: 右ペインの幅を適正化（320px → 220px）。全ページ共通で統一 --- */
 .two-pane { grid-template-columns: minmax(0, 1fr) 220px; }
 /* === MORIKA THEME OVERRIDE — END === */
+
+/* === レスポンシブ対応 (BH-Q9修正: Q9-PC-001〜004, Q9-LT-001/003, Q9-PC-005) === */
+
+/* 1024px以下: two-pane 縦積み / dashboard-grid 緩和 / テーブル横スクロール */
+@media (max-width: 1024px) {
+  /* Q9-PC-004: two-pane 縦積み → 左ペイン 254px 圧縮問題解消 */
+  .two-pane { grid-template-columns: 1fr; }
+  .two-pane .right-pane { position: static; }
+  /* Q9-PC-003: dashboard-grid minmax 緩和 (450px→380px) で 1024px 時に 2列維持 */
+  .dashboard-grid { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); }
+  /* Q9-PC-002/LT-001: list-full 列幅合計 > コンテンツ幅のとき横スクロール可能に */
+  .card-body { overflow-x: auto; }
+  /* Q9-LT-003: c-text 長文折り返しによる行高さ不均等を ellipsis で統一 */
+  table.list td.c-text { max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* 768px以下: サイドバーを非表示にしてメインエリアを全幅で使用 */
+@media (max-width: 768px) {
+  /* Q9-PC-001: サイドバー非表示 → 固定幅 240px が解放されコンテンツ全幅利用可 */
+  html, body { overflow: auto; }
+  .sidebar { display: none; }
+  .layout { display: block; }
+  .main { height: auto; min-height: 100vh; overflow: visible; }
+  .content { overflow: visible; }
+}
