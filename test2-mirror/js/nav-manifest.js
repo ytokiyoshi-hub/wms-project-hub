@@ -117,12 +117,7 @@ window.NAV_ITEMS = [
       { "url": "pc/outbound/shipment_send.html", "title": "shipment send" },
       { "url": "pc/outbound/sla_breach_history.html", "title": "sla breach history" },
       { "url": "pc/outbound/sla_tracker.html", "title": "sla tracker" },
-      { "url": "pc/outbound/transport_kpi.html", "title": "transport kpi" },
-      { "url": "pc/prints/hub.html", "title": "hub" },
-      { "url": "pc/prints/inbound_receipt.html", "title": "inbound receipt" },
-      { "url": "pc/prints/inventory.html", "title": "inventory" },
-      { "url": "pc/prints/invoice.html", "title": "請求書" },
-      { "url": "pc/prints/picking_list.html", "title": "picking list" }
+      { "url": "pc/outbound/transport_kpi.html", "title": "transport kpi" }
     ] },
   { "url": "pc/outbound/register.html", "title": "出荷指示登録", "section": "outbound", "sub": null,
     "children": [
@@ -539,12 +534,10 @@ window.NAV_ITEMS = [
     ] },
   { "url": "ht/handover/confirm.html", "title": "HT 引渡", "section": "ht", "sub": null,
     "children": [
-      { "url": "ht/handover/confirm.html", "title": "confirm" },
       { "url": "ht/handover/lane.html", "title": "lane" }
     ] },
   { "url": "ht/inspect/asn.html", "title": "HT 入荷検品", "section": "ht", "sub": null,
     "children": [
-      { "url": "ht/inspect/asn.html", "title": "asn" },
       { "url": "ht/inspect/discrepancy.html", "title": "discrepancy" },
       { "url": "ht/inspect/done.html", "title": "done" },
       { "url": "ht/inspect/lot_error.html", "title": "lot error" },
@@ -553,24 +546,20 @@ window.NAV_ITEMS = [
     ] },
   { "url": "ht/loading/confirm.html", "title": "HT 積込", "section": "ht", "sub": null,
     "children": [
-      { "url": "ht/loading/confirm.html", "title": "confirm" },
       { "url": "ht/loading/scan.html", "title": "scan" }
     ] },
   { "url": "ht/owner/confirm.html", "title": "HT 荷主切替", "section": "ht", "sub": null,
     "children": [
-      { "url": "ht/owner/confirm.html", "title": "confirm" },
       { "url": "ht/owner/done.html", "title": "done" },
       { "url": "ht/owner/error.html", "title": "error" },
       { "url": "ht/owner/scan.html", "title": "scan" }
     ] },
   { "url": "ht/packing/order.html", "title": "HT 梱包", "section": "ht", "sub": null,
     "children": [
-      { "url": "ht/packing/order.html", "title": "order" },
       { "url": "ht/packing/scan.html", "title": "scan" }
     ] },
   { "url": "ht/pick/done.html", "title": "HT ピッキング", "section": "ht", "sub": null,
     "children": [
-      { "url": "ht/pick/done.html", "title": "done" },
       { "url": "ht/pick/error.html", "title": "error" },
       { "url": "ht/pick/list.html", "title": "list" },
       { "url": "ht/pick/scan.html", "title": "scan" },
@@ -578,13 +567,11 @@ window.NAV_ITEMS = [
     ] },
   { "url": "ht/putaway/done.html", "title": "HT 棚入れ", "section": "ht", "sub": null,
     "children": [
-      { "url": "ht/putaway/done.html", "title": "done" },
       { "url": "ht/putaway/instructions.html", "title": "instructions" },
       { "url": "ht/putaway/location.html", "title": "location" }
     ] },
   { "url": "ht/returns/approval.html", "title": "HT 返品", "section": "ht", "sub": null,
     "children": [
-      { "url": "ht/returns/approval.html", "title": "approval" },
       { "url": "ht/returns/auto.html", "title": "auto" },
       { "url": "ht/returns/judge.html", "title": "judge" },
       { "url": "ht/returns/scan.html", "title": "scan" },
@@ -594,7 +581,6 @@ window.NAV_ITEMS = [
   // === 従業員アプリ ===
   { "url": "app/home.html", "title": "従業員アプリホーム", "section": "app", "sub": null,
     "children": [
-      { "url": "app/home.html", "title": "home" },
       { "url": "app/notice.html", "title": "notice" },
       { "url": "app/payroll.html", "title": "payroll" },
       { "url": "app/shifts.html", "title": "shifts" },
@@ -604,7 +590,6 @@ window.NAV_ITEMS = [
   // === 帳票印刷 ===
   { "url": "pc/prints/hub.html", "title": "帳票一覧（印刷）", "section": "print", "sub": null,
     "children": [
-      { "url": "pc/prints/hub.html", "title": "hub" },
       { "url": "pc/prints/inbound_receipt.html", "title": "inbound receipt" },
       { "url": "pc/prints/inventory.html", "title": "inventory" },
       { "url": "pc/prints/invoice.html", "title": "請求書" },
@@ -614,10 +599,9 @@ window.NAV_ITEMS = [
     ] },
 
   // === その他（ルート画面 + 未分類） ===
-  { "url": "index.html", "title": "その他画面", "section": "extra", "sub": null,
+  { "url": "pc/dashboard.html", "title": "その他画面", "section": "extra", "sub": null,
     "children": [
       { "url": "inventory.html", "title": "inventory" },
-      { "url": "pc/dashboard.html", "title": "dashboard" },
       { "url": "pc/returns/quality_check.html", "title": "quality check" },
       { "url": "pc/returns/restock_approval.html", "title": "restock approval" }
     ] },

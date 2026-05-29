@@ -195,13 +195,29 @@
   }
 
   // 現在ページのパス
+  // GitHub Pages では location.pathname が絶対パスになるため、
+  // test2-mirror/ 以降を相対パスとして抽出し nav-manifest.js の URL と比較する
+  const _hM = location.pathname.match(/^.*\/test2-mirror\/(.*)/);
+  const hereRel = _hM ? _hM[1] : null; // 例: "pc/inbound/plans.html"
   const here = location.pathname.replace(/\/index\.html?$/, '/') || '/';
-  const hereIsRoot = (here === '/' || here === '/index.html');
+  const hereIsRoot = here === '/' || here === '/index.html' ||
+                     hereRel === '' || hereRel === 'index.html';
 
-  // 現在ページが属するセクションを「展開」状態にする
+  // URL と現在ページが一致するか（相対パス優先、絶対パスフォールバック）
+  function isHere(url) {
+    if (hereRel !== null && url === hereRel) return true;
+    return url === location.pathname || url === here;
+  }
+
+  // 現在ページが属するセクションを「展開」状態にする（子画面も含めて検索）
   function currentSection() {
     for (const it of itemsAll) {
-      if (it.url === here || it.url === location.pathname) return it.section;
+      if (isHere(it.url)) return it.section;
+      if (Array.isArray(it.children)) {
+        for (const c of it.children) {
+          if (isHere(c.url)) return it.section;
+        }
+      }
     }
     return null;
   }
@@ -224,33 +240,34 @@
       // section が "/" の場合はサブメニュー化せず直接リンク
       if (g.section === '/') {
         for (const it of g.items) {
-          const active = (it.url === location.pathname || (hereIsRoot && it.url === '/')) ? ' class="active"' : '';
+          const active = (isHere(it.url) || (hereIsRoot && it.url === '/')) ? ' class="active"' : '';
           html.push(`<a href="${esc(it.url)}"${active}>${esc(it.title)}</a>`);
         }
         continue;
       }
       const isOpen = open.has(g.section);
-      const containsActive = g.items.some(it => it.url === location.pathname);
+      const containsActive = g.items.some(it => isHere(it.url) ||
+        (Array.isArray(it.children) && it.children.some(c => isHere(c.url))));
       const expanded = isOpen || containsActive;
       html.push(`<div class="cl-section ${expanded ? 'cl-open' : ''}" data-section="${esc(g.section)}">`);
       html.push(`<button type="button" class="cl-section-head" data-toggle="${esc(g.section)}"><span>${esc(m.label)}</span><span class="cl-count">${g.items.length}</span><span class="cl-caret">▾</span></button>`);
       const openParents = readOpenParent();
       html.push('<div class="cl-section-body">');
       for (const it of g.items) {
-        const active = (it.url === location.pathname) ? ' active' : '';
+        const active = isHere(it.url) ? ' active' : '';
         const hasChildren = Array.isArray(it.children) && it.children.length > 0;
         if (!hasChildren) {
           html.push(`<a href="${esc(it.url)}" class="cl-item${active}">${esc(it.title)}</a>`);
         } else {
           // 子有り：行を「親リンク + 展開トグル」の2要素にする
-          const childActive = it.children.some(c => c.url === location.pathname);
+          const childActive = it.children.some(c => isHere(c.url));
           const isParentOpen = openParents.has(it.url) || active || childActive;
           html.push(`<div class="cl-parent ${isParentOpen ? 'cl-parent-open' : ''}">`);
           html.push(`<a href="${esc(it.url)}" class="cl-item cl-parent-link${active}">${esc(it.title)}</a>`);
           html.push(`<button type="button" class="cl-parent-toggle" data-parent="${esc(it.url)}" aria-label="子画面を展開"><span class="cl-count-sm">${it.children.length}</span><span class="cl-caret-sm">▾</span></button>`);
           html.push('<div class="cl-children">');
           for (const c of it.children) {
-            const cactive = (c.url === location.pathname) ? ' active' : '';
+            const cactive = isHere(c.url) ? ' active' : '';
             html.push(`<a href="${esc(c.url)}" class="cl-child${cactive}">${esc(c.title)}</a>`);
           }
           html.push('</div></div>');
