@@ -92,7 +92,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 
 async function loadData() {
   try {
-    const all = await fetch('/api/discrepancies').then(r => r.json());
+    const all = await fetch('/api/discrepancies').then(r => r.json()).catch(() => []);
     const pending = all.filter(d => d.status === 'pending').length;
     const accept = all.filter(d => d.approval_action === 'accept_actual').length;
     const claim = all.filter(d => d.approval_action === 'claim_supplier').length;

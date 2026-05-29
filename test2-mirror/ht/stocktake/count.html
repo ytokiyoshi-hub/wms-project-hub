@@ -110,8 +110,8 @@ setClock(); setInterval(setClock, 30000);
 let theory = 120;
 (async () => {
   try {
-    const products = await fetch('/api/products').then(r => r.json());
-    const locs = await fetch('/api/locations').then(r => r.json());
+    const products = await fetch('/api/products').then(r => r.json()).catch(() => []);
+    const locs = await fetch('/api/locations').then(r => r.json()).catch(() => []);
     const item = (products || []).find(p => p.owner_code === 'MK001') || (products || [])[0];
     const loc = (locs || [])[0];
     if (item) {

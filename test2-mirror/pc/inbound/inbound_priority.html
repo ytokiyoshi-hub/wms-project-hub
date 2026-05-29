@@ -93,7 +93,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const today = new Date().toISOString().slice(0, 10);
 async function loadData() {
   try {
-    const all = await fetch('/api/inbound-schedules').then(r => r.json());
+    const all = await fetch('/api/inbound-schedules').then(r => r.json()).catch(() => []);
     const pending = (all || []).filter(s => s.status === 'planned' || !s.status);
     // 優先スコア計算: 当日=+40, 翌日=+15, それ以外=0
     const scored = pending.map(s => {

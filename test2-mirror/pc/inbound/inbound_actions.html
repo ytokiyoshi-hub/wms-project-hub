@@ -93,8 +93,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 async function loadData() {
   try {
     const [schedules, discrepancies] = await Promise.all([
-      fetch('/api/inbound-schedules').then(r => r.json()),
-      fetch('/api/discrepancies').then(r => r.json())
+      fetch('/api/inbound-schedules').then(r => r.json()).catch(() => []),
+      fetch('/api/discrepancies').then(r => r.json()).catch(() => [])
     ]);
     // 直近完了 ASN を時系列降順で
     const completed = (schedules || []).filter(s => s.status === 'inspected' || s.status === 'received')

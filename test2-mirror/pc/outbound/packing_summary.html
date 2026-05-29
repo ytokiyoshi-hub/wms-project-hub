@@ -93,8 +93,8 @@ const fmtNum = n => Number(n || 0).toLocaleString();
 (async () => {
   try {
     const [packings, materials] = await Promise.all([
-      fetch('/api/packings').then(r => r.json()),
-      fetch('/api/packing-materials').then(r => r.json()),
+      fetch('/api/packings').then(r => r.json()).catch(() => []),
+      fetch('/api/packing-materials').then(r => r.json()).catch(() => []),
     ]);
     const today = new Date().toISOString().slice(0, 10);
     const matByCode = Object.fromEntries((materials || []).map(m => [m.code, m]));

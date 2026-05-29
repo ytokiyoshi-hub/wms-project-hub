@@ -80,8 +80,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 async function loadData() {
   try {
     const [actuals, discrep] = await Promise.all([
-      fetch('/api/inbound-actuals').then(r => r.json()),
-      fetch('/api/discrepancies?status=pending').then(r => r.json()),
+      fetch('/api/inbound-actuals').then(r => r.json()).catch(() => []),
+      fetch('/api/discrepancies?status=pending').then(r => r.json()).catch(() => []),
     ]);
     const inspecting = actuals.filter(a => a.status === 'inspected');
     const completed = actuals.filter(a => a.status === 'completed');
@@ -124,7 +124,7 @@ async function loadData() {
 
 async function showDetail(scheduleId) {
   try {
-    const d = await fetch(`/api/inbound-schedules/${scheduleId}`).then(r => r.json());
+    const d = await fetch(`/api/inbound-schedules/${scheduleId}`).then(r => r.json()).catch(() => ({}));
     const lines = (d.lines || []).map(l => `・${l.product_code} 予定:${l.expected_qty} 検品:${l.inspected_qty ?? '-'} 状態:${l.status}`).join('\n');
     alert(`【${d.schedule_no}】 ${d.owner_name || d.owner_code} / ${d.supplier_name || '-'}\n予定日: ${d.scheduled_date}\n\n--- 明細 ---\n${lines || '(なし)'}`);
   } catch (e) { alert('取得失敗: ' + e.message); }

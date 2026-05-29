@@ -106,8 +106,8 @@ const today = new Date().toISOString().slice(0, 10);
 async function loadData() {
   try {
     const [inv, adjs] = await Promise.all([
-      fetch('/api/inventory').then(r => r.json()),
-      fetch('/api/inventory-adjustments').then(r => r.json())
+      fetch('/api/inventory').then(r => r.json()).catch(() => []),
+      fetch('/api/inventory-adjustments').then(r => r.json()).catch(() => [])
     ]);
     const rows = Array.isArray(inv) ? inv : [];
     const adjList = Array.isArray(adjs) ? adjs : [];

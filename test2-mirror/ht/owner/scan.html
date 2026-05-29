@@ -104,7 +104,7 @@ const setClock = () => { const d = new Date(); document.getElementById('clock').
 setClock(); setInterval(setClock, 30000);
 
 (async () => {
-  const owners = await fetch('/api/owners').then(r => r.json());
+  const owners = await fetch('/api/owners').then(r => r.json()).catch(() => []);
   const cur = JSON.parse(sessionStorage.getItem('current_owner') || 'null') || owners[0];
   document.getElementById('cur-name').textContent = cur.name;
   document.getElementById('cur-code').textContent = cur.code;
@@ -113,7 +113,7 @@ setClock(); setInterval(setClock, 30000);
 document.getElementById('owner-input').addEventListener('input', async (e) => {
   const v = e.target.value.trim().toUpperCase();
   if (!v) { document.getElementById('candidate').textContent = ''; return; }
-  const owners = await fetch('/api/owners').then(r => r.json());
+  const owners = await fetch('/api/owners').then(r => r.json()).catch(() => []);
   const m = owners.find(o => o.code === v);
   document.getElementById('candidate').innerHTML = m
     ? `<div style="border:1px solid var(--c-accent); background:var(--c-accent-lt); padding:4px 6px;"><b>${m.code}</b> ${m.name}</div>`
@@ -130,7 +130,7 @@ window.htSimulateScan = () => {
 document.getElementById('key-enter').addEventListener('click', async () => {
   const v = document.getElementById('owner-input').value.trim().toUpperCase();
   if (!v) { alert('荷主コードを入力'); return; }
-  const owners = await fetch('/api/owners').then(r => r.json());
+  const owners = await fetch('/api/owners').then(r => r.json()).catch(() => []);
   const m = owners.find(o => o.code === v);
   if (!m) { alert('該当荷主なし'); return; }
   sessionStorage.setItem('switch_target', JSON.stringify(m));

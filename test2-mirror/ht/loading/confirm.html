@@ -115,7 +115,7 @@ let orders = [];
 async function load() {
   try {
     if (!loadingId) {
-      const all = await fetch('/api/loadings').then(r => r.json()) || [];
+      const all = await fetch('/api/loadings').then(r => r.json()).catch(() => []) || [];
       const target = all.find(l => l.status !== 'completed') || all[0];
       if (!target) {
         document.getElementById('loading-no').textContent = '計画なし';
@@ -125,7 +125,7 @@ async function load() {
       loadingNo = target.loading_no;
     }
     document.getElementById('loading-no').textContent = loadingNo || '-';
-    const detail = await fetch(`/api/loadings/${loadingId}`).then(r => r.json());
+    const detail = await fetch(`/api/loadings/${loadingId}`).then(r => r.json()).catch(() => ({}));
     document.getElementById('carrier-info').textContent = `${detail.carrier_name || detail.carrier_code || '-'} / ${detail.scheduled_at || ''}`;
     orders = detail.orders || [];
     redraw();

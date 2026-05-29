@@ -1,1 +1,4 @@
-[]
+[
+  {"id":1,"schedule_no":"IN-26052601","owner_code":"MK001","owner_name":"株式会社マルキ食品","product_code":"SKU-MK001-001","product_name":"シャンプー300ml","expected_qty":100,"inspected_qty":98,"lot_no":"LOT-26052601-001","status":"inspected"},
+  {"id":2,"schedule_no":"IN-26052601","owner_code":"MK001","owner_name":"株式会社マルキ食品","product_code":"SKU-MK001-003","product_name":"冷蔵牛乳1L","expected_qty":50,"inspected_qty":50,"lot_no":"LOT-26052601-002","status":"inspected"}
+]

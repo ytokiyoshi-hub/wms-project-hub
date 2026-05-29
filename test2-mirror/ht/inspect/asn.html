@@ -87,8 +87,8 @@ let selected = null;
 
 async function init() {
   const [owners, schedules] = await Promise.all([
-    fetch('/api/owners').then(r => r.json()),
-    fetch('/api/inbound-schedules').then(r => r.json()),
+    fetch('/api/owners').then(r => r.json()).catch(() => []),
+    fetch('/api/inbound-schedules').then(r => r.json()).catch(() => []),
   ]);
   const owner = owners[0] || { code: '-', name: '-' };
   document.getElementById('owner-display').textContent = owner.name;

@@ -158,8 +158,8 @@ let statKind = null;
 
 async function init() {
   const [ownersRes, products] = await Promise.all([
-    fetch('/api/owners').then(r => r.json()),
-    fetch('/api/products').then(r => r.json())
+    fetch('/api/owners').then(r => r.json()).catch(() => []),
+    fetch('/api/products').then(r => r.json()).catch(() => [])
   ]);
   owners = ownersRes || [];
   all = products || [];

@@ -159,9 +159,9 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 async function loadKPI() {
   try {
     const [schedules, actuals, discrep] = await Promise.all([
-      fetch('/api/inbound-schedules').then(r => r.json()),
-      fetch('/api/inbound-actuals').then(r => r.json()),
-      fetch('/api/discrepancies').then(r => r.json()),
+      fetch('/api/inbound-schedules').then(r => r.json()).catch(() => []),
+      fetch('/api/inbound-actuals').then(r => r.json()).catch(() => []),
+      fetch('/api/discrepancies').then(r => r.json()).catch(() => []),
     ]);
 
     const totalSchedules = schedules.length;

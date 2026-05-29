@@ -103,7 +103,7 @@ let resolvedOrderId = sessionStorage.getItem('pick_order_id') || null;
 (async () => {
   try {
     if (!resolvedOrderId) {
-      const all = await fetch('/api/shipment-orders').then(r => r.json()) || [];
+      const all = await fetch('/api/shipment-orders').then(r => r.json()).catch(() => []) || [];
       const target = all.find(o => o.done_count < o.line_count && o.line_count > 0);
       if (target) {
         resolvedOrderId = String(target.id);
@@ -117,7 +117,7 @@ let resolvedOrderId = sessionStorage.getItem('pick_order_id') || null;
       document.getElementById('line-count').textContent = '対象なし';
       return;
     }
-    const detail = await fetch(`/api/shipment-orders/${resolvedOrderId}`).then(r => r.json());
+    const detail = await fetch(`/api/shipment-orders/${resolvedOrderId}`).then(r => r.json()).catch(() => ({}));
     const tasks = (detail.tasks || []).filter(t => t.status === 'pending');
     document.getElementById('line-count').textContent = `${tasks.length}行`;
     if (tasks.length > 0) {

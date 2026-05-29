@@ -1,1 +1,5 @@
-[]
+[
+  {"id":1,"product_code":"SKU-MK001-001","product_name":"シャンプー300ml","schedule_no":"IN-26052601","qty":98,"from_location":"受入バッファ-01","suggested_location":"3AP-02-001","status":"pending"},
+  {"id":2,"product_code":"SKU-MK001-003","product_name":"冷蔵牛乳1L","schedule_no":"IN-26052601","qty":50,"from_location":"受入バッファ-02","suggested_location":"4AC-01-001","status":"pending"},
+  {"id":3,"product_code":"SKU-AP001-001","product_name":"Tシャツ Mサイズ","schedule_no":"IN-26052301","qty":20,"from_location":"受入バッファ-03","suggested_location":"3BT-01-001","status":"picked"}
+]

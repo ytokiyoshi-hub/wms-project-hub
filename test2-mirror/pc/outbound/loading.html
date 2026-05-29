@@ -79,7 +79,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 
 (async () => {
   try {
-    const list = await fetch('/api/loadings').then(r => r.json()) || [];
+    const list = await fetch('/api/loadings').then(r => r.json()).catch(() => []) || [];
     document.getElementById('load-count').textContent = `${list.length}便`;
     const tbody = document.getElementById('load-tbody');
     if (list.length === 0) {

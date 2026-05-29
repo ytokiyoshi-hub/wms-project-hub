@@ -90,7 +90,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 
 async function loadOrders() {
   try {
-    const orders = await fetch('/api/shipment-orders').then(r => r.json());
+    const orders = await fetch('/api/shipment-orders').then(r => r.json()).catch(() => []);
     const list = document.getElementById('order-list');
     if (!orders || orders.length === 0) {
       list.innerHTML = '<div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">出荷指示なし</div>';

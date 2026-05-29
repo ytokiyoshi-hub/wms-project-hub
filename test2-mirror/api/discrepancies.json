@@ -1,1 +1,5 @@
-[]
+[
+  {"id":1,"schedule_no":"IN-26052601","owner_code":"MK001","product_code":"SKU-MK001-001","product_name":"シャンプー300ml","expected_qty":100,"inspected_qty":98,"difference":-2,"reason_category":"数量不足","status":"pending","approval_action":null},
+  {"id":2,"schedule_no":"IN-26052601","owner_code":"MK001","product_code":"SKU-MK001-002","product_name":"コンディショナー300ml","expected_qty":50,"inspected_qty":52,"difference":2,"reason_category":"過剰入荷","status":"pending","approval_action":null},
+  {"id":3,"schedule_no":"IN-26052401","owner_code":"EC001","product_code":"SKU-EC001-001","product_name":"EC定番セット","expected_qty":200,"inspected_qty":200,"difference":0,"reason_category":null,"status":"approved","approval_action":"accept_actual"}
+]

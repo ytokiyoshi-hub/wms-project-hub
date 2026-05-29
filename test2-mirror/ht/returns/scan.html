@@ -93,7 +93,7 @@
 const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 88%`; };
 setClock(); setInterval(setClock, 30000);
 (async () => {
-  const owners = await fetch('/api/owners').then(r => r.json());
+  const owners = await fetch('/api/owners').then(r => r.json()).catch(() => []);
   const cur = JSON.parse(sessionStorage.getItem('current_owner') || 'null') || owners[0];
   document.getElementById('owner-name').textContent = cur.name;
 })();

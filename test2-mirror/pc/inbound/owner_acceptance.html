@@ -80,7 +80,7 @@
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function loadData() {
   try {
-    const actuals = await fetch('/api/inbound-actuals').then(r => r.json());
+    const actuals = await fetch('/api/inbound-actuals').then(r => r.json()).catch(() => []);
     document.getElementById('meta').textContent = `${actuals.length}件`;
     const tb = document.getElementById('tb');
     if (actuals.length === 0) {

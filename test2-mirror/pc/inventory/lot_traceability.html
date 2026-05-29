@@ -117,7 +117,7 @@ async function loadData() {
   if (!product || !lot) { alert('SKU とロットの両方を入力'); return; }
   try {
     const url = `/api/inventory/lot-trace?product_code=${encodeURIComponent(product)}&lot_no=${encodeURIComponent(lot)}`;
-    const data = await fetch(url).then(r => r.json());
+    const data = await fetch(url).then(r => r.json()).catch(() => ({}));
     if (data.error) { alert(`エラー: ${data.error}`); return; }
     const stocks = data.stocks || [];
     const txns = data.transactions || [];

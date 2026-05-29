@@ -111,7 +111,7 @@ document.getElementById('sm-loc').textContent = p.get('loc') || '-';
 
 async function loadRemain() {
   try {
-    const pending = await fetch('/api/putaway/pending').then(r => r.json());
+    const pending = await fetch('/api/putaway/pending').then(r => r.json()).catch(() => []);
     const cnt = Array.isArray(pending) ? pending.length : 0;
     document.getElementById('sm-remain').textContent = `残り ${cnt}件`;
   } catch {

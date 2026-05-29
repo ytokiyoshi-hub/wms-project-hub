@@ -110,7 +110,7 @@ document.getElementById('pick-qty').textContent = targetQty;
 
 (async () => {
   try {
-    const products = await fetch('/api/products').then(r => r.json());
+    const products = await fetch('/api/products').then(r => r.json()).catch(() => []);
     const item = (products || []).find(p => p.code === targetJan);
     if (item) {
       document.getElementById('sku-name').textContent = item.name || targetJan;

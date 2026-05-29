@@ -94,7 +94,7 @@
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function loadData() {
   try {
-    const items = await fetch('/api/putaway/pending').then(r => r.json());
+    const items = await fetch('/api/putaway/pending').then(r => r.json()).catch(() => []);
     document.getElementById('meta').textContent = `${items.length}件`;
     const tb = document.getElementById('tb');
     if (items.length === 0) {

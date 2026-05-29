@@ -225,7 +225,7 @@ async function reload() {
   document.getElementById('cr-parent').href = `/pc/inbound/plan_detail.html?id=${scheduleId}`;
 
   try {
-    const d = await fetch(`/api/inbound-schedules/${scheduleId}`).then(r => r.json());
+    const d = await fetch(`/api/inbound-schedules/${scheduleId}`).then(r => r.json()).catch(() => ({}));
     if (!d || d.error) {
       document.getElementById('tb-txn').innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--c-alert);">${esc(d?.error || '取得失敗')}</td></tr>`;
       return;
@@ -319,7 +319,7 @@ async function reload() {
     // 在庫変動履歴
     if (line.lot_no) {
       try {
-        const trace = await fetch(`/api/inventory/lot-trace?product_code=${encodeURIComponent(line.product_code)}&lot_no=${encodeURIComponent(line.lot_no)}`).then(r => r.json());
+        const trace = await fetch(`/api/inventory/lot-trace?product_code=${encodeURIComponent(line.product_code)}&lot_no=${encodeURIComponent(line.lot_no)}`).then(r => r.json()).catch(() => ({}));
         const txns = trace.transactions || [];
         document.getElementById('txn-meta').textContent = `${txns.length} 件`;
         const tb = document.getElementById('tb-txn');

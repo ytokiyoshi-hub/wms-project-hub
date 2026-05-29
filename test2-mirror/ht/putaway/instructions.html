@@ -109,7 +109,7 @@ const PUTAWAY_LOC_MAP = {
   const today = new Date().toISOString().slice(2,10).replace(/-/g,'');
   document.getElementById('put-no').textContent = `PUT-${today}-001`;
   try {
-    const pending = await fetch('/api/putaway/pending').then(r => r.json());
+    const pending = await fetch('/api/putaway/pending').then(r => r.json()).catch(() => []);
     const items = pending || [];
     if (items.length === 0) {
       document.getElementById('sku-code').textContent = '棚入れ対象なし';

@@ -98,7 +98,7 @@ window.htSimulateScan = () => {
 
 (async () => {
   try {
-    loadings = await fetch('/api/loadings').then(r => r.json()) || [];
+    loadings = await fetch('/api/loadings').then(r => r.json()).catch(() => []) || [];
     const target = loadings.filter(l => l.status !== 'completed').slice(0, 8);
     const wrap = document.getElementById('lane-list');
     if (target.length === 0) {
