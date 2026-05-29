@@ -104,7 +104,7 @@ document.getElementById('key-confirm').addEventListener('click', () => {
   const v = document.getElementById('so-input').value.trim();
   if (!v) { alert('出荷Noを入力'); return; }
   sessionStorage.setItem('pack_order', v);
-  location.href = '/ht/packing/scan.html';
+  location.href = 'ht/packing/scan.html';
 });
 document.getElementById('so-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('key-confirm').click(); });
 </script>

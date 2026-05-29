@@ -138,7 +138,7 @@ document.getElementById('key-confirm').addEventListener('click', () => {
   const v = parseInt(document.getElementById('count-input').value, 10);
   if (isNaN(v) || v < 0) { alert('実数を入力'); return; }
   alert(`棚卸登録: 実数 ${v} / 理論 ${theory} / 差異 ${v - theory}`);
-  location.href = '/';
+  location.href = '';
 });
 </script>
 </body>

@@ -105,8 +105,8 @@ function pickAction(a) {
   const label = { accept: '実数受入', reinspect: '再検品', claim: '仕入先クレーム' }[a] || a;
   if (!confirm(`差異処理: 「${label}」で確定しますか？`)) return;
   alert(`「${label}」で登録しました（モック動作 / PC W-404 でも差異一覧で確認可）`);
-  if (a === 'reinspect') location.href = '/ht/inspect/scan.html';
-  else location.href = '/ht/inspect/done.html';
+  if (a === 'reinspect') location.href = 'ht/inspect/scan.html';
+  else location.href = 'ht/inspect/done.html';
 }
 </script>
 </body>

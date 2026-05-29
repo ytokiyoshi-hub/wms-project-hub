@@ -154,7 +154,7 @@ document.getElementById('key-confirm').addEventListener('click', async () => {
     alert(`引渡完了: ${loadingNo}`);
     sessionStorage.removeItem('handover_loading_id');
     sessionStorage.removeItem('handover_loading_no');
-    location.href = '/';
+    location.href = '';
   } catch (e) {
     alert(`通信エラー: ${e.message}`);
   }

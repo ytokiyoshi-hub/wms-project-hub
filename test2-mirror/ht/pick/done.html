@@ -109,7 +109,7 @@ async function submitPick() {
   const taskId = sessionStorage.getItem('pick_task_id');
   if (!taskId) {
     alert(`ピック登録（モック）: SKU ${sku} 数量 ${v}`);
-    location.href = '/ht/pick/wave.html';
+    location.href = 'ht/pick/wave.html';
     return;
   }
   try {
@@ -126,7 +126,7 @@ async function submitPick() {
     sessionStorage.removeItem('pick_task_id');
     sessionStorage.removeItem('pick_target_sku');
     sessionStorage.removeItem('pick_target_qty');
-    location.href = '/ht/pick/wave.html';
+    location.href = 'ht/pick/wave.html';
   } catch (e) {
     alert(`ピックエラー: ${e.message}`);
   }

@@ -155,7 +155,7 @@ async function register() {
     const res = await fetch('/api/shipment-orders', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
     const data = await res.json();
     alert(`出荷指示登録: ${data.order_no || '完了'}`);
-    location.href = '/pc/outbound/orders.html';
+    location.href = 'pc/outbound/orders.html';
   } catch (e) {
     alert('登録エラー: ' + e.message);
   }

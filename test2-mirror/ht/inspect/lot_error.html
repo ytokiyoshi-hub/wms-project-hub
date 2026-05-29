@@ -111,7 +111,7 @@ function pickLotAction(a) {
   const label = { accept: '要注意品として受入', reject: '受入拒否（返品）', escalate: 'リーダー確認' }[a] || a;
   if (!confirm(`ロット異常処理: 「${label}」で確定しますか？`)) return;
   alert(`「${label}」で登録しました（モック動作）`);
-  if (a === 'accept') location.href = '/ht/inspect/done.html';
+  if (a === 'accept') location.href = 'ht/inspect/done.html';
   else history.back();
 }
 </script>

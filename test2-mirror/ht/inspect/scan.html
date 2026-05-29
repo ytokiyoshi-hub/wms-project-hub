@@ -181,7 +181,7 @@ async function confirmInspect() {
     curIdx++;
     if (curIdx >= lines.length) {
       const p = new URLSearchParams({ id: scheduleId, no: scheduleNo, supplier: supplier || '', owner: ownerCode || '' });
-      location.href = '/ht/inspect/done.html?' + p.toString();
+      location.href = 'ht/inspect/done.html?' + p.toString();
     } else {
       document.getElementById('jan-input').value = '';
       document.getElementById('qty-input').value = '';

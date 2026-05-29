@@ -126,13 +126,13 @@ document.getElementById('pick-qty').textContent = targetQty;
 
 window.htSimulateScan = () => {
   document.getElementById('scan-input').value = targetJan;
-  setTimeout(() => location.href = '/ht/pick/done.html', 200);
+  setTimeout(() => location.href = 'ht/pick/done.html', 200);
 };
 
 document.getElementById('scan-input').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     const v = e.target.value.trim();
-    if (v === targetJan) location.href = '/ht/pick/done.html';
+    if (v === targetJan) location.href = 'ht/pick/done.html';
     else alert('SKU不一致 (期待: ' + targetJan + ')');
   }
 });

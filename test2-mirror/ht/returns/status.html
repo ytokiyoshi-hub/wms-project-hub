@@ -121,7 +121,7 @@ document.getElementById('key-confirm').addEventListener('click', () => {
   if (!qty || qty <= 0) { alert('数量を入力'); return; }
   sessionStorage.setItem('return_status', selectedStatus);
   sessionStorage.setItem('return_qty', String(qty));
-  location.href = '/ht/returns/judge.html';
+  location.href = 'ht/returns/judge.html';
 });
 </script>
 </body>

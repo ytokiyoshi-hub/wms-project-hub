@@ -173,7 +173,7 @@ document.getElementById('key-complete').addEventListener('click', async () => {
   const remain = orders.filter(o => !o.loaded).length;
   if (remain > 0 && !confirm(`残${remain}件あります。本当に完了？`)) return;
   alert(`積込完了: ${loadingNo}`);
-  location.href = '/';
+  location.href = '';
 });
 window.htSimulateScan = () => {
   document.getElementById('scan-input').value = 'AUTO';

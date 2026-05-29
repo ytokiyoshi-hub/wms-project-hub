@@ -152,7 +152,7 @@ async function init() {
 function gotoScan() {
   if (!selected) { alert('ASNを選択してください'); return; }
   const params = new URLSearchParams({ id: selected.id, no: selected.no, supplier: selected.supplier, owner: selected.owner });
-  location.href = '/ht/inspect/scan.html?' + params.toString();
+  location.href = 'ht/inspect/scan.html?' + params.toString();
 }
 document.getElementById('key-select').addEventListener('click', gotoScan);
 

@@ -200,7 +200,7 @@ document.getElementById('key-confirm').addEventListener('click', async () => {
     }
     alert(`梱包完了: ${orderNo} / 梱包材 ${mat.code}`);
     sessionStorage.removeItem('pack_order');
-    location.href = '/';
+    location.href = '';
   } catch (e) {
     alert(`通信エラー: ${e.message}`);
   }

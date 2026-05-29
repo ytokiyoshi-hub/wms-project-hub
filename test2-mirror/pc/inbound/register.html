@@ -285,7 +285,7 @@ async function register() {
       return;
     }
     alert(`入荷予定 ${data.schedule_no} を登録しました\nW-401 入荷予定一覧で確認できます`);
-    location.href = '/pc/inbound/plans.html';
+    location.href = 'pc/inbound/plans.html';
   } catch (e) {
     alert('通信エラー: ' + e.message);
   }

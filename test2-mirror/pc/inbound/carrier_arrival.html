@@ -99,7 +99,7 @@
 <script>
 function viewAsn(asn) {
   alert(`ASN ${asn} の詳細を表示します`);
-  location.href = '/pc/inbound/asn_view.html';
+  location.href = 'pc/inbound/asn_view.html';
 }
 function callDriver(no) {
   if (!confirm(`${no} のドライバーに連絡しますか？`)) return;
@@ -109,7 +109,7 @@ function scanArrival() {
   const qr = prompt('予約No QR を入力 (例: APP-26060106)');
   if (!qr) return;
   alert(`${qr} を受付しました（モック）。ヤード Y-IN-03 へ誘導。`);
-  location.href = '/pc/inbound/yard_arrival.html';
+  location.href = 'pc/inbound/yard_arrival.html';
 }
 </script>
 <script src="js/nav-manifest.js?v=202605290846"></script>

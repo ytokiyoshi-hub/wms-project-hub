@@ -133,7 +133,7 @@ async function confirmPutaway() {
     }
     sessionStorage.removeItem('put_line_id');
     const params = new URLSearchParams({ sku, loc: scanned, qty });
-    location.href = '/ht/putaway/done.html?' + params.toString();
+    location.href = 'ht/putaway/done.html?' + params.toString();
   } catch (e) {
     alert(`通信エラー: ${e.message}`);
   }

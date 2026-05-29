@@ -123,9 +123,9 @@ async function loadOrders() {
 function startPick() {
   const no = sessionStorage.getItem('pick_order_no');
   if (no) {
-    location.href = '/ht/pick/wave.html?order=' + encodeURIComponent(no);
+    location.href = 'ht/pick/wave.html?order=' + encodeURIComponent(no);
   } else {
-    location.href = '/ht/pick/wave.html';
+    location.href = 'ht/pick/wave.html';
   }
 }
 document.querySelectorAll('.key-lbl.primary').forEach(el => el.addEventListener('click', startPick));

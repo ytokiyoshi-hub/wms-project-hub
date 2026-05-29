@@ -89,7 +89,7 @@ function select(loadingNo, id) {
 function goNext() {
   const v = document.getElementById('lane-input').value.trim();
   if (!v) { alert('レーンを選択'); return; }
-  location.href = '/ht/handover/confirm.html';
+  location.href = 'ht/handover/confirm.html';
 }
 window.htSimulateScan = () => {
   const first = loadings.find(l => l.status !== 'completed' && l.status !== 'handover');

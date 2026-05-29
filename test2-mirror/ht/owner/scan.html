@@ -134,7 +134,7 @@ document.getElementById('key-enter').addEventListener('click', async () => {
   const m = owners.find(o => o.code === v);
   if (!m) { alert('該当荷主なし'); return; }
   sessionStorage.setItem('switch_target', JSON.stringify(m));
-  location.href = '/ht/owner/done.html';
+  location.href = 'ht/owner/done.html';
 });
 </script>
 </body>
