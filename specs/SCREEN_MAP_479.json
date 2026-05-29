@@ -608,6 +608,12 @@
       "title": "データモデル ER図",
       "url": "pc/help/data_model.html",
       "children": []
+    },
+    {
+      "section": "システム設定",
+      "title": "業務フロー連携図",
+      "url": "pc/help/business_flow.html",
+      "children": []
     }
   ],
   "ht": [
@@ -668,7 +674,7 @@
     "pc/returns/quality_check.html",
     "pc/returns/restock_approval.html"
   ],
-  "total": 480,
-  "parent_count": 30,
+  "total": 481,
+  "parent_count": 31,
   "children_classified": 402
 }

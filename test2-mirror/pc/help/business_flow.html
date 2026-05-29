@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>業務フロー連携図 — マルキ食品 WMS</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans JP", sans-serif;
+    background: #f4f5f7; color: #1a1f29;
+    margin: 0; padding: 32px 24px 80px;
+    line-height: 1.7;
+  }
+  h1 { font-size: 28px; color: #1a3a5c; margin-bottom: 4px; font-weight: 700; }
+  .subtitle { color: #6c7280; margin-bottom: 32px; font-size: 14px; }
+  .note {
+    max-width: 1500px; margin: 0 auto 24px;
+    background: #fff; border-left: 4px solid #1a3a5c;
+    padding: 16px 20px; font-size: 13px; border-radius: 4px;
+  }
+  .legend {
+    max-width: 1500px; margin: 0 auto 24px;
+    background: #fff7e6; border-left: 4px solid #e0a420;
+    padding: 14px 20px; font-size: 12px; border-radius: 4px;
+  }
+  .legend code {
+    font-family: "Roboto Mono", monospace; background: #f4f5f7; padding: 1px 6px; border-radius: 3px;
+  }
+  .section {
+    max-width: 1500px; margin: 0 auto 32px; background: #fff; border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e4e7eb; overflow: hidden;
+  }
+  .section-h {
+    display: flex; align-items: center; padding: 14px 20px;
+    background: #fbfbfd; border-bottom: 1px solid #e4e7eb;
+  }
+  .section-h .num {
+    width: 26px; height: 26px; background: #1a3a5c; color: #fff; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; margin-right: 12px;
+  }
+  .section-h h2 { font-size: 16px; color: #1a3a5c; font-weight: 700; }
+  .section-h .badge {
+    margin-left: 10px; padding: 2px 8px; background: #b8002e; color: #fff;
+    font-size: 10px; border-radius: 3px; font-weight: 600;
+  }
+  .section-desc { padding: 12px 20px; background: #f8f9fb; border-bottom: 1px solid #e4e7eb; color: #6c7280; font-size: 13px; }
+  .section-body { padding: 24px; overflow-x: auto; }
+  .mermaid { font-family: "Noto Sans JP", sans-serif; }
+  .ref {
+    padding: 14px 20px; background: #f4f5f7; border-top: 1px solid #e4e7eb;
+    font-size: 12px; color: #4a5568;
+  }
+  .ref h4 { font-size: 12px; color: #1a3a5c; margin-bottom: 6px; }
+  .ref ul { list-style: none; padding-left: 0; }
+  .ref li { margin-bottom: 3px; }
+  .ref code {
+    font-family: "Roboto Mono", monospace; background: #fff; padding: 1px 5px; border-radius: 2px;
+    border: 1px solid #e4e7eb; font-size: 11px;
+  }
+  .ref a { color: #1a3a5c; text-decoration: none; border-bottom: 1px dotted #1a3a5c; }
+  .ref a:hover { color: #b8002e; }
+  .footer-nav {
+    max-width: 1500px; margin: 0 auto; text-align: center;
+    padding: 20px; font-size: 12px; color: #6c7280;
+  }
+  .footer-nav a { color: #1a3a5c; text-decoration: none; margin: 0 8px; border-bottom: 1px dotted #1a3a5c; }
+  .footer-nav a:hover { color: #b8002e; }
+</style>
+</head>
+<body>
+
+<h1>業務フロー連携図 — マルキ食品 WMS</h1>
+<div class="subtitle">14ステップ業務シナリオ／画面・API・テーブルの連携</div>
+
+<div class="note">
+  <b>本図の見方</b>：業務フロー（入荷→在庫→出荷→請求）の各ステップで使う <b>画面（PC/HT）</b>・<b>API</b>・<b>主要テーブル</b> を可視化。クリック対象画面は <a href="../../index.html">test2-mirror ホーム</a> のサイドバーから到達可能。
+</div>
+
+<div class="legend">
+  <b>記号凡例</b><br>
+  <code>📥 PC画面</code> / <code>📱 HT画面</code> / <code>🔌 API</code> / <code>🗃 テーブル</code> / <code>📄 帳票</code>　　&nbsp;
+  <b>矢印</b>：データの流れ・遷移
+</div>
+
+<!-- 1. 入荷業務フロー -->
+<div class="section">
+  <div class="section-h">
+    <div class="num">1</div>
+    <h2>入荷業務フロー（ASN→検品→棚入れ→完了）</h2>
+  </div>
+  <div class="section-desc">
+    荷主から ASN（事前出荷通知）を受信 → 配送業者到着 → 検品 → 差異判定 → 棚入れ → 完了。検品 NG は差異処理に分岐。
+  </div>
+  <div class="section-body">
+    <pre class="mermaid">
+flowchart LR
+  subgraph PC[PC 業務]
+    A1[📥 入荷予定一覧<br>plans.html]
+    A2[📥 入荷予定登録<br>register.html]
+    A3[📥 入荷実績<br>actuals.html]
+    A4[📥 検品差異処理<br>discrepancy.html]
+    A5[📥 棚入れ指示<br>putaway.html]
+  end
+  subgraph HT[HT 現場作業]
+    H1[📱 検品ASN選択<br>HT-403-1]
+    H2[📱 検品スキャン<br>HT-403-2]
+    H3[📱 検品完了<br>HT-403-3]
+    H4[📱 棚入れ指示<br>HT-406-1]
+    H5[📱 棚入れロケスキャン<br>HT-406-2]
+    H6[📱 棚入れ完了<br>HT-406-3]
+  end
+  subgraph API[API/Table]
+    I1[🔌 /api/inbound-schedules]
+    I2[🔌 /api/inbound-actuals]
+    I3[🔌 /api/putaway-instructions]
+    T1[🗃 inbound_schedules]
+    T2[🗃 inbound_actuals]
+    T3[🗃 putaway_instructions]
+  end
+  A1 -->|ASN取込| A2
+  A2 --> A3
+  A1 --> H1
+  H1 --> H2 --> H3
+  H3 -->|差異あり| A4
+  H3 -->|正常| A5
+  A5 --> H4 --> H5 --> H6
+  A1 -.-> I1 -.-> T1
+  A3 -.-> I2 -.-> T2
+  A5 -.-> I3 -.-> T3
+  H6 -->|完了通知| I2
+  style PC fill:#e8eef5,stroke:#1a3a5c
+  style HT fill:#fef3e7,stroke:#7c2d12
+  style API fill:#f0f9ff,stroke:#0369a1
+    </pre>
+  </div>
+  <div class="ref">
+    <h4>関連リソース</h4>
+    <ul>
+      <li>画面: <a href="../inbound/plans.html">入荷予定一覧</a> / <a href="../inbound/register.html">登録</a> / <a href="../inbound/actuals.html">実績</a> / <a href="../inbound/discrepancy.html">差異処理</a> / <a href="../inbound/putaway.html">棚入れ指示</a></li>
+      <li>HT: <a href="../../ht/inspect/asn.html">検品ASN</a> / <a href="../../ht/inspect/scan.html">スキャン</a> / <a href="../../ht/putaway/instructions.html">棚入れ指示</a></li>
+      <li>テーブル: <code>inbound_schedules</code> / <code>inbound_actuals</code> / <code>putaway_instructions</code></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 2. 在庫管理フロー -->
+<div class="section">
+  <div class="section-h">
+    <div class="num">2</div>
+    <h2>在庫管理フロー（在庫照会・調整・アラート・棚卸）</h2>
+  </div>
+  <div class="section-desc">
+    棚入れ後の在庫を商品軸・ロケ軸・ロット軸で照会。閾値超えで自動アラート。月次/循環棚卸で実在庫と差異照合。
+  </div>
+  <div class="section-body">
+    <pre class="mermaid">
+flowchart TB
+  subgraph 在庫照会
+    I1[📥 在庫照会 商品軸<br>inventory_kpi.html]
+    I2[📥 在庫照会 ロケ軸<br>layout_a.html]
+    I3[📥 ロット・賞味期限<br>lot_serial.html]
+  end
+  subgraph 在庫操作
+    O1[📥 在庫調整<br>adjust.html]
+    O2[📥 在庫アラート<br>stock_alert.html]
+  end
+  subgraph 棚卸
+    S1[📥 棚卸計画<br>cycle_plan.html]
+    S2[📱 HT棚卸カウント<br>HT-701]
+    S3[📥 棚卸実績<br>cycle_result.html]
+    S4[📥 棚卸差異<br>detail.html]
+  end
+  T1[🗃 inventory]
+  T2[🗃 inventory_adjustments]
+  T3[🗃 stocktake_sessions]
+  T4[🗃 lots / serials]
+  I1 --> O2
+  I2 --> O1
+  O1 -.-> T2
+  I3 -.-> T4
+  I1 -.-> T1
+  S1 --> S2 --> S3 --> S4
+  S4 -->|差異反映| O1
+  S2 -.-> T3
+    </pre>
+  </div>
+  <div class="ref">
+    <h4>関連リソース</h4>
+    <ul>
+      <li>画面: <a href="../inventory/inventory_kpi.html">在庫KPI</a> / <a href="../inventory/layout_a.html">レイアウト</a> / <a href="../inventory/lot_serial.html">ロット・賞味期限</a> / <a href="../inventory/adjust.html">在庫調整</a></li>
+      <li>テーブル: <code>inventory</code> / <code>inventory_adjustments</code> / <code>lots</code> / <code>serials</code> / <code>stocktake_sessions</code></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 3. 出荷業務フロー -->
+<div class="section">
+  <div class="section-h">
+    <div class="num">3</div>
+    <h2>出荷業務フロー（指示→引当→ピック→梱包→積込→引渡）</h2>
+    <span class="badge">14STEP</span>
+  </div>
+  <div class="section-desc">
+    14ステップ業務シナリオの中核。荷主からの出荷指示 → FIFO引当 → ウェーブ生成 → HT ピック → 梱包 → 積込 → 引渡 → 出荷実績送信。
+  </div>
+  <div class="section-body">
+    <pre class="mermaid">
+flowchart LR
+  subgraph PC[PC 出荷管理]
+    P1[📥 出荷指示一覧<br>orders.html]
+    P2[📥 引当・ウェーブ<br>allocate.html]
+    P3[📥 ピック・梱包<br>packing_summary.html]
+    P4[📥 積込・出荷確定<br>loading.html]
+    P5[📥 引渡<br>handover.html]
+  end
+  subgraph HT[HT 現場作業]
+    H1[📱 ピック開始<br>wave.html HT-804]
+    H2[📱 ロケ・SKUスキャン<br>scan.html]
+    H3[📱 ピック完了<br>done.html]
+    H4[📱 梱包スキャン<br>packing/scan]
+    H5[📱 積込スキャン<br>loading/scan HT-806]
+    H6[📱 引渡確認<br>handover/confirm HT-307]
+  end
+  subgraph 帳票
+    R1[📄 ピッキングリスト<br>prints/picking_list]
+    R2[📄 積込明細書<br>prints/loading]
+  end
+  T1[🗃 shipment_orders]
+  T2[🗃 picking_tasks]
+  T3[🗃 packings]
+  T4[🗃 loadings]
+  T5[🗃 shipment_actuals]
+  P1 -->|引当依頼| P2
+  P2 -->|ウェーブ生成| P3
+  P3 -->|帳票出力| R1
+  P3 --> H1 --> H2 --> H3
+  H3 --> P3
+  P3 --> H4
+  H4 --> P4
+  P4 --> R2
+  P4 --> H5
+  H5 --> P5
+  P5 --> H6
+  P1 -.-> T1
+  P2 -.-> T2
+  H4 -.-> T3
+  H5 -.-> T4
+  H6 -.-> T5
+  style PC fill:#e8eef5,stroke:#1a3a5c
+  style HT fill:#fef3e7,stroke:#7c2d12
+  style 帳票 fill:#dcfce7,stroke:#15803d
+    </pre>
+  </div>
+  <div class="ref">
+    <h4>関連リソース</h4>
+    <ul>
+      <li>画面: <a href="../outbound/orders.html">出荷指示一覧</a> / <a href="../outbound/allocate.html">引当</a> / <a href="../outbound/packing_summary.html">ピック・梱包</a> / <a href="../outbound/loading.html">積込</a> / <a href="../outbound/handover.html">引渡</a></li>
+      <li>HT: <a href="../../ht/pick/wave.html">ピックウェーブ</a> / <a href="../../ht/pick/scan.html">スキャン</a> / <a href="../../ht/packing/scan.html">梱包</a> / <a href="../../ht/loading/scan.html">積込</a> / <a href="../../ht/handover/confirm.html">引渡</a></li>
+      <li>帳票: <a href="../prints/picking_list.html">ピッキングリスト</a> / <a href="../prints/loading.html">積込明細書</a></li>
+      <li>テーブル: <code>shipment_orders</code> / <code>picking_tasks</code> / <code>packings</code> / <code>loadings</code> / <code>shipment_actuals</code></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 4. 請求・実績送信フロー -->
+<div class="section">
+  <div class="section-h">
+    <div class="num">4</div>
+    <h2>請求・実績送信フロー（出荷完了→月次請求→荷主連携）</h2>
+  </div>
+  <div class="section-desc">
+    日次出荷実績を荷主システムへ自動送信。月次で 3PL 料金（保管料・荷役料）を集計し請求書 PDF/CSV を発行。
+  </div>
+  <div class="section-body">
+    <pre class="mermaid">
+flowchart LR
+  S1[出荷完了<br>shipment_actuals]
+  D1[日次集計<br>billing_snapshot]
+  M1[📥 月次請求<br>billing/monthly.html]
+  M2[📄 請求書発行<br>billing/invoice.html]
+  C1[🔌 荷主連携API<br>/api/integrations/owner]
+  C2[🔌 配送追跡取込<br>/api/integrations/carrier]
+  T1[🗃 billing_snapshots]
+  T2[🗃 invoices]
+  T3[🗃 integration_logs]
+  S1 -->|日次バッチ| D1
+  D1 -.-> T1
+  D1 -->|月末集計| M1
+  M1 --> M2
+  M2 -.-> T2
+  S1 -->|実績送信| C1
+  C1 -.-> T3
+  C2 -->|追跡更新| S1
+  M1 -->|請求書送付| C1
+    </pre>
+  </div>
+  <div class="ref">
+    <h4>関連リソース</h4>
+    <ul>
+      <li>画面: <a href="../billing/monthly.html">月次請求</a> / <a href="../billing/invoice.html">請求書</a> / <a href="../billing/invoice_drilldown.html">明細ドリルダウン</a></li>
+      <li>テーブル: <code>billing_snapshots</code> / <code>invoices</code> / <code>integration_logs</code></li>
+    </ul>
+  </div>
+</div>
+
+<!-- 5. マスタ連携（横断） -->
+<div class="section">
+  <div class="section-h">
+    <div class="num">5</div>
+    <h2>マスタ連携（全業務横断・3PL 荷主分離）</h2>
+  </div>
+  <div class="section-desc">
+    全業務テーブルが <code>owner_code</code> を持ち、荷主単位でのデータ分離（RLS）を実現。商品・ロケ・取引先・配送業者・ユーザーマスタを共通参照。
+  </div>
+  <div class="section-body">
+    <pre class="mermaid">
+flowchart TB
+  subgraph マスタ
+    M1[🗃 owners<br>荷主]
+    M2[🗃 products<br>商品]
+    M3[🗃 locations<br>ロケーション]
+    M4[🗃 customers<br>取引先]
+    M5[🗃 carriers<br>配送業者]
+    M6[🗃 users<br>ユーザー]
+    M7[🗃 warehouses<br>倉庫]
+  end
+  subgraph 業務テーブル
+    B1[🗃 inbound_schedules]
+    B2[🗃 inventory]
+    B3[🗃 shipment_orders]
+    B4[🗃 picking_tasks]
+    B5[🗃 loadings]
+    B6[🗃 billing_snapshots]
+  end
+  M1 -->|owner_code FK| B1
+  M1 -->|owner_code FK| B2
+  M1 -->|owner_code FK| B3
+  M1 -->|owner_code FK| B6
+  M2 -->|product_code FK| B1
+  M2 -->|product_code FK| B2
+  M2 -->|product_code FK| B3
+  M3 -->|location_code FK| B2
+  M3 -->|location_code FK| B4
+  M4 -->|customer_code FK| B3
+  M5 -->|carrier_code FK| B5
+  M6 -->|user_id FK| B4
+  M7 -->|warehouse_code FK| B2
+  style マスタ fill:#dcfce7,stroke:#15803d
+  style 業務テーブル fill:#e8eef5,stroke:#1a3a5c
+    </pre>
+  </div>
+  <div class="ref">
+    <h4>関連リソース</h4>
+    <ul>
+      <li>画面: <a href="../master/products.html">商品マスタ</a> / <a href="../master/locations.html">ロケーション</a> / <a href="../master/customers.html">取引先</a> / <a href="../master/carriers.html">配送業者</a> / <a href="../master/users.html">ユーザー</a></li>
+      <li>テーブル: <code>owners</code> / <code>products</code> / <code>locations</code> / <code>customers</code> / <code>carriers</code> / <code>users</code> / <code>warehouses</code></li>
+      <li>関連: <a href="data_model.html">データモデル ER図</a>（テーブル詳細）</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 6. 外部システム連携 -->
+<div class="section">
+  <div class="section-h">
+    <div class="num">6</div>
+    <h2>外部システム連携（EDI / REST / SFTP / MAIL）</h2>
+  </div>
+  <div class="section-desc">
+    荷主・配送業者・会計システムとの双方向連携。プロトコル別に最適化（EDI: 大量バッチ / REST: リアルタイム / SFTP: 帳票 / MAIL: アラート）。
+  </div>
+  <div class="section-body">
+    <pre class="mermaid">
+flowchart LR
+  subgraph 内部
+    W[マルキ食品 WMS]
+  end
+  subgraph 荷主側
+    O1[荷主A 受発注]
+    O2[荷主B EC]
+    O3[荷主C 卸]
+  end
+  subgraph 配送業者
+    C1[ヤマト 追跡]
+    C2[佐川 追跡]
+    C3[西濃 追跡]
+  end
+  subgraph 会計
+    A1[会計システム<br>勘定奉行/freee 等]
+  end
+  W <-->|🔌 EDI ASN/出荷指示| O1
+  W <-->|🔌 REST API| O2
+  W <-->|🔌 SFTP CSV| O3
+  W -->|🔌 SFTP 出荷データ| C1
+  C1 -->|🔌 REST 追跡更新| W
+  W -->|🔌 SFTP 出荷データ| C2
+  W -->|🔌 SFTP 出荷データ| C3
+  W -->|🔌 CSV 月次請求| A1
+  W -->|📧 アラート MAIL| O1
+  style W fill:#1a3a5c,stroke:#0a1e36,color:#fff
+  style 荷主側 fill:#fef3e7,stroke:#7c2d12
+  style 配送業者 fill:#dcfce7,stroke:#15803d
+  style 会計 fill:#fff7e6,stroke:#e0a420
+    </pre>
+  </div>
+  <div class="ref">
+    <h4>関連リソース</h4>
+    <ul>
+      <li>画面: <a href="../integration/edi.html">EDI連携</a></li>
+      <li>テーブル: <code>owner_integrations</code> / <code>integration_logs</code> / <code>connectors</code></li>
+    </ul>
+  </div>
+</div>
+
+<div class="footer-nav">
+  <a href="../../index.html">トップに戻る</a> ／
+  <a href="data_model.html">データモデル ER図</a> ／
+  <a href="../settings/appearance.html">外観設定</a>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: { curve: 'basis', useMaxWidth: true, htmlLabels: true },
+    securityLevel: 'loose'
+  });
+</script>
+</body>
+</html>
