@@ -48,22 +48,22 @@
           </div>
         </div>
 
-        <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">処置を選択</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); font-weight:600; color:var(--c-text-sub);">処置を選択</div>
 
         <div style="display:flex; flex-direction:column; gap:4px;" id="action-options">
-          <div class="action-opt" data-act="restock" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:10px; font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">在庫に戻す（returned_good 登録）</div>
-          <div class="action-opt" data-act="dispose" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">廃棄申請（HTは申請のみ）</div>
-          <div class="action-opt" data-act="hold" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">保留（quarantine）</div>
+          <div class="action-opt" data-act="restock" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">在庫に戻す（returned_good 登録）</div>
+          <div class="action-opt" data-act="dispose" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">廃棄申請（HTは申請のみ）</div>
+          <div class="action-opt" data-act="hold" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">保留（quarantine）</div>
         </div>
 
-        <div style="font-size:8px; color:var(--c-text); padding:3px 5px; background:var(--c-accent-lt); border-left:2px solid var(--c-accent);">
+        <div style="font-size:calc(var(--fs-sub, 8px) * var(--ts, 1)); color:var(--c-text); padding:3px 5px; background:var(--c-accent-lt); border-left:2px solid var(--c-accent);">
           在庫戻し: auto_restock=true → 自動 available / false → W-1003 承認後 available (Q10-4)
         </div>
-        <div style="font-size:8px; color:var(--c-alert); padding:3px 5px; background:var(--c-alert-lt); border-left:2px solid var(--c-alert);">
+        <div style="font-size:calc(var(--fs-sub, 8px) * var(--ts, 1)); color:var(--c-alert); padding:3px 5px; background:var(--c-alert-lt); border-left:2px solid var(--c-alert);">
           廃棄: HT は申請のみ。最終承認は PC W-1004（荷主ロール）(Q10-5)
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-mute); text-align:center; margin-top:auto;">
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-mute); text-align:center; margin-top:auto;">
           1/3 明細完了
         </div>
       </div>

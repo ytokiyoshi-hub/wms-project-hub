@@ -40,8 +40,8 @@
           <div class="eh-sub" id="carrier-info">-</div>
         </div>
 
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:6px 8px; font-size:10px;">
-          <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:3px;">積載状況</div>
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:6px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-bottom:3px;">積載状況</div>
           <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
             <span style="color:var(--c-text-sub);">重量</span>
             <span style="font-family:var(--f-mono); font-weight:600;" id="wkg">1,660 / 2,000 kg</span>
@@ -58,17 +58,17 @@
           </div>
         </div>
 
-        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:10px;">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
           ★ 出荷Noをスキャンしてください
         </div>
 
-        <input id="so-input" placeholder="出荷No" autofocus style="background:var(--c-bg); border:1px solid var(--c-line-dk); padding:6px; text-align:center; font-family:var(--f-mono); font-size:14px; font-weight:700;">
+        <input id="so-input" placeholder="出荷No" autofocus style="background:var(--c-bg); border:1px solid var(--c-line-dk); padding:6px; text-align:center; font-family:var(--f-mono); font-size:calc(var(--fs-body, 14px) * var(--ts, 1)); font-weight:700;">
 
-        <div id="overflow-warn" style="display:none; background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:5px 7px; font-size:10px; color:var(--c-alert); font-weight:600;">
+        <div id="overflow-warn" style="display:none; background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:5px 7px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-alert); font-weight:600;">
           ⚠ 容量超過検出！次便への振替候補をPC（W-806）で確認
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); margin-top:auto; text-align:center; padding:4px;">
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:auto; text-align:center; padding:4px;">
           積込済：<span id="loaded-cnt">5</span>件 / 未済：<span id="remain-cnt">2</span>件
         </div>
       </div>

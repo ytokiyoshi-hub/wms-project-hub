@@ -39,26 +39,26 @@
 
         <div style="background:var(--c-base); border:1px solid var(--c-line); padding:7px;">
           <div style="margin-bottom:5px;">
-            <div style="font-size:9px; color:var(--c-text-sub);">指示 SKU</div>
-            <div style="font-family:var(--f-mono); font-weight:600; font-size:11px;">SKU-MK001-001</div>
-            <div style="font-size:10px;">シャンプー300ml</div>
+            <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">指示 SKU</div>
+            <div style="font-family:var(--f-mono); font-weight:600; font-size:calc(var(--fs-label, 11px) * var(--ts, 1));">SKU-MK001-001</div>
+            <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">シャンプー300ml</div>
           </div>
           <div style="border-top:1px dashed var(--c-line); padding-top:5px;">
-            <div style="font-size:9px; color:var(--c-alert);">スキャンしたSKU</div>
-            <div style="font-family:var(--f-mono); font-weight:600; color:var(--c-alert); font-size:11px;">SKU-MK001-002</div>
-            <div style="font-size:10px; color:var(--c-alert);">コンディショナー300ml ← 違う</div>
+            <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-alert);">スキャンしたSKU</div>
+            <div style="font-family:var(--f-mono); font-weight:600; color:var(--c-alert); font-size:calc(var(--fs-label, 11px) * var(--ts, 1));">SKU-MK001-002</div>
+            <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-alert);">コンディショナー300ml ← 違う</div>
           </div>
         </div>
 
-        <div style="background:var(--c-alert-lt); border-left:3px solid var(--c-alert); padding:6px 8px; font-size:10px; color:var(--c-alert); font-weight:600;">
+        <div style="background:var(--c-alert-lt); border-left:3px solid var(--c-alert); padding:6px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-alert); font-weight:600;">
           ⚠ 正しい棚から取り直してください
         </div>
 
-        <div style="font-size:10px; color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-line-dk);">
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-line-dk);">
           解決できない場合はF3でリーダーへ連絡
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">F1で再スキャン</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">F1で再スキャン</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" onclick="location.href='ht/pick/scan.html'"><span class="fn">F1</span>再スキャン</div>

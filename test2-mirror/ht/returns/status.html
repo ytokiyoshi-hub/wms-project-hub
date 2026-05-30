@@ -46,14 +46,14 @@
           <div class="eh-sub">LOT-260401 ／ 5個</div>
         </div>
 
-        <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">状態区分（inventory.status）</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); font-weight:600; color:var(--c-text-sub);">状態区分（inventory.status）</div>
 
         <div style="display:flex; flex-direction:column; gap:4px;" id="status-options">
-          <div class="status-opt" data-st="returned_good" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:10px; font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">returned_good<span style="font-weight:400; margin-left:6px; font-size:9px;">返品良品（在庫戻し待ち）</span></div>
-          <div class="status-opt" data-st="quarantine" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">quarantine<span style="font-weight:400; margin-left:6px; font-size:9px;">保留（荷主確認待ち）</span></div>
-          <div class="status-opt" data-st="dispose_req" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">廃棄申請<span style="font-weight:400; margin-left:6px; font-size:9px;">（HTは申請のみ）</span></div>
+          <div class="status-opt" data-st="returned_good" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">returned_good<span style="font-weight:400; margin-left:6px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">返品良品（在庫戻し待ち）</span></div>
+          <div class="status-opt" data-st="quarantine" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:500; color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">quarantine<span style="font-weight:400; margin-left:6px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">保留（荷主確認待ち）</span></div>
+          <div class="status-opt" data-st="dispose_req" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">廃棄申請<span style="font-weight:400; margin-left:6px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">（HTは申請のみ）</span></div>
         </div>
-        <div style="font-size:8px; color:var(--c-accent); padding:3px 4px; background:var(--c-accent-lt); border-left:2px solid var(--c-accent);">Q10-3: 返品専用 enum 廃止・inventory.status 共用</div>
+        <div style="font-size:calc(var(--fs-sub, 8px) * var(--ts, 1)); color:var(--c-accent); padding:3px 4px; background:var(--c-accent-lt); border-left:2px solid var(--c-accent);">Q10-3: 返品専用 enum 廃止・inventory.status 共用</div>
 
         <div style="margin-top:auto;">
           <div class="eh-num">

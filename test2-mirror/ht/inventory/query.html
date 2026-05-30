@@ -33,22 +33,22 @@
         <span class="scr-id">HT-501</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:10px;">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
           ★ ロケまたはSKUをスキャン
         </div>
 
-        <input id="scan-input" placeholder="ロケ or SKU or JAN" autofocus style="border:2px solid var(--c-accent); padding:8px; font-size:12px; font-family:var(--f-mono);">
+        <input id="scan-input" placeholder="ロケ or SKU or JAN" autofocus style="border:2px solid var(--c-accent); padding:8px; font-size:calc(var(--fs-body, 12px) * var(--ts, 1)); font-family:var(--f-mono);">
 
-        <div style="font-size:9px; color:var(--c-text-sub);">直近の在庫</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">直近の在庫</div>
 
         <div id="result-area">
           <div style="background:var(--c-base); border:1px solid var(--c-line); padding:8px;">
-            <div style="font-family:var(--f-mono); font-size:11px; font-weight:600; color:var(--c-accent);">SKU-MK001-001</div>
-            <div style="font-size:11px; font-weight:600; margin-top:2px;">シャンプー300ml</div>
+            <div style="font-family:var(--f-mono); font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600; color:var(--c-accent);">SKU-MK001-001</div>
+            <div style="font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600; margin-top:2px;">シャンプー300ml</div>
 
             <div style="height:1px; background:var(--c-line); margin:6px 0;"></div>
 
-            <div style="font-size:9px;">
+            <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">
               <div style="display:flex; justify-content:space-between; padding:2px 0;">
                 <span class="text-mono">3AP-02-001</span>
                 <span class="text-mono text-bold text-accent">120 ケース</span>
@@ -65,7 +65,7 @@
           </div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">スキャン or 手入力</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">スキャン or 手入力</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary"><span class="fn">F1</span>詳細</div>

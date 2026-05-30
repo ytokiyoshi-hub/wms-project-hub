@@ -34,7 +34,7 @@
         <span class="scr-id">HT-804</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); display:flex; justify-content:space-between;">
           <span style="color:var(--c-text-sub);">WV-2605-003</span>
           <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">2 / 5</span>
         </div>
@@ -46,10 +46,10 @@
         </div>
 
         <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">対象SKU</div>
-          <div style="font-family:var(--f-mono); font-size:11px; font-weight:600; margin-top:2px;" id="sku-code">-</div>
-          <div style="font-size:12px; font-weight:600; margin-top:2px;" id="sku-name">読込中</div>
-          <div style="font-size:9px; color:var(--c-text-sub); margin-top:4px;">賞味期限：2026/12/31（FEFO対象）</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">対象SKU</div>
+          <div style="font-family:var(--f-mono); font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600; margin-top:2px;" id="sku-code">-</div>
+          <div style="font-size:calc(var(--fs-body, 12px) * var(--ts, 1)); font-weight:600; margin-top:2px;" id="sku-name">読込中</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:4px;">賞味期限：2026/12/31（FEFO対象）</div>
         </div>
 
         <div class="eh-num">
@@ -58,9 +58,9 @@
           <div class="eh-unit">本（在庫：36本）</div>
         </div>
 
-        <input id="scan-input" placeholder="商品バーコードをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+        <input id="scan-input" placeholder="商品バーコードをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-family:var(--f-mono);">
 
-        <div style="font-size:10px; color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-accent); margin-top:auto;">
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-accent); margin-top:auto;">
           ★ バーコードをスキャンして確認
         </div>
       </div>

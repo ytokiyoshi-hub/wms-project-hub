@@ -29,13 +29,13 @@
     2. BT-A1000 の検品スキャン画面（JAN欄にカーソルがある状態）を開く<br>
     3. 下のバーコードを BT-A1000 で読む → 値＋Enter が JAN欄に入り、商品が自動照合される<br>
     4. 数量を確認して Enter（または F3）→ 次の品目へ<br>
-    <span style="font-size:12px;color:#6c7280;">※ スキャナの「終了コード」を <b>ENT（Enter）</b> に設定しておくこと。コード種別は CODE128。</span>
+    <span style="font-size:calc(var(--fs-body, 12px) * var(--ts, 1));color:#6c7280;">※ スキャナの「終了コード」を <b>ENT（Enter）</b> に設定しておくこと。コード種別は CODE128。</span>
   </div>
 
-  <h2 style="font-size:15px;margin:8px 0 10px;color:#1a3a5c;">① ログイン用（作業者ID）</h2>
+  <h2 style="font-size:calc(var(--fs-code, 15px) * var(--ts, 1));margin:8px 0 10px;color:#1a3a5c;">① ログイン用（作業者ID）</h2>
   <div class="grid" id="login-grid"></div>
 
-  <h2 style="font-size:15px;margin:24px 0 10px;color:#1a3a5c;">② 検品用（商品JAN）</h2>
+  <h2 style="font-size:calc(var(--fs-code, 15px) * var(--ts, 1));margin:24px 0 10px;color:#1a3a5c;">② 検品用（商品JAN）</h2>
   <div class="grid" id="grid"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
@@ -64,7 +64,7 @@
       try {
         JsBarcode('#lg' + i, it.code, { format: 'CODE128', width: 2, height: 70, displayValue: false, margin: 6 });
       } catch (e) {
-        document.getElementById('lg' + i).outerHTML = '<div style="color:#e53935;font-size:12px">バーコード生成失敗: ' + e.message + '</div>';
+        document.getElementById('lg' + i).outerHTML = '<div style="color:#e53935;font-size:calc(var(--fs-body, 12px) * var(--ts, 1))">バーコード生成失敗: ' + e.message + '</div>';
       }
     });
 
@@ -81,7 +81,7 @@
       try {
         JsBarcode('#bc' + i, it.jan, { format: 'CODE128', width: 2, height: 70, displayValue: false, margin: 6 });
       } catch (e) {
-        document.getElementById('bc' + i).outerHTML = '<div style="color:#e53935;font-size:12px">バーコード生成失敗: ' + e.message + '</div>';
+        document.getElementById('bc' + i).outerHTML = '<div style="color:#e53935;font-size:calc(var(--fs-body, 12px) * var(--ts, 1))">バーコード生成失敗: ' + e.message + '</div>';
       }
     });
   </script>

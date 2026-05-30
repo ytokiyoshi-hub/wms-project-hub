@@ -35,26 +35,26 @@
       </div>
       <div class="ht-body">
         <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
-          <div style="font-size:9px; color:var(--c-accent); font-weight:600;">あなたの進捗</div>
-          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="my-area">1F常温 田中</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-accent); font-weight:600;">あなたの進捗</div>
+          <div style="font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600; margin-top:2px;" id="my-area">1F常温 田中</div>
           <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
             <div style="flex:1; height:6px; background:var(--c-line);">
               <div style="height:100%; background:var(--c-accent); width:80%;" id="my-fill"></div>
             </div>
-            <div style="font-size:11px; font-family:var(--f-mono); font-weight:600;" id="my-progress">4/5</div>
+            <div style="font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-family:var(--f-mono); font-weight:600;" id="my-progress">4/5</div>
           </div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); margin-top:4px;">他エリアの進捗</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:4px;">他エリアの進捗</div>
 
         <div id="other-areas"></div>
 
         <div style="background:var(--c-alert-lt); border:1px solid var(--c-alert); padding:5px 7px; margin-top:4px;">
-          <div style="font-size:9px; color:var(--c-alert); font-weight:600;">締切 15:00</div>
-          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="remain-time">残時間 1h 18m</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-alert); font-weight:600;">締切 15:00</div>
+          <div style="font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600; margin-top:2px;" id="remain-time">残時間 1h 18m</div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); margin-top:auto;">※ピック作業は継続中</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:auto;">※ピック作業は継続中</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" onclick="alert('ピック画面（次フェーズで実装）')"><span class="fn">F1</span>ピックへ戻る</div>
@@ -99,7 +99,7 @@ document.getElementById('other-areas').innerHTML = others.map(o => {
   const done = o.current === o.total;
   return `
     <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px; margin-top:3px;">
-      <div style="display:flex; justify-content:space-between; font-size:10px;">
+      <div style="display:flex; justify-content:space-between; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
         <span>${o.area}</span>
         <span class="text-mono">${o.current}/${o.total}${done?' ✓':''}</span>
       </div>

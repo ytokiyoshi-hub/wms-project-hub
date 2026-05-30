@@ -32,18 +32,18 @@
         <span class="scr-id">HT-307-1</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:10px;">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:calc(var(--fs-sub, 10px) * var(--ts, 1));">
           ★ 仮置きレーンのバーコードをスキャン
         </div>
 
-        <input id="lane-input" placeholder="STAGE-..." autofocus style="border:2px solid var(--c-accent); padding:8px; font-size:12px; font-family:var(--f-mono);">
+        <input id="lane-input" placeholder="STAGE-..." autofocus style="border:2px solid var(--c-accent); padding:8px; font-size:calc(var(--fs-body, 12px) * var(--ts, 1)); font-family:var(--f-mono);">
 
-        <div style="font-size:9px; color:var(--c-text-sub);">本日の引渡待ち（積込計画）</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">本日の引渡待ち（積込計画）</div>
         <div id="lane-list" style="border:1px solid var(--c-line); background:var(--c-base);">
-          <div style="padding:6px 8px; color:var(--c-text-sub); font-size:10px;">読み込み中...</div>
+          <div style="padding:6px 8px; color:var(--c-text-sub); font-size:calc(var(--fs-sub, 10px) * var(--ts, 1));">読み込み中...</div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">スキャン or タップで選択</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">スキャン or タップで選択</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" onclick="goNext()"><span class="fn">F1</span>確定</div>
@@ -102,7 +102,7 @@ window.htSimulateScan = () => {
     const target = loadings.filter(l => l.status !== 'completed').slice(0, 8);
     const wrap = document.getElementById('lane-list');
     if (target.length === 0) {
-      wrap.innerHTML = '<div style="padding:6px 8px; color:var(--c-text-sub); font-size:10px;">引渡待ちなし</div>';
+      wrap.innerHTML = '<div style="padding:6px 8px; color:var(--c-text-sub); font-size:calc(var(--fs-sub, 10px) * var(--ts, 1));">引渡待ちなし</div>';
       return;
     }
     wrap.innerHTML = target.map((l, i) => {
@@ -110,13 +110,13 @@ window.htSimulateScan = () => {
       const remain = (l.order_count || 0) - (l.loaded_count || 0);
       const remainColor = remain > 0 ? 'var(--c-accent)' : 'var(--c-text-sub)';
       return `<div onclick="select('${esc(l.loading_no)}', ${l.id})" style="padding:6px 8px; ${last} cursor:pointer;">
-        <div class="text-mono text-bold text-accent" style="font-size:11px;">${esc(l.loading_no)}</div>
-        <div style="font-size:10px; color:var(--c-text-sub); margin-top:2px;">${esc(l.carrier_name || l.carrier_code || '-')} ${esc(l.scheduled_at || '')}</div>
-        <div style="font-size:10px; color:${remainColor};">${l.order_count || 0} 件 / 残${remain} (状態:${esc(l.status || '-')})</div>
+        <div class="text-mono text-bold text-accent" style="font-size:calc(var(--fs-code, 11px) * var(--ts, 1));">${esc(l.loading_no)}</div>
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:2px;">${esc(l.carrier_name || l.carrier_code || '-')} ${esc(l.scheduled_at || '')}</div>
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:${remainColor};">${l.order_count || 0} 件 / 残${remain} (状態:${esc(l.status || '-')})</div>
       </div>`;
     }).join('');
   } catch (e) {
-    document.getElementById('lane-list').innerHTML = `<div style="padding:6px 8px; color:var(--c-alert); font-size:10px;">読込失敗: ${esc(e.message)}</div>`;
+    document.getElementById('lane-list').innerHTML = `<div style="padding:6px 8px; color:var(--c-alert); font-size:calc(var(--fs-sub, 10px) * var(--ts, 1));">読込失敗: ${esc(e.message)}</div>`;
   }
 })();
 </script>

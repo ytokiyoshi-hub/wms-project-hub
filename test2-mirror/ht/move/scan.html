@@ -39,18 +39,18 @@
           <div class="step"><span class="num">3</span>完了</div>
         </div>
 
-        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:10px;">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
           ★ 移動元のロケコードをスキャン
         </div>
 
-        <input id="loc-from" placeholder="移動元ロケコード" autofocus style="border:2px solid var(--c-accent); padding:8px; font-size:12px; font-family:var(--f-mono);">
+        <input id="loc-from" placeholder="移動元ロケコード" autofocus style="border:2px solid var(--c-accent); padding:8px; font-size:calc(var(--fs-body, 12px) * var(--ts, 1)); font-family:var(--f-mono);">
 
         <div class="eh-hero">
           <div class="eh-lbl">移動元ロケ（スキャン後）</div>
           <div class="eh-loc" id="loc-info">未スキャン</div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); margin-top:auto;">移動元 → 移動先 → 数量 → 確定の順</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:auto;">移動元 → 移動先 → 数量 → 確定の順</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" id="key-next" onclick="next()"><span class="fn">F1</span>次へ</div>

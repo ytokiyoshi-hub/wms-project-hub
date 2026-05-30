@@ -50,18 +50,18 @@
         </div>
 
         <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
-          <div style="font-size:9px; color:var(--c-accent); font-weight:600;">最後にスキャン</div>
-          <div style="font-size:10px; font-family:var(--f-mono); margin-top:2px;" id="last-cage">CON-260501-0010</div>
-          <div style="font-size:9px; margin-top:2px;" id="last-info">SO-00125 / 1/2 個口</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-accent); font-weight:600;">最後にスキャン</div>
+          <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-family:var(--f-mono); margin-top:2px;" id="last-cage">CON-260501-0010</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); margin-top:2px;" id="last-info">SO-00125 / 1/2 個口</div>
         </div>
 
-        <input id="scan-input" placeholder="カゴをスキャン" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);" autofocus>
+        <input id="scan-input" placeholder="カゴをスキャン" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-family:var(--f-mono);" autofocus>
 
-        <div style="font-size:10px; color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-line-dk);" id="remain-msg">
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); padding:4px 6px; background:var(--c-bg); border-left:3px solid var(--c-line-dk);" id="remain-msg">
           ★ 残2個口 → 続けてスキャン
         </div>
 
-        <div style="font-size:9px; margin-top:auto; padding:5px 6px; background:var(--c-alert-lt); border-left:3px solid var(--c-alert); color:var(--c-alert);">
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); margin-top:auto; padding:5px 6px; background:var(--c-alert-lt); border-left:3px solid var(--c-alert); color:var(--c-alert);">
           ⚠ 予定外品の検知時：即停止・リーダー確認
         </div>
       </div>

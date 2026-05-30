@@ -33,7 +33,7 @@
         <span class="scr-id">HT-803</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:9px; display:flex; justify-content:space-between;">
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:4px 8px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); display:flex; justify-content:space-between;">
           <span id="customer">荷主 / 顧客</span>
           <span style="font-family:var(--f-mono); color:var(--c-accent);" id="progress">0 / -</span>
         </div>
@@ -50,12 +50,12 @@
           <div class="eh-unit">箱（スキャン済：<span id="scanned-cnt">0</span>）</div>
         </div>
 
-        <input id="scan-input" placeholder="SKUをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+        <input id="scan-input" placeholder="SKUをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-family:var(--f-mono);">
 
-        <div style="font-size:9px; color:var(--c-text-sub);">完了済み</div>
-        <div id="done-list" style="display:grid; grid-template-columns:1fr; gap:2px; font-size:9px;"></div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">完了済み</div>
+        <div id="done-list" style="display:grid; grid-template-columns:1fr; gap:2px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));"></div>
 
-        <div style="font-size:9px; color:var(--c-text-mute); margin-top:auto; text-align:center;">
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-mute); margin-top:auto; text-align:center;">
           照合OKで自動で次へ進む
         </div>
       </div>

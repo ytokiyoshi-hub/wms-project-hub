@@ -35,12 +35,12 @@
       </div>
       <div class="ht-body">
         <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">積込計画</div>
-          <div style="font-size:11px; font-weight:600;" id="lane-no">-</div>
-          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;" id="lane-desc">読み込み中...</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">積込計画</div>
+          <div style="font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600;" id="lane-no">-</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:2px;" id="lane-desc">読み込み中...</div>
         </div>
 
-        <div style="font-size:10px; color:var(--c-text-sub); margin-top:4px; padding:4px 6px; background:var(--c-accent-lt); border-left:3px solid var(--c-accent);">
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:4px; padding:4px 6px; background:var(--c-accent-lt); border-left:3px solid var(--c-accent);">
           ★ カゴをスキャンしてください
         </div>
 
@@ -51,14 +51,14 @@
           <div class="eh-sub" id="last-progress">2/3 個口 → 集合まで残1</div>
         </div>
 
-        <input id="scan-input" placeholder="カゴをスキャン" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);" autofocus>
+        <input id="scan-input" placeholder="カゴをスキャン" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-family:var(--f-mono);" autofocus>
 
-        <div style="font-size:9px; color:var(--c-text-sub); margin-top:4px;">本便の集合状況</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px; font-size:9px;" id="orders-grid">
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:4px;">本便の集合状況</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));" id="orders-grid">
           <div style="grid-column:span 2; color:var(--c-text-sub);">読み込み中...</div>
         </div>
 
-        <div style="font-size:10px; color:var(--c-text-sub); text-align:center; margin-top:auto;" id="total-progress">本便：8/12 個口到着</div>
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;" id="total-progress">本便：8/12 個口到着</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" id="key-confirm"><span class="fn">F1</span>確定</div>

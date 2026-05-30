@@ -33,21 +33,21 @@
         <span class="scr-id">HT-803</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:6px 8px; font-size:10px;">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:6px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
           出荷Noをスキャンまたは入力してください
         </div>
 
         <div style="background:var(--c-base); border:1px solid var(--c-line); padding:8px;">
-          <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">出荷No（バーコード or 手入力）</div>
-          <input id="so-input" placeholder="SO-..." autofocus style="width:100%; background:var(--c-bg); border:1px solid var(--c-line-dk); padding:8px; text-align:center; font-family:var(--f-mono); font-size:16px; font-weight:700;">
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-bottom:4px;">出荷No（バーコード or 手入力）</div>
+          <input id="so-input" placeholder="SO-..." autofocus style="width:100%; background:var(--c-bg); border:1px solid var(--c-line-dk); padding:8px; text-align:center; font-family:var(--f-mono); font-size:calc(var(--fs-code, 16px) * var(--ts, 1)); font-weight:700;">
         </div>
 
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:6px 8px; font-size:10px;">
-          <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:3px;">ピッキング完了済み出荷（本日）</div>
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:6px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-bottom:3px;">ピッキング完了済み出荷（本日）</div>
           <div id="picked-list"></div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-mute); margin-top:auto; text-align:center;">
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-mute); margin-top:auto; text-align:center;">
           スキャン or 上下キーで選択
         </div>
       </div>

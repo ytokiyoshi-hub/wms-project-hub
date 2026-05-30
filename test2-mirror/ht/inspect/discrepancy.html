@@ -44,19 +44,19 @@
           <div class="eh-unit">ケース（予定120 → 実績118）</div>
         </div>
 
-        <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">どう処理しますか？</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); font-weight:600; color:var(--c-text-sub);">どう処理しますか？</div>
 
         <div style="display:flex; flex-direction:column; gap:4px;">
-          <div onclick="pickAction('accept')" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:10px; font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">1. 実数受入（差異を許容）</div>
-          <div onclick="pickAction('reinspect')" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">2. 再検品（HT再スキャン）</div>
-          <div onclick="pickAction('claim')" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">3. クレーム（仕入先連絡）</div>
+          <div onclick="pickAction('accept')" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">1. 実数受入（差異を許容）</div>
+          <div onclick="pickAction('reinspect')" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:500; color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">2. 再検品（HT再スキャン）</div>
+          <div onclick="pickAction('claim')" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">3. クレーム（仕入先連絡）</div>
         </div>
 
-        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:9px;">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">
           ※ 後でPC W-404 差異処理でも対応可能
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">テンキー1〜3で選択</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">テンキー1〜3で選択</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" onclick="alert('差異処理登録')"><span class="fn">F1</span>確定</div>

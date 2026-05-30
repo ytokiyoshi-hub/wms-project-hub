@@ -32,7 +32,7 @@
         <span class="scr-id">HT-805</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px; font-size:10px;">
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
           <div style="display:flex; justify-content:space-between;">
             <span style="color:var(--c-text-sub);">担当エリア</span>
             <span style="font-weight:600;">1F常温</span>
@@ -43,12 +43,12 @@
           </div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub);">出荷指示</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">出荷指示</div>
         <div id="order-list" style="border:1px solid var(--c-line); background:var(--c-base); flex:1; overflow-y:auto;">
-          <div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">読み込み中...</div>
+          <div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">読み込み中...</div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">F1選択 / F3詳細</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">F1選択 / F3詳細</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" onclick="location.href='ht/pick/wave.html'"><span class="fn">F1</span>ピック開始</div>
@@ -93,7 +93,7 @@ async function loadOrders() {
     const orders = await fetch('/api/shipment-orders').then(r => r.json()).catch(() => []);
     const list = document.getElementById('order-list');
     if (!orders || orders.length === 0) {
-      list.innerHTML = '<div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">出荷指示なし</div>';
+      list.innerHTML = '<div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">出荷指示なし</div>';
       return;
     }
     list.innerHTML = orders.slice(0, 6).map((o, i) => {
@@ -102,9 +102,9 @@ async function loadOrders() {
         ? '<span style="color:var(--c-accent); font-weight:600;">引当済</span>'
         : '<span style="color:var(--c-alert);">引当待ち</span>';
       return `<div data-id="${o.id}" data-no="${esc(o.order_no)}" style="padding:6px 8px; border-bottom:1px solid var(--c-line); cursor:pointer; ${i===0?'background:var(--c-accent-lt);':''}">
-        <div class="text-mono text-bold text-accent" style="font-size:11px;">${esc(o.order_no)}</div>
-        <div style="font-size:10px; color:var(--c-text-sub); margin-top:2px;">${esc(o.customer_name || '-')}</div>
-        <div style="font-size:10px; margin-top:2px;">${o.line_count}行 / ${status}</div>
+        <div class="text-mono text-bold text-accent" style="font-size:calc(var(--fs-label, 11px) * var(--ts, 1));">${esc(o.order_no)}</div>
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:2px;">${esc(o.customer_name || '-')}</div>
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); margin-top:2px;">${o.line_count}行 / ${status}</div>
       </div>`;
     }).join('');
     list.querySelectorAll('[data-id]').forEach(el => {
@@ -116,7 +116,7 @@ async function loadOrders() {
       });
     });
   } catch (e) {
-    document.getElementById('order-list').innerHTML = `<div style="padding:10px; color:var(--c-alert); font-size:9px;">読込失敗: ${esc(e.message)}</div>`;
+    document.getElementById('order-list').innerHTML = `<div style="padding:10px; color:var(--c-alert); font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">読込失敗: ${esc(e.message)}</div>`;
   }
 }
 

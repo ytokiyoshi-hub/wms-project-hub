@@ -47,7 +47,7 @@
           <div class="eh-sub">差異なし・棚入れへ</div>
         </div>
 
-        <div style="border:1px solid var(--c-line); font-size:9px;">
+        <div style="border:1px solid var(--c-line); font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">
           <div style="display:flex; border-bottom:1px solid var(--c-line);">
             <div style="width:60px; padding:4px 6px; background:var(--c-bg); color:var(--c-text-sub); border-right:1px solid var(--c-line); flex-shrink:0;">伝票</div>
             <div style="padding:4px 6px; font-family:var(--f-mono); font-weight:600;" id="sm-no">-</div>
@@ -74,8 +74,8 @@
           </div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">棚入れ指示を自動生成します</div>
-        <div style="background:var(--c-accent); color:#fff; text-align:center; padding:6px; font-size:10px; font-weight:600;" onclick="location.href='ht/putaway/instructions.html'">F3: 完了・棚入れへ進む</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">棚入れ指示を自動生成します</div>
+        <div style="background:var(--c-accent); color:#fff; text-align:center; padding:6px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:600;" onclick="location.href='ht/putaway/instructions.html'">F3: 完了・棚入れへ進む</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl" onclick="history.back()"><span class="fn">F1</span>戻る</div>

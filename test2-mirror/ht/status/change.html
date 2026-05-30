@@ -41,11 +41,11 @@
         </div>
 
         <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px 7px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">現在のステータス</div>
-          <div style="font-size:13px; font-weight:600; color:var(--c-accent); margin-top:2px;">GOOD（良品）</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">現在のステータス</div>
+          <div style="font-size:calc(var(--fs-body, 13px) * var(--ts, 1)); font-weight:600; color:var(--c-accent); margin-top:2px;">GOOD（良品）</div>
         </div>
 
-        <div style="font-size:10px; color:var(--c-text-sub); margin-top:4px;">▼ 新ステータスを選択（テンキー）</div>
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:4px;">▼ 新ステータスを選択（テンキー）</div>
 
         <div id="status-list" style="display:flex; flex-direction:column; gap:3px;">
           <div class="status-radio selected" data-st="HOLD" style="border:1px solid var(--c-accent); background:var(--c-accent); color:#fff; padding:6px 8px; display:flex; align-items:center; gap:6px; cursor:pointer;"><span style="font-family:var(--f-mono); font-weight:700;">1</span><span>HOLD（保留）</span></div>
@@ -54,8 +54,8 @@
           <div class="status-radio" data-st="EXPIRY_WARN" style="border:1px solid var(--c-line-dk); padding:6px 8px; display:flex; align-items:center; gap:6px; cursor:pointer;"><span style="font-family:var(--f-mono); font-weight:700;">4</span><span>EXPIRY_WARN（期限）</span></div>
         </div>
 
-        <div style="font-size:10px; color:var(--c-text-sub); margin-top:4px;">理由：</div>
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px; font-size:10px;">
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:4px;">理由：</div>
+        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
           選択 → 1.破損 / 2.汚れ / 3.客先指示
         </div>
       </div>

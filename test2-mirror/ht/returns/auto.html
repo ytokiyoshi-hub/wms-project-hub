@@ -40,9 +40,9 @@
         </div>
 
         <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">荷主 / 設定</div>
-          <div style="font-size:11px; font-weight:600;">AP001 アパレル雑貨</div>
-          <div style="font-size:9px; color:var(--c-accent); margin-top:2px;">auto_restock = <b>true</b>（自動戻し有効）</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">荷主 / 設定</div>
+          <div style="font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600;">AP001 アパレル雑貨</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-accent); margin-top:2px;">auto_restock = <b>true</b>（自動戻し有効）</div>
         </div>
 
         <div class="eh-hero ok">
@@ -58,7 +58,7 @@
           <div class="eh-unit">点</div>
         </div>
 
-        <div style="border:1px solid var(--c-line); font-size:10px;">
+        <div style="border:1px solid var(--c-line); font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
           <div style="padding:5px 8px; background:var(--c-bg); border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between;">
             <span style="color:var(--c-text-sub);">状態遷移</span>
             <span class="text-mono text-accent" style="font-weight:600;">returned_good → available</span>
@@ -69,11 +69,11 @@
           </div>
         </div>
 
-        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:9px;">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">
           ✓ 即時に在庫に反映されます（W-1003 承認画面は表示されない）
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">F1で確定</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">F1で確定</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" onclick="alert('即時 available 化登録'); location.href='ht/menu.html'"><span class="fn">F1</span>確定</div>

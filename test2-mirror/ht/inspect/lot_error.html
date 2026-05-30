@@ -46,29 +46,29 @@
         </div>
 
         <div style="background:var(--c-base); border:1px solid var(--c-line); padding:6px;">
-          <div style="display:flex; justify-content:space-between; font-size:10px;">
+          <div style="display:flex; justify-content:space-between; font-size:calc(var(--fs-label, 10px) * var(--ts, 1));">
             <span style="color:var(--c-text-sub);">ロット</span>
             <span class="text-mono">L260518-03</span>
           </div>
-          <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:3px;">
+          <div style="display:flex; justify-content:space-between; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); margin-top:3px;">
             <span style="color:var(--c-text-sub);">賞味期限</span>
             <span class="text-mono" style="color:var(--c-alert); font-weight:600;">2026-06-08</span>
           </div>
         </div>
 
-        <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">どう処理しますか？</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); font-weight:600; color:var(--c-text-sub);">どう処理しますか？</div>
 
         <div style="display:flex; flex-direction:column; gap:4px;">
-          <div onclick="pickLotAction('accept')" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:10px; font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">1. 受入（要注意品として登録）</div>
-          <div onclick="pickLotAction('reject')" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">2. 受入拒否（仕入先返品）</div>
-          <div onclick="pickLotAction('escalate')" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:10px; font-weight:500; color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">3. リーダー確認</div>
+          <div onclick="pickLotAction('accept')" style="border:1px solid var(--c-accent); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:600; background:var(--c-accent); color:#fff; cursor:pointer;">1. 受入（要注意品として登録）</div>
+          <div onclick="pickLotAction('reject')" style="border:1px solid var(--c-alert); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:500; color:var(--c-alert); background:var(--c-base); cursor:pointer;">2. 受入拒否（仕入先返品）</div>
+          <div onclick="pickLotAction('escalate')" style="border:1px solid var(--c-line-dk); padding:5px 8px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:500; color:var(--c-text-sub); background:var(--c-base); cursor:pointer;">3. リーダー確認</div>
         </div>
 
-        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:9px;">
+        <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">
           ※ 受入時は FEFO 優先引当で早期出荷
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">テンキー1〜3で選択</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">テンキー1〜3で選択</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl primary" onclick="alert('ロット異常処理登録')"><span class="fn">F1</span>確定</div>

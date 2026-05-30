@@ -34,26 +34,26 @@
       <div class="ht-body" style="justify-content:center; padding:30px 14px;">
         <div style="text-align:center;">
           <div style="font-size:32px; color:var(--c-accent); font-weight:700;">WMS</div>
-          <div style="font-size:11px; color:var(--c-text-sub); margin-top:4px;">マルキ食品 WMS / Phase 1 プレビュー</div>
+          <div style="font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:4px;">マルキ食品 WMS / Phase 1 プレビュー</div>
         </div>
 
         <div style="height:12px;"></div>
 
         <div class="ht-info-row">
-          <div class="lbl" style="font-size:10px; color:var(--c-text-sub);">作業者ID</div>
-          <input id="user-input" placeholder="USR-001" pattern="USR-[0-9]{3}" maxlength="7" title="USR-XXX 形式で入力" style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:14px; font-family:var(--f-mono); text-align:center; background:var(--c-base);" autofocus>
+          <div class="lbl" style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub);">作業者ID</div>
+          <input id="user-input" placeholder="USR-001" pattern="USR-[0-9]{3}" maxlength="7" title="USR-XXX 形式で入力" style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:calc(var(--fs-body, 14px) * var(--ts, 1)); font-family:var(--f-mono); text-align:center; background:var(--c-base);" autofocus>
         </div>
 
         <div class="ht-info-row">
-          <div class="lbl" style="font-size:10px; color:var(--c-text-sub);">パスワード</div>
-          <input id="pw-input" type="password" placeholder="****" minlength="4" required style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:14px; font-family:var(--f-mono); text-align:center; background:var(--c-base);">
+          <div class="lbl" style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-text-sub);">パスワード</div>
+          <input id="pw-input" type="password" placeholder="****" minlength="4" required style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:calc(var(--fs-body, 14px) * var(--ts, 1)); font-family:var(--f-mono); text-align:center; background:var(--c-base);">
         </div>
 
-        <button id="key-login" onclick="login()" style="background:var(--c-accent); color:#fff; border:none; padding:10px; font-weight:600; font-size:13px; cursor:pointer; margin-top:8px;">
+        <button id="key-login" onclick="login()" style="background:var(--c-accent); color:#fff; border:none; padding:10px; font-weight:600; font-size:calc(var(--fs-body, 13px) * var(--ts, 1)); cursor:pointer; margin-top:8px;">
           F1 ログイン
         </button>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:10px;">
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:10px;">
           IDをスキャン or 手入力
         </div>
       </div>

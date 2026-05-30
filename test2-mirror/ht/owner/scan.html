@@ -56,15 +56,15 @@
         <div class="arrow-down">↓ 切替</div>
 
         <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:8px; text-align:center;">
-          <div style="font-size:10px; color:var(--c-accent); font-weight:700; margin-bottom:4px;">★ 荷主バーコードをスキャン</div>
-          <div style="font-size:9px; color:var(--c-text-sub);">荷主バーコードシートを読み取り<br>または F1 で手入力</div>
+          <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); color:var(--c-accent); font-weight:700; margin-bottom:4px;">★ 荷主バーコードをスキャン</div>
+          <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">荷主バーコードシートを読み取り<br>または F1 で手入力</div>
         </div>
 
-        <input id="owner-input" placeholder="荷主コード入力 (MK001/AP001/EC001/PR001)" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+        <input id="owner-input" placeholder="荷主コード入力 (MK001/AP001/EC001/PR001)" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-family:var(--f-mono);">
 
-        <div id="candidate" style="font-size:9px; color:var(--c-text-sub);"></div>
+        <div id="candidate" style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);"></div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); text-align:center; margin-top:auto;">
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); text-align:center; margin-top:auto;">
           ENT で切替確認 / F4 でメニュー
         </div>
       </div>

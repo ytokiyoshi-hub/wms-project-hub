@@ -40,13 +40,13 @@
           <div class="eh-name" id="owner-display">-</div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">検品対象ASN（選択またはスキャン）</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-bottom:4px;">検品対象ASN（選択またはスキャン）</div>
 
         <div id="asn-list" style="border:1px solid var(--c-line); background:var(--c-base); flex:1; overflow-y:auto;">
-          <div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">読み込み中...</div>
+          <div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">読み込み中...</div>
         </div>
 
-        <div style="background:#1a1c22; color:#ffd966; text-align:center; padding:6px; font-size:9px; font-family:var(--f-mono); margin-top:auto;">▼ ASNラベルをスキャン</div>
+        <div style="background:#1a1c22; color:#ffd966; text-align:center; padding:6px; font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); font-family:var(--f-mono); margin-top:auto;">▼ ASNラベルをスキャン</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl" onclick="location.href='ht/menu.html'"><span class="fn">F1</span>戻る</div>
@@ -98,7 +98,7 @@ async function init() {
   const planned = (schedules || []).filter(s => s.status === 'planned' || !s.status);
   const list = document.getElementById('asn-list');
   if (planned.length === 0) {
-    list.innerHTML = '<div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:9px;">検品対象なし</div>';
+    list.innerHTML = '<div style="padding:10px; text-align:center; color:var(--c-text-sub); font-size:calc(var(--fs-sub, 9px) * var(--ts, 1));">検品対象なし</div>';
     return;
   }
   // 情報密度向上: 予定日・温度帯・優先度を一画面で
@@ -107,8 +107,8 @@ async function init() {
     const d = s.scheduled_date || '';
     const isLate = d && d < today;
     const isToday = d === today;
-    const dateBadge = isLate ? '<span style="background:var(--c-alert); color:#fff; font-size:8px; padding:1px 4px; margin-left:4px;">遅延</span>'
-                     : isToday ? '<span style="background:var(--c-accent); color:#fff; font-size:8px; padding:1px 4px; margin-left:4px;">本日</span>'
+    const dateBadge = isLate ? '<span style="background:var(--c-alert); color:#fff; font-size:calc(var(--fs-sub, 8px) * var(--ts, 1)); padding:1px 4px; margin-left:4px;">遅延</span>'
+                     : isToday ? '<span style="background:var(--c-accent); color:#fff; font-size:calc(var(--fs-sub, 8px) * var(--ts, 1)); padding:1px 4px; margin-left:4px;">本日</span>'
                      : '';
     const priority = i === 0 ? '★1' : i === 1 ? '★2' : '・';
     // B: 普段は静か・選択行と遅延だけ色
@@ -118,11 +118,11 @@ async function init() {
     <div class="ht-list-item" data-id="${s.id}" data-no="${escapeHtml(s.schedule_no)}" data-supplier="${escapeHtml(s.supplier_name || '')}" data-owner="${escapeHtml(s.owner_code || '')}"
          style="padding:6px 8px; border-bottom:1px solid var(--c-line); cursor:pointer; ${i===0?'background:var(--c-accent-lt);':''}">
       <div style="display:flex; align-items:center; justify-content:space-between;">
-        <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:${accentColor};">${escapeHtml(s.schedule_no)}${dateBadge}</div>
-        <div style="font-size:9px; color:#9ca3af;">${priority}</div>
+        <div style="font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-weight:600; font-family:var(--f-mono); color:${accentColor};">${escapeHtml(s.schedule_no)}${dateBadge}</div>
+        <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:#9ca3af;">${priority}</div>
       </div>
-      <div style="font-size:9px; color:#6b7280; margin-top:2px;">${escapeHtml(s.supplier_name || '-')}</div>
-      <div style="font-size:9px; color:#374151; margin-top:2px; display:flex; justify-content:space-between;">
+      <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:#6b7280; margin-top:2px;">${escapeHtml(s.supplier_name || '-')}</div>
+      <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:#374151; margin-top:2px; display:flex; justify-content:space-between;">
         <span>${s.line_count || '?'}件 <span style="color:#9ca3af;">全数</span></span>
         <span style="color:${dateColor};">${escapeHtml(d || '-')}</span>
       </div>
@@ -133,7 +133,7 @@ async function init() {
   const lateCount = planned.filter(s => (s.scheduled_date || '') < today).length;
   const todayCount = planned.filter(s => s.scheduled_date === today).length;
   const sumDiv = document.createElement('div');
-  sumDiv.style.cssText = 'padding:4px 8px; background:var(--c-bg); border-top:1px solid var(--c-line); font-size:9px; color:var(--c-text-sub); display:flex; justify-content:space-between;';
+  sumDiv.style.cssText = 'padding:4px 8px; background:var(--c-bg); border-top:1px solid var(--c-line); font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); display:flex; justify-content:space-between;';
   sumDiv.innerHTML = `本日:${todayCount} / 遅延:${lateCount} / 計:${planned.length}`;
   list.appendChild(sumDiv);
   // 初期選択
