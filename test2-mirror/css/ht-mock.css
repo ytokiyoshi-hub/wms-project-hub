@@ -63,8 +63,8 @@ body.real-mode {
   --fs-body: 16px;    /* 本文 (NN/g Web本文下限) */
   --fs-input: 18px;   /* 入力テキスト (Material input 16sp / iOS下限16) */
   --fs-num: 30px;     /* 強調する数値: 誤認NG→本文の約2倍 */
-  --fs-key: 16px;     /* F1〜F4 ラベル */
-  --fs-keyfn: 13px;   /* Fキーの番号 */
+  --fs-key: 12px;     /* F1〜F4 ラベル（最長6字「ウェーブ変更」も1行で収まる最大値） */
+  --fs-keyfn: 11px;   /* Fキーの番号 */
 }
 /* 数値・コードは等幅＋桁揃え(tabular)で誤認防止 */
 body.real-mode .insp-qty .val,
@@ -77,11 +77,12 @@ body.real-mode .ht-body { padding: 10px; gap: 12px; font-size: calc(var(--fs-bod
 body.real-mode .ht-body input { font-size: calc(var(--fs-input) * var(--ts)) !important; min-height: calc(58px * var(--ts)); padding: 8px 12px !important; }
 body.real-mode .step-progress .step { font-size: calc(var(--fs-step) * var(--ts)); padding: 10px 4px; }
 body.real-mode .step-progress .step .num { font-size: calc(var(--fs-step) * var(--ts)); }
-body.real-mode .ht-key-labels { height: calc(54px * var(--ts)); grid-template-columns: repeat(4, minmax(0, 1fr)); }
-/* ラベルは折り返さず1行に固定。長いラベル(例:ウェーブ変更/ログアウト)は ht-keypad.js の
-   fitKeyLabels() がセル幅に収まるよう個別に縮小する。minmax(0,1fr) でセルは常に1/4等幅。 */
-body.real-mode .ht-key-labels .key-lbl { padding: 8px 4px; font-size: calc(var(--fs-key) * var(--ts)); white-space: nowrap; overflow: hidden; }
-body.real-mode .ht-key-labels .key-lbl .fn { font-size: calc(var(--fs-keyfn) * var(--ts)); }
+body.real-mode .ht-key-labels { height: auto; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* 全ラベルを一律 --fs-key(12px) で1行に固定。最長6字(ウェーブ変更/ログアウト等)もこの幅で
+   収まるため個別縮小はしない(サイズ不揃いを避ける)。minmax(0,1fr) でセルは常に1/4等幅。
+   上下余白を詰めてバー高を最小化し、本文表示領域を最大化する。 */
+body.real-mode .ht-key-labels .key-lbl { padding: 2px 3px; font-size: calc(var(--fs-key) * var(--ts)); line-height: 1.1; white-space: nowrap; overflow: hidden; }
+body.real-mode .ht-key-labels .key-lbl .fn { font-size: calc(var(--fs-keyfn) * var(--ts)); line-height: 1.1; }
 
 h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
 p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24px; }

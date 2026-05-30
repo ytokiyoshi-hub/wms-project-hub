@@ -85,37 +85,6 @@
     scroller.scrollBy(0, e.key === 'ArrowDown' ? 56 : -56);
   }, true);
 
-  // ===== フッターFキー・ラベルのはみ出し防止: セル幅に収まらないラベルだけ個別に縮小 =====
-  // real-mode(実機)は本文を拡大しているため、長いラベル(ウェーブ変更/ログアウト等)が
-  // 1/4幅セルで折り返し→クリップして不細工になる。CSS で nowrap 固定し、ここで各セルの
-  // ラベル文字を実測して、はみ出す分だけ font-size を下げる(短いラベルは既定サイズのまま)。
-  function fitKeyLabels() {
-    document.querySelectorAll('.ht-key-labels .key-lbl').forEach((cell) => {
-      let tn = null;
-      cell.childNodes.forEach((n) => { if (n.nodeType === 3 && n.textContent.trim()) tn = n; });
-      if (!tn) return;
-      cell.style.fontSize = ''; // 既定サイズに戻してから測る(resize/再実行に対応)
-      const cs = getComputedStyle(cell);
-      const avail = cell.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      if (avail <= 0) return;
-      const range = document.createRange();
-      range.selectNodeContents(tn);
-      let fs = parseFloat(cs.fontSize);
-      while (range.getBoundingClientRect().width > avail && fs > 9) {
-        fs -= 0.5;
-        cell.style.fontSize = fs + 'px';
-      }
-    });
-  }
-  const scheduleFitKeyLabels = () => {
-    fitKeyLabels();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitKeyLabels); // Web フォント確定後に再調整
-  };
-  if (document.readyState !== 'loading') scheduleFitKeyLabels();
-  else document.addEventListener('DOMContentLoaded', scheduleFitKeyLabels);
-  let _fitRaf = 0;
-  window.addEventListener('resize', () => { cancelAnimationFrame(_fitRaf); _fitRaf = requestAnimationFrame(fitKeyLabels); });
-
   function getActiveInput() {
     if (lastInputEl && document.contains(lastInputEl)) return lastInputEl;
     const focused = document.activeElement;
@@ -345,7 +314,15 @@
     /[?&]real=(1|true)/.test(location.search) || window.Capacitor;
   if (!isReal) return;
 
-  const KEY = 'wms_typescale_v2';
+  const KEY = 'wms_typescale_v3';
+  // v2→v3 移行: 旧保存値の他ロールは引き継ぐが、フッター(--fs-key)は案B(既定12px・全部1行)へ
+  // 更新するため引き継がない。これで端末に古い --fs-key:16 が残っていても新既定が効く。
+  try {
+    if (!localStorage.getItem(KEY)) {
+      const _old = localStorage.getItem('wms_typescale_v2');
+      if (_old) { const _o = JSON.parse(_old); delete _o['--fs-key']; localStorage.setItem(KEY, JSON.stringify(_o)); }
+    }
+  } catch (e) {}
   // 既定値＝プリセット「推奨」。CSS の body.real-mode 既定値と一致させること。
   const ROLES = [
     { k: '--ts',       label: '全体倍率',          min: 0.7, max: 1.8, step: 0.05, def: 1,  px: false },
@@ -358,14 +335,14 @@
     { k: '--fs-code',  label: 'コード(JAN等)',      min: 12,  max: 30,  step: 1,    def: 17, px: true },
     { k: '--fs-sub',   label: '補足',              min: 10,  max: 24,  step: 1,    def: 13, px: true },
     { k: '--fs-step',  label: 'ステップ',           min: 10,  max: 24,  step: 1,    def: 14, px: true },
-    { k: '--fs-key',   label: 'F1〜F4キー',         min: 12,  max: 28,  step: 1,    def: 16, px: true },
+    { k: '--fs-key',   label: 'F1〜F4キー',         min: 12,  max: 28,  step: 1,    def: 12, px: true },
   ];
 
   // 業界ガイドライン(Zebra EC30 / Material / WCAG / ANSI-HFES)準拠の3段階プリセット
   const PRESETS = {
-    '標準':   { '--ts':1, '--fs-title':20, '--fs-head':22, '--fs-num':26, '--fs-input':16, '--fs-label':14, '--fs-body':16, '--fs-code':16, '--fs-sub':12, '--fs-step':13, '--fs-key':15 },
-    '推奨':   { '--ts':1, '--fs-title':22, '--fs-head':24, '--fs-num':30, '--fs-input':18, '--fs-label':15, '--fs-body':16, '--fs-code':17, '--fs-sub':13, '--fs-step':14, '--fs-key':16 },
-    '大きめ': { '--ts':1, '--fs-title':24, '--fs-head':28, '--fs-num':36, '--fs-input':20, '--fs-label':16, '--fs-body':18, '--fs-code':18, '--fs-sub':14, '--fs-step':15, '--fs-key':18 },
+    '標準':   { '--ts':1, '--fs-title':20, '--fs-head':22, '--fs-num':26, '--fs-input':16, '--fs-label':14, '--fs-body':16, '--fs-code':16, '--fs-sub':12, '--fs-step':13, '--fs-key':12 },
+    '推奨':   { '--ts':1, '--fs-title':22, '--fs-head':24, '--fs-num':30, '--fs-input':18, '--fs-label':15, '--fs-body':16, '--fs-code':17, '--fs-sub':13, '--fs-step':14, '--fs-key':12 },
+    '大きめ': { '--ts':1, '--fs-title':24, '--fs-head':28, '--fs-num':36, '--fs-input':20, '--fs-label':16, '--fs-body':18, '--fs-code':18, '--fs-sub':14, '--fs-step':15, '--fs-key':12 },
   };
 
   function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
