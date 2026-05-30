@@ -110,6 +110,43 @@
     if (primaryKey) primaryKey.click();
   }
 
+  // ===== フッターキーの未配線セルにデフォルト動作を付与（押しても無反応を防ぐ） =====
+  function htToast(msg) {
+    let t = document.getElementById('ht-keytoast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'ht-keytoast';
+      t.style.cssText = 'position:fixed;left:50%;bottom:92px;transform:translateX(-50%);' +
+        'background:rgba(26,58,92,0.96);color:#fff;padding:10px 18px;border-radius:8px;' +
+        'font-size:15px;font-weight:600;line-height:1.4;z-index:10000;max-width:86%;text-align:center;' +
+        'box-shadow:0 4px 16px rgba(0,0,0,0.32);pointer-events:none;opacity:0;transition:opacity .18s;';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    void t.offsetWidth; // reflow して opacity transition を効かせる
+    t.style.opacity = '1';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.style.opacity = '0'; }, 1500);
+  }
+
+  function htKeyLabelText(lbl) {
+    const fn = lbl.querySelector('.fn');
+    let txt = lbl.textContent || '';
+    if (fn) txt = txt.replace(fn.textContent, '');
+    return txt.trim();
+  }
+
+  // onclick も id 配線も無いフッターキーのデフォルト動作。
+  // 明確なグローバル遷移は実遷移、プレースホルダ(−)は無処理、それ以外はモック確認トースト。
+  function htDefaultKeyAction(lbl) {
+    const text = htKeyLabelText(lbl);
+    if (!text || /^[−–—-]+$/.test(text)) return;
+    if (/メニュー|ホーム/.test(text)) { location.href = 'ht/menu.html'; return; }
+    if (/ログアウト|サインアウト/.test(text)) { location.href = 'ht/login.html'; return; }
+    if (/進捗/.test(text)) { location.href = 'ht/wave/progress.html'; return; }
+    htToast(text + '（mock）');
+  }
+
   function bindKeypad() {
     // F1〜F4 (キーパッド上段の .pkey.f1)
     // 上段は [F1, F2, SCAN, F3, F4] の5個。クラス f1 が F1/F2/F3/F4 に付与されているはず
@@ -199,6 +236,17 @@
         navigateList(direction);
       });
     }
+
+    // フッター .key-lbl: onclick も id も無いセルにデフォルト動作を配線（二重発火防止）
+    document.querySelectorAll('.ht-key-labels .key-lbl').forEach(lbl => {
+      if (lbl.classList.contains('disabled')) return;
+      if (lbl.hasAttribute('onclick')) return;   // 既存インライン優先
+      if (lbl.id) return;                          // per-screen JS が id 経由で配線済み想定
+      if (lbl.dataset.htDefaultBound) return;
+      lbl.dataset.htDefaultBound = '1';
+      lbl.style.cursor = 'pointer';
+      lbl.addEventListener('click', () => htDefaultKeyAction(lbl));
+    });
   }
 
   function navigateList(direction) {
