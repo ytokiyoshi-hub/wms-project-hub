@@ -70,15 +70,17 @@ body.real-mode {
 body.real-mode .insp-qty .val,
 body.real-mode .ht-body input[type=number],
 body.real-mode .insp-cur .code { font-variant-numeric: tabular-nums; }
-body.real-mode .ht-statusbar { height: 22px; font-size: calc(var(--fs-sub) * var(--ts)); }
+/* 実機はAndroid本物のステータスバー(時計/電池)が上にあるため模擬バーは重複。実機では非表示にして縦を稼ぐ */
+body.real-mode .ht-statusbar { display: none; }
 body.real-mode .ht-header { height: calc(46px * var(--ts)); font-size: calc(var(--fs-title) * var(--ts)); padding: 0 14px; }
-body.real-mode .ht-header .scr-id { font-size: calc(var(--fs-sub) * var(--ts)); }
-body.real-mode .ht-body { padding: 14px; gap: 12px; font-size: calc(var(--fs-body) * var(--ts)); overflow-y: auto; }
+/* 画面ID(SCR-xxx)は仕様・開発用の符号。現場作業者には不要なので実機では非表示 */
+body.real-mode .ht-header .scr-id { display: none; }
+body.real-mode .ht-body { padding: 10px; gap: 12px; font-size: calc(var(--fs-body) * var(--ts)); overflow-y: auto; }
 body.real-mode .ht-body input { font-size: calc(var(--fs-input) * var(--ts)) !important; min-height: calc(58px * var(--ts)); padding: 8px 12px !important; }
 body.real-mode .step-progress .step { font-size: calc(var(--fs-step) * var(--ts)); padding: 10px 4px; }
 body.real-mode .step-progress .step .num { font-size: calc(var(--fs-step) * var(--ts)); }
-body.real-mode .ht-key-labels { height: calc(66px * var(--ts)); }
-body.real-mode .ht-key-labels .key-lbl { padding: 10px 4px; font-size: calc(var(--fs-key) * var(--ts)); }
+body.real-mode .ht-key-labels { height: calc(54px * var(--ts)); }
+body.real-mode .ht-key-labels .key-lbl { padding: 8px 4px; font-size: calc(var(--fs-key) * var(--ts)); }
 body.real-mode .ht-key-labels .key-lbl .fn { font-size: calc(var(--fs-keyfn) * var(--ts)); }
 
 h1.page-title { color:#fff; font-size:22px; font-weight:600; text-align:center; margin-bottom:6px; }
