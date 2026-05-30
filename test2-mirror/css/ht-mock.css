@@ -233,3 +233,71 @@ body.real-mode .arrow-down { font-size:calc(var(--fs-input) * var(--ts)) !import
 body.real-mode .new-owner-bar { padding:12px; }
 body.real-mode .new-owner-bar .label { font-size:calc(var(--fs-sub) * var(--ts)) !important; }
 body.real-mode .new-owner-bar .name { font-size:calc(var(--fs-head) * var(--ts)) !important; margin-top:4px; line-height:1.3; }
+
+/* ===== 検品スキャン画面 強調デザイン (body.emph) — 現場でパッと見て分かるメリハリ =====
+   real-mode かつ scan.html(body.emph) のときだけ有効。
+   タイプスケール変数(--fs-* × --ts)基準の倍率で強調するため「Aa」テスターと連動して拡縮する。
+   主役は「商品ブロック(何を検品しているか)」と「数量ブロック(何個か)」の2つ。 */
+body.real-mode.emph .ht-body { gap:10px; }
+
+/* --- 商品ブロック: 画面の主役。左の太アクセントバー＋濃色の大見出しで商品名を際立たせる --- */
+body.real-mode.emph .insp-cur {
+  border:none;
+  border-left:7px solid var(--c-accent);
+  border-radius:0 8px 8px 0;
+  background:linear-gradient(180deg, var(--c-accent-lt) 0%, #fff 70%);
+  box-shadow:0 1px 3px rgba(0,0,0,0.12);
+  padding:12px 14px 14px;
+}
+body.real-mode.emph .insp-cur .code {
+  display:inline-block;
+  font-size:calc(var(--fs-code) * var(--ts));
+  font-weight:600;
+  color:#fff;
+  background:var(--c-accent);
+  padding:3px 10px;
+  border-radius:4px;
+  letter-spacing:0.5px;
+}
+body.real-mode.emph .insp-cur .name {
+  font-size:calc(var(--fs-head) * var(--ts) * 1.25);
+  font-weight:700;
+  color:var(--c-accent-dk);
+  line-height:1.22;
+  margin-top:8px;
+}
+body.real-mode.emph .insp-cur .plan {
+  font-size:calc(var(--fs-label) * var(--ts));
+  color:var(--c-text-sub);
+  margin-top:8px;
+}
+
+/* --- 数量ブロック: スキャン済を特大センター表示。「何個入れたか」を一目で確認 --- */
+body.real-mode.emph .insp-qty {
+  border:2px solid var(--c-accent);
+  border-radius:8px;
+  background:#fff;
+  text-align:center;
+  padding:10px 14px 14px;
+}
+body.real-mode.emph .insp-qty .row { flex-direction:column; align-items:center; gap:2px; }
+body.real-mode.emph .insp-qty .lbl {
+  font-size:calc(var(--fs-label) * var(--ts));
+  font-weight:600;
+  color:var(--c-text-sub);
+}
+body.real-mode.emph .insp-qty .val {
+  font-size:calc(var(--fs-num) * var(--ts) * 1.6);
+  font-weight:700;
+  line-height:1.0;
+  color:var(--c-accent-dk);
+}
+body.real-mode.emph .insp-qty .val .den {
+  font-size:calc(var(--fs-num) * var(--ts) * 0.55);
+  font-weight:600;
+  color:var(--c-text-sub);
+}
+body.real-mode.emph .insp-qty .pbar { height:10px; border-radius:5px; margin-top:12px; }
+
+/* --- 副情報は控えめに（主役を邪魔しない） --- */
+body.real-mode.emph .insp-meta { background:var(--c-bg); }
