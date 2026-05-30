@@ -85,6 +85,37 @@
     scroller.scrollBy(0, e.key === 'ArrowDown' ? 56 : -56);
   }, true);
 
+  // ===== フッターFキー・ラベルのはみ出し防止: セル幅に収まらないラベルだけ個別に縮小 =====
+  // real-mode(実機)は本文を拡大しているため、長いラベル(ウェーブ変更/ログアウト等)が
+  // 1/4幅セルで折り返し→クリップして不細工になる。CSS で nowrap 固定し、ここで各セルの
+  // ラベル文字を実測して、はみ出す分だけ font-size を下げる(短いラベルは既定サイズのまま)。
+  function fitKeyLabels() {
+    document.querySelectorAll('.ht-key-labels .key-lbl').forEach((cell) => {
+      let tn = null;
+      cell.childNodes.forEach((n) => { if (n.nodeType === 3 && n.textContent.trim()) tn = n; });
+      if (!tn) return;
+      cell.style.fontSize = ''; // 既定サイズに戻してから測る(resize/再実行に対応)
+      const cs = getComputedStyle(cell);
+      const avail = cell.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      if (avail <= 0) return;
+      const range = document.createRange();
+      range.selectNodeContents(tn);
+      let fs = parseFloat(cs.fontSize);
+      while (range.getBoundingClientRect().width > avail && fs > 9) {
+        fs -= 0.5;
+        cell.style.fontSize = fs + 'px';
+      }
+    });
+  }
+  const scheduleFitKeyLabels = () => {
+    fitKeyLabels();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitKeyLabels); // Web フォント確定後に再調整
+  };
+  if (document.readyState !== 'loading') scheduleFitKeyLabels();
+  else document.addEventListener('DOMContentLoaded', scheduleFitKeyLabels);
+  let _fitRaf = 0;
+  window.addEventListener('resize', () => { cancelAnimationFrame(_fitRaf); _fitRaf = requestAnimationFrame(fitKeyLabels); });
+
   function getActiveInput() {
     if (lastInputEl && document.contains(lastInputEl)) return lastInputEl;
     const focused = document.activeElement;
