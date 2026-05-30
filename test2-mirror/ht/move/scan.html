@@ -5,9 +5,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-505 在庫移動 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-505 在庫移動（ロケ間）</h1>
 <p class="subtitle">ロケ間の在庫移動 (BT-A2000 / 4インチ)</p>
@@ -45,9 +45,9 @@
 
         <input id="loc-from" placeholder="移動元ロケコード" autofocus style="border:2px solid var(--c-accent); padding:8px; font-size:12px; font-family:var(--f-mono);">
 
-        <div style="border:1px solid var(--c-line); padding:6px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">スキャン後の表示</div>
-          <div style="font-size:10px; margin-top:4px;" id="loc-info">未スキャン</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">移動元ロケ（スキャン後）</div>
+          <div class="eh-loc" id="loc-info">未スキャン</div>
         </div>
 
         <div style="font-size:9px; color:var(--c-text-sub); margin-top:auto;">移動元 → 移動先 → 数量 → 確定の順</div>

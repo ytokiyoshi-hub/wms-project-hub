@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-804-3 ピッキング：数量→完了 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-804 ピッキング作業</h1>
 <p class="subtitle">数量入力 → 次のロケへ (BT-A2000 / 4インチ)</p>
@@ -39,16 +39,16 @@
           <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">2 / 5</span>
         </div>
 
-        <div style="background:#e8f5ea; border:2px solid #2d7a3a; padding:10px; text-align:center;">
-          <div style="font-size:9px; color:#2d7a3a;">スキャン照合 OK</div>
-          <div style="font-size:20px; color:#2d7a3a; font-weight:700; margin-top:2px;">✓ 照合完了</div>
-          <div style="font-size:10px; font-family:var(--f-mono); margin-top:3px;" id="sku-disp">-</div>
+        <div class="eh-hero ok">
+          <div class="eh-lbl">スキャン照合 OK</div>
+          <div class="eh-name">✓ 照合完了</div>
+          <div class="eh-sub" id="sku-disp">-</div>
         </div>
 
-        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:8px;">
-          <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">ピック数量を入力してENT</div>
-          <input id="qty-input" type="number" placeholder="0" autofocus style="width:100%; border:1px solid var(--c-accent); padding:6px; text-align:center; font-family:var(--f-mono); font-size:22px; font-weight:700; background:var(--c-bg);">
-          <div style="font-size:9px; color:var(--c-text-sub); text-align:right; margin-top:3px;">指示：<span id="plan-qty">12</span>本</div>
+        <div class="eh-num">
+          <div class="eh-lbl">ピック数量を入力してENT</div>
+          <input id="qty-input" type="number" placeholder="0" autofocus class="eh-val">
+          <div class="eh-unit">指示：<span id="plan-qty">12</span>本</div>
         </div>
 
         <div style="background:var(--c-accent-lt); border-left:3px solid var(--c-accent); padding:5px 7px; font-size:9px;">

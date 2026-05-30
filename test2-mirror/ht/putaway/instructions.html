@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-406-1 棚入れ：指示確認 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-406 棚入れ作業</h1>
 <p class="subtitle">棚入れ指示に従いロケコードをスキャンして在庫加算 (BT-A2000 / 4インチ)</p>
@@ -38,16 +38,21 @@
         <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">棚入れ指示</div>
         <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent); margin-bottom:8px;" id="put-no">PUT-...</div>
 
+        <div class="eh-hero">
+          <div class="eh-lbl">棚入れ商品</div>
+          <div class="eh-code" id="sku-code">-</div>
+          <div class="eh-name" id="sku-name">読込中</div>
+          <div class="eh-sub">ロット: <span id="lot-no" style="font-family:var(--f-mono);">-</span></div>
+        </div>
+
+        <div class="eh-num">
+          <div class="eh-lbl">棚入れ数量</div>
+          <div class="eh-val" id="put-qty">-</div>
+          <div class="eh-unit">※指示数量</div>
+        </div>
+
         <div style="border:1px solid var(--c-line); padding:8px; background:var(--c-base);">
-          <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent);" id="sku-code">-</div>
-          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="sku-name">読込中</div>
-          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">ロット: <span id="lot-no" style="font-family:var(--f-mono);">-</span></div>
-
-          <div style="height:1px; background:var(--c-line); margin:6px 0;"></div>
-
-          <div style="font-size:9px; color:var(--c-text-sub);">数量: <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-text); font-size:11px;" id="put-qty">- ケース</span></div>
-
-          <div style="font-size:9px; color:var(--c-text-sub); margin-top:6px;">棚入れ先:</div>
+          <div style="font-size:9px; color:var(--c-text-sub);">棚入れ先:</div>
           <div style="border:1px solid var(--c-accent); padding:6px; text-align:center; margin-top:4px; background:var(--c-accent-lt);">
             <div style="font-size:18px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent); letter-spacing:2px;" id="put-loc">-</div>
           </div>

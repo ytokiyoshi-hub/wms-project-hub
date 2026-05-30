@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-1001-1 返品受付スキャン — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-1001 返品検品（3ステップ）</h1>
 <p class="subtitle">返品商品をスキャン・状態区分選択・処置決定 (BT-A2000 / 4インチ)</p>
@@ -39,13 +39,10 @@
           <div class="step"><span class="num">3</span>判定</div>
         </div>
 
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
-          <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--c-text-sub);">
-            <span>荷主</span><span>顧客</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:600; margin-top:1px;">
-            <span id="owner-name">読込中</span><span>○○商店</span>
-          </div>
+        <div class="eh-hero">
+          <div class="eh-lbl">荷主 / 顧客</div>
+          <div class="eh-name" id="owner-name">読込中</div>
+          <div class="eh-sub">顧客：○○商店</div>
         </div>
 
         <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">

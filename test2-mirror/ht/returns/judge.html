@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-1001-3 返品判定 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-1001 返品検品（3ステップ）</h1>
 <p class="subtitle">返品商品の処置決定 (BT-A2000 / 4インチ)</p>
@@ -39,12 +39,12 @@
           <div class="step current"><span class="num">3</span>判定</div>
         </div>
 
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">返品No / 明細</div>
-          <div style="font-size:11px; font-weight:600; font-family:var(--f-mono);" id="rma-info">RT-00051 &nbsp; 1 / 3 明細</div>
-          <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:3px;">
+        <div class="eh-hero">
+          <div class="eh-lbl">返品No / 明細</div>
+          <div class="eh-code" id="rma-info">RT-00051 &nbsp; 1 / 3 明細</div>
+          <div class="eh-sub">
             <span id="sku-info">SKU-0012 x5</span>
-            <span style="color:var(--c-accent); font-weight:600;" id="status-show">状態: 良品</span>
+            <span style="color:var(--c-accent); font-weight:600; margin-left:8px;" id="status-show">状態: 良品</span>
           </div>
         </div>
 

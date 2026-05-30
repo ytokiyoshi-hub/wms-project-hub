@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-804-2 ピッキング：ロケ→SKU — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-804 ピッキング作業</h1>
 <p class="subtitle">ウェーブ受取 → ロケスキャン → 数量確認の業務貫通 (BT-A2000 / 4インチ)</p>
@@ -39,10 +39,10 @@
           <span style="font-family:var(--f-mono); font-weight:600; color:var(--c-accent);">2 / 5</span>
         </div>
 
-        <div style="background:var(--c-accent); color:#fff; padding:10px; text-align:center;">
-          <div style="font-size:9px; opacity:0.8; margin-bottom:2px;">移動先ロケ</div>
-          <div style="font-family:var(--f-mono); font-size:22px; font-weight:700; letter-spacing:2px;" id="loc-code">3AP-02-001</div>
-          <div style="font-size:9px; opacity:0.7; margin-top:2px;" id="loc-desc">1F常温エリア</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">移動先ロケ</div>
+          <div class="eh-loc" id="loc-code">3AP-02-001</div>
+          <div class="eh-sub" id="loc-desc">1F常温エリア</div>
         </div>
 
         <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
@@ -52,10 +52,10 @@
           <div style="font-size:9px; color:var(--c-text-sub); margin-top:4px;">賞味期限：2026/12/31（FEFO対象）</div>
         </div>
 
-        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px; text-align:center;">
-          <div style="font-size:9px; color:var(--c-accent);">ピック数量</div>
-          <div style="font-family:var(--f-mono); font-size:28px; font-weight:700; color:var(--c-accent); line-height:1.2;" id="pick-qty">12</div>
-          <div style="font-size:9px; color:var(--c-text-sub);">本（在庫：36本）</div>
+        <div class="eh-num">
+          <div class="eh-lbl">ピック数量</div>
+          <div class="eh-val" id="pick-qty">12</div>
+          <div class="eh-unit">本（在庫：36本）</div>
         </div>
 
         <input id="scan-input" placeholder="商品バーコードをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">

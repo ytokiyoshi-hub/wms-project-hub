@@ -5,9 +5,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-1001-B 返品STEP3 承認待ち — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-1001-B 返品STEP3 承認待ち（auto_restock=false）</h1>
 <p class="subtitle">荷主設定 auto_restock=false の場合の処置決定 (BT-A2000 / 4インチ)</p>
@@ -45,9 +45,17 @@
           <div style="font-size:9px; color:var(--c-alert); margin-top:2px;">auto_restock = <b>false</b>（承認必須）</div>
         </div>
 
-        <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:10px; text-align:center;">
-          <div style="font-size:11px; color:var(--c-alert); font-weight:700;">「在庫に戻す」を選択</div>
-          <div style="font-size:9px; color:var(--c-alert); margin-top:4px;">W-1003 で倉庫管理者承認待ち</div>
+        <div class="eh-hero ng">
+          <div class="eh-lbl">「在庫に戻す」を選択</div>
+          <div class="eh-code">SKU-MK001-001</div>
+          <div class="eh-name">シャンプー300ml</div>
+          <div class="eh-sub">W-1003 で倉庫管理者承認待ち</div>
+        </div>
+
+        <div class="eh-num ng">
+          <div class="eh-lbl">承認待ち数量</div>
+          <div class="eh-val">12</div>
+          <div class="eh-unit">点</div>
         </div>
 
         <div style="border:1px solid var(--c-line); font-size:10px;">
@@ -55,13 +63,9 @@
             <span style="color:var(--c-text-sub);">状態遷移</span>
             <span class="text-mono" style="font-weight:600;">returned_good → <span style="color:var(--c-alert);">pending_approval</span></span>
           </div>
-          <div style="padding:5px 8px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between;">
+          <div style="padding:5px 8px; display:flex; justify-content:space-between;">
             <span style="color:var(--c-text-sub);">商品</span>
             <span class="text-mono">SKU-MK001-001 シャンプー300ml</span>
-          </div>
-          <div style="padding:5px 8px; display:flex; justify-content:space-between;">
-            <span style="color:var(--c-text-sub);">数量</span>
-            <span class="text-mono text-bold">12</span>
           </div>
         </div>
 

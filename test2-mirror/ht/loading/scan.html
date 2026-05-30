@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-806 積込スキャン — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-806 積込作業（スキャン）</h1>
 <p class="subtitle">積込スキャン → 容量チェック → 振替候補確認 (BT-A2000 / 4インチ)</p>
@@ -34,10 +34,10 @@
         <span class="scr-id">HT-806</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-accent); color:#fff; padding:8px; text-align:center;">
-          <div style="font-size:9px; opacity:0.8;">配送便</div>
-          <div style="font-family:var(--f-mono); font-size:13px; font-weight:700; margin-top:2px;" id="loading-no">読込中</div>
-          <div style="font-size:9px; opacity:0.7; margin-top:2px;" id="carrier-info">-</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">配送便</div>
+          <div class="eh-loc" id="loading-no">読込中</div>
+          <div class="eh-sub" id="carrier-info">-</div>
         </div>
 
         <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:6px 8px; font-size:10px;">

@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-403-1 検品：ASN選択 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-403 検品作業（入荷検品）</h1>
 <p class="subtitle">入荷現物をHTでスキャンして検品を実施 (BT-A2000 / 4インチ)</p>
@@ -35,8 +35,10 @@
         <span class="scr-id">SCR-403-1</span>
       </div>
       <div class="ht-body">
-        <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">荷主</div>
-        <div id="owner-display" style="font-size:12px; font-weight:600; color:var(--c-accent); margin-bottom:8px; padding:4px 6px; background:var(--c-accent-lt);">-</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">荷主</div>
+          <div class="eh-name" id="owner-display">-</div>
+        </div>
 
         <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">検品対象ASN（選択またはスキャン）</div>
 

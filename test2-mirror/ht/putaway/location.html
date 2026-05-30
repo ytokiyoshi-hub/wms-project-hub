@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-406-2 棚入れ：ロケスキャン — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-406 棚入れ作業</h1>
 <p class="subtitle">棚入れ指示に従いロケコードをスキャンして在庫加算 (BT-A2000 / 4インチ)</p>
@@ -43,23 +43,16 @@
 
         <div style="font-size:9px; background:var(--c-bg); padding:4px 6px; color:var(--c-text-sub); border:1px solid var(--c-line);">商品: <span id="sku-code" style="font-family:var(--f-mono); font-weight:600;">-</span> <span style="color:var(--c-accent); font-weight:600;">✓</span></div>
 
-        <div style="border:1px solid var(--c-accent); padding:8px; background:var(--c-base);">
-          <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">棚入れ先ロケ:</div>
-          <div style="border:2px solid var(--c-accent); padding:8px; background:var(--c-accent-lt); text-align:center;">
-            <div style="font-size:18px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent); letter-spacing:2px;" id="target-loc">-</div>
-            <div style="font-size:8px; color:var(--c-text-sub); margin-top:3px;" id="loc-sub">(自動表示)</div>
-          </div>
+        <div class="eh-hero">
+          <div class="eh-lbl">棚入れ先ロケ</div>
+          <div class="eh-loc" id="target-loc">-</div>
+          <div class="eh-sub" id="loc-sub">(自動表示)</div>
         </div>
 
-        <div style="border:1px solid var(--c-line); padding:6px 8px; background:var(--c-base);">
-          <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:4px;">棚入れ数量</div>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <div style="flex:1; border:2px solid var(--c-accent); padding:4px 8px; text-align:center; background:var(--c-accent-lt);">
-              <span style="font-size:14px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent);" id="put-qty">-</span>
-            </div>
-            <div style="font-size:10px; color:var(--c-text-sub);">ケース</div>
-          </div>
-          <div style="font-size:9px; color:var(--c-text-mute); margin-top:4px;">※ 指示数量</div>
+        <div class="eh-num">
+          <div class="eh-lbl">棚入れ数量</div>
+          <div class="eh-val" id="put-qty">-</div>
+          <div class="eh-unit">ケース ※指示数量</div>
         </div>
 
         <input id="loc-input" placeholder="ロケコード" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">

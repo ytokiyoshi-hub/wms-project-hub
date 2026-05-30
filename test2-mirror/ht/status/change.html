@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-504 ステータス変更 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-504 ステータス変更（現場簡易）</h1>
 <p class="subtitle">現場での在庫ステータス簡易変更 (BT-A2000 / 4インチ)</p>
@@ -34,10 +34,10 @@
         <span class="scr-id">HT-504</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">対象在庫</div>
-          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="target-product">読込中</div>
-          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;" id="target-detail">ロケ / ロット / 数量</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">対象在庫</div>
+          <div class="eh-name" id="target-product">読込中</div>
+          <div class="eh-sub" id="target-detail">ロケ / ロット / 数量</div>
         </div>
 
         <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:5px 7px;">

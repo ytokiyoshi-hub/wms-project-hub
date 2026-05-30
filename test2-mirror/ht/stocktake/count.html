@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-701 棚卸カウント — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-701 棚卸カウント</h1>
 <p class="subtitle">棚卸対象ロケのスキャンと実数カウント (BT-A2000 / 4インチ)</p>
@@ -46,10 +46,10 @@
           <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">月次棚卸 / 凍結中</div>
         </div>
 
-        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
-          <div style="font-size:9px; color:var(--c-accent); font-weight:600;">対象ロケ</div>
-          <div style="font-size:14px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent); margin-top:2px; letter-spacing:2px;" id="loc-code">-</div>
-          <div style="font-size:9px; color:var(--c-text-sub);" id="loc-info">読込中</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">対象ロケ</div>
+          <div class="eh-loc" id="loc-code">-</div>
+          <div class="eh-sub" id="loc-info">読込中</div>
         </div>
 
         <div style="border:1px solid var(--c-line); padding:6px;">
@@ -59,9 +59,9 @@
           <div style="font-size:9px; color:var(--c-text-sub); margin-top:3px;">理論在庫: <span class="text-mono" id="theory-qty">-</span> ケース</div>
         </div>
 
-        <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:6px;">
-          <div style="font-size:9px; color:var(--c-text-sub); margin-bottom:2px;">実数カウント</div>
-          <input id="count-input" type="number" placeholder="0" min="0" style="width:100%; border:none; padding:4px 6px; font-size:18px; font-family:var(--f-mono); font-weight:700; text-align:center; color:var(--c-accent);" autofocus>
+        <div class="eh-num">
+          <div class="eh-lbl">実数カウント</div>
+          <input id="count-input" type="number" placeholder="0" min="0" autofocus>
         </div>
 
         <div id="diff-display" style="font-size:10px; text-align:center; padding:4px;">差異: -</div>

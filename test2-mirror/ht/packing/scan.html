@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-803-2 梱包：SKUスキャン検品 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-803 梱包・出荷検品</h1>
 <p class="subtitle">梱包台でSKUを順次スキャン照合 (BT-A2000 / 4インチ)</p>
@@ -38,16 +38,16 @@
           <span style="font-family:var(--f-mono); color:var(--c-accent);" id="progress">0 / -</span>
         </div>
 
-        <div style="background:var(--c-accent); color:#fff; padding:8px; text-align:center;">
-          <div style="font-size:9px; opacity:0.8;">次にスキャン</div>
-          <div style="font-family:var(--f-mono); font-size:11px; font-weight:700; margin-top:2px;" id="next-sku">-</div>
-          <div style="font-size:12px; font-weight:600; margin-top:2px;" id="next-name">読込中</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">次にスキャン</div>
+          <div class="eh-code" id="next-sku">-</div>
+          <div class="eh-name" id="next-name">読込中</div>
         </div>
 
-        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px; text-align:center;">
-          <div style="font-size:9px; color:var(--c-accent);">指示数量</div>
-          <div style="font-family:var(--f-mono); font-size:24px; font-weight:700; color:var(--c-accent); line-height:1.2;" id="plan-qty">2</div>
-          <div style="font-size:9px; color:var(--c-text-sub);">箱（スキャン済：<span id="scanned-cnt">0</span>）</div>
+        <div class="eh-num">
+          <div class="eh-lbl">指示数量</div>
+          <div class="eh-val" id="plan-qty">2</div>
+          <div class="eh-unit">箱（スキャン済：<span id="scanned-cnt">0</span>）</div>
         </div>
 
         <input id="scan-input" placeholder="SKUをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">

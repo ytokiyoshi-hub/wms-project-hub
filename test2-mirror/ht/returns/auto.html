@@ -5,9 +5,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-1001-A 返品STEP3 自動戻し — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-1001-A 返品STEP3 自動戻し（auto_restock=true）</h1>
 <p class="subtitle">荷主設定 auto_restock=true の場合の処置決定 (BT-A2000 / 4インチ)</p>
@@ -45,9 +45,17 @@
           <div style="font-size:9px; color:var(--c-accent); margin-top:2px;">auto_restock = <b>true</b>（自動戻し有効）</div>
         </div>
 
-        <div style="background:#e8f5ea; border:2px solid #2d7a3a; padding:10px; text-align:center;">
-          <div style="font-size:11px; color:#2d7a3a; font-weight:700;">「在庫に戻す」を選択</div>
-          <div style="font-size:9px; color:#2d7a3a; margin-top:4px;">承認フロー不要・即時 available 化</div>
+        <div class="eh-hero ok">
+          <div class="eh-lbl">「在庫に戻す」を選択</div>
+          <div class="eh-code">SKU-AP001-001</div>
+          <div class="eh-name">Tシャツ M</div>
+          <div class="eh-sub">承認フロー不要・即時 available 化</div>
+        </div>
+
+        <div class="eh-num ok">
+          <div class="eh-lbl">在庫に戻す数量</div>
+          <div class="eh-val">3</div>
+          <div class="eh-unit">点</div>
         </div>
 
         <div style="border:1px solid var(--c-line); font-size:10px;">
@@ -55,13 +63,9 @@
             <span style="color:var(--c-text-sub);">状態遷移</span>
             <span class="text-mono text-accent" style="font-weight:600;">returned_good → available</span>
           </div>
-          <div style="padding:5px 8px; border-bottom:1px solid var(--c-line); display:flex; justify-content:space-between;">
+          <div style="padding:5px 8px; display:flex; justify-content:space-between;">
             <span style="color:var(--c-text-sub);">商品</span>
             <span class="text-mono">SKU-AP001-001 Tシャツ M</span>
-          </div>
-          <div style="padding:5px 8px; display:flex; justify-content:space-between;">
-            <span style="color:var(--c-text-sub);">数量</span>
-            <span class="text-mono text-bold">3</span>
           </div>
         </div>
 

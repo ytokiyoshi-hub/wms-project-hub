@@ -5,9 +5,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-407 補充作業 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-407 補充作業</h1>
 <p class="subtitle">ストックロケから供給ロケへの補充 (BT-A2000 / 4インチ)</p>
@@ -32,10 +32,15 @@
         <span class="scr-id">HT-407</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
-          <div style="font-size:9px; color:var(--c-accent); font-weight:600;">補充指示</div>
-          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="sku-name">SKU-MK001-001 シャンプー300ml</div>
-          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">数量: 48 ケース</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">補充指示</div>
+          <div class="eh-name" id="sku-name">SKU-MK001-001 シャンプー300ml</div>
+        </div>
+
+        <div class="eh-num">
+          <div class="eh-lbl">補充数量</div>
+          <div class="eh-val">48</div>
+          <div class="eh-unit">ケース</div>
         </div>
 
         <div style="background:var(--c-base); border:1px solid var(--c-line); padding:6px 8px;">

@@ -5,9 +5,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-403-5 ロット異常 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-403-5 ロット異常</h1>
 <p class="subtitle">賞味期限切迫・ロット不一致の検出 (BT-A2000 / 4インチ)</p>
@@ -33,17 +33,19 @@
         <span class="scr-id">HT-403-5</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:10px; text-align:center;">
-          <div style="font-size:30px; color:var(--c-alert);">⚠</div>
-          <div style="font-size:12px; color:var(--c-alert); font-weight:700; margin-top:4px;">賞味期限切迫</div>
+        <div class="eh-hero ng">
+          <div class="eh-lbl">⚠ 賞味期限切迫</div>
+          <div class="eh-code">SKU-MK001-003</div>
+          <div class="eh-name">冷蔵牛乳1L</div>
+        </div>
+
+        <div class="eh-num ng">
+          <div class="eh-lbl">賞味期限まで残日数</div>
+          <div class="eh-val">7</div>
+          <div class="eh-unit">日（期限 2026-06-08）</div>
         </div>
 
         <div style="background:var(--c-base); border:1px solid var(--c-line); padding:6px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">商品</div>
-          <div style="font-family:var(--f-mono); font-size:11px; font-weight:600;">SKU-MK001-003 冷蔵牛乳1L</div>
-
-          <div style="height:1px; background:var(--c-line); margin:6px 0;"></div>
-
           <div style="display:flex; justify-content:space-between; font-size:10px;">
             <span style="color:var(--c-text-sub);">ロット</span>
             <span class="text-mono">L260518-03</span>
@@ -51,10 +53,6 @@
           <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:3px;">
             <span style="color:var(--c-text-sub);">賞味期限</span>
             <span class="text-mono" style="color:var(--c-alert); font-weight:600;">2026-06-08</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:3px;">
-            <span style="color:var(--c-text-sub);">残日数</span>
-            <span class="text-mono" style="color:var(--c-alert); font-weight:700;">7日</span>
           </div>
         </div>
 

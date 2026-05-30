@@ -5,9 +5,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-403-4 検品差異処理 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-403-4 検品差異処理</h1>
 <p class="subtitle">予定数と実数の差異検出時の処理 (BT-A2000 / 4インチ)</p>
@@ -32,24 +32,16 @@
         <span class="scr-id">HT-403-4</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:10px;">
-          <div style="font-size:11px; color:var(--c-alert); font-weight:700;">⚠ 員数差異検出</div>
-          <div style="font-size:9px; color:var(--c-text); margin-top:4px;">商品 SKU-MK001-001 / 予定 120 / 実績 118</div>
+        <div class="eh-hero ng">
+          <div class="eh-lbl">⚠ 員数差異検出</div>
+          <div class="eh-code">SKU-MK001-001</div>
+          <div class="eh-sub">予定 120 / 実績 118 ケース</div>
         </div>
 
-        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:8px;">
-          <div style="display:flex; justify-content:space-between; font-size:10px;">
-            <span style="color:var(--c-text-sub);">予定数</span>
-            <span class="text-mono">120 ケース</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:3px;">
-            <span style="color:var(--c-text-sub);">実績数</span>
-            <span class="text-mono" style="color:var(--c-alert); font-weight:600;">118 ケース</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:10px; margin-top:3px;">
-            <span style="color:var(--c-text-sub);">差異</span>
-            <span class="text-mono" style="color:var(--c-alert); font-weight:700;">-2 ケース</span>
-          </div>
+        <div class="eh-num ng">
+          <div class="eh-lbl">差異</div>
+          <div class="eh-val">-2</div>
+          <div class="eh-unit">ケース（予定120 → 実績118）</div>
         </div>
 
         <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">どう処理しますか？</div>

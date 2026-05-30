@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-306 積込確認 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-306 積込確認</h1>
 <p class="subtitle">トラックへの積込時にカゴをスキャンして予定との照合 (BT-A2000 / 4インチ)</p>
@@ -34,22 +34,18 @@
         <span class="scr-id">HT-306</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">対象便</div>
-          <div style="font-size:11px; font-weight:600;" id="loading-no">読込中</div>
-          <div style="font-size:9px; color:var(--c-text-sub);" id="carrier-info">-</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">対象便</div>
+          <div class="eh-loc" id="loading-no">読込中</div>
+          <div class="eh-sub" id="carrier-info">-</div>
         </div>
 
-        <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">積込進捗</div>
-          <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
-            <div style="font-family:var(--f-mono); font-weight:700; font-size:24px; color:var(--c-accent);" id="loaded">10</div>
-            <div style="font-size:11px; color:var(--c-text-sub);">/</div>
-            <div style="font-family:var(--f-mono); font-weight:600; font-size:18px;">12</div>
-            <div style="font-size:11px;">個口</div>
-          </div>
-          <div style="height:8px; background:var(--c-line); margin-top:6px;">
-            <div style="height:100%; background:var(--c-accent); width:83%;" id="load-bar"></div>
+        <div class="eh-num">
+          <div class="eh-lbl">積込進捗</div>
+          <div class="eh-val" id="loaded">10</div>
+          <div class="eh-den">/ <span style="font-family:var(--f-mono); font-weight:600; font-size:18px;">12</span> 個口</div>
+          <div class="pbar">
+            <div class="fill" style="width:83%;" id="load-bar"></div>
           </div>
         </div>
 

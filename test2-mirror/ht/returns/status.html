@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-1001-2 返品状態確認 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-1001 返品検品（3ステップ）</h1>
 <p class="subtitle">返品商品の状態区分選択 (BT-A2000 / 4インチ)</p>
@@ -39,13 +39,11 @@
           <div class="step"><span class="num">3</span>判定</div>
         </div>
 
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 7px;">
-          <div style="font-size:9px; color:var(--c-text-sub);">スキャン済み商品</div>
-          <div style="font-size:11px; font-weight:600; font-family:var(--f-mono); margin-top:1px;" id="sku">SKU-0012</div>
-          <div style="font-size:10px; margin-top:1px;" id="sku-name">マルキパスタ 500g</div>
-          <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--c-text-sub); margin-top:3px;">
-            <span>LOT-260401</span><span>5個</span>
-          </div>
+        <div class="eh-hero">
+          <div class="eh-lbl">スキャン済み商品</div>
+          <div class="eh-code" id="sku">SKU-0012</div>
+          <div class="eh-name" id="sku-name">マルキパスタ 500g</div>
+          <div class="eh-sub">LOT-260401 ／ 5個</div>
         </div>
 
         <div style="font-size:9px; font-weight:600; color:var(--c-text-sub);">状態区分（inventory.status）</div>
@@ -57,9 +55,11 @@
         </div>
         <div style="font-size:8px; color:var(--c-accent); padding:3px 4px; background:var(--c-accent-lt); border-left:2px solid var(--c-accent);">Q10-3: 返品専用 enum 廃止・inventory.status 共用</div>
 
-        <div style="display:flex; align-items:center; gap:8px; margin-top:auto;">
-          <div style="font-size:9px; color:var(--c-text-sub); flex-shrink:0;">数量入力</div>
-          <input id="qty-input" type="number" value="5" style="flex:1; border:1px solid var(--c-accent); padding:4px 8px; font-size:12px; font-family:var(--f-mono); font-weight:600; color:var(--c-accent); background:var(--c-base); text-align:center;">
+        <div style="margin-top:auto;">
+          <div class="eh-num">
+            <div class="eh-lbl">数量入力</div>
+            <input id="qty-input" type="number" value="5" class="eh-val">
+          </div>
         </div>
       </div>
       <div class="ht-key-labels">

@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-307 引渡確認 — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-307 引渡確認</h1>
 <p class="subtitle">仮置きエリアでカゴをスキャンして到着登録 (BT-A2000 / 4インチ)</p>
@@ -44,11 +44,11 @@
           ★ カゴをスキャンしてください
         </div>
 
-        <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
-          <div style="font-size:10px; color:var(--c-text-sub);">最後にスキャンしたカゴ</div>
-          <div style="font-size:11px; font-weight:600; font-family:var(--f-mono); margin-top:2px;" id="last-cage">CON-260501-0008</div>
-          <div style="font-size:9px; margin-top:4px;" id="last-order">出荷 SO-00124 (◇◇商事)</div>
-          <div style="font-size:9px; color:var(--c-accent);" id="last-progress">2/3 個口 → 集合まで残1</div>
+        <div class="eh-hero">
+          <div class="eh-lbl">最後にスキャンしたカゴ</div>
+          <div class="eh-code" id="last-cage">CON-260501-0008</div>
+          <div class="eh-sub" id="last-order">出荷 SO-00124 (◇◇商事)</div>
+          <div class="eh-sub" id="last-progress">2/3 個口 → 集合まで残1</div>
         </div>
 
         <input id="scan-input" placeholder="カゴをスキャン" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);" autofocus>

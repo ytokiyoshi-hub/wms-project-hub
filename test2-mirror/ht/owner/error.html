@@ -5,9 +5,9 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-1104 荷主切替：エラー — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605300900">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605310000">
 </head>
-<body>
+<body class="emph">
 
 <h1 class="page-title">HT-1104 荷主切替（エラー）</h1>
 <p class="subtitle">未登録/停止中の荷主検出 (BT-A2000 / 4インチ)</p>
@@ -32,14 +32,12 @@
         <span class="scr-id">HT-1104</span>
       </div>
       <div class="ht-body">
-        <div style="background:var(--c-alert-lt); border:2px solid var(--c-alert); padding:14px; text-align:center;">
-          <div style="font-size:36px; color:var(--c-alert);">⚠</div>
-          <div style="font-size:13px; color:var(--c-alert); font-weight:700; margin-top:4px;">荷主切替不可</div>
-        </div>
+        <div style="font-size:36px; color:var(--c-alert); text-align:center;">⚠</div>
 
-        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:8px;">
-          <div style="font-size:10px; color:var(--c-text-sub);">スキャンした荷主コード</div>
-          <div style="font-family:var(--f-mono); font-weight:700; font-size:13px; margin-top:2px;">OWN-999</div>
+        <div class="eh-hero ng">
+          <div class="eh-lbl">スキャンした荷主コード</div>
+          <div class="eh-name">荷主切替不可</div>
+          <div class="eh-code">OWN-999</div>
         </div>
 
         <div style="font-size:11px; color:var(--c-text);">考えられる理由:</div>
