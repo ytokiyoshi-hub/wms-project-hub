@@ -99,6 +99,23 @@ function login() {
   if (!p) { alert('パスワードを入力してください'); return; }
   location.href = 'ht/menu.html';
 }
+
+// 実機スキャナ（キーボードウェッジ）対応：作業者IDバーコードを読むと「値＋Enter」がID欄に入る
+const userEl = document.getElementById('user-input');
+const pwEl = document.getElementById('pw-input');
+// 起動時にID欄へフォーカス（スキャン値の取りこぼし防止）
+if (userEl) { userEl.focus(); userEl.select(); }
+// ID欄でEnter（スキャン終端）→ パスワード欄へ移動。PWが既に入っていればそのままログイン
+userEl && userEl.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  if (!userEl.value.trim()) return;
+  if (pwEl && pwEl.value) { login(); } else if (pwEl) { pwEl.focus(); }
+});
+// パスワード欄でEnter → ログイン
+pwEl && pwEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); login(); }
+});
 </script>
 </body>
 </html>

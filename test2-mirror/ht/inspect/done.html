@@ -125,10 +125,17 @@ async function loadSummary() {
     if (!sched) return;
     const detail = await fetch(`/api/inbound-schedules/${sched.id}`).then(r => r.json()).catch(() => ({}));
     const lines = detail.lines || [];
+    // scan.htmlがsessionStorageに残した検品実績を読み込み、JSONのinspected_qtyに優先して適用
+    let store = {};
+    try { store = JSON.parse(sessionStorage.getItem('wms_inspect_' + sched.id) || '{}'); } catch (e) { store = {}; }
+    const actualOf = (l) => {
+      const s = store[l.id];
+      return s && s.inspected_qty != null ? Number(s.inspected_qty) : (Number(l.inspected_qty) || 0);
+    };
     const planTotal = lines.reduce((a, l) => a + (Number(l.expected_qty) || 0), 0);
-    const actualTotal = lines.reduce((a, l) => a + (Number(l.inspected_qty) || 0), 0);
+    const actualTotal = lines.reduce((a, l) => a + actualOf(l), 0);
     const diff = actualTotal - planTotal;
-    const ng = lines.filter(l => Number(l.inspected_qty || 0) < Number(l.expected_qty || 0)).length;
+    const ng = lines.filter(l => actualOf(l) < Number(l.expected_qty || 0)).length;
     document.getElementById('sm-plan').textContent = `${planTotal} PCS（${lines.length}行）`;
     document.getElementById('sm-actual').textContent = `${actualTotal} PCS`;
     const diffEl = document.querySelector('.ht-body [id^="sm-"]').parentElement.parentElement.parentElement;

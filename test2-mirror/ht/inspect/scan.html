@@ -11,7 +11,7 @@
 <body>
 
 <h1 class="page-title">HT-403 検品作業（入荷検品）</h1>
-<p class="subtitle">入荷現物をHTでスキャンして検品を実施 (BT-A2000 / 4インチ)</p>
+<p class="subtitle">入荷現物をHTでスキャンして検品を実施 (BT-A1000 / 3インチ)</p>
 
 <div class="ht-nav">
   <span class="label">画面ジャンプ：</span>
@@ -27,7 +27,7 @@
 <div class="ht-wrap">
   <div class="ht-device">
     <div class="brand">KEYENCE</div>
-    <div class="model">BT-A2000</div>
+    <div class="model">BT-A1000</div>
     <div class="ht-screen">
       <div class="ht-statusbar"><span>WMS-HT Phase 1</span><span id="clock">--:-- ████</span></div>
       <div class="ht-header">
@@ -41,36 +41,39 @@
           <div class="step"><span class="num">3</span>完了確認</div>
         </div>
 
-        <div style="font-size:9px; color:var(--c-text-sub);" id="asn-info">-</div>
+        <div class="insp-info" id="asn-info">-</div>
 
-        <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;">品目 <span id="item-progress">1/?</span></div>
+        <div class="insp-info">品目 <span id="item-progress">1/?</span></div>
 
-        <div style="background:var(--c-accent-lt); border:1px solid var(--c-accent); padding:6px 8px;">
-          <div style="font-size:10px; font-weight:600; font-family:var(--f-mono); color:var(--c-accent);" id="cur-code">-</div>
-          <div style="font-size:11px; font-weight:600; margin-top:2px;" id="cur-name">読込中</div>
-          <div style="font-size:9px; color:var(--c-text-sub); margin-top:2px;" id="cur-plan">予定: -</div>
+        <div class="insp-cur">
+          <div class="code" id="cur-code">-</div>
+          <div class="name" id="cur-name">読込中</div>
+          <div class="plan" id="cur-plan">予定: -</div>
         </div>
 
-        <div style="background:var(--c-base); border:1px solid var(--c-line); padding:5px 8px;">
-          <div style="display:flex; justify-content:space-between; align-items:baseline;">
-            <div style="font-size:9px; color:var(--c-text-sub);">スキャン済:</div>
-            <div style="font-size:13px; font-weight:700; font-family:var(--f-mono); color:var(--c-accent);"><span id="scanned-qty">0</span> <span style="font-size:10px; color:var(--c-text-sub); font-weight:400;">/ <span id="plan-qty">-</span></span></div>
+        <div class="insp-qty">
+          <div class="row">
+            <div class="lbl">スキャン済</div>
+            <div class="val"><span id="scanned-qty">0</span> <span class="den">/ <span id="plan-qty">-</span></span></div>
           </div>
-          <div class="pbar" style="margin-top:4px;">
+          <div class="pbar" style="margin-top:6px;">
             <div class="fill" id="progress-fill" style="width:0%;"></div>
           </div>
         </div>
 
-        <div style="background:var(--c-bg); border:1px solid var(--c-line); padding:5px 8px; font-size:9px;">
-          <div style="display:flex; justify-content:space-between;"><span style="color:var(--c-text-sub);">ロット：</span><span id="lot-no" style="font-family:var(--f-mono); font-weight:600;">未入力</span></div>
-          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span style="color:var(--c-text-sub);">製造：</span><span id="mfg-date" style="font-family:var(--f-mono);">-</span></div>
-          <div style="display:flex; justify-content:space-between; margin-top:2px;"><span style="color:var(--c-text-sub);">賞味：</span><span id="exp-date" style="font-family:var(--f-mono);">-</span></div>
+        <div class="insp-meta">
+          <div class="row"><span class="k">ロット</span><span class="v" id="lot-no">未入力</span></div>
+          <div class="row"><span class="k">製造</span><span class="v" id="mfg-date">-</span></div>
+          <div class="row"><span class="k">賞味</span><span class="v" id="exp-date">-</span></div>
         </div>
 
-        <input id="jan-input" placeholder="JAN" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
-        <input id="qty-input" type="number" placeholder="数量" style="border:1px solid var(--c-accent); padding:4px 6px; font-size:10px; font-family:var(--f-mono);">
+        <label class="insp-field-lbl">JAN（スキャン）</label>
+        <input id="jan-input" placeholder="JANをスキャン" autocomplete="off" inputmode="none">
+        <label class="insp-field-lbl">数量</label>
+        <input id="qty-input" type="number" placeholder="数量">
+        <div id="scan-msg" class="insp-msg"></div>
 
-        <div style="background:#1a1c22; color:#ffd966; text-align:center; padding:6px; font-size:9px; font-family:var(--f-mono); margin-top:auto;">▼ バーコードをスキャン</div>
+        <div class="insp-hint">▼ JAN欄にカーソル → バーコードをスキャン</div>
       </div>
       <div class="ht-key-labels">
         <div class="key-lbl" onclick="history.back()"><span class="fn">F1</span>戻る</div>
@@ -115,8 +118,22 @@ const scheduleNo = params.get('no');
 const supplier = params.get('supplier');
 const ownerCode = params.get('owner');
 let lines = [], curIdx = 0;
+const done = new Set();
 
 document.getElementById('asn-info').textContent = `${scheduleNo || '-'} / ${supplier || '-'}`;
+
+let _msgTimer = null;
+function scanMsg(text, isError) {
+  const el = document.getElementById('scan-msg');
+  el.textContent = text || '';
+  el.style.color = isError ? '#e53935' : 'var(--c-accent)';
+  if (_msgTimer) clearTimeout(_msgTimer);
+  if (text) _msgTimer = setTimeout(() => { el.textContent = ''; }, 3500);
+}
+function focusJan() {
+  const j = document.getElementById('jan-input');
+  if (j) { j.focus(); j.select(); }
+}
 
 async function loadLines() {
   if (!scheduleId) {
@@ -131,6 +148,8 @@ async function loadLines() {
       return;
     }
     showCurrent();
+    scanMsg('JAN欄にカーソルあり。バーコードをスキャンしてください', false);
+    focusJan();
   } catch (e) {
     document.getElementById('cur-name').textContent = `読込失敗: ${e.message}`;
   }
@@ -160,6 +179,37 @@ function simulateScan() {
 // 旧名互換
 window.htSimulateScan = simulateScan;
 
+// 実機キーボードウェッジ対応：JAN欄に「値＋Enter」が入ったら計画明細と照合
+function handleJanScan() {
+  const code = document.getElementById('jan-input').value.trim();
+  if (!code) return;
+  // まだ検品していない計画明細の中から一致するJANを探す
+  const idx = lines.findIndex(l => !done.has(l.id) && String(l.product_code) === code);
+  if (idx < 0) {
+    // すでに検品済みか、この入荷予定に無いJAN
+    const dupIdx = lines.findIndex(l => done.has(l.id) && String(l.product_code) === code);
+    if (dupIdx >= 0) scanMsg(`検品済みのJAN: ${code}`, true);
+    else scanMsg(`この入荷予定に無いJAN: ${code}`, true);
+    document.getElementById('jan-input').value = '';
+    focusJan();
+    return;
+  }
+  curIdx = idx;
+  showCurrent();
+  // 予定数量を初期表示（実数が違えば上書き入力）→ 数量欄へ
+  const l = lines[idx];
+  const exp = String(l.expected_qty);
+  const q = document.getElementById('qty-input');
+  q.value = exp;
+  scanMsg(`照合OK: ${l.product_name || code}（数量を確認しEnterまたはF3）`, false);
+  // 実機スキャナ(キーエンスIME)はフォーカス移動の直後に入力欄を初期化することがあるため、
+  // 遅延して予定数量を再セットし、消えていれば復元する（adb入力では起きない実機固有挙動）
+  q.focus();
+  const reassert = () => { if (!q.value) q.value = exp; };
+  setTimeout(() => { reassert(); try { q.focus(); q.select(); } catch (e) {} }, 120);
+  setTimeout(reassert, 300);
+}
+
 async function confirmInspect() {
   const janV = document.getElementById('jan-input').value.trim();
   const qty = parseInt(document.getElementById('qty-input').value, 10);
@@ -176,17 +226,29 @@ async function confirmInspect() {
       alert(`検品失敗: ${err.error || res.status}`);
       return;
     }
+    // 検品結果をsessionStorageに保持（静的ミラーではPOSTが永続化されないため、完了確認画面へ実績を引き継ぐ）
+    try {
+      const key = 'wms_inspect_' + scheduleId;
+      const store = JSON.parse(sessionStorage.getItem(key) || '{}');
+      store[l.id] = { inspected_qty: qty, lot_no: l.lot_no || '', expiry_date: l.expiry_date || '' };
+      sessionStorage.setItem(key, JSON.stringify(store));
+    } catch (e) { /* sessionStorage不可環境は集計フォールバックに任せる */ }
     document.getElementById('scanned-qty').textContent = qty;
     document.getElementById('progress-fill').style.width = '100%';
-    curIdx++;
-    if (curIdx >= lines.length) {
+    done.add(l.id);
+    if (done.size >= lines.length) {
+      scanMsg('全品目の検品完了。完了画面へ進みます', false);
       const p = new URLSearchParams({ id: scheduleId, no: scheduleNo, supplier: supplier || '', owner: ownerCode || '' });
       location.href = 'ht/inspect/done.html?' + p.toString();
     } else {
+      // 次の未検品品目へ
+      const nextIdx = lines.findIndex(li => !done.has(li.id));
+      curIdx = nextIdx >= 0 ? nextIdx : curIdx;
       document.getElementById('jan-input').value = '';
       document.getElementById('qty-input').value = '';
       showCurrent();
-      document.getElementById('jan-input').focus();
+      scanMsg(`OK（残り${lines.length - done.size}品目）次のJANをスキャン`, false);
+      focusJan();
     }
   } catch (e) {
     alert(`通信エラー: ${e.message}`);
@@ -194,7 +256,16 @@ async function confirmInspect() {
 }
 
 document.getElementById('key-confirm').addEventListener('click', confirmInspect);
-document.getElementById('qty-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmInspect(); });
+document.getElementById('qty-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); confirmInspect(); } });
+// 実機スキャナ（キーボードウェッジ）：JAN欄で Enter → 照合
+document.getElementById('jan-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleJanScan(); } });
+// 画面のどこをタップしても、入力中でなければJAN欄に復帰（スキャン取りこぼし防止）
+document.addEventListener('click', (e) => {
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button') return;
+  const qv = document.getElementById('qty-input').value;
+  if (!qv) focusJan();
+});
 
 loadLines();
 </script>

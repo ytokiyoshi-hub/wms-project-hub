@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HT実機テスト用 バーコードシート — IN-26051901</title>
+<style>
+  body { font-family: "Noto Sans JP", system-ui, sans-serif; margin: 0; padding: 24px; background: #f4f5f7; color: #1a3a5c; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { font-size: 13px; color: #6c7280; margin: 0 0 20px; }
+  .note { background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px; padding: 12px 14px; font-size: 13px; line-height: 1.7; margin-bottom: 24px; }
+  .note b { color: #b8860b; }
+  .grid { display: flex; flex-wrap: wrap; gap: 20px; }
+  .card { background: #fff; border: 1px solid #e4e7eb; border-radius: 8px; padding: 18px 20px 14px; box-shadow: 0 2px 6px rgba(0,0,0,.05); text-align: center; min-width: 280px; }
+  .card .name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .card .meta { font-size: 12px; color: #6c7280; margin-bottom: 10px; }
+  .card svg { width: 100%; height: auto; }
+  .card .jan { font-family: "Roboto Mono", monospace; font-size: 15px; letter-spacing: 1px; margin-top: 6px; font-weight: 600; }
+  @media print { body { background:#fff; } .note { background:#fff; } .card { box-shadow:none; page-break-inside: avoid; } }
+</style>
+</head>
+<body>
+  <h1>HT実機テスト用 バーコードシート</h1>
+  <p class="sub">入荷予定 IN-26051901（株式会社マルキ食品）／ BT-A1000 でスキャンして検品フローを確認</p>
+
+  <div class="note">
+    <b>使い方</b><br>
+    1. このシートを PC 画面に表示 or 印刷する<br>
+    2. BT-A1000 の検品スキャン画面（JAN欄にカーソルがある状態）を開く<br>
+    3. 下のバーコードを BT-A1000 で読む → 値＋Enter が JAN欄に入り、商品が自動照合される<br>
+    4. 数量を確認して Enter（または F3）→ 次の品目へ<br>
+    <span style="font-size:12px;color:#6c7280;">※ スキャナの「終了コード」を <b>ENT（Enter）</b> に設定しておくこと。コード種別は CODE128。</span>
+  </div>
+
+  <h2 style="font-size:15px;margin:8px 0 10px;color:#1a3a5c;">① ログイン用（作業者ID）</h2>
+  <div class="grid" id="login-grid"></div>
+
+  <h2 style="font-size:15px;margin:24px 0 10px;color:#1a3a5c;">② 検品用（商品JAN）</h2>
+  <div class="grid" id="grid"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script>
+    // ログイン画面のID欄でスキャンする作業者IDコード
+    const LOGINS = [
+      { code: "USR-001", name: "作業者ID: 田中 太郎" }
+    ];
+    // 検品スキャン画面のJAN欄でスキャンする商品コード
+    const ITEMS = [
+      { jan: "4901111036420", name: "丸喜 こいくち醤油 1.8L", qty: 12 },
+      { jan: "4902222018745", name: "丸喜 信州味噌 750g",     qty: 8  },
+      { jan: "4903333125039", name: "本枯節 だしパック 50P",  qty: 5  }
+    ];
+
+    const loginGrid = document.getElementById('login-grid');
+    LOGINS.forEach((it, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML =
+        '<div class="name">' + it.name + '</div>' +
+        '<div class="meta">ログイン画面のID欄でスキャン</div>' +
+        '<svg id="lg' + i + '"></svg>' +
+        '<div class="jan">' + it.code + '</div>';
+      loginGrid.appendChild(card);
+      try {
+        JsBarcode('#lg' + i, it.code, { format: 'CODE128', width: 2, height: 70, displayValue: false, margin: 6 });
+      } catch (e) {
+        document.getElementById('lg' + i).outerHTML = '<div style="color:#e53935;font-size:12px">バーコード生成失敗: ' + e.message + '</div>';
+      }
+    });
+
+    const grid = document.getElementById('grid');
+    ITEMS.forEach((it, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML =
+        '<div class="name">' + it.name + '</div>' +
+        '<div class="meta">予定数量: ' + it.qty + ' ケース</div>' +
+        '<svg id="bc' + i + '"></svg>' +
+        '<div class="jan">' + it.jan + '</div>';
+      grid.appendChild(card);
+      try {
+        JsBarcode('#bc' + i, it.jan, { format: 'CODE128', width: 2, height: 70, displayValue: false, margin: 6 });
+      } catch (e) {
+        document.getElementById('bc' + i).outerHTML = '<div style="color:#e53935;font-size:12px">バーコード生成失敗: ' + e.message + '</div>';
+      }
+    });
+  </script>
+</body>
+</html>

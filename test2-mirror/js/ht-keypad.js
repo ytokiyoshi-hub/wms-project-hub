@@ -14,9 +14,10 @@
 (function () {
   'use strict';
 
-  // ===== 実機モード: ?real=1 で body に real-mode クラスを付与（枠なし全画面） =====
+  // ===== 実機モード: ?real=1 または Capacitor アプリ内なら real-mode クラスを付与（枠なし全画面） =====
+  // Capacitor (APK) で動作中は全画面化を常時有効にする（画面遷移ごとにクエリを引き回さなくてよい）
   const _params = new URLSearchParams(location.search);
-  if (_params.get('real') === '1' || _params.get('real') === 'true') {
+  if (_params.get('real') === '1' || _params.get('real') === 'true' || window.Capacitor) {
     document.documentElement.classList.add('real-mode');
     const applyRealClass = () => document.body && document.body.classList.add('real-mode');
     if (document.body) applyRealClass();
@@ -53,6 +54,21 @@
       target.dispatchEvent(new Event('input', { bubbles: true }));
       e.preventDefault();
     }
+  }, true);
+
+  // ===== 物理ファンクションキー対応: 実機HT(キーエンス)のハードキー F1〜F4 → 画面下端フッターを発火 =====
+  // aw9523-key が KEY_F1〜F4 を送出（標準マッピング）→ WebView では e.key='F1'..'F4' / keyCode 112-115。
+  // フッター .ht-key-labels は全画面で [F1, F2, F3, F4] の順に並ぶため、インデックスで対応ボタンをクリックする。
+  document.addEventListener('keydown', (e) => {
+    let idx = -1;
+    if (/^F[1-4]$/.test(e.key)) idx = Number(e.key.slice(1)) - 1;
+    else if (e.keyCode >= 112 && e.keyCode <= 115) idx = e.keyCode - 112;
+    if (idx < 0) return;
+    e.preventDefault();
+    const labels = document.querySelectorAll('.ht-key-labels .key-lbl');
+    const target = labels[idx];
+    if (!target || target.classList.contains('disabled')) return;
+    target.click();
   }, true);
 
   function getActiveInput() {
@@ -223,4 +239,213 @@
   } else {
     bindKeypad();
   }
+})();
+
+/* =====================================================================
+ * 文字サイズ ライブテストパネル（real-mode 限定）
+ * 役割別フォント(CSS変数)と全体倍率を実機上でスライダー調整し、
+ * localStorage に保存。全HT画面に即反映。確定値はコピーして CSS に焼き込む。
+ * ===================================================================== */
+(function () {
+  'use strict';
+  const isReal = document.documentElement.classList.contains('real-mode') ||
+    /[?&]real=(1|true)/.test(location.search) || window.Capacitor;
+  if (!isReal) return;
+
+  const KEY = 'wms_typescale_v2';
+  // 既定値＝プリセット「推奨」。CSS の body.real-mode 既定値と一致させること。
+  const ROLES = [
+    { k: '--ts',       label: '全体倍率',          min: 0.7, max: 1.8, step: 0.05, def: 1,  px: false },
+    { k: '--fs-title', label: '画面名(ヘッダ)',     min: 14,  max: 34,  step: 1,    def: 22, px: true },
+    { k: '--fs-head',  label: '重要見出し/商品名',  min: 16,  max: 46,  step: 1,    def: 24, px: true },
+    { k: '--fs-num',   label: '強調数値',          min: 20,  max: 64,  step: 1,    def: 30, px: true },
+    { k: '--fs-input', label: '入力テキスト',       min: 14,  max: 40,  step: 1,    def: 18, px: true },
+    { k: '--fs-label', label: 'ラベル/メタ',        min: 12,  max: 30,  step: 1,    def: 15, px: true },
+    { k: '--fs-body',  label: '本文',              min: 12,  max: 30,  step: 1,    def: 16, px: true },
+    { k: '--fs-code',  label: 'コード(JAN等)',      min: 12,  max: 30,  step: 1,    def: 17, px: true },
+    { k: '--fs-sub',   label: '補足',              min: 10,  max: 24,  step: 1,    def: 13, px: true },
+    { k: '--fs-step',  label: 'ステップ',           min: 10,  max: 24,  step: 1,    def: 14, px: true },
+    { k: '--fs-key',   label: 'F1〜F4キー',         min: 12,  max: 28,  step: 1,    def: 16, px: true },
+  ];
+
+  // 業界ガイドライン(Zebra EC30 / Material / WCAG / ANSI-HFES)準拠の3段階プリセット
+  const PRESETS = {
+    '標準':   { '--ts':1, '--fs-title':20, '--fs-head':22, '--fs-num':26, '--fs-input':16, '--fs-label':14, '--fs-body':16, '--fs-code':16, '--fs-sub':12, '--fs-step':13, '--fs-key':15 },
+    '推奨':   { '--ts':1, '--fs-title':22, '--fs-head':24, '--fs-num':30, '--fs-input':18, '--fs-label':15, '--fs-body':16, '--fs-code':17, '--fs-sub':13, '--fs-step':14, '--fs-key':16 },
+    '大きめ': { '--ts':1, '--fs-title':24, '--fs-head':28, '--fs-num':36, '--fs-input':20, '--fs-label':16, '--fs-body':18, '--fs-code':18, '--fs-sub':14, '--fs-step':15, '--fs-key':18 },
+  };
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  function valOf(s, r) { return (s[r.k] != null) ? s[r.k] : r.def; }
+  function applyOne(r, v) { document.body.style.setProperty(r.k, r.px ? (v + 'px') : String(v)); }
+  function applyAll(s) { ROLES.forEach(r => applyOne(r, valOf(s, r))); }
+
+  // 保存済みを即適用（FOUC低減のため body 準備後すぐ）
+  const settings = load();
+  const applyNow = () => applyAll(settings);
+  if (document.body) applyNow(); else document.addEventListener('DOMContentLoaded', applyNow);
+
+  function buildPanel() {
+    if (document.getElementById('ts-fab')) return;
+    const st = document.createElement('style');
+    st.textContent =
+      '#ts-fab{position:fixed;right:8px;bottom:74px;z-index:99998;width:44px;height:44px;border-radius:50%;background:#1a3a5c;color:#fff;border:2px solid #fff;font-size:18px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;cursor:pointer}' +
+      '#ts-panel{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.45);display:none}' +
+      '#ts-panel.open{display:block}' +
+      '#ts-sheet{position:absolute;left:0;right:0;bottom:0;max-height:88vh;overflow-y:auto;background:#fff;border-top-left-radius:14px;border-top-right-radius:14px;padding:14px 14px 20px}' +
+      '#ts-sheet h3{margin:0 0 10px;font-size:18px;color:#1a3a5c}' +
+      '.ts-row{margin-bottom:12px}' +
+      '.ts-row .lab{display:flex;justify-content:space-between;font-size:14px;color:#1a1f29;margin-bottom:4px}' +
+      '.ts-row .lab b{font-family:monospace;color:#1a3a5c}' +
+      '.ts-row input[type=range]{width:100%;height:30px}' +
+      '#ts-presets{display:flex;gap:8px;margin-bottom:14px}' +
+      '#ts-presets button{flex:1;padding:14px 6px;font-size:15px;font-weight:700;border-radius:8px;border:2px solid #1a3a5c;background:#fff;color:#1a3a5c}' +
+      '#ts-presets button.active{background:#1a3a5c;color:#fff}' +
+      '.ts-sec{font-size:13px;color:#6c7280;margin:4px 0 8px;border-top:1px solid #e4e7eb;padding-top:10px}' +
+      '#ts-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}' +
+      '#ts-actions button{flex:1;min-width:96px;padding:12px;font-size:15px;border-radius:8px;border:1px solid #1a3a5c;background:#fff;color:#1a3a5c;font-weight:600}' +
+      '#ts-actions button.primary{background:#1a3a5c;color:#fff}' +
+      '#ts-out{margin-top:10px;font-family:monospace;font-size:12px;background:#f4f5f7;border:1px solid #e4e7eb;border-radius:6px;padding:8px;white-space:pre-wrap;word-break:break-all}';
+    document.head.appendChild(st);
+
+    const fab = document.createElement('div');
+    fab.id = 'ts-fab'; fab.textContent = 'Aa';
+    document.body.appendChild(fab);
+
+    const panel = document.createElement('div');
+    panel.id = 'ts-panel';
+    let rows = '';
+    ROLES.forEach(r => {
+      const v = valOf(settings, r);
+      rows += '<div class="ts-row" data-k="' + r.k + '"><div class="lab"><span>' + r.label +
+        '</span><b class="cur">' + v + (r.px ? 'px' : '') + '</b></div>' +
+        '<input type="range" min="' + r.min + '" max="' + r.max + '" step="' + r.step + '" value="' + v + '"></div>';
+    });
+    let presetBtns = '';
+    Object.keys(PRESETS).forEach(name => { presetBtns += '<button data-preset="' + name + '">' + name + '</button>'; });
+    panel.innerHTML = '<div id="ts-sheet"><h3>文字サイズ テスト（ガイドライン準拠）</h3>' +
+      '<div id="ts-presets">' + presetBtns + '</div>' +
+      '<div class="ts-sec">個別微調整（任意）</div>' + rows +
+      '<div id="ts-actions"><button id="ts-reset">推奨に戻す</button>' +
+      '<button id="ts-copy">現在値をコピー</button>' +
+      '<button id="ts-close" class="primary">閉じる</button></div>' +
+      '<div id="ts-out">調整中…</div></div>';
+    document.body.appendChild(panel);
+
+    function syncSliders() {
+      panel.querySelectorAll('.ts-row').forEach(row => {
+        const r = ROLES.find(x => x.k === row.getAttribute('data-k'));
+        const v = valOf(settings, r);
+        row.querySelector('input').value = v;
+        row.querySelector('.cur').textContent = v + (r.px ? 'px' : '');
+      });
+    }
+    function markActivePreset() {
+      panel.querySelectorAll('#ts-presets button').forEach(b => {
+        const p = PRESETS[b.getAttribute('data-preset')];
+        const match = ROLES.every(r => valOf(settings, r) === (p[r.k] != null ? p[r.k] : r.def));
+        b.classList.toggle('active', match);
+      });
+    }
+
+    const out = panel.querySelector('#ts-out');
+    function refreshOut() {
+      const o = {};
+      ROLES.forEach(r => { o[r.k] = valOf(settings, r); });
+      out.textContent = JSON.stringify(o);
+      markActivePreset();
+    }
+    refreshOut();
+
+    function applyPreset(name) {
+      const p = PRESETS[name];
+      if (!p) return;
+      ROLES.forEach(r => { settings[r.k] = (p[r.k] != null) ? p[r.k] : r.def; applyOne(r, settings[r.k]); });
+      save(settings); syncSliders(); refreshOut();
+    }
+    panel.querySelectorAll('#ts-presets button').forEach(b => {
+      b.addEventListener('click', () => applyPreset(b.getAttribute('data-preset')));
+    });
+
+    fab.addEventListener('click', () => panel.classList.add('open'));
+    panel.addEventListener('click', (e) => { if (e.target === panel) panel.classList.remove('open'); });
+    panel.querySelector('#ts-close').addEventListener('click', () => panel.classList.remove('open'));
+
+    panel.querySelectorAll('.ts-row').forEach(row => {
+      const k = row.getAttribute('data-k');
+      const r = ROLES.find(x => x.k === k);
+      const range = row.querySelector('input');
+      const cur = row.querySelector('.cur');
+      range.addEventListener('input', () => {
+        const v = r.px ? parseInt(range.value, 10) : parseFloat(range.value);
+        settings[k] = v;
+        cur.textContent = v + (r.px ? 'px' : '');
+        applyOne(r, v);
+        save(settings);
+        refreshOut();
+      });
+    });
+
+    panel.querySelector('#ts-reset').addEventListener('click', () => applyPreset('推奨'));
+
+    panel.querySelector('#ts-copy').addEventListener('click', () => {
+      const txt = out.textContent;
+      const done = () => { window.clToast ? clToast('現在値をコピーしました', 'success') : alert('コピー: ' + txt); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done, () => alert('コピー: ' + txt));
+      } else { alert('コピー: ' + txt); }
+    });
+  }
+
+  if (document.body) buildPanel(); else document.addEventListener('DOMContentLoaded', buildPanel);
+})();
+
+/* =====================================================================
+ * インライン文字サイズの正規化（real-mode 限定・全画面土台固め）
+ * 各画面はモック向けに 8〜20px の極小 font-size をインライン直書きしている。
+ * real-mode では役割別タイプスケール変数(--fs-*)へマッピングし直し、
+ * 全画面を「推奨」サイズ＆プリセット倍率に一括連動させる。
+ * すでにタイプスケールで制御済みの要素(検品クラス/ヘッダ/Fキー/入力等)は除外。
+ * ===================================================================== */
+(function () {
+  'use strict';
+  const isReal = document.documentElement.classList.contains('real-mode') ||
+    /[?&]real=(1|true)/.test(location.search) || window.Capacitor;
+  if (!isReal) return;
+
+  // px → 役割変数（モックの相対階層を保ったまま推奨スケールへ）
+  function mapVar(p) {
+    if (p <= 9) return '--fs-sub';
+    if (p <= 11) return '--fs-label';
+    if (p <= 13) return '--fs-body';
+    if (p <= 16) return '--fs-input';
+    if (p <= 20) return '--fs-title';
+    if (p <= 28) return '--fs-head';
+    return '--fs-num';
+  }
+  // CSS 側ですでに制御している要素は触らない
+  const SKIP = '.insp-cur,.insp-qty,.insp-meta,.insp-info,.insp-field-lbl,.insp-msg,.insp-hint,' +
+    '.ht-header,.ht-statusbar,.ht-key-labels,.step-progress,.wms-modal,.wms-modal-backdrop';
+
+  function normalize(root) {
+    const els = (root || document).querySelectorAll('[style*="font-size"]');
+    els.forEach(el => {
+      if (el.closest(SKIP)) return;
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+      if (el.dataset.tsDone) return;
+      const m = (el.getAttribute('style') || '').match(/font-size:\s*([0-9.]+)px/i);
+      if (!m) return;
+      const px = parseFloat(m[1]);
+      if (!px || px > 40) return; // 既に大きい/想定外はそのまま
+      el.style.setProperty('font-size', 'calc(var(' + mapVar(px) + ') * var(--ts))', 'important');
+      el.dataset.tsDone = '1';
+    });
+  }
+
+  function run() { try { normalize(document); } catch (e) {} }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+  // 動的描画(一覧の後挿入等)にも追従
+  window.addEventListener('load', run);
 })();
