@@ -71,6 +71,20 @@
     target.click();
   }, true);
 
+  // ===== 物理 上下キー対応: 数値入力欄にフォーカス中でも画面をスクロールさせる =====
+  // 実機の十字キー(上/下)で画面をスクロールしようとすると、<input type=number> の
+  // ネイティブ・スピナーが値を増減し（min なしの数量欄は負数になる）、さらにキーが
+  // 入力欄に吸われてスクロールできず「数量欄で引っかかる」。数値欄フォーカス時は増減を
+  // 抑止し、代わりにスクロールコンテナ(.ht-body)を動かして下方向に読み進められるようにする。
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    const active = document.activeElement;
+    if (!active || active.tagName !== 'INPUT' || active.type !== 'number') return;
+    e.preventDefault(); // スピナーの増減を止める（数量がマイナスになるのを防ぐ）
+    const scroller = active.closest('.ht-body') || document.scrollingElement || document.documentElement;
+    scroller.scrollBy(0, e.key === 'ArrowDown' ? 56 : -56);
+  }, true);
+
   function getActiveInput() {
     if (lastInputEl && document.contains(lastInputEl)) return lastInputEl;
     const focused = document.activeElement;
