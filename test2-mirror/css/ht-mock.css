@@ -70,8 +70,6 @@ body.real-mode {
 body.real-mode .insp-qty .val,
 body.real-mode .ht-body input[type=number],
 body.real-mode .insp-cur .code { font-variant-numeric: tabular-nums; }
-/* 実機はAndroid本物のステータスバー(時計/電池)が上にあるため模擬バーは重複。実機では非表示にして縦を稼ぐ */
-body.real-mode .ht-statusbar { display: none; }
 body.real-mode .ht-header { height: calc(46px * var(--ts)); font-size: calc(var(--fs-title) * var(--ts)); padding: 0 14px; }
 /* 画面ID(SCR-xxx)は仕様・開発用の符号。現場作業者には不要なので実機では非表示 */
 body.real-mode .ht-header .scr-id { display: none; }
@@ -112,7 +110,8 @@ p.subtitle { text-align:center; color:#a0a4ad; font-size:13px; margin-bottom:24p
   overflow: hidden;
 }
 
-.ht-statusbar { background:#1a1c22; color:#c8ccd4; height:14px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; font-size:8px; font-family:var(--f-mono); flex-shrink:0; }
+/* 模擬端末ステータスバーは非表示（実機=Androidの本物バーと重複 / Hub=不要な額縁）。実機・Hub両方で出さない */
+.ht-statusbar { display:none; }
 .ht-header { background:var(--c-accent); color:#fff; height:24px; display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:600; flex-shrink:0; justify-content:space-between; }
 .ht-header .scr-id { font-family:var(--f-mono); font-size:9px; opacity:0.7; }
 .ht-body { flex:1; padding:8px; overflow:hidden; background:var(--c-base); display:flex; flex-direction:column; gap:6px; }
