@@ -26,14 +26,14 @@
           <div class="form-row">
             <div class="field"><label>シナリオ名</label><input type="text" value="MK001 2027年度更新提案" class="text-mono"></div>
             <div class="field"><label>請求方式</label><select><option>3期制</option><option>2期制</option><option>坪貸し</option></select></div>
-            <div class="field"><label>想定保管数</label><input type="number" value="8500"></div>
-            <div class="field"><label>想定月間入庫</label><input type="number" value="6500"></div>
+            <div class="field"><label>想定保管数</label><input type="number" value="8500" min="0"></div>
+            <div class="field"><label>想定月間入庫</label><input type="number" value="6500" min="0"></div>
           </div>
           <div class="form-row" style="margin-top:14px;">
-            <div class="field"><label>想定月間出庫</label><input type="number" value="3500"></div>
+            <div class="field"><label>想定月間出庫</label><input type="number" value="3500" min="0"></div>
             <div class="field"><label>運送費転嫁</label><select><option>原価+5%</option><option>原価+10%</option><option>固定単価</option></select></div>
             <div class="field"><label>梱包材実費</label><select><option>転嫁あり</option><option>込み</option></select></div>
-            <div class="field"><label>SLA違反予測</label><input type="number" value="2"></div>
+            <div class="field"><label>SLA違反予測</label><input type="number" value="2" min="0"></div>
           </div>
         </div></div>
   

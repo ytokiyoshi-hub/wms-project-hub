@@ -261,7 +261,15 @@ async function register() {
   const date = document.getElementById('f-date').value;
   if (!owner) { alert('荷主を選択してください'); return; }
   if (!date) { alert('予定日を指定してください'); return; }
-  const lines = Array.from(document.querySelectorAll('#tb-lines tr')).map(tr => ({
+  const today = new Date().toISOString().split('T')[0];
+  if (date < today) { alert('予定日は本日以降を指定してください'); return; }
+  const rows = Array.from(document.querySelectorAll('#tb-lines tr'));
+  for (let i = 0; i < rows.length; i++) {
+    const code = rows[i].querySelector('.line-product').value;
+    const qty = parseInt(rows[i].querySelector('.line-qty').value, 10);
+    if (code && (isNaN(qty) || qty < 1)) { alert(`${i + 1}行目: 数量は1以上を入力してください`); return; }
+  }
+  const lines = rows.map(tr => ({
     product_code: tr.querySelector('.line-product').value,
     expected_qty: parseInt(tr.querySelector('.line-qty').value, 10),
     lot_no: tr.querySelector('.line-lot').value,

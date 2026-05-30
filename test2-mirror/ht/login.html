@@ -41,12 +41,12 @@
 
         <div class="ht-info-row">
           <div class="lbl" style="font-size:10px; color:var(--c-text-sub);">作業者ID</div>
-          <input id="user-input" placeholder="USR-001" style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:14px; font-family:var(--f-mono); text-align:center; background:var(--c-base);" autofocus>
+          <input id="user-input" placeholder="USR-001" pattern="USR-[0-9]{3}" maxlength="7" title="USR-XXX 形式で入力" style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:14px; font-family:var(--f-mono); text-align:center; background:var(--c-base);" autofocus>
         </div>
 
         <div class="ht-info-row">
           <div class="lbl" style="font-size:10px; color:var(--c-text-sub);">パスワード</div>
-          <input id="pw-input" type="password" placeholder="****" style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:14px; font-family:var(--f-mono); text-align:center; background:var(--c-base);">
+          <input id="pw-input" type="password" placeholder="****" minlength="4" required style="width:100%; border:1px solid var(--c-accent); padding:6px; font-size:14px; font-family:var(--f-mono); text-align:center; background:var(--c-base);">
         </div>
 
         <button id="key-login" onclick="login()" style="background:var(--c-accent); color:#fff; border:none; padding:10px; font-weight:600; font-size:13px; cursor:pointer; margin-top:8px;">
@@ -95,6 +95,8 @@ window.htSimulateScan = () => { document.getElementById('user-input').value = 'U
 function login() {
   const u = document.getElementById('user-input').value.trim();
   if (!u) { alert('作業者IDを入力'); return; }
+  const p = document.getElementById('pw-input').value;
+  if (!p) { alert('パスワードを入力してください'); return; }
   location.href = 'ht/menu.html';
 }
 </script>
