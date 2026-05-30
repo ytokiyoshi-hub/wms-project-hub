@@ -39,7 +39,7 @@
           </div>
           <div class="form-row" style="margin-top:14px;">
             <div class="field" style="grid-column:span 2;"><label>出荷先（取引先名）</label><input id="f-customer" placeholder="例: 東京食品センター"></div>
-            <div class="field"><label>郵便番号</label><input id="f-zip" placeholder="100-0001"></div>
+            <div class="field"><label>郵便番号</label><input id="f-zip" placeholder="100-0001" pattern="\d{3}-\d{4}" maxlength="8" title="ハイフンありの郵便番号（例: 100-0001）"></div>
           </div>
           <div class="form-row" style="margin-top:14px;">
             <div class="field" style="grid-column:span 4;"><label>住所</label><input id="f-addr"></div>
@@ -121,7 +121,7 @@ function addLine() {
     <td class="num">${lineNo}</td>
     <td><select class="line-product" style="width:100%; font-family:var(--f-mono);">${opts}</select></td>
     <td class="line-name">-</td>
-    <td><input class="line-qty" type="number" value="1" style="width:80px; text-align:right; font-family:var(--f-mono);"></td>
+    <td><input class="line-qty" type="number" value="1" min="1" style="width:80px; text-align:right; font-family:var(--f-mono);"></td>
     <td><select class="line-unit"><option>ケース</option><option>ピース</option></select></td>
     <td class="center"><button class="btn sm" onclick="this.closest('tr').remove()">×</button></td>
   `;
@@ -136,18 +136,34 @@ function addLine() {
 }
 
 async function register() {
-  const lines = Array.from(document.querySelectorAll('#tb-lines tr')).map(tr => ({
+  const owner = document.getElementById('f-owner').value;
+  if (!owner) { alert('荷主を選択してください'); return; }
+  const date = document.getElementById('f-date').value;
+  if (date) {
+    const today = new Date().toISOString().split('T')[0];
+    if (date < today) { alert('希望出荷日は本日以降を指定してください'); return; }
+  }
+  const zip = document.getElementById('f-zip').value;
+  if (zip && !/^\d{3}-\d{4}$/.test(zip)) { alert('郵便番号はハイフンあり形式で入力してください（例: 100-0001）'); return; }
+  const allLines = Array.from(document.querySelectorAll('#tb-lines tr')).map((tr, i) => ({
     product_code: tr.querySelector('.line-product').value,
     qty: parseInt(tr.querySelector('.line-qty').value, 10),
     unit: tr.querySelector('.line-unit').value,
-  })).filter(l => l.product_code && l.qty > 0);
+    rowNum: i + 1,
+  }));
+  for (const l of allLines) {
+    if (l.product_code && (isNaN(l.qty) || l.qty < 1)) {
+      alert(`${l.rowNum}行目: 数量は1以上を入力してください`); return;
+    }
+  }
+  const lines = allLines.filter(l => l.product_code && l.qty > 0).map(({product_code, qty, unit}) => ({product_code, qty, unit}));
   if (lines.length === 0) { alert('明細を1行以上入力'); return; }
   const body = {
-    owner_code: document.getElementById('f-owner').value,
+    owner_code: owner,
     purpose_type: document.getElementById('f-purpose').value,
-    scheduled_date: document.getElementById('f-date').value,
+    scheduled_date: date,
     customer_name: document.getElementById('f-customer').value,
-    postal_code: document.getElementById('f-zip').value,
+    postal_code: zip,
     address: document.getElementById('f-addr').value,
     lines: lines,
   };
