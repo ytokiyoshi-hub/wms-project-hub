@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>操作ガイド — マルキ食品 WMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  background: #f4f5f7;
+  color: #1a1f29;
+  line-height: 1.7;
+}
+
+.top-nav {
+  background: #1a3a5c;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.top-nav a { color: rgba(255,255,255,0.8); text-decoration: none; }
+.top-nav a:hover { color: #fff; }
+.top-nav .sep { color: rgba(255,255,255,0.3); }
+.top-nav .current { color: #fff; font-weight: 600; }
+
+.page-header {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 24px 0;
+}
+.page-header h1 {
+  font-size: 26px;
+  color: #1a3a5c;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.page-header .subtitle {
+  font-size: 13px;
+  color: #6c7280;
+  margin-bottom: 24px;
+}
+
+.about {
+  max-width: 960px;
+  margin: 0 auto 24px;
+  padding: 0 24px;
+}
+.about .box {
+  background: #fff;
+  border-left: 4px solid #1a3a5c;
+  padding: 16px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.about .box p { margin-bottom: 12px; }
+.about .box p:last-child { margin-bottom: 0; }
+.about .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.about .item {
+  background: #f8f9fb;
+  border: 1px solid #e4e7eb;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.about .item strong {
+  display: block;
+  color: #1a3a5c;
+  font-size: 11px;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cta {
+  max-width: 960px;
+  margin: 0 auto 32px;
+  padding: 0 24px;
+}
+.cta .inner {
+  background: #1a3a5c;
+  border-radius: 6px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cta .text { color: #fff; font-size: 14px; font-weight: 600; }
+.cta .sub { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 2px; }
+.cta a.cta-btn {
+  background: #fff;
+  color: #1a3a5c;
+  padding: 7px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cta a.cta-btn:hover { background: #dbeafe; }
+
+.flow {
+  max-width: 960px;
+  margin: 0 auto 36px;
+  padding: 0 24px;
+}
+.flow-hd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.flow-hd .num {
+  width: 30px; height: 30px;
+  background: #1a3a5c; color: #fff;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+}
+.flow-hd h2 { font-size: 17px; font-weight: 700; color: #1a3a5c; }
+.flow-desc {
+  font-size: 12px;
+  color: #6c7280;
+  margin-bottom: 12px;
+  padding-left: 42px;
+  line-height: 1.6;
+}
+
+.steps {
+  border: 1px solid #e4e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.step {
+  background: #fff;
+  border-bottom: 1px solid #e4e7eb;
+  padding: 12px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.step:last-child { border-bottom: none; }
+.step .sn {
+  width: 22px; height: 22px;
+  background: #eef2f6; color: #1a3a5c;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step .sb { flex: 1; min-width: 0; }
+.step .sa {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1a1f29;
+  margin-bottom: 3px;
+}
+.step .sd {
+  font-size: 12px;
+  color: #6c7280;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+.step .sl { display: flex; flex-wrap: wrap; gap: 6px; }
+
+a.lk {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid #c4cdd6;
+  border-radius: 4px;
+  background: #fff;
+  color: #1a3a5c;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background 0.1s;
+}
+a.lk:hover { background: #e8eef5; }
+a.lk.ht {
+  border-color: #d97706;
+  color: #7c2d12;
+  background: #fef3e7;
+}
+a.lk.ht:hover { background: #fde8c8; }
+
+.badge-pc {
+  font-size: 9px; font-weight: 700;
+  background: #e8eef5; color: #1a3a5c;
+  padding: 1px 4px; border-radius: 2px;
+  letter-spacing: 0.02em;
+}
+.badge-ht {
+  font-size: 9px; font-weight: 700;
+  background: #fef3e7; color: #7c2d12;
+  padding: 1px 4px; border-radius: 2px;
+  letter-spacing: 0.02em;
+}
+
+.footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 24px 48px;
+  border-top: 1px solid #e4e7eb;
+  font-size: 12px;
+  color: #6c7280;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 8px;
+}
+.footer a { color: #1a3a5c; text-decoration: none; border-bottom: 1px dotted #1a3a5c; }
+.footer a:hover { color: #b8002e; }
+.footer .spacer { margin-left: auto; }
+
+@media (max-width: 600px) {
+  .page-header, .about, .flow, .cta, .footer { padding-left: 14px; padding-right: 14px; }
+  .page-header h1 { font-size: 20px; }
+  .flow-hd h2 { font-size: 15px; }
+  .flow-desc { padding-left: 0; margin-top: 4px; }
+  .cta .inner { flex-direction: column; align-items: flex-start; }
+  .footer .spacer { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html">WMS Project Hub</a>
+  <span class="sep">›</span>
+  <span class="current">操作ガイド</span>
+</nav>
+
+<div class="page-header">
+  <h1>操作ガイド — マルキ食品 WMS</h1>
+  <p class="subtitle">Phase 1 プレビュー　主要業務フロー（入荷 / 在庫 / 出荷 / HT基本）手順書</p>
+</div>
+
+<div class="about">
+  <div class="box">
+    <p>このサイトは <strong>マルキ食品 WMS（倉庫管理システム）Phase 1 プレビュー</strong> です。業界標準6カテゴリ・28サイドバー項目と全業務フロー（入荷・在庫・出荷・棚卸・請求）を網羅した画面プレビューを閲覧・操作できます。</p>
+    <div class="grid">
+      <div class="item">
+        <strong>PC 画面</strong>
+        事務所での一覧・登録・承認・帳票操作（PC/タブレット向け）。サイドバーから全画面に到達できます。
+      </div>
+      <div class="item">
+        <strong>HT 画面</strong>
+        倉庫現場のハンドターミナル（キーエンス BT-A2000）向け。バーコードスキャン・ピック・棚入れ操作。
+      </div>
+      <div class="item">
+        <strong>データ（モック）</strong>
+        静的 JSON（api/*.json）で動作。入力・更新の操作は行えますが、データはリロードでリセットされます。
+      </div>
+      <div class="item">
+        <strong>全 479 画面</strong>
+        WMS アプリ本体のサイドバーから入荷・出荷・在庫・棚卸・マスタ・設定の全画面に到達できます。
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta">
+  <div class="inner">
+    <div>
+      <div class="text">WMS アプリ本体（test2-mirror）を開く</div>
+      <div class="sub">業界標準6カテゴリ・479 画面・HT 全業務フロー連携済み</div>
+    </div>
+    <a class="cta-btn" href="test2-mirror/" target="_blank">アプリを開く →</a>
+  </div>
+</div>
+
+<!-- ========== 1. 入荷 ========== -->
+<div class="flow">
+  <div class="flow-hd">
+    <div class="num">1</div>
+    <h2>入荷業務（ASN → 検品 → 棚入れ → 完了）</h2>
+  </div>
+  <p class="flow-desc">荷主から ASN（事前出荷通知）を受信し、配送到着後に検品・棚入れを行って入荷完了する業務フロー。</p>
+  <div class="steps">
+    <div class="step">
+      <div class="sn">1</div>
+      <div class="sb">
+        <div class="sa">入荷予定一覧で ASN を確認する</div>
+        <div class="sd">PC 事務所で入荷予定（ASN）の一覧を開き、当日の入荷件数・商品・数量を確認する。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/inbound/plans.html" target="_blank"><span class="badge-pc">PC</span> 入荷予定一覧</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">2</div>
+      <div class="sb">
+        <div class="sa">HT 検品（ASN 選択 → バーコードスキャン → 完了確認）</div>
+        <div class="sd">現場担当者がハンドターミナルで ASN を選択し、荷物のバーコードをスキャンして数量を照合する。差異があれば差異処理画面に進む。</div>
+        <div class="sl">
+          <a class="lk ht" href="test2-mirror/ht/inspect/asn.html" target="_blank"><span class="badge-ht">HT</span> 検品：ASN 選択</a>
+          <a class="lk ht" href="test2-mirror/ht/inspect/scan.html" target="_blank"><span class="badge-ht">HT</span> 検品：スキャン</a>
+          <a class="lk ht" href="test2-mirror/ht/inspect/done.html" target="_blank"><span class="badge-ht">HT</span> 検品：完了確認</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">3</div>
+      <div class="sb">
+        <div class="sa">HT 棚入れ（棚入れ指示確認 → ロケーションスキャン → 完了）</div>
+        <div class="sd">検品完了品を指定ロケーションへ格納する。HT でロケーションバーコードをスキャンして完了。</div>
+        <div class="sl">
+          <a class="lk ht" href="test2-mirror/ht/putaway/instructions.html" target="_blank"><span class="badge-ht">HT</span> 棚入れ：指示確認</a>
+          <a class="lk ht" href="test2-mirror/ht/putaway/location.html" target="_blank"><span class="badge-ht">HT</span> 棚入れ：ロケスキャン</a>
+          <a class="lk ht" href="test2-mirror/ht/putaway/done.html" target="_blank"><span class="badge-ht">HT</span> 棚入れ：完了</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">4</div>
+      <div class="sb">
+        <div class="sa">入荷実績・差異処理を確認する</div>
+        <div class="sd">PC で入荷完了の実績一覧・数量・差異を確認し、必要に応じて差異処理を行う。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/inbound/actuals.html" target="_blank"><span class="badge-pc">PC</span> 入荷実績</a>
+          <a class="lk pc" href="test2-mirror/pc/inbound/discrepancy.html" target="_blank"><span class="badge-pc">PC</span> 検品差異処理</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 2. 在庫 ========== -->
+<div class="flow">
+  <div class="flow-hd">
+    <div class="num">2</div>
+    <h2>在庫管理（在庫照会 → 調整 → 棚卸）</h2>
+  </div>
+  <p class="flow-desc">棚入れ後の在庫を商品軸・ロケーション軸で照会・調整し、月次または循環棚卸で実在庫を確認する。</p>
+  <div class="steps">
+    <div class="step">
+      <div class="sn">1</div>
+      <div class="sb">
+        <div class="sa">在庫を照会する</div>
+        <div class="sd">商品別・ロケーション別に現在庫数を確認する。KPI サマリーや在庫一覧で在庫状況を把握する。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/inventory/summary.html" target="_blank"><span class="badge-pc">PC</span> 在庫一覧（サマリー）</a>
+          <a class="lk pc" href="test2-mirror/pc/inventory/inventory_kpi.html" target="_blank"><span class="badge-pc">PC</span> 在庫 KPI</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">2</div>
+      <div class="sb">
+        <div class="sa">在庫を調整・移動する</div>
+        <div class="sd">破損・返品・数量誤りによる在庫調整や、ロケーション間の在庫移動を PC で行う。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/inventory/adjust.html" target="_blank"><span class="badge-pc">PC</span> 在庫調整</a>
+          <a class="lk pc" href="test2-mirror/pc/inventory/move.html" target="_blank"><span class="badge-pc">PC</span> 在庫移動</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">3</div>
+      <div class="sb">
+        <div class="sa">棚卸を実施する（セッション作成 → HT カウント → 結果確認）</div>
+        <div class="sd">PC で棚卸セッションを作成し、現場担当者が HT でロケーションの在庫をカウント。PC で実在庫との差異を照合する。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/stocktake/sessions.html" target="_blank"><span class="badge-pc">PC</span> 棚卸セッション</a>
+          <a class="lk ht" href="test2-mirror/ht/stocktake/count.html" target="_blank"><span class="badge-ht">HT</span> 棚卸カウント</a>
+          <a class="lk pc" href="test2-mirror/pc/stocktake/cycle_result.html" target="_blank"><span class="badge-pc">PC</span> 棚卸結果</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 3. 出荷 ========== -->
+<div class="flow">
+  <div class="flow-hd">
+    <div class="num">3</div>
+    <h2>出荷業務（受注 → 引当 → ウェーブ → ピック → 梱包 → 積込 → 引渡）</h2>
+  </div>
+  <p class="flow-desc">14 ステップ業務シナリオの中核。出荷指示の受信から引当・ウェーブ生成・HT ピッキング・梱包・積込・引渡まで一気通貫で行う。</p>
+  <div class="steps">
+    <div class="step">
+      <div class="sn">1</div>
+      <div class="sb">
+        <div class="sa">出荷指示一覧を確認する</div>
+        <div class="sd">荷主から受信した出荷指示（受注）の一覧を開き、当日の出荷件数・出荷先・商品を確認する。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/outbound/orders.html" target="_blank"><span class="badge-pc">PC</span> 出荷指示一覧</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">2</div>
+      <div class="sb">
+        <div class="sa">在庫を引当する</div>
+        <div class="sd">FIFO（先入先出し）ルールに従い、出荷指示に対して在庫ロケーションを引当てる。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/outbound/allocate.html" target="_blank"><span class="badge-pc">PC</span> 引当</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">3</div>
+      <div class="sb">
+        <div class="sa">ウェーブを作成する</div>
+        <div class="sd">引当済みの出荷指示をウェーブ（ピッキングバッチ）にまとめ、担当者・ルートごとに計画する。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/outbound/wave_plan.html" target="_blank"><span class="badge-pc">PC</span> ウェーブ計画</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">4</div>
+      <div class="sb">
+        <div class="sa">HT ピッキング（ウェーブ選択 → スキャン → ピックリスト確認 → 完了）</div>
+        <div class="sd">現場担当者が HT でウェーブを選択し、指示ロケーションから商品をバーコードスキャンしながらピックする。</div>
+        <div class="sl">
+          <a class="lk ht" href="test2-mirror/ht/pick/wave.html" target="_blank"><span class="badge-ht">HT</span> ピック：ウェーブ選択</a>
+          <a class="lk ht" href="test2-mirror/ht/pick/scan.html" target="_blank"><span class="badge-ht">HT</span> ピック：スキャン</a>
+          <a class="lk ht" href="test2-mirror/ht/pick/list.html" target="_blank"><span class="badge-ht">HT</span> ピック：リスト確認</a>
+          <a class="lk ht" href="test2-mirror/ht/pick/done.html" target="_blank"><span class="badge-ht">HT</span> ピック：完了</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">5</div>
+      <div class="sb">
+        <div class="sa">梱包管理（ピック完了品の梱包確認）</div>
+        <div class="sd">ピック済みの商品を出荷箱・パレットにまとめ、PC で梱包内容と数量を確認する。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/outbound/packing_summary.html" target="_blank"><span class="badge-pc">PC</span> 梱包管理</a>
+          <a class="lk ht" href="test2-mirror/ht/packing/scan.html" target="_blank"><span class="badge-ht">HT</span> 梱包スキャン</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">6</div>
+      <div class="sb">
+        <div class="sa">積込・出荷確定（PC + HT）</div>
+        <div class="sd">トラックへの積み込みを HT でスキャン確認し、PC で出荷確定する。積込明細書を印刷できる。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/outbound/loading.html" target="_blank"><span class="badge-pc">PC</span> 積込管理</a>
+          <a class="lk ht" href="test2-mirror/ht/loading/confirm.html" target="_blank"><span class="badge-ht">HT</span> 積込確認</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">7</div>
+      <div class="sb">
+        <div class="sa">引渡確認（配送業者への引き渡し）</div>
+        <div class="sd">配送業者への引き渡しを HT で確認し、PC で出荷完了・実績を記録する。</div>
+        <div class="sl">
+          <a class="lk pc" href="test2-mirror/pc/outbound/handover.html" target="_blank"><span class="badge-pc">PC</span> 引渡管理</a>
+          <a class="lk ht" href="test2-mirror/ht/handover/confirm.html" target="_blank"><span class="badge-ht">HT</span> 引渡確認</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 4. HT基本 ========== -->
+<div class="flow">
+  <div class="flow-hd">
+    <div class="num">4</div>
+    <h2>HT 基本操作（ログイン → メニュー → 各タスクへの入り方）</h2>
+  </div>
+  <p class="flow-desc">ハンドターミナル（HT）を初めて使う方向けの基本操作。物理キー（F1〜F4 / SCAN / 数字パッド / 十字キー）は画面上のボタンと同じ動作をします。</p>
+  <div class="steps">
+    <div class="step">
+      <div class="sn">1</div>
+      <div class="sb">
+        <div class="sa">HT にログインする</div>
+        <div class="sd">ユーザー ID・パスワードを入力して HT にログイン。担当する荷主コードを選択する。</div>
+        <div class="sl">
+          <a class="lk ht" href="test2-mirror/ht/login.html" target="_blank"><span class="badge-ht">HT</span> ログイン</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">2</div>
+      <div class="sb">
+        <div class="sa">メインメニューから業務を選択する</div>
+        <div class="sd">ログイン後のメニュー画面から「入荷検品」「棚入れ」「ピッキング」「棚卸」「返品」など業務を選択して開始する。</div>
+        <div class="sl">
+          <a class="lk ht" href="test2-mirror/ht/menu.html" target="_blank"><span class="badge-ht">HT</span> メインメニュー</a>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="sn">3</div>
+      <div class="sb">
+        <div class="sa">各業務フローに進む（上記の各セクションを参照）</div>
+        <div class="sd">メニューから選択した業務の手順はこのガイドの各セクション（入荷・在庫・出荷）を参照。よく使う HT 画面へのショートカットは以下から開けます。</div>
+        <div class="sl">
+          <a class="lk ht" href="test2-mirror/ht/inspect/asn.html" target="_blank"><span class="badge-ht">HT</span> 入荷検品へ</a>
+          <a class="lk ht" href="test2-mirror/ht/putaway/instructions.html" target="_blank"><span class="badge-ht">HT</span> 棚入れへ</a>
+          <a class="lk ht" href="test2-mirror/ht/pick/wave.html" target="_blank"><span class="badge-ht">HT</span> ピッキングへ</a>
+          <a class="lk ht" href="test2-mirror/ht/stocktake/count.html" target="_blank"><span class="badge-ht">HT</span> 棚卸へ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="index.html">← WMS Project Hub トップ</a>
+  <a href="test2-mirror/" target="_blank">WMS アプリ本体</a>
+  <a href="test2-mirror/pc/help/business_flow.html" target="_blank">業務フロー連携図</a>
+  <a href="test2-mirror/pc/help/data_model.html" target="_blank">データモデル ER 図</a>
+  <span class="spacer">マルキ食品 WMS — Phase 1 プレビュー</span>
+</div>
+
+</body>
+</html>
