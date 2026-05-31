@@ -92,10 +92,21 @@
 - 担当: こーちゃん（急ぎ・複雑専任）
 - 完了判定: **USE_SUPABASE=true で164エンドポイント全て200応答（書き込みも実DB反映）**
 
-### Phase 3: 認証と RLS 本番化（2日）
-- mock signIn → Supabase auth.signInWithPassword 置換
+### Phase 1-A: 認証の土台（SQLite版・前倒し実施）— ✅ **完了 2026-05-31（実測）**
+> 本来 Phase 3 の認証を、本番DBに触れない SQLite 上で先行実装した（安全に前進できるため）。Phase 3 は「この土台を Supabase Auth に置換」に変わる。
+- ✅ schema: `sessions` テーブル + `system_users.password_hash` 追加 + 既存10ユーザに seed（dev: password=login_id。ブートログ `[auth] password_hash seeded for 10 users` 確認）
+- ✅ 認証API: `POST /api/auth/login`・`POST /api/auth/logout`・`GET /api/auth/me`（セッショントークン方式・12hTTL）。E2E **9/9 期待通り**（正常ログイン/誤PW401/me認証/未ログイン401/空400/logout後失効/owner_clerk→owner_code=MK001）
+- ✅ ミドルウェア: `attachAuth`(全req にトークンがあれば載せる) + `requireAuth`(保護用)。**オプトイン設計で既存164API無影響**（/api/owners 200 維持）
+- ✅ フロント: PC `/login.html` 新規作成 + HT `login.html` を実API結線（無条件リダイレクト→ `/api/auth/login` 呼出+sessionStorage保存）。両画面 200 配信・API結線確認
+- ✅ **回帰なし**: 核心5シナリオ `--reset` 個別実行で 5/5 PASS（生ログ確認）
+- コミット: wms-test2 `0d84ddde`(BE: server/index.js+64 / schema.js+34) / `4885edd2`(FE: login.html新規 / ht/login.html) ※wms-test2ローカルにコミット済・origin(github ytokiyoshi-hub/wms-test2)へのpushは未実施
+- ⏳ 残（Phase 3 へ）: 既存164APIへの `requireAuth` 全面適用（今は認証API群のみ保護）／Supabase Auth 置換／実RLS連携
+
+### Phase 3: 認証と RLS 本番化（2日）— Phase 1-A の土台を Supabase に置換
+- mock signIn / SQLite セッション → Supabase auth.signInWithPassword 置換
 - JWT 検証 middleware + set_config で RLS claim 注入
-- login.html（HT/PC）を Supabase Auth SDK 結線
+- login.html（HT/PC）を Supabase Auth SDK 結線（Phase 1-A で結線済の口を差し替え）
+- 既存164APIへ `requireAuth` 全面適用（Phase 1-A はオプトイン止まり）
 - data-bulk-generator の Supabase 投入経路（auth context付き）→ 1年BULK投入
 - 担当: こーちゃん(認証) ＋ さーちゃん(RLS/投入)
 - 完了判定: 7アクターで login→JWT→API 動作 / **荷主Aで荷主Bが見えないことを実RLSで確認**
