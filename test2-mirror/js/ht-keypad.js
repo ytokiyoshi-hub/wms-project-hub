@@ -44,7 +44,12 @@
     const target = lastInputEl && document.contains(lastInputEl)
       ? lastInputEl
       : document.querySelector('input[autofocus], input:not([type=hidden])');
-    if (!target) return;
+    if (!target) {
+      // 入力欄が無いページ（メニュー等）で印字可能キーを素通りさせると、WebView の
+      // ページ内検索(type-ahead find)が起動して全体が拡大＝レイアウト崩れになる。これを抑止。
+      if (e.key && e.key.length === 1) e.preventDefault();
+      return;
+    }
     target.focus();
     if (e.key === 'Enter') {
       target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true }));
@@ -54,6 +59,28 @@
       target.dispatchEvent(new Event('input', { bubbles: true }));
       e.preventDefault();
     }
+  }, true);
+
+  // ===== 物理テンキー対応: メニュー等の番号選択を物理数字キー(0-9)で発火 =====
+  // menu.html の業務選択や status/change.html のステータス選択は .ht-num-grid .num-key[data-n]
+  // に紐づく（onclick=location.href でページ遷移、またはページ内 click ハンドラで選択）。
+  // 実機の物理テンキーから直接選べるよう、入力欄にフォーカスが無い時だけ対応キーをクリックする
+  // （数量入力画面には data-n 付きキーが無く btn=null で素通り → 入力欄が数字を受け取る）。
+  // preventDefault で WebView のページ内検索(type-ahead find)発火＝レイアウト崩れも同時に防ぐ。
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    let digit = '';
+    if (/^[0-9]$/.test(e.key)) digit = e.key;
+    else if (e.keyCode >= 48 && e.keyCode <= 57) digit = String(e.keyCode - 48);
+    else if (e.keyCode >= 96 && e.keyCode <= 105) digit = String(e.keyCode - 96);
+    if (!digit) return;
+    const active = document.activeElement;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return; // 入力欄優先
+    const btn = document.querySelector('.ht-num-grid .num-key[data-n="' + digit + '"]');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    btn.click();
   }, true);
 
   // ===== 物理ファンクションキー対応: 実機HT(キーエンス)のハードキー F1〜F4 → 画面下端フッターを発火 =====
