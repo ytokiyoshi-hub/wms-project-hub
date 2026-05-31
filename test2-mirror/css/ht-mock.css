@@ -70,7 +70,12 @@ body.real-mode {
 body.real-mode .insp-qty .val,
 body.real-mode .ht-body input[type=number],
 body.real-mode .insp-cur .code { font-variant-numeric: tabular-nums; }
-body.real-mode .ht-header { height: calc(46px * var(--ts)); font-size: calc(var(--fs-title) * var(--ts)); padding: 0 14px; }
+/* height ではなく min-height。画面名フォント(--fs-title)を大きくしても固定高に押し込まれて
+   縦に見切れることがないよう、バー側が伸びて受ける。既定サイズではこれまで通り46px。 */
+body.real-mode .ht-header { height: auto; min-height: calc(46px * var(--ts)); font-size: calc(var(--fs-title) * var(--ts)); padding: 4px 14px; }
+/* 画面名(先頭span)は1行省略表示。長いタイトル＋大きいフォントでも2行に折り返して
+   見切れることがなく、横幅を超えたら "…" で切る。フォント調整が崩れに化けない保険。 */
+body.real-mode .ht-header > span:first-child { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* 画面ID(SCR-xxx)は仕様・開発用の符号。現場作業者には不要なので実機では非表示 */
 body.real-mode .ht-header .scr-id { display: none; }
 body.real-mode .ht-body { padding: 10px; gap: 12px; font-size: calc(var(--fs-body) * var(--ts)); overflow-y: auto; }

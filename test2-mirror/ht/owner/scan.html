@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HT-1101 荷主切替：スキャン — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/ht-mock.css?v=202605312200">
+<link rel="stylesheet" href="css/ht-mock.css?v=202605312300">
 <style>
 .current-owner-bar { background: var(--c-bg); border:1px solid var(--c-line); padding:6px 8px; }
 .current-owner-bar .label { font-size:9px; color:var(--c-text-sub); }
@@ -98,7 +98,7 @@
   <div class="desc-text">荷主バーコードシートをスキャン or 手入力 → ENT で確認画面へ</div>
 </div>
 
-<script src="js/ht-keypad.js?v=202605312200"></script>
+<script src="js/ht-keypad.js?v=202605312300"></script>
 <script>
 const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 82%`; };
 setClock(); setInterval(setClock, 30000);
