@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>連動マニュアル（サンプル）— マルキ食品 WMS</title>
+<style>
+  :root{
+    --accent:#1e40af; --accent-lt:#eff4ff; --line:#e3e8ef; --ink:#1f2933;
+    --sub:#6b7280; --done:#15803d; --bg:#f5f7fb;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);background:var(--bg);}
+  .topbar{display:flex;align-items:center;gap:14px;padding:10px 18px;background:#fff;border-bottom:1px solid var(--line);}
+  .topbar .crumb{color:var(--sub);font-size:13px;}
+  .topbar .crumb a{color:var(--accent);text-decoration:none;}
+  .topbar h1{font-size:15px;margin:0;font-weight:700;}
+  .topbar .badge{margin-left:auto;font-size:12px;background:var(--accent-lt);color:var(--accent);padding:4px 10px;border-radius:999px;font-weight:600;}
+  .layout{display:flex;height:calc(100vh - 49px);}
+  /* 左ペイン：説明 */
+  .left{width:40%;min-width:360px;max-width:560px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;}
+  .flow-head{padding:14px 18px 10px;border-bottom:1px solid var(--line);}
+  .flow-head .ttl{font-size:15px;font-weight:700;}
+  .flow-head .desc{font-size:12px;color:var(--sub);margin-top:4px;line-height:1.6;}
+  .steps{list-style:none;margin:0;padding:8px 12px;border-bottom:1px solid var(--line);overflow-y:auto;max-height:30vh;}
+  .steps li{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border-radius:9px;cursor:pointer;transition:background .12s;}
+  .steps li:hover{background:var(--accent-lt);}
+  .steps li.active{background:var(--accent-lt);}
+  .steps .no{flex:0 0 22px;height:22px;border-radius:50%;background:#e5e9f0;color:var(--sub);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .steps li.active .no{background:var(--accent);color:#fff;}
+  .steps li.visited .no{background:var(--done);color:#fff;}
+  .steps .lbl{font-size:12.5px;line-height:1.4;padding-top:1px;}
+  .steps .lbl .tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:6px;vertical-align:1px;}
+  .tag.pc{background:#dbeafe;color:#1e40af;}
+  .tag.ht{background:#dcfce7;color:#15803d;}
+  /* 説明本文 */
+  .detail{padding:16px 18px;overflow-y:auto;flex:1;}
+  .detail .step-no{font-size:11.5px;font-weight:700;color:var(--accent);letter-spacing:.04em;}
+  .detail h2{font-size:17px;margin:4px 0 10px;font-weight:700;line-height:1.4;}
+  .detail .where{font-size:12px;color:var(--sub);background:#f1f5f9;border-radius:7px;padding:7px 10px;line-height:1.6;}
+  .detail .where b{color:var(--ink);}
+  .detail .sec-ttl{font-size:12px;font-weight:700;color:var(--accent);margin:16px 0 6px;display:flex;align-items:center;gap:6px;}
+  .detail .sec-ttl::before{content:"";width:3px;height:13px;background:var(--accent);border-radius:2px;}
+  .detail ol.ops{margin:0;padding-left:0;list-style:none;counter-reset:op;}
+  .detail ol.ops li{position:relative;padding:6px 0 6px 30px;font-size:13.5px;line-height:1.7;color:#374151;border-bottom:1px dashed #eef1f5;counter-increment:op;}
+  .detail ol.ops li:last-child{border-bottom:0;}
+  .detail ol.ops li::before{content:counter(op);position:absolute;left:0;top:6px;width:20px;height:20px;background:var(--accent);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .detail .key{display:inline-block;font-family:"Roboto Mono",monospace;font-size:11px;font-weight:700;background:#1f2933;color:#fff;padding:1px 7px;border-radius:5px;margin:0 1px;vertical-align:1px;}
+  .detail .ui{display:inline-block;font-size:12px;font-weight:600;background:#eef2f8;color:var(--accent);padding:1px 7px;border-radius:5px;border:1px solid #d6e0f0;}
+  .detail .check{margin-top:8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;padding:9px 12px;font-size:12.5px;line-height:1.7;color:#166534;}
+  .detail .check b{color:#15803d;}
+  .detail .pt{margin-top:12px;background:#fffbeb;border:1px solid #fcd9a6;border-radius:9px;padding:9px 12px;font-size:12.5px;line-height:1.7;}
+  .detail .pt b{color:#b45309;}
+  /* テスト用バーコード（コピペ）パネル */
+  .detail .bc{margin-top:14px;border:1px solid #d6e0f0;border-radius:9px;overflow:hidden;}
+  .detail .bc-h{background:#eef2f8;padding:7px 12px;font-size:12px;font-weight:700;color:var(--accent);}
+  .detail .bc-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-top:1px solid #eef1f5;}
+  .detail .bc-row .jan{font-family:"Roboto Mono",monospace;font-weight:700;font-size:13px;letter-spacing:.02em;}
+  .detail .bc-row .nm{color:var(--sub);font-size:11.5px;flex:1;min-width:0;line-height:1.4;}
+  .detail .bc-row button{flex:0 0 auto;border:1px solid var(--accent);background:#fff;color:var(--accent);font-size:11px;font-weight:700;padding:4px 11px;border-radius:6px;cursor:pointer;}
+  .detail .bc-row button.copied{background:var(--done);color:#fff;border-color:var(--done);}
+  .detail .bc-note{padding:7px 12px;font-size:11px;color:var(--sub);border-top:1px solid #eef1f5;line-height:1.7;}
+  .detail .now{margin-top:14px;font-size:11px;color:var(--sub);}
+  .detail .now code{background:#f1f5f9;padding:1px 6px;border-radius:4px;}
+  .navbtns{display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--line);background:#fff;}
+  .navbtns button{flex:1;padding:9px 0;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink);}
+  .navbtns button.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .navbtns button:disabled{opacity:.4;cursor:default;}
+  /* 右ペイン：実画面 */
+  .right{flex:1;min-width:0;display:flex;flex-direction:column;background:#dfe5ee;}
+  .right .hint{font-size:12px;color:var(--sub);padding:7px 14px;background:#eef2f8;border-bottom:1px solid var(--line);}
+  .right .hint b{color:var(--accent);}
+  /* 画面をデスクトップ幅でレンダリングし、ペイン幅に合わせて縮小表示（中身は通常表示のまま小さくなる） */
+  .right .screen-wrap{flex:1;min-width:0;overflow:hidden;background:#fff;position:relative;}
+  .right #screen{border:0;background:#fff;transform-origin:top left;display:block;}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <span class="crumb"><a href="index.html">WMS Project Hub</a> › <a href="operation-guide.html">操作ガイド</a> › 連動マニュアル</span>
+    <h1>連動マニュアル（サンプル）</h1>
+    <span class="badge">入荷フロー · 7ステップ</span>
+  </div>
+
+  <div class="layout">
+    <!-- 左：説明 -->
+    <aside class="left">
+      <div class="flow-head">
+        <div class="ttl">入荷業務（ASN → HT検品 → 実績確定）</div>
+        <div class="desc">荷主からのASNを受け、現場でHT検品し、入荷実績を確定するまでの操作手順。左のステップをクリックすると右の画面が切り替わり、右の画面を操作すると左の説明が追従します。</div>
+      </div>
+      <ol class="steps" id="steps"></ol>
+      <div class="detail" id="detail"></div>
+      <div class="navbtns">
+        <button id="prev">← 前へ</button>
+        <button id="next" class="primary">次へ →</button>
+      </div>
+    </aside>
+
+    <!-- 右：実際に動く画面 -->
+    <section class="right">
+      <div class="hint">▶ <b>右の画面はそのまま操作できます。</b>画面内のボタン・物理キーで進めると、左の手順が自動で追従します。</div>
+      <div class="screen-wrap" id="screenWrap">
+        <iframe id="screen" title="WMS画面"></iframe>
+      </div>
+    </section>
+  </div>
+
+<script>
+// HT画面にASN文脈を渡すクエリ（デモ用の実データ表示）
+const HTQ = "?id=9011&no=IN-26051901&supplier=" + encodeURIComponent("テスト仕入先") + "&owner=" + encodeURIComponent("アパレル雑貨株式会社");
+
+// ===== フロー定義 =====
+// path: 画面（test2-mirror/ からの相対・クエリは含めない＝照合に使う）
+// q   : iframe表示時にだけ付けるクエリ（任意）
+const STEPS = [
+  {
+    path: "pc/inbound/plans.html", tag: "pc",
+    short: "入荷予定一覧で対象ASNを開く",
+    title: "入荷予定一覧で当日の対象ASNを開く",
+    where: "事務所のPC　画面：<b>W-401 入荷予定一覧</b>",
+    ops: [
+      "左メニューの <span class='ui'>入荷管理 ＞ 入荷予定一覧</span> を開く",
+      "当日分に絞るときは上部の検索条件に予定日を入れて <span class='ui'>検索</span> を押す",
+      "一覧から対象の伝票行（例 <b>IN-26051901</b>）をクリックして明細を開く"
+    ],
+    check: "状態が <b>planned（予定）</b> の伝票がこれから検品する対象。「明細」列の件数と検品方式を確認する。",
+    point: "ASN未受信の飛び込み入荷は <span class='ui'>ASNなし入荷</span>、紙伝票は <span class='ui'>手入力登録</span> で起票する。"
+  },
+  {
+    path: "ht/inspect/asn.html", tag: "ht", q: HTQ,
+    short: "HTで検品するASNを選ぶ",
+    title: "HTで検品するASNを選択する",
+    where: "倉庫現場のHT（キーエンス BT-A2000）　画面：<b>SCR-403-1 検品：ASN選択</b>",
+    ops: [
+      "入荷した荷物の <b>ASNラベルにHTをかざしてスキャン</b>（または一覧から対象ASNを直接タップ）",
+      "対象が選ばれた状態で物理キー <span class='key'>F3 選択</span> を押す"
+    ],
+    check: "<b>荷主名</b>（アパレル雑貨株式会社）・<b>件数</b>（1件 全数）・予定日が、目の前の現物と一致しているか。画面下に「本日／遅延／計」の件数が出る。",
+    point: "ASN名の横の ★ は優先度。物理キー <span class='key'>F1</span>〜<span class='key'>F4</span> は手袋でも押せる大きめ設計。"
+  },
+  {
+    path: "ht/inspect/scan.html", tag: "ht", q: HTQ,
+    short: "商品バーコードをスキャン",
+    title: "商品バーコードをスキャンして品目を呼び出す",
+    where: "HT　画面：<b>SCR-403-2 検品：スキャン中</b>（上部に「IN-26051901 / テスト仕入先」を表示）",
+    ops: [
+      "商品の <b>JANバーコードをスキャン</b>（画面の「▼ バーコードをスキャン」欄）",
+      "スキャンすると「品目」と「予定数」が表示される"
+    ],
+    check: "表示された <b>品目名と予定数</b> が、目の前の現物と一致しているか。",
+    point: "賞味期限（FEFO）対象品は「ロット／製造／賞味」も表示される。現物のロット・期限をここで照合する。"
+  },
+  {
+    path: "ht/inspect/scan.html", tag: "ht", q: HTQ,
+    short: "数量を入力して照合",
+    title: "実数を入力して予定数と照合する",
+    where: "HT　画面：<b>SCR-403-2</b> の数量入力欄",
+    ops: [
+      "テンキー <span class='key'>0</span>〜<span class='key'>9</span> で <b>実際に数えた数量</b> を入力する",
+      "<span class='key'>ENT</span> または <span class='key'>OK</span> で確定する",
+      "画面の「スキャン済 n / 予定」が更新されるのを確認する"
+    ],
+    check: "「スキャン済」が予定数に達したか。<b>予定数と実数が合っているか</b>。",
+    point: "数が合わないときは <span class='key'>F2 NG入力</span> で差異を記録 → PC側の「差異処理」へ自動で引き継がれる。"
+  },
+  {
+    path: "ht/inspect/scan.html", tag: "ht", q: HTQ,
+    short: "次の品目へ進む（繰り返し）",
+    title: "次の品目へ進み、全明細を検品する",
+    where: "HT　画面：<b>SCR-403-2</b>（品目 n / N の表示）",
+    ops: [
+      "複数品目があるときは <span class='key'>F3 次品目</span> で次の商品へ進む",
+      "全品目のスキャン・数量入力が終わるまで、前のステップを繰り返す"
+    ],
+    check: "画面上部の <b>「品目 N / N」</b> が最後まで進んだか（全明細を消化したか）。",
+    point: "前の品目に戻るときは <span class='key'>F1 戻る</span>、作業を中断するときは <span class='key'>F4 メニュー</span>。"
+  },
+  {
+    path: "ht/inspect/done.html", tag: "ht", q: HTQ,
+    short: "検品完了を確定",
+    title: "検品完了を確定する",
+    where: "HT　画面：<b>SCR-403-3 検品：完了確認</b>",
+    ops: [
+      "「伝票・仕入先・予定／実績・差異・NG数」のサマリを確認する",
+      "問題なければ <span class='key'>F3 完了確定</span> を押す"
+    ],
+    check: "<b>差異「なし」</b>・<b>NG数「0」</b> になっているか。差異があればこの画面で分かる。",
+    point: "完了すると <b>棚入れ指示が自動生成</b>され、続けて棚入れ作業（HT-406）へ進める。"
+  },
+  {
+    path: "pc/inbound/actuals.html", tag: "pc",
+    short: "PCで入荷実績を確認",
+    title: "PCで入荷実績・差異を確認する",
+    where: "事務所のPC　画面：<b>W-403 入荷実績一覧</b>",
+    ops: [
+      "左メニューの <span class='ui'>入荷管理 ＞ 入荷実績</span> を開く",
+      "上部の <span class='ui'>検索</span> で当日分を表示する",
+      "対象の実績行で「予定数・実績数・差異・状態」を確認する"
+    ],
+    check: "<b>予定数・実績数・差異・状態</b> の列。差異があれば差異処理で調整する。",
+    point: "ここまでで「ASN受信 → HT検品 → 実績確定」の入荷フローが一巡する。"
+  }
+];
+
+const MIRROR = "test2-mirror/";
+
+// テストASN（IN-26051901）に入れた検品用の明細＝コピペできるバーコード
+const TEST_BARCODES = [
+  { jan: "4901111036420", name: "丸喜 こいくち醤油 1.8L", qty: 12 },
+  { jan: "4902222018745", name: "丸喜 信州味噌 750g",     qty: 8  },
+  { jan: "4903333125039", name: "本枯節 だしパック 50P",   qty: 5  }
+];
+function copyBC(jan, btn){
+  const done = () => { const o = btn.textContent; btn.textContent = "コピー済"; btn.classList.add("copied"); setTimeout(() => { btn.textContent = o; btn.classList.remove("copied"); }, 1200); };
+  if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(jan).then(done).catch(()=>fallbackCopy(jan, done)); }
+  else { fallbackCopy(jan, done); }
+}
+function fallbackCopy(text, cb){
+  const ta = document.createElement("textarea"); ta.value = text; ta.style.position="fixed"; ta.style.left="-9999px"; document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); cb(); } catch(e){} document.body.removeChild(ta);
+}
+window.copyBC = copyBC;
+
+// テストデータ（明細）のキャッシュを最新化：古いと検品できないため起動時に1回更新
+try { fetch(MIRROR + "api/inbound-schedules.json", { cache: "reload" }); } catch(e){}
+
+const iframe = document.getElementById("screen");
+const screenWrap = document.getElementById("screenWrap");
+const stepsEl = document.getElementById("steps");
+const detailEl = document.getElementById("detail");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
+
+// 右の画面をデスクトップ幅でレンダリングし、ペイン幅に合わせて縮小（通常表示のまま小さくする）
+const LOGICAL_W = 1280;
+function fitScreen(){
+  const paneW = screenWrap.clientWidth;
+  const paneH = screenWrap.clientHeight;
+  if (!paneW || !paneH) return;
+  const scale = paneW / LOGICAL_W;          // ペイン幅に収まる倍率
+  iframe.style.width  = LOGICAL_W + "px";
+  iframe.style.height = (paneH / scale) + "px";  // 縮小後にペイン高さと一致
+  iframe.style.transform = "scale(" + scale + ")";
+}
+window.addEventListener("resize", fitScreen);
+
+let current = 0;
+const visited = new Set();
+
+// ステップ一覧を描画
+STEPS.forEach((s, i) => {
+  const li = document.createElement("li");
+  li.dataset.i = i;
+  li.innerHTML = `<span class="no">${i+1}</span><span class="lbl"><span class="tag ${s.tag}">${s.tag.toUpperCase()}</span>${s.short}</span>`;
+  li.addEventListener("click", () => goTo(i, true));
+  stepsEl.appendChild(li);
+});
+
+function renderDetail(i){
+  const s = STEPS[i];
+  const ops = s.ops.map(o => `<li>${o}</li>`).join("");
+  // スキャン画面のステップにはテスト用バーコード（コピペ）を表示
+  const bc = (s.path === "ht/inspect/scan.html") ? `
+    <div class="bc">
+      <div class="bc-h">テスト用バーコード（タップでコピー）</div>
+      ${TEST_BARCODES.map(b => `<div class="bc-row"><span class="jan">${b.jan}</span><span class="nm">${b.name}（予定 ${b.qty}）</span><button onclick="copyBC('${b.jan}',this)">コピー</button></div>`).join("")}
+      <div class="bc-note">右のHT画面の <b>JAN欄</b> をタップ → 貼り付け（⌘V / Ctrl+V）→ 数量を入力して <b>ENT</b>。<br>※HT実機の <b>SCAN</b> ボタンでも現在の品目を自動入力できます。</div>
+    </div>` : "";
+  detailEl.innerHTML = `
+    <div class="step-no">STEP ${i+1} / ${STEPS.length}</div>
+    <h2>${s.title}</h2>
+    <div class="where">${s.where}</div>
+    <div class="sec-ttl">操作</div>
+    <ol class="ops">${ops}</ol>
+    <div class="sec-ttl">確認</div>
+    <div class="check">${s.check}</div>
+    <div class="pt"><b>ポイント：</b>${s.point}</div>
+    ${bc}
+    <div class="now">表示中の画面：<code>${MIRROR}${s.path}</code></div>`;
+  detailEl.scrollTop = 0;
+}
+
+function paintSteps(){
+  [...stepsEl.children].forEach((li, i) => {
+    li.classList.toggle("active", i === current);
+    li.classList.toggle("visited", visited.has(i) && i !== current);
+  });
+  prevBtn.disabled = current <= 0;
+  nextBtn.disabled = current >= STEPS.length - 1;
+}
+
+// ステップへ移動（loadIframe=true なら右画面も切り替える）
+function goTo(i, loadIframe){
+  current = i;
+  visited.add(i);
+  renderDetail(i);
+  paintSteps();
+  if (loadIframe){
+    iframe.src = MIRROR + STEPS[i].path + (STEPS[i].q || "");
+  }
+}
+
+// 右画面のナビゲーションを検知 → 左説明を追従
+iframe.addEventListener("load", () => {
+  fitScreen();                        // 画面読込のたびに縮小倍率を再計算
+  let path = "";
+  try { path = iframe.contentWindow.location.pathname; } catch(e){ return; }
+  const rel = path.split(MIRROR).pop();
+
+  // 今のステップと同じ画面なら、そのステップを維持
+  // （複数ステップが同じ画面を共有するケース：scan.html を使う STEP3〜5 など）
+  const cur = STEPS[current];
+  if (cur && rel.endsWith(cur.path)){
+    visited.add(current); paintSteps(); return;
+  }
+
+  const matched = STEPS.findIndex(s => rel.endsWith(s.path));
+  if (matched >= 0){
+    goTo(matched, false);            // フロー内の別画面：説明を追従
+  } else {
+    // フロー外の画面に移動した場合
+    let title = ""; try { title = iframe.contentWindow.document.title; } catch(e){}
+    detailEl.innerHTML = `
+      <div class="step-no">フロー外の画面</div>
+      <h2>${title || "別の画面"}</h2>
+      <div class="where">このフロー（入荷業務）に含まれない画面を開いています。サイドバーから自由に閲覧できます。フローに戻るには左のステップをクリックしてください。</div>
+      <div class="now">表示中：<code>${rel}</code></div>`;
+    [...stepsEl.children].forEach(li => li.classList.remove("active"));
+  }
+});
+
+prevBtn.addEventListener("click", () => { if (current > 0) goTo(current - 1, true); });
+nextBtn.addEventListener("click", () => { if (current < STEPS.length - 1) goTo(current + 1, true); });
+
+// 初期表示
+goTo(0, true);
+fitScreen();
+</script>
+</body>
+</html>
