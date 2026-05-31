@@ -31,7 +31,7 @@ html, body { font-family: var(--f-base); color: var(--c-text); background: var(-
 .sidebar nav .group { padding: 14px 18px 6px; font-size: 10px; color: #8da2bf; letter-spacing: 0.1em; font-weight: 500; }
 .sidebar nav a { display: flex; align-items: center; padding: 9px 18px; color: #d6dee9; text-decoration: none; font-size: 13px; border-left: 3px solid transparent; }
 .sidebar nav a:hover { background: rgba(255,255,255,0.06); color: #fff; }
-.sidebar nav a.active { background: var(--c-accent); color: #fff; border-left-color: #fff; font-weight: 500; }
+.sidebar nav a.active { background: rgba(255,255,255,0.18); color: #fff; border-left-color: #fff; font-weight: 500; }
 .sidebar .sb-footer { padding: 12px 18px; border-top: 1px solid var(--c-accent-dk); font-size: 11px; color: #8da2bf; }
 
 .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -312,7 +312,8 @@ table.list.list-panel th, table.list.list-panel td { padding: 6px 8px; font-size
 .sidebar nav .group { color: rgba(255,255,255,0.5); text-transform: uppercase; }
 .sidebar nav a { color: rgba(255,255,255,0.82); border-left: 3px solid transparent; }
 .sidebar nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
-.sidebar nav a.active { background: var(--c-accent); color: #fff; border-left-color: #fff; font-weight: 600; }
+/* アクティブ項目は半透明の白で一段明るく（サイドバー色が何であっても確実に浮く・白文字も読める）*/
+.sidebar nav a.active { background: rgba(255,255,255,0.18); color: #fff; border-left-color: #fff; font-weight: 600; }
 .sidebar .sb-footer { color: rgba(255,255,255,0.5); border-top: 1px solid rgba(255,255,255,0.12); }
 
 /* サイドバー内部パーツ（common-layout.js 生成の cl-* 要素）を濃色背景向けに調整 */
