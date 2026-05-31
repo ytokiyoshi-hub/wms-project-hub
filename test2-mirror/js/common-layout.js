@@ -72,42 +72,49 @@
     alertLt:   '--c-alert-lt',
     base:      '--c-base',
     bg:        '--c-bg',
+    sidebar:   '--c-sidebar',
   };
   // テーマ全体プリセット（カラーセット）
   const THEME_PRESETS = {
     default: { // MORIKA 既定（罫線をはっきり化・2026-05-28）
       line: '#a8b1bd', lineDk: '#64748b',
       accent: '#1a3d6e', accentDk: '#132e52', accentLt: '#e8eef5',
+      sidebar: '#132e52',
       alert: '#be123c', alertLt: '#fff1f2',
       base: '#ffffff', bg: '#f8fafc',
     },
     navy_strong: { // 濃いネイビー
       line: '#bcc7d6', lineDk: '#6b7d96',
       accent: '#0b2545', accentDk: '#061632', accentLt: '#dbe2ec',
+      sidebar: '#061632',
       alert: '#9f0d2f', alertLt: '#fdeef1',
       base: '#ffffff', bg: '#f3f6fa',
     },
     gray: { // モノクロ系
       line: '#d4d4d4', lineDk: '#737373',
       accent: '#3f3f46', accentDk: '#27272a', accentLt: '#e7e7ea',
+      sidebar: '#27272a',
       alert: '#b91c1c', alertLt: '#fef2f2',
       base: '#ffffff', bg: '#fafafa',
     },
     blue: { // ブルー
       line: '#bfd5e6', lineDk: '#5b86ab',
       accent: '#1d4ed8', accentDk: '#1e3a8a', accentLt: '#e0e7ff',
+      sidebar: '#1e3a8a',
       alert: '#dc2626', alertLt: '#fee2e2',
       base: '#ffffff', bg: '#f1f5fb',
     },
     green: { // グリーン
       line: '#c8d8c8', lineDk: '#6b8e6b',
       accent: '#166534', accentDk: '#0f3f1f', accentLt: '#dcfce7',
+      sidebar: '#0f3f1f',
       alert: '#b91c1c', alertLt: '#fef2f2',
       base: '#ffffff', bg: '#f5faf5',
     },
     warm: { // ウォーム（ブラウン基調）
       line: '#d8cdbf', lineDk: '#94806a',
       accent: '#7c2d12', accentDk: '#431407', accentLt: '#fef3e7',
+      sidebar: '#431407',
       alert: '#b91c1c', alertLt: '#fef2f2',
       base: '#fffaf3', bg: '#fcf3e7',
     },

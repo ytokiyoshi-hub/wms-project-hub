@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <title>外観設定（配色テーマ） — マルキ食品 WMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/test2.css?v=202605300900">
+<link rel="stylesheet" href="css/test2.css?v=202605311000">
 <style>
   .color-row { display: flex; align-items: center; gap: 16px; padding: 8px 0; }
   .color-row .label { width: 220px; font-size: 13px; color: var(--c-text); }
@@ -34,7 +34,7 @@
         <div class="left-pane">
 
           <div class="note-box">
-            罫線・アクセント・アラート・背景の各色をカスタマイズできます。
+            罫線・アクセント・アラート・背景・サイドバーの各色をカスタマイズできます。
             変更は<b>即座にプレビュー反映</b>、「保存」で全画面に適用（このブラウザに保存）。「既定に戻す」でリセット。
           </div>
 
@@ -91,6 +91,12 @@
               <div class="color-row">
                 <span class="label">補助（コンテンツ背景）<small>--c-bg</small></span>
                 <span class="picker"><input type="color" data-key="bg"><span class="hex" data-hex="bg"></span></span>
+              </div>
+
+              <div class="section-h">サイドバー</div>
+              <div class="color-row">
+                <span class="label">サイドバー背景（選択色の濃色）<small>--c-sidebar</small></span>
+                <span class="picker"><input type="color" data-key="sidebar"><span class="hex" data-hex="sidebar"></span></span>
               </div>
 
               <div class="actions">
@@ -155,6 +161,7 @@
               <div>--c-accent / --c-accent-dk / --c-accent-lt</div>
               <div>--c-alert / --c-alert-lt</div>
               <div>--c-base / --c-bg</div>
+              <div>--c-sidebar</div>
             </div>
           </div>
 
@@ -172,8 +179,8 @@
   </main>
 </div>
 
-<script src="js/nav-manifest.js?v=202605301400"></script>
-<script src="js/common-layout.js?v=202605301400"></script>
+<script src="js/nav-manifest.js?v=202605311000"></script>
+<script src="js/common-layout.js?v=202605311000"></script>
 <script>
 (function () {
   const T = window.WMS_THEME;

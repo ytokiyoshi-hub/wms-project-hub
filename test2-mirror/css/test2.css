@@ -12,6 +12,7 @@
   --c-accent:#1a3a5c;
   --c-accent-dk:#0f2540;
   --c-accent-lt:#e8eef5;
+  --c-sidebar:#0f2540;
   --c-alert:#b8002e;
   --c-alert-lt:#fbe9ed;
   --f-base:'Noto Sans JP', sans-serif;
@@ -23,14 +24,14 @@ html, body { font-family: var(--f-base); color: var(--c-text); background: var(-
 /* === PC レイアウト === */
 .layout { display: flex; height: 100vh; overflow: hidden; }
 
-.sidebar { width: 220px; background: var(--c-accent); color: #fff; flex-shrink: 0; display: flex; flex-direction: column; }
+.sidebar { width: 220px; background: var(--c-sidebar); color: #fff; flex-shrink: 0; display: flex; flex-direction: column; }
 .sidebar .logo { padding: 18px; border-bottom: 1px solid var(--c-accent-dk); font-size: 15px; font-weight: 600; }
 .sidebar .logo small { display: block; font-size: 11px; font-weight: 400; color: #b5c1d1; margin-top: 4px; }
 .sidebar nav { flex: 1; padding: 8px 0; overflow-y: auto; }
 .sidebar nav .group { padding: 14px 18px 6px; font-size: 10px; color: #8da2bf; letter-spacing: 0.1em; font-weight: 500; }
 .sidebar nav a { display: flex; align-items: center; padding: 9px 18px; color: #d6dee9; text-decoration: none; font-size: 13px; border-left: 3px solid transparent; }
 .sidebar nav a:hover { background: rgba(255,255,255,0.06); color: #fff; }
-.sidebar nav a.active { background: var(--c-accent-dk); color: #fff; border-left-color: #fff; font-weight: 500; }
+.sidebar nav a.active { background: var(--c-accent); color: #fff; border-left-color: #fff; font-weight: 500; }
 .sidebar .sb-footer { padding: 12px 18px; border-top: 1px solid var(--c-accent-dk); font-size: 11px; color: #8da2bf; }
 
 .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -283,6 +284,7 @@ table.list.list-panel th, table.list.list-panel td { padding: 6px 8px; font-size
   --c-accent: #1a3d6e;     /* MORIKA ブランドネイビー */
   --c-accent-dk: #132e52;  /* hover/active 用の濃いネイビー */
   --c-accent-lt: #e8eef5;  /* brandTint */
+  --c-sidebar: #132e52;    /* サイドバー背景（アクセントの濃色）— 外観設定で変更可 */
   --c-alert: #be123c;      /* danger (rose-700) */
   --c-alert-lt: #fff1f2;   /* danger 薄 (rose-50) */
   --f-base: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
@@ -303,15 +305,25 @@ table.list.list-panel th, table.list.list-panel td { padding: 6px 8px; font-size
 .field input, .field select, .field textarea { border-radius: var(--ds-radius-sm); }
 .topbar .badge { border-radius: var(--ds-radius-sm); }
 
-/* --- レイアウト: MORIKA の「白サイドバー＋ネイビーのアクティブ」化（最大の見た目変化）--- */
-.sidebar { background: #ffffff; color: var(--c-text); border-right: 1px solid var(--c-line); width: 240px; }
-.sidebar .logo { color: var(--c-text); border-bottom: 1px solid var(--c-line); }
-.sidebar .logo small { color: var(--c-text-sub); }
-.sidebar nav .group { color: var(--c-text-mute); text-transform: uppercase; }
-.sidebar nav a { color: var(--c-text-sub); border-left: 3px solid transparent; }
-.sidebar nav a:hover { background: #f1f5f9; color: var(--c-text); }
-.sidebar nav a.active { background: var(--c-accent-lt); color: var(--c-accent); border-left-color: var(--c-accent); font-weight: 600; }
-.sidebar .sb-footer { color: var(--c-text-sub); border-top: 1px solid var(--c-line); }
+/* --- レイアウト: サイドバーを「選択カラーの濃色」(--c-sidebar) で塗る（外観設定で変更可・濃地＋白文字）--- */
+.sidebar { background: var(--c-sidebar); color: #fff; border-right: 1px solid var(--c-sidebar); width: 240px; }
+.sidebar .logo { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.12); }
+.sidebar .logo small { color: rgba(255,255,255,0.6); }
+.sidebar nav .group { color: rgba(255,255,255,0.5); text-transform: uppercase; }
+.sidebar nav a { color: rgba(255,255,255,0.82); border-left: 3px solid transparent; }
+.sidebar nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.sidebar nav a.active { background: var(--c-accent); color: #fff; border-left-color: #fff; font-weight: 600; }
+.sidebar .sb-footer { color: rgba(255,255,255,0.5); border-top: 1px solid rgba(255,255,255,0.12); }
+
+/* サイドバー内部パーツ（common-layout.js 生成の cl-* 要素）を濃色背景向けに調整 */
+.sidebar .cl-section { border-top: 1px solid rgba(255,255,255,0.1); }
+.sidebar .cl-section-head { color: rgba(255,255,255,0.62); }
+.sidebar .cl-section-head:hover { background: rgba(255,255,255,0.06); }
+.sidebar .cl-count, .sidebar .cl-caret { color: rgba(255,255,255,0.45); }
+.sidebar .cl-children { background: rgba(0,0,0,0.18); border-top: 1px dashed rgba(255,255,255,0.1); }
+.sidebar .cl-child { color: rgba(255,255,255,0.62); }
+.sidebar .cl-parent-toggle { border-color: rgba(255,255,255,0.22); color: rgba(255,255,255,0.6); }
+.sidebar .cl-parent-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
 /* --- サイドバーのフォントサイズを MORIKA に合わせる --- */
 .sidebar .logo { font-size: 14px; font-weight: 700; }
