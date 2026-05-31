@@ -56,15 +56,14 @@
 **実測結果（2026-05-31・検証し直した確定値）:**
 - ✅ サーバ起動: `node server/index.js` → port 8778 で起動・`/api/owners` 200応答
 - ✅ 実データ確認: owners 5件 / **shipment_orders 21,122件**（うち BULK 21,117件。静的JSONではなく実SQLite）
-- ✅ **書き込み実証**: `POST /api/shipment-orders`（必須の `lines[]` 付き）で **SO-260531-0001（id=21128）採番** → ①API再GET ②SQLite直読み行 ③明細行（SKU-MK001-001×3）の3通りで永続化を確認。＝test2-mirror（書いても `{ok:true,mock:true}` で消える）との本質差を実機で証明
-  - ※件数デルタはツールの読み戻し不具合で再確認できず（推測で記載しない）。新規行 id=21128 の存在で永続性は確定
-- ✅ 核心シナリオ **5/5 PASS**（`node runner.js scenarios/<file>.yaml` 単一実行は data-generator を必ず1回流す＝前提データ自動リセット込み）:
+- ✅ **書き込み実証**: `POST /api/shipment-orders`（必須の `lines[]` 付き）で **order_no=`OUT-26053101`（id=33492）採番** → ①API再GET ②SQLite直読み行 ③明細行（SKU-MK001-001×3）④件数 21,122→21,123（**delta +1**）の4通りで永続化を確認。＝test2-mirror（書いても `{ok:true,mock:true}` で消える）との本質差を実機で証明
+- ✅ 核心シナリオ **5/5 PASS**（各シナリオを `node runner.js --reset scenarios/<file>.yaml` で個別実行＝毎回 golden 状態にリセットしてから検証。各ログを確認済み）:
   - scn-core-inbound-001（入荷→検品→棚入れ）
   - scn-core-outbound-001（出荷→引当→ピック→梱包→積込→引渡）
   - scn-rls-isolation-001（荷主分離）※SQLite擬似フィルタ。実RLSはPhase 4で要再証明
-  - scn-load-sla-001（21k件一覧 4ms < 500ms SLA）
+  - scn-load-sla-001（21k件一覧 応答 3〜215ms、全て SLA 1000ms 以内）
   - scn-day-flow-001（1日業務貫通）
-- ⚠️ **教訓（手順）**: シナリオ実行は **必ず golden データをリセットしてから**。リセットせず stale 状態で回すと、対象SOが既に消費済み(status=picked)で Step1 が0件→`${order_id}`未展開→SQLに `$` が残り false FAIL になる。単一ファイル実行なら runner が自動リセットするが、手動で連続実行する場合は状態消費に注意。
+- ⚠️ **教訓（手順・重要）**: シナリオは **必ず `--reset` 付きで実行**すること。runner は `--reset` フラグがある時だけ data-generator を流す（フラグ無しの単発実行はリセットしない）。stale 状態で回すと対象SOが消費済み(status=picked)→Step1 が0件→`${order_id}`未展開→SQLに `$` が残り **false FAIL**（実装バグではない）。data-generator は引数なし呼び出しのため BULK 21,117件は保持される。
 - ⚠️ 補足: `node -v` = v24.15.0（node:sqlite ネイティブ動作）。golden DB は `db/wms.sqlite.bak-*` にバックアップ済。runner 群（sachan/nichan等）は unloaded のまま＝Phase 1以降で起こす
 
 ### Phase 1: Supabase 本番DB構築（半日・新規作成不要）
