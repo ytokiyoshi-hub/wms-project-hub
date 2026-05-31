@@ -351,8 +351,9 @@
     }
   } catch (e) {}
   // 既定値＝プリセット「推奨」。CSS の body.real-mode 既定値と一致させること。
+  // 注意: 全体倍率(--ts)はスライダーから外した。全フォント一括倍率は強調デザインの係数と
+  // 多重に掛かって文字が暴発する footgun だったため。文字サイズ調整は役割別px(--fs-*)のみで行う。
   const ROLES = [
-    { k: '--ts',       label: '全体倍率',          min: 0.7, max: 1.8, step: 0.05, def: 1,  px: false },
     { k: '--fs-title', label: '画面名(ヘッダ)',     min: 14,  max: 34,  step: 1,    def: 22, px: true },
     { k: '--fs-head',  label: '重要見出し/商品名',  min: 16,  max: 46,  step: 1,    def: 24, px: true },
     { k: '--fs-num',   label: '強調数値',          min: 20,  max: 64,  step: 1,    def: 30, px: true },
@@ -380,6 +381,9 @@
 
   // 保存済みを即適用（FOUC低減のため body 準備後すぐ）
   const settings = load();
+  // 過去に保存された全体倍率(--ts)は除去して自己修復。これで端末に残った過大値(例:1.8)が
+  // 全画面を拡大し続ける不具合が起動時に解消される。--ts は常に CSS 既定(=1)へ戻る。
+  if (settings['--ts'] !== undefined) { delete settings['--ts']; save(settings); }
   const applyNow = () => applyAll(settings);
   if (document.body) applyNow(); else document.addEventListener('DOMContentLoaded', applyNow);
 
