@@ -48,11 +48,22 @@
 
 各フェーズは**実信号で完了判定できる**状態で終わる。
 
-### Phase 0: 足場固め（半日）
-- runner-mgr restart で sachan/nichan/kochan を idle 確認
+### Phase 0: 足場固め（半日）— ✅ **完了 2026-05-31（実測）**
 - 本番母体 = wms-test2 一本化を明記（本書）
-- wms-test2 をローカル起動（USE_SUPABASE=false）→ **19シナリオ GREEN を再確認＝基準線を実測で固定**
-- 完了判定: runner 3体 idle / ローカル起動OK / 19シナリオ GREEN 再現
+- wms-test2 をローカル起動（USE_SUPABASE=false）→ 核心シナリオ GREEN を再確認＝基準線を実測で固定
+- 完了判定: ローカル起動OK / 核心シナリオ GREEN 再現
+
+**実測結果（2026-05-31）:**
+- ✅ サーバ起動: `node server/index.js` → port 8778 で起動・`/api/owners` 200応答
+- ✅ 実データ確認: owners 5件 / **shipment_orders 21,122件**（静的JSONではなく実SQLite）
+- ✅ **書き込み実証**: `POST /api/shipment-orders` で SO-26063012 採番（id=21127）→ SQLite直読みで永続化を確認（21,122→21,123件）。＝test2-mirror（書いても消える mock）との本質差を実機で証明
+- ✅ 核心シナリオ5本 GREEN:
+  - scn-core-inbound-001（入荷→検品→棚入れ）6/6
+  - scn-core-outbound-001（出荷→引当→ピック→出荷確定）6/6
+  - scn-rls-isolation-001（荷主分離）※SQLite擬似フィルタ。実RLSはPhase 4で要再証明
+  - scn-load-sla-001（21k件一覧 187ms < 1000ms SLA）
+  - scn-day-flow-001（1日業務貫通11ステップ）11/11
+- ⚠️ 補足: `node -v` = v24.15.0（node:sqlite ネイティブ動作）。runner 群（sachan/nichan等）は unloaded のまま＝Phase 1以降で起こす
 
 ### Phase 1: Supabase 本番DB構築（半日・新規作成不要）
 - **新規プロジェクトは作らない**。既存 `shacho-shitsu` に専用 schema `wms` を作成（`CREATE SCHEMA wms;`）
@@ -91,7 +102,7 @@
 - 担当: こーちゃん(デプロイ) ＋ 自分(判定段取り)
 - 完了判定: **新URLからHTTPSでログイン→出庫フロー（ピック→検品→梱包→出荷）が実データで動作**
 
-**総所要: 約 8-11 日（人手ステップ2か所＝Supabaseプロジェクト作成・migration適用 を除く実装は runner 並列）**
+**総所要: 約 8-11 日**（Phase 0 完了済。Supabaseは新規作成せず相乗りのため人手ステップは「migration適用の承認」のみ。実装は runner 並列）
 
 ---
 
@@ -119,7 +130,16 @@
 
 ---
 
-## 6. 補足: デプロイの無料枠制約（Phase 6 で要検討）
+## 6. 補足: デプロイの無料枠制約（Phase 5 で要検討）
 
 - Express サーバ常設には Vercel serverless 化（api/[[...path]].js wrap）が必要。Vercel 無料枠（Hobby）は個人・非商用前提のため、本番商用運用時は規約とプラン要確認。
-- 当面は「動くアプリの実証」を Phase 6 のゴールとし、商用ホスティング選定は running 達成後に別途判断する。
+- 当面は「動くアプリの実証」を Phase 5 のゴールとし、商用ホスティング選定は running 達成後に別途判断する。
+
+---
+
+## 7. 関連成果物（2026-05-31 追加）
+
+- **ER図（DBML）**: 実装スキーマ（wms-test2 の44テーブル）を dbdiagram.io 用 DBML 化。中津さんとの「連携確認」用。
+  - `specs/wms_schema.dbml` — フル版（全列・実FK18＋論理参照）
+  - `specs/wms_schema_lite.dbml` — 連携確認用軽量版（主要列のみ・41リレーション・独立テーブルに理由注記）
+  - 用途: 中津さんに実装の現状を見せて、あるべき設計（USER_OWNER_ACCESS / OWNER_CONTRACT / BILLING_INVOICE 等の追加要否）をすり合わせ → Phase 1 のDB設計に反映
