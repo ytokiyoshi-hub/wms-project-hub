@@ -66,23 +66,13 @@
 - ⚠️ **教訓（手順・重要）**: シナリオは **必ず `--reset` 付きで実行**すること。runner は `--reset` フラグがある時だけ data-generator を流す（フラグ無しの単発実行はリセットしない）。stale 状態で回すと対象SOが消費済み(status=picked)→Step1 が0件→`${order_id}`未展開→SQLに `$` が残り **false FAIL**（実装バグではない）。data-generator は引数なし呼び出しのため BULK 21,117件は保持される。
 - ⚠️ 補足: `node -v` = v24.15.0（node:sqlite ネイティブ動作）。golden DB は `db/wms.sqlite.bak-*` にバックアップ済。runner 群（sachan/nichan等）は unloaded のまま＝Phase 1以降で起こす
 
-### Phase 1: Supabase 本番DB構築（新規作成不要）— 🔄 **進行中（schema+テーブル適用済 2026-05-31）**
+### Phase 1: Supabase 本番DB構築（半日・新規作成不要）
 - **新規プロジェクトは作らない**。既存 `shacho-shitsu` に専用 schema `wms` を作成（`CREATE SCHEMA wms;`）
-- migrations/001→002→003 を **schema `wms` 配下に適用**（`SET search_path TO wms;` 前置。`public.` 明示参照ゼロを確認済＝wms 内に完全に閉じる）
-
-**実績（2026-05-31・MCP実適用・各段SELECT検証済）:**
-- ✅ **`wms` schema 作成**（apply_migration `wms_create_schema`）。適用前 public=78 / wms=0 を実測スナップショット
-- ✅ **migration 001 適用**（apply_migration `wms_001_initial_schema`、`SET search_path TO wms;` 前置）→ **wms に44テーブル + 50インデックス**作成。`shifts`/`inbound_schedules` 等の存在を個別 SELECT 確認。DBML（44テーブル）と一致
-- ✅ **public 無影響を証明**: 適用前後とも **public=78テーブルで不変**。wms 内に完全隔離（命名衝突・他ドメイン汚染なし）
-- ✅ **完全可逆**: `DROP SCHEMA wms CASCADE` で全て巻き戻せる（public/auth に痕跡を残さない）
-
-**残（Phase 1 のこり）:**
-- ⏳ **migration 002（RLS 57ポリシー + helper関数2本）**: 未適用。wms 内のみ対象で安全だが、`SET search_path TO wms;` 前置で適用予定。RLS は Phase 3/4（認証連携・実RLS検証）まで実害なく後置可能
-- ⛔ **migration 003（auth.users へテストユーザ7投入）**: **意図的に保留**。これは **共有の `auth` schema** に書くため shacho-shitsu 本体のログインと干渉しうる。認証方式（Supabase Auth を使うか自前 system_users か＝Phase 3 の論点）確定後に、影響範囲を確認してから適用する
-- ⏳ **相乗り検証**: RLS の `current_setting('request.jwt.claims')` 注入が自前Express接続で効くか（Phase 3 で実証）
-
-- 担当: 1号(MCP適用・検証) → RLS本格運用は Phase 3/4
-- 完了判定（更新）: wms に全テーブル + RLS + （認証方式確定後の）ユーザーが存在し、public/auth に影響なし
+- migrations/001→002→003 を **schema `wms` 配下に適用**（テーブル名を `wms.owners` 等に解決。public の既存テーブルと衝突しない）
+- ⚠️ **相乗り特有の検証（着手時に1回）**: RLS の `auth.uid()`/JWT claim 注入が、自前Express接続（service_role or DB直結）でも効くか。helper関数3本が schema 跨ぎで解決するかを実SQLで確認
+- 検証: `wms` schema にテーブル45 / 該当ポリシー57 / テストユーザ7 を SELECT 確認 / get_advisors でRLS欠落ゼロ
+- 担当: さーちゃん(migration via MCP・schema分離対応)
+- 完了判定: `wms` schema に45テーブル+57 RLS+7ユーザーが存在し、public 側の既存テーブルに一切影響がないこと（before/after でpublicテーブル数不変）
 
 ### Phase 2: adapter 結線【最大の山場】（2-3日）
 - supabase-adapter.js を postgres-js で完成（prepare/run/get/all/transaction + ?→$1）
