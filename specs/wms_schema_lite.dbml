@@ -1,0 +1,412 @@
+// =============================================================
+// WMS スキーマ【連携確認用・軽量版】 — 2026-05-31
+// 中津さんとの「連携確認」用。各テーブルは「つなぎ目になる列」だけに絞ってある。
+// （= PK / FK・コード列 / name / status / 業務上重要な1列のみ。
+//   fax・kana・フラグ・タイムスタンプ等は図から省略）
+//
+// 全列を見たいときは wms_schema.dbml（フル版・44テーブル全列）を使う。
+//
+// 貼り方: dbdiagram.io → 左エディタを ⌘A→delete で全消し → これを ⌘V。
+//
+// 凡例:
+//   - 実線(FK) と 論理参照 を混在表示。SQL制約の有無は末尾コメント参照。
+//   - Note付きテーブル = 他テーブルと繋がらない「独立テーブル」。理由を明記。
+// =============================================================
+
+// ===================== 中核スパイン =====================
+
+Table owners {
+  code           text [pk, note: '荷主コード']
+  name           text [not null]
+  billing_method text
+  status         text [not null, note: 'active/suspended/terminated']
+}
+
+Table products {
+  code             text [pk]
+  owner_code       text [not null, note: '→ owners']
+  name             text [not null]
+  temperature_zone text [note: '常温/冷蔵/冷凍']
+  status           text [not null]
+}
+
+Table locations {
+  code           text [pk]
+  warehouse_code text [note: '→ warehouses']
+  type_char      text [not null, note: '→ location_types']
+  owner_scope    text [not null, note: 'shared/dedicated']
+  owner_code     text [note: '専用時のみ → owners']
+  status         text [not null]
+}
+
+Table warehouses {
+  code           text [pk]
+  name           text [not null]
+  operation_type text [not null, note: 'own/outsourced']
+  status         text [not null]
+}
+
+Table customers {
+  code        text [pk]
+  owner_code  text [not null, note: '→ owners']
+  name        text [not null]
+  region_code text [note: '→ regions']
+  status      text [not null]
+}
+
+// ===================== 入荷 =====================
+
+Table inbound_schedules {
+  id             bigserial [pk]
+  schedule_no    text [not null, unique]
+  owner_code     text [not null, note: '→ owners']
+  warehouse_code text [note: '→ warehouses']
+  order_type     text [not null, note: 'normal/return']
+  status         text [note: '(明細側で管理)']
+}
+
+Table inbound_schedule_lines {
+  id           bigserial [pk]
+  schedule_id  integer [not null, note: '→ inbound_schedules']
+  product_code text [not null]
+  status       text [not null, note: 'planned/inspected/completed']
+}
+
+Table inbound_discrepancies {
+  id      bigserial [pk]
+  line_id integer [not null, note: '→ inbound_schedule_lines']
+  status  text [not null]
+}
+
+// ===================== 在庫 =====================
+
+Table inventory {
+  product_code  text [not null, note: '→ products']
+  location_code text [not null, note: '→ locations']
+  lot_no        text [not null]
+  qty           integer [not null]
+
+  indexes {
+    (product_code, location_code, lot_no) [pk]
+  }
+}
+
+Table inventory_transactions {
+  id            bigserial [pk]
+  tx_type       text [not null, note: 'inbound/putaway/outbound/move/adjust']
+  product_code  text [not null]
+  location_code text [not null]
+  qty           integer [not null, note: '+増/-減']
+  Note: '在庫の全増減ログ。ref_type/ref_id が多態参照（出荷/入荷/調整を1列で指す）のため FK を張れない独立表。'
+}
+
+Table inventory_snapshots {
+  id            bigserial [pk]
+  snapshot_date text [not null]
+  owner_code    text [not null, note: '→ owners']
+  product_code  text [not null, note: '→ products']
+  location_code text [not null]
+  qty           integer [not null]
+}
+
+Table inventory_adjustments {
+  id            bigserial [pk]
+  adjustment_no text [not null, unique]
+  owner_code    text [not null, note: '→ owners']
+  product_code  text [not null]
+  reason_code   text [not null, note: '→ adjustment_reason_codes']
+  status        text [not null, note: 'pending/approved/rejected']
+}
+
+// ===================== 出荷 =====================
+
+Table shipment_orders {
+  id           bigserial [pk]
+  order_no     text [not null, unique]
+  owner_code   text [not null, note: '→ owners']
+  purpose_type text [not null, note: 'normal/sample/disposal/return_to_supplier']
+  status       text [not null, note: 'planned/allocated/picking/picked/shipped']
+}
+
+Table shipment_order_lines {
+  id           bigserial [pk]
+  order_id     integer [not null, note: '→ shipment_orders']
+  product_code text [not null]
+  status       text [not null]
+}
+
+Table picking_tasks {
+  id            bigserial [pk]
+  order_id      integer [not null, note: '→ shipment_orders']
+  line_id       integer [not null, note: '→ shipment_order_lines']
+  location_code text [not null]
+  status        text [not null, note: 'pending/picked/cancelled']
+}
+
+Table shipment_packings {
+  id            bigserial [pk]
+  order_id      integer [not null, note: '→ shipment_orders']
+  material_code text [not null, note: '→ packing_materials']
+}
+
+Table loadings {
+  id           bigserial [pk]
+  loading_no   text [not null, unique]
+  carrier_code text [not null, note: '→ carriers']
+  status       text [not null, note: 'planned/loading/loaded/handover/completed']
+}
+
+Table loading_orders {
+  id         bigserial [pk]
+  loading_id integer [not null, note: '→ loadings']
+  order_id   integer [not null, note: '→ shipment_orders']
+}
+
+// ===================== 返品 =====================
+
+Table returns {
+  id         bigserial [pk]
+  return_no  text [not null, unique]
+  owner_code text [not null, note: '→ owners']
+  status     text [not null, note: 'planned/inspecting/completed']
+}
+
+Table return_lines {
+  id           bigserial [pk]
+  return_id    integer [not null, note: '→ returns']
+  product_code text [not null]
+  status       text [not null]
+}
+
+// ===================== 棚卸 =====================
+
+Table stocktake_sessions {
+  id         bigserial [pk]
+  session_no text [not null, unique]
+  mode       text [not null, note: 'all_at_once/cyclic']
+  status     text [not null, note: 'open/locked/finalized']
+}
+
+Table stocktake_lines {
+  id            bigserial [pk]
+  session_id    integer [not null, note: '→ stocktake_sessions']
+  product_code  text [not null]
+  location_code text [not null]
+}
+
+// ===================== 補充 =====================
+
+Table replenishment_rules {
+  id            bigserial [pk]
+  owner_code    text [note: 'NULL=全荷主 → owners']
+  product_code  text [note: 'NULL=全商品']
+  from_location text [not null]
+  to_location   text [not null]
+  trigger_type  text [not null, note: 'on_demand/nightly/on_allocation']
+}
+
+// ===================== 請求 =====================
+
+Table billing_rates {
+  id         bigserial [pk]
+  owner_code text [not null, note: '→ owners']
+  rate_type  text [not null, note: 'storage_3/storage_2/handling_in/out']
+  unit_code  text [note: '→ unit_master']
+}
+
+Table packing_rules {
+  owner_code  text [pk, note: '→ owners']
+  calc_method text [not null, note: 'auto/manual']
+}
+
+Table billing_snapshots {
+  id         bigserial [pk]
+  owner_code text [not null, note: '→ owners']
+  year_month text [not null, note: 'YYYY-MM']
+  status     text [not null, note: 'draft/finalized']
+
+  indexes {
+    (owner_code, year_month) [unique]
+  }
+}
+
+// ===================== ユーザー / 権限 =====================
+
+Table system_users {
+  id           bigserial [pk]
+  login_id     text [not null, unique]
+  role         text [not null, note: 'admin/leader/worker/owner']
+  owner_code   text [note: '荷主ロール時のみ（単一所属）→ owners']
+  status       text [not null]
+}
+
+Table user_invitations {
+  id         bigserial [pk]
+  email      text [not null]
+  role       text [not null]
+  owner_code text
+  status     text [not null, note: 'pending/accepted/authorized/expired/cancelled']
+  Note: '招待フロー。承認時に system_users を生成するが、招待レコード自体は FK を持たない独立表。'
+}
+
+Table permissions {
+  id           bigserial [pk]
+  feature_code text [not null]
+  role         text [not null, note: 'admin/leader/worker/owner_user']
+  permission   text [not null, note: 'view/edit/approve/none']
+  Note: '機能×ロールの権限マトリクス。feature_code/role は文字列キーで FK 無しの独立表。'
+}
+
+Table feature_flags {
+  feature_code text [pk]
+  name         text [not null]
+  enabled      integer [not null]
+  Note: '機能ON/OFF（QA-13 で廃案概念）。他テーブルから参照されない独立表。本番化で削除候補。'
+}
+
+Table feedback_notes {
+  id       bigserial [pk]
+  category text [not null]
+  status   text [not null]
+  Note: '画面フィードバック収集用。業務データとは無関係の独立表。'
+}
+
+// ===================== 配送マスタ =====================
+
+Table carriers {
+  code text [pk]
+  name text [not null]
+}
+
+Table carrier_routes {
+  id           bigserial [pk]
+  carrier_code text [not null, note: '→ carriers']
+  region_code  text [not null, note: '→ regions']
+  route_name   text [not null]
+}
+
+Table drivers {
+  code         text [pk]
+  carrier_code text [not null, note: '→ carriers']
+  name         text [not null]
+}
+
+Table vehicles {
+  code         text [pk]
+  carrier_code text [not null, note: '→ carriers']
+  vehicle_no   text [not null]
+}
+
+Table regions {
+  code                 text [pk]
+  name                 text [not null]
+  default_carrier_code text [note: '→ carriers（既定便）']
+}
+
+// ===================== その他マスタ =====================
+
+Table location_types {
+  type_char text [pk, note: 'P/T/F/K/R/H']
+  name      text [not null]
+}
+
+Table unit_master {
+  code  text [pk]
+  name  text [not null]
+  label text [not null, note: '円/ケース 等']
+}
+
+Table packing_materials {
+  code        text [pk]
+  name        text [not null]
+  owner_scope text [not null, note: 'shared/dedicated']
+  owner_code  text [note: '専用時のみ → owners']
+}
+
+Table adjustment_reason_codes {
+  code     text [pk]
+  name     text [not null]
+  category text [not null, note: 'inventory_diff/return/disposal']
+}
+
+Table employees {
+  code            text [pk]
+  name            text [not null]
+  employment_type text [not null, note: 'regular/partime/contract']
+  status          text [not null]
+}
+
+Table shifts {
+  id            bigserial [pk]
+  shift_date    text [not null]
+  employee_code text [not null, note: '→ employees']
+  assigned_area text
+  status        text [not null]
+}
+
+Table csv_format_masters {
+  id          bigserial [pk]
+  owner_code  text [not null, note: '* = 全荷主共通 → owners']
+  data_type   text [not null, note: 'inbound/outbound/inventory/billing']
+  format_name text [not null]
+}
+
+Table calendar_days {
+  id            bigserial [pk]
+  calendar_type text [not null, note: 'warehouse/carrier/owner']
+  target_code   text [note: 'carrier_code/owner_code/NULL']
+  date          text [not null]
+  day_type      text [not null, note: 'business/holiday/half/emergency']
+  Note: '倉庫/配送/荷主 共用カレンダー。target_code が calendar_type により指す先が変わる多態キーのため FK 無し。'
+}
+
+// =============================================================
+// リレーション
+//   実FK = migration で REFERENCES 定義済み（SQL制約あり）
+//   論理 = コード文字列での参照（現状 SQL制約なし・本番化 Phase 2 で FK 付与を検討）
+// =============================================================
+
+// --- 実FK ---
+Ref: products.owner_code > owners.code
+Ref: inbound_schedule_lines.schedule_id > inbound_schedules.id
+Ref: inbound_discrepancies.line_id > inbound_schedule_lines.id
+Ref: shipment_order_lines.order_id > shipment_orders.id
+Ref: picking_tasks.order_id > shipment_orders.id
+Ref: picking_tasks.line_id > shipment_order_lines.id
+Ref: shipment_packings.order_id > shipment_orders.id
+Ref: loading_orders.loading_id > loadings.id
+Ref: loading_orders.order_id > shipment_orders.id
+Ref: return_lines.return_id > returns.id
+Ref: stocktake_lines.session_id > stocktake_sessions.id
+Ref: inventory_snapshots.owner_code > owners.code
+Ref: inventory_snapshots.product_code > products.code
+Ref: packing_rules.owner_code > owners.code
+Ref: carrier_routes.carrier_code > carriers.code
+Ref: drivers.carrier_code > carriers.code
+Ref: vehicles.carrier_code > carriers.code
+Ref: shifts.employee_code > employees.code
+
+// --- 論理参照（SQL制約なし・本番化で FK 付与を検討） ---
+Ref: locations.owner_code > owners.code
+Ref: customers.owner_code > owners.code
+Ref: inbound_schedules.owner_code > owners.code
+Ref: shipment_orders.owner_code > owners.code
+Ref: returns.owner_code > owners.code
+Ref: inventory_adjustments.owner_code > owners.code
+Ref: billing_rates.owner_code > owners.code
+Ref: billing_snapshots.owner_code > owners.code
+Ref: csv_format_masters.owner_code > owners.code
+Ref: replenishment_rules.owner_code > owners.code
+Ref: system_users.owner_code > owners.code
+Ref: packing_materials.owner_code > owners.code
+Ref: inventory.product_code > products.code
+Ref: inventory.location_code > locations.code
+Ref: locations.warehouse_code > warehouses.code
+Ref: inbound_schedules.warehouse_code > warehouses.code
+Ref: locations.type_char > location_types.type_char
+Ref: billing_rates.unit_code > unit_master.code
+Ref: shipment_packings.material_code > packing_materials.code
+Ref: inventory_adjustments.reason_code > adjustment_reason_codes.code
+Ref: customers.region_code > regions.code
+Ref: carrier_routes.region_code > regions.code
+Ref: regions.default_carrier_code > carriers.code

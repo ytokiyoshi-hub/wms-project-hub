@@ -1,0 +1,725 @@
+// =============================================================
+// WMS 実装スキーマ（wms-test2 / migrations/001_initial_schema.sql 由来）
+// dbdiagram.io 貼り付け用 DBML — 2026-05-31 生成
+// 用途: 中津さんとの「連携確認」。手描き図ではなく実装からの忠実反映。
+//
+// 使い方: https://dbdiagram.io を開く → 左のエディタ全選択して削除 →
+//         本ファイルの中身を丸ごと貼り付け → 右に図が出る。
+//
+// 注意（本番化での要検討事項・実態の正直な反映）:
+//  - 日付/日時カラムは現状すべて TEXT 保存（type: timestamp ではなく text）。
+//    本番Postgresでは date/timestamptz への型付けを検討（ロードマップ Phase 2）。
+//  - owner_code 等のテナント参照は大半が「論理参照」で、SQL上の FK制約は未付与。
+//    本セクション末尾の「論理参照」は本番化で FK 制約付与を検討すべき箇所。
+// =============================================================
+
+// ===================== マスタ系 =====================
+
+Table owners {
+  code                  text [pk, note: '荷主コード MK001 等']
+  branch_no             text [not null]
+  name                  text [not null, note: '正式名']
+  short_name            text [note: '略称・呼称']
+  name_kana             text
+  billing_enabled       integer [not null, note: '請求機能ON/OFF 1/0']
+  billing_method        text
+  postal_code           text
+  address               text
+  phone                 text
+  email                 text
+  fax                   text
+  closing_date          text [note: '締め日 month_end/20/15/10']
+  payment_site          text [note: '支払サイト']
+  industry_category     text
+  contact_name          text
+  contact_dept          text
+  contact_phone         text
+  jan_strict_mode       text [not null, note: 'strict/loose']
+  rma_mode              text [not null, note: 'wms_issue/shipper_link/none']
+  lot_slots             integer [not null, note: 'ロット欄数 1-3']
+  inventory_modes       text [not null, note: '棚卸方式JSON配列']
+  auto_restock          integer [not null, note: '良品自動戻入 1/0']
+  return_default_status text [not null]
+  note                  text
+  status                text [not null, note: 'active/suspended/terminated']
+  created_at            text [not null]
+  updated_at            text [not null]
+}
+
+Table products {
+  code                  text [pk]
+  owner_code            text [not null]
+  branch_no             text [not null]
+  owner_sku_code        text [note: '荷主側商品コード R-1']
+  name                  text [not null]
+  name_kana             text
+  jan_code              text
+  jan_case              text
+  jan_ball              text
+  jan_piece             text
+  itf_case              text
+  hazard_class          text [not null, note: '非危険物/危険物/医薬品']
+  unit_top              text [not null]
+  pieces_per_lower      integer [not null]
+  cases_per_pallet      integer
+  pieces_per_ball       integer [not null]
+  pieces_per_case       integer [not null]
+  temperature_zone      text [not null, note: '常温/冷蔵/冷凍']
+  expiry_managed        integer [not null]
+  expiry_days           integer
+  expiry_alert_days     integer
+  requires_lot_tracking integer [not null, note: 'ロット管理 1/0']
+  serial_managed        integer [not null, note: 'シリアル管理 1/0']
+  packaging_factor      numeric [not null]
+  status                text [not null]
+  created_at            text [not null]
+  updated_at            text [not null]
+}
+
+Table locations {
+  code                text [pk]
+  warehouse_code      text
+  floor               text [not null]
+  floor_zone          text [not null]
+  type_char           text [not null, note: 'P/T/F/K/R/H ロケ種別英字']
+  aisle               text [not null]
+  position            text [not null]
+  temp_zone           text [not null, note: 'ambient/cold/frozen']
+  owner_scope         text [not null, note: 'shared/dedicated']
+  owner_code          text [note: '専用時のみ']
+  allocation_excluded integer [not null, note: '0:対象 1:除外']
+  max_load_kg         integer
+  status              text [not null]
+  note                text
+  created_at          text [not null]
+  updated_at          text [not null]
+}
+
+Table warehouses {
+  code              text [pk]
+  name              text [not null]
+  address           text
+  operation_type    text [not null, note: 'own/outsourced']
+  partner_name      text
+  payment_rate      numeric
+  registration_no   text
+  timezone          text [not null]
+  business_hours    text
+  postal_code       text
+  prefecture        text
+  address_detail    text
+  building          text
+  contact_person    text
+  contact_phone     text
+  status            text [not null]
+  note              text
+  created_at        text [not null]
+}
+
+Table customers {
+  code                    text [pk]
+  owner_code              text [not null]
+  name                    text [not null]
+  name_kana               text
+  category                text [note: '卸/小売/EC/その他']
+  postal_code             text
+  prefecture              text
+  address                 text
+  building                text
+  phone                   text
+  contact_person          text
+  preferred_carrier       text [note: 'carrier_code']
+  delivery_note           text
+  region_code             text
+  invoice_delivery_method text [not null, note: 'email/postal/none']
+  fax_number              text
+  status                  text [not null]
+  created_at              text [not null]
+}
+
+Table location_types {
+  type_char          text [pk, note: 'P/T/F/K/R/H']
+  name               text [not null]
+  description        text
+  pick_priority      integer [not null]
+  can_replenish_from integer [not null]
+  can_replenish_to   integer [not null]
+  status             text [not null]
+  created_at         text [not null]
+}
+
+Table unit_master {
+  code        text [pk, note: 'case/piece/tsubo/m2/hour/kg/m3/vehicle']
+  name        text [not null]
+  en_name     text
+  label       text [not null, note: '円/ケース 等']
+  category    text [not null, note: 'billing/inventory/other']
+  sort_order  integer [not null]
+  status      text [not null]
+  note        text
+  created_at  text [not null]
+  updated_at  text [not null]
+}
+
+Table regions {
+  code                 text [pk]
+  name                 text [not null]
+  prefectures          text
+  default_carrier_code text
+}
+
+Table carriers {
+  code     text [pk]
+  name     text [not null]
+  contact  text
+}
+
+Table carrier_routes {
+  id             bigserial [pk]
+  carrier_code   text [not null]
+  region_code    text [not null]
+  route_name     text [not null, note: '早便/午後便']
+  cutoff_time    text
+  departure_time text
+  max_capacity   integer
+  note           text
+  status         text [not null]
+}
+
+Table drivers {
+  code         text [pk]
+  name         text [not null]
+  carrier_code text [not null]
+  phone        text
+  license_type text
+  status       text [not null]
+  note         text
+  created_at   text [not null]
+}
+
+Table vehicles {
+  code         text [pk]
+  vehicle_no   text [not null]
+  carrier_code text [not null]
+  type         text
+  capacity_kg  numeric
+  note         text
+  status       text [not null]
+  created_at   text [not null]
+}
+
+Table employees {
+  code            text [pk]
+  name            text [not null]
+  name_kana       text
+  employment_type text [not null, note: 'regular/partime/contract']
+  hourly_wage     numeric
+  hire_date       text
+  status          text [not null]
+  skills          text [note: 'inspect,picking,packing,loading,forklift']
+  primary_area    text
+  phone           text
+  note            text
+  created_at      text [not null]
+}
+
+Table packing_materials {
+  code             text [pk]
+  name             text [not null]
+  material_type    text
+  owner_scope      text [not null, note: 'shared/dedicated']
+  owner_code       text
+  size_label       text
+  size_w           integer
+  size_d           integer
+  size_h           integer
+  max_load_qty     integer
+  max_load_kg      integer
+  usage_rate_limit integer
+  unit_cost        numeric
+  stock_qty        integer [not null]
+  reorder_point    integer
+  status           text [not null]
+  note             text
+  created_at       text [not null]
+  updated_at       text [not null]
+}
+
+Table adjustment_reason_codes {
+  code            text [pk]
+  name            text [not null]
+  category        text [not null, note: 'inventory_diff/return/disposal']
+  affects_billing integer [not null]
+  note            text
+  created_at      text [not null]
+}
+
+Table csv_format_masters {
+  id          bigserial [pk]
+  owner_code  text [not null, note: '* = 全荷主共通']
+  data_type   text [not null, note: 'inbound/outbound/inventory/billing']
+  format_name text [not null]
+  column_def  text [not null, note: 'JSON']
+  encoding    text [not null]
+  delimiter   text [not null]
+  is_default  integer [not null]
+  note        text
+  created_at  text [not null]
+
+  indexes {
+    (owner_code, data_type, format_name) [unique]
+  }
+}
+
+Table calendar_days {
+  id             bigserial [pk]
+  calendar_type  text [not null, note: 'warehouse/carrier/owner']
+  target_code    text [note: 'carrier_code/owner_code/NULL']
+  date           text [not null]
+  day_type       text [not null, note: 'business/holiday/half/emergency']
+  note           text
+  surcharge_rate numeric
+
+  indexes {
+    (calendar_type, target_code, date) [unique]
+  }
+}
+
+// ===================== 入荷系 =====================
+
+Table inbound_schedules {
+  id                bigserial [pk]
+  schedule_no       text [not null, unique]
+  asn_no            text [note: 'ASN番号']
+  owner_code        text [not null]
+  supplier_name     text
+  warehouse_code    text
+  scheduled_date    text [not null]
+  order_type        text [not null, note: 'normal/return']
+  rma_no            text
+  inspection_method text [not null, note: 'standard/sample/full']
+  note              text
+  created_at        text [not null]
+  updated_at        text [not null]
+}
+
+Table inbound_schedule_lines {
+  id               bigserial [pk]
+  schedule_id      integer [not null]
+  product_code     text [not null]
+  expected_qty     integer [not null]
+  inspected_qty    integer
+  lot_no           text
+  expiry_date      text
+  putaway_priority integer [not null]
+  status           text [not null, note: 'planned/inspected/completed']
+  inspected_at     text
+  putaway_at       text
+  putaway_location text
+  note             text
+}
+
+Table inbound_discrepancies {
+  id               bigserial [pk]
+  line_id          integer [not null]
+  discrepancy_type text [note: 'quantity/quality/wrong_item']
+  expected_qty     integer [not null]
+  inspected_qty    integer [not null]
+  difference       integer [not null]
+  reason_category  text
+  reason_detail    text
+  status           text [not null, note: 'pending/in_progress/done']
+  reported_by      text
+  approved_by      text
+  approved_at      text
+  approval_action  text
+  approval_note    text
+  created_at       text [not null]
+}
+
+// ===================== 在庫系 =====================
+
+Table inventory {
+  product_code  text [not null]
+  location_code text [not null]
+  lot_no        text [not null]
+  qty           integer [not null]
+  received_at   text
+  expiry_date   text
+  updated_at    text [not null]
+
+  indexes {
+    (product_code, location_code, lot_no) [pk]
+  }
+}
+
+Table inventory_transactions {
+  id            bigserial [pk]
+  tx_type       text [not null, note: 'inbound_inspect/putaway/outbound/move/adjust']
+  product_code  text [not null]
+  location_code text [not null]
+  lot_no        text [not null]
+  qty           integer [not null, note: 'signed +増/-減']
+  ref_type      text
+  ref_id        integer
+  note          text
+  created_at    text [not null]
+}
+
+Table inventory_snapshots {
+  id            bigserial [pk]
+  snapshot_date text [not null]
+  owner_code    text [not null]
+  product_code  text [not null]
+  location_code text [not null]
+  lot_no        text [not null]
+  qty           integer [not null]
+  unit_top      text
+  created_at    text [not null]
+
+  indexes {
+    (snapshot_date, owner_code, product_code, location_code, lot_no) [unique]
+    (snapshot_date, owner_code)
+  }
+}
+
+Table inventory_adjustments {
+  id            bigserial [pk]
+  adjustment_no text [not null, unique]
+  owner_code    text [not null]
+  product_code  text [not null]
+  location_code text [not null]
+  lot_no        text [not null]
+  qty_before    integer [not null]
+  qty_after     integer [not null]
+  difference    integer [not null]
+  reason_code   text [not null]
+  reason_detail text
+  status        text [not null, note: 'pending/approved/rejected']
+  requested_by  text
+  requested_at  text [not null]
+  approved_by   text
+  approved_at   text
+  approval_note text
+}
+
+// ===================== 出荷系 =====================
+
+Table shipment_orders {
+  id             bigserial [pk]
+  order_no       text [not null, unique]
+  owner_code     text [not null]
+  customer_name  text
+  scheduled_date text [not null]
+  purpose_type   text [not null, note: 'normal/sample/disposal/return_to_supplier']
+  wave_id        text
+  area_code      text
+  invoice_no     text
+  tracking_no    text
+  status         text [not null, note: 'planned/allocated/picking/picked/shipped']
+  note           text
+  shipped_at     text
+  created_at     text [not null]
+  updated_at     text [not null]
+}
+
+Table shipment_order_lines {
+  id            bigserial [pk]
+  order_id      integer [not null]
+  product_code  text [not null]
+  ordered_qty   integer [not null]
+  allocated_qty integer [not null]
+  picked_qty    integer [not null]
+  status        text [not null]
+}
+
+Table picking_tasks {
+  id            bigserial [pk]
+  order_id      integer [not null]
+  line_id       integer [not null]
+  product_code  text [not null]
+  location_code text [not null]
+  lot_no        text [not null]
+  qty           integer [not null]
+  picked_qty    integer [not null]
+  status        text [not null, note: 'pending/picked/cancelled']
+  picked_at     text
+}
+
+Table shipment_packings {
+  id              bigserial [pk]
+  order_id        integer [not null]
+  material_code   text [not null]
+  package_count   integer [not null]
+  weight_kg       numeric
+  total_weight_kg numeric
+  inspected_at    text
+  inspected_by    text
+  note            text
+  packed_at       text [not null]
+}
+
+Table loadings {
+  id           bigserial [pk]
+  loading_no   text [not null, unique]
+  carrier_code text [not null]
+  scheduled_at text [not null]
+  driver_name  text
+  vehicle_no   text
+  status       text [not null, note: 'planned/loading/loaded/handover/completed']
+  loaded_at    text
+  handover_at  text
+  note         text
+  created_at   text [not null]
+}
+
+Table loading_orders {
+  id         bigserial [pk]
+  loading_id integer [not null]
+  order_id   integer [not null]
+  sequence   integer [not null]
+  loaded     integer [not null, note: '0/1']
+  loaded_at  text
+}
+
+// ===================== 返品系 =====================
+
+Table returns {
+  id            bigserial [pk]
+  return_no     text [not null, unique]
+  owner_code    text [not null]
+  customer_name text
+  return_date   text [not null]
+  reason        text
+  status        text [not null, note: 'planned/inspecting/completed']
+  note          text
+  created_at    text [not null]
+  updated_at    text [not null]
+}
+
+Table return_lines {
+  id               bigserial [pk]
+  return_id        integer [not null]
+  product_code     text [not null]
+  expected_qty     integer [not null]
+  inspected_qty    integer
+  condition        text [note: 'good/damaged/expired']
+  lot_no           text
+  putaway_location text
+  status           text [not null, note: 'planned/inspected/returned_stock/discarded']
+  note             text
+}
+
+// ===================== 棚卸系 =====================
+
+Table stocktake_sessions {
+  id           bigserial [pk]
+  session_no   text [not null, unique]
+  mode         text [not null, note: 'all_at_once/cyclic']
+  scope        text
+  status       text [not null, note: 'open/locked/finalized']
+  locked_at    text
+  started_at   text [not null]
+  finalized_at text
+}
+
+Table stocktake_lines {
+  id            bigserial [pk]
+  session_id    integer [not null]
+  product_code  text [not null]
+  location_code text [not null]
+  lot_no        text [not null]
+  system_qty    integer [not null]
+  counted_qty   integer
+  difference    integer
+  counted_at    text
+  note          text
+}
+
+// ===================== 補充系 =====================
+
+Table replenishment_rules {
+  id               bigserial [pk]
+  product_code     text [note: 'NULL=全商品']
+  owner_code       text [note: 'NULL=全荷主']
+  location_type    text [note: 'NULL=全種別']
+  temperature_zone text [note: 'NULL=全温度帯']
+  from_location    text [not null]
+  to_location      text [not null]
+  min_qty          integer [not null]
+  replenish_to     integer [not null]
+  trigger_type     text [not null, note: 'on_demand/nightly/on_allocation']
+  status           text [not null]
+  note             text
+  created_at       text [not null]
+}
+
+// ===================== 請求系 =====================
+
+Table billing_rates {
+  id              bigserial [pk]
+  owner_code      text [not null]
+  rate_type       text [not null, note: 'storage_3/storage_2/handling_in/handling_out']
+  unit_price      numeric [not null]
+  unit_label      text
+  unit_code       text [note: 'unit_master FK']
+  rounding_method text [not null, note: 'round/floor/ceil/banker']
+  valid_from      text
+  note            text
+  created_at      text [not null]
+}
+
+Table packing_rules {
+  owner_code       text [pk]
+  calc_method      text [not null, note: 'auto/manual']
+  default_material text
+  commit_timing    text [not null, note: 'before_pack/after_pack']
+  pre_label_issue  integer [not null]
+  parallel_work    integer [not null]
+  usage_rate_max   integer [not null]
+  note             text
+  updated_at       text [not null]
+}
+
+Table billing_snapshots {
+  id           bigserial [pk]
+  owner_code   text [not null]
+  year_month   text [not null, note: 'YYYY-MM']
+  status       text [not null, note: 'draft/finalized']
+  items_json   text [not null]
+  totals_json  text [not null]
+  finalized_at text
+  finalized_by text
+  note         text
+  created_at   text [not null]
+  updated_at   text [not null]
+
+  indexes {
+    (owner_code, year_month) [unique]
+  }
+}
+
+// ===================== ユーザー/権限系 =====================
+
+Table system_users {
+  id                    bigserial [pk]
+  login_id              text [not null, unique]
+  display_name          text [not null]
+  role                  text [not null, note: 'admin/leader/worker/owner']
+  owner_code            text [note: '荷主ロール時のみ（単一所属）']
+  initial_password      text
+  force_password_change integer [not null]
+  invited_from          text [not null, note: 'manual/invitation/direct_create']
+  status                text [not null]
+  note                  text
+  created_at            text [not null]
+  updated_at            text [not null]
+}
+
+Table user_invitations {
+  id                 bigserial [pk]
+  email              text [not null]
+  display_name       text
+  role               text [not null]
+  owner_code         text
+  status             text [not null, note: 'pending/accepted/authorized/expired/cancelled']
+  invite_token       text [not null, unique]
+  invited_by         text
+  invited_at         text [not null]
+  accepted_at        text
+  authorized_at      text
+  authorized_user_id integer
+  note               text
+}
+
+Table permissions {
+  id           bigserial [pk]
+  feature_code text [not null]
+  role         text [not null, note: 'admin/leader/worker/owner_user']
+  permission   text [not null, note: 'view/edit/approve/none']
+  note         text
+
+  indexes {
+    (feature_code, role) [unique]
+  }
+}
+
+Table feature_flags {
+  feature_code text [pk]
+  name         text [not null]
+  category     text
+  description  text
+  enabled      integer [not null]
+  depends_on   text
+  updated_at   text [not null]
+}
+
+Table feedback_notes {
+  id         bigserial [pk]
+  category   text [not null]
+  page_url   text [not null]
+  page_title text
+  content    text [not null]
+  status     text [not null]
+  routed_to  text
+  created_at text [not null]
+  updated_at text [not null]
+}
+
+// =============================================================
+// 実FK（migration で REFERENCES 定義済み — SQL上で制約として存在）
+// =============================================================
+Ref: products.owner_code > owners.code
+Ref: inbound_schedule_lines.schedule_id > inbound_schedules.id
+Ref: shipment_order_lines.order_id > shipment_orders.id
+Ref: picking_tasks.order_id > shipment_orders.id
+Ref: picking_tasks.line_id > shipment_order_lines.id
+Ref: return_lines.return_id > returns.id
+Ref: inventory_snapshots.owner_code > owners.code
+Ref: inventory_snapshots.product_code > products.code
+Ref: carrier_routes.carrier_code > carriers.code
+Ref: shifts.employee_code > employees.code
+Ref: inbound_discrepancies.line_id > inbound_schedule_lines.id
+Ref: shipment_packings.order_id > shipment_orders.id
+Ref: loading_orders.loading_id > loadings.id
+Ref: loading_orders.order_id > shipment_orders.id
+Ref: stocktake_lines.session_id > stocktake_sessions.id
+Ref: packing_rules.owner_code > owners.code
+Ref: drivers.carrier_code > carriers.code
+Ref: vehicles.carrier_code > carriers.code
+
+// =============================================================
+// 論理参照（owner_code 等・現状は SQL上の FK制約なし）
+// → 本番化(Phase 2)で FK制約付与を検討すべき箇所。中津さんと要すり合わせ。
+//   ※ 線が増えて図が見づらい場合はこのブロックを削ってOK
+// =============================================================
+Ref: locations.owner_code > owners.code
+Ref: customers.owner_code > owners.code
+Ref: inbound_schedules.owner_code > owners.code
+Ref: shipment_orders.owner_code > owners.code
+Ref: returns.owner_code > owners.code
+Ref: inventory_adjustments.owner_code > owners.code
+Ref: billing_rates.owner_code > owners.code
+Ref: billing_snapshots.owner_code > owners.code
+Ref: csv_format_masters.owner_code > owners.code
+Ref: replenishment_rules.owner_code > owners.code
+Ref: system_users.owner_code > owners.code
+Ref: products.code < inventory.product_code
+Ref: locations.code < inventory.location_code
+Ref: billing_rates.unit_code > unit_master.code
+Ref: locations.type_char > location_types.type_char
+
+Table shifts {
+  id            bigserial [pk]
+  shift_date    text [not null]
+  employee_code text [not null]
+  start_time    text [not null]
+  end_time      text [not null]
+  assigned_area text
+  assigned_role text
+  status        text [not null, note: 'planned/confirmed/cancelled']
+  actual_start  text
+  actual_end    text
+  note          text
+  created_at    text [not null]
+}
