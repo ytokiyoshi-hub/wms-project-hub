@@ -687,6 +687,39 @@
     <a class="doc" href="inventory-list.html"><span class="dmk"></span><span>在庫一覧（画面例）<span class="da">INVENTORY LIST</span></span></a>
   </section>
 
+  <!-- ===== 最近の動き（自動更新 / launchd が定期生成・手動編集しない） ===== -->
+  <style>
+    .auto-live{margin:42px 0 8px;background:var(--card);border:var(--line2);border-radius:var(--r);box-shadow:var(--shadow-sm);padding:20px 22px}
+    .al-head{display:flex;align-items:center;gap:11px;margin-bottom:14px;flex-wrap:wrap}
+    .al-head h2{font-size:clamp(16px,2.3vw,20px)}
+    .al-dot{width:11px;height:11px;border-radius:50%;background:var(--mint);border:2px solid var(--ink);animation:pulse 1.7s infinite}
+    .al-stamp{margin-left:auto;font-family:'Space Mono',monospace;font-size:12px;color:#8a7f6e}
+    .al-feed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+    .al-feed li{display:flex;gap:12px;align-items:baseline;padding:9px 2px;border-bottom:1px dashed #e7ddc9;font-size:13.5px}
+    .al-feed li:last-child{border-bottom:none}
+    .al-when{flex:none;font-family:'Space Mono',monospace;font-size:11px;color:var(--coral);min-width:88px}
+    .al-what{font-weight:500}
+    .al-gate{margin-top:13px;display:inline-flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;background:var(--amber);border:2px solid var(--ink);border-radius:999px;padding:5px 13px}
+  </style>
+  <section class="auto-live" aria-label="最近の動き（自動更新）">
+    <div class="al-head">
+      <span class="al-dot"></span>
+      <h2>最近の動き</h2>
+      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/01 15:10<!--/AUTO:updated--> ・自動</span>
+    </div>
+    <ul class="al-feed">
+<!--AUTO:activity-->
+      <li><span class="al-when">06/01 13:17</span><span class="al-what">VERIFY: Phase5 仕上げ→公開（RLS/予約在庫/Vercel/perf）</span></li>
+      <li><span class="al-when">06/01 13:15</span><span class="al-what">P5-4 perf: 請求計算の per-product N+1 を一括クエリに（本番 10.08s→2.14s）</span></li>
+      <li><span class="al-when">06/01 13:10</span><span class="al-what">P5-2: #1二重引当の理想版（inventory.reserved_qty 予約方式・フォールバック付）</span></li>
+      <li><span class="al-when">06/01 13:05</span><span class="al-what">P5-3: Vercelデプロイ準備（export default化・vercel.json・transaction pooler対応）</span></li>
+      <li><span class="al-when">06/01 13:01</span><span class="al-what">P5-1: 荷主分離RLSアプリ側本実装（request-scoped tx + SET LOCAL ROLE authenticated）</span></li>
+      <li><span class="al-when">06/01 11:33</span><span class="al-what">VERIFY: 本番フルデータ＆全シナリオ実証(Phase3+4)</span></li>
+<!--/AUTO:activity-->
+    </ul>
+    <div class="al-gate"><!--AUTO:gate-->テストシナリオ 30/36 緑<!--/AUTO:gate--></div>
+  </section>
+
   <footer>
     <span>WMS 開発進捗ハブ // 毎日ここで現在地を確認</span>
     <span>STATUS: 本番クラウド接続フェーズ — <b style="color:var(--coral)">RUNNING</b></span>
