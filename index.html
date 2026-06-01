@@ -488,7 +488,7 @@
   <!-- ===== HERO ===== -->
   <section class="hero">
     <span class="kicker">// 開発がいまどこか、毎日ひと目で</span>
-    <h1>いまは <span class="hl">本番クラウド接続</span> の段階です。</h1>
+    <h1>いまは <span class="hl">仕上げ</span> の段階です（公開の直前）。</h1>
     <p class="lead">構想から実運用までの旅マップで現在地を表示。直近・いま・次の動きと、いま動いている作業、動く実物アプリへの導線をまとめています。</p>
   </section>
 
@@ -500,12 +500,12 @@
       <div class="node done"><div class="dotbig"><span class="ck"></span></div><div class="nlab">仕様</div><div class="nidx">02</div></div>
       <div class="node done"><div class="dotbig"><span class="ck"></span></div><div class="nlab">画面</div><div class="nidx">03</div></div>
       <div class="node done"><div class="dotbig"><span class="ck"></span></div><div class="nlab">動くアプリの中身</div><div class="nidx">04</div></div>
+      <div class="node done"><div class="dotbig"><span class="ck"></span></div><div class="nlab">本番クラウド接続</div><div class="nidx">05</div></div>
       <div class="node now">
         <div class="nowtag"><span class="d"></span>▼ 今ここ</div>
         <div class="dotbig">▶</div>
-        <div class="nlab">本番クラウド接続</div><div class="nidx">05</div>
+        <div class="nlab">仕上げ</div><div class="nidx">06</div>
       </div>
-      <div class="node future"><div class="dotbig">·</div><div class="nlab">仕上げ</div><div class="nidx">06</div></div>
       <div class="node future"><div class="dotbig">·</div><div class="nlab">公開</div><div class="nidx">07</div></div>
       <div class="node future"><div class="dotbig">·</div><div class="nlab">実運用</div><div class="nidx">08</div></div>
     </div>
@@ -516,18 +516,18 @@
   <section class="flow">
     <div class="fstep f1">
       <span class="fk">// 直近 DONE</span>
-      <h3>本番DBで実証できた</h3>
-      <p>本番DB(Supabase)に接続し、実データで <strong>入荷 → 出荷フロー</strong> が動くことを実証。本番でしか出ない重大バグも発見・修正。</p>
+      <h3>仕上げ実装まで完成</h3>
+      <p>荷主分離(RLS)・<strong>二重引当(予約在庫)</strong>・Vercel公開準備・請求計算の高速化まで実装完了。本番モードで動作確認済み。</p>
     </div>
     <div class="fstep f2">
       <span class="fk"><span class="live"></span>// いま NOW</span>
-      <h3>バグ総掃き 進行中</h3>
-      <p>本番モードの <strong>全エンドポイント・バグ総掃き</strong> を実施中（進行中）。実環境で出る挙動を一つずつ潰しています。</p>
+      <h3>実運用品質の総仕上げ</h3>
+      <p>全API・全シナリオを本番モードで網羅点検し、<strong>並行・負荷・エッジ</strong>まで詰めています。実際に使って詰まらない品質へ。</p>
     </div>
     <div class="fstep f3">
       <span class="fk">// 次 NEXT</span>
-      <h3>分離を本物に → 公開</h3>
-      <p>荷主分離(RLS)を本物に＋<strong>二重引当の仕上げ</strong> → 本番URLで公開 → 実運用へ。</p>
+      <h3>3つの承認 → 公開</h3>
+      <p>荷主分離の有効化・予約方式の有効化・<strong>本番URLで公開</strong>。承認が下りれば即・実運用へ。</p>
     </div>
   </section>
 
@@ -549,17 +549,17 @@
     <div class="term">
       <div class="term-bar">
         <span class="tb r"></span><span class="tb y"></span><span class="tb g"></span>
-        <span class="tt">wms-dev — bug-sweep@production</span>
+        <span class="tt">wms-dev — prod-readiness@production</span>
         <span class="online">● ONLINE</span>
       </div>
       <div class="term-body">
         <div class="cmt"># 本番モード 作業ログ ライブ表示</div>
-        <div class="row"><span class="pr">&gt;</span> <span class="white">RUNNING:</span> <span class="green">バグ総掃き（全エンドポイント点検）</span> <span class="badge-run">[ACTIVE]</span></div>
-        <div class="cmt">&nbsp;&nbsp;└─ 本番固有の不具合を1件ずつ潰し中…</div>
-        <div class="row"><span class="pr">&gt;</span> <span class="white">QUEUED&nbsp;:</span> 荷主分離 RLS を本物に <span class="badge-wait">[承認待ち]</span></div>
-        <div class="row"><span class="pr">&gt;</span> <span class="white">QUEUED&nbsp;:</span> 二重引当の仕上げ <span class="badge-wait">[承認待ち]</span></div>
-        <div class="row"><span class="green">[OK]</span> <span class="cmt">Supabase接続 / 実データ投入 / 入荷→出荷 本番実証</span></div>
-        <div class="row"><span class="amber">[··]</span> <span class="cmt">本番固有バグ … 順次クローズ中</span></div>
+        <div class="row"><span class="pr">&gt;</span> <span class="white">RUNNING:</span> <span class="green">実運用品質の総点検（全API・全シナリオ）</span> <span class="badge-run">[ACTIVE]</span></div>
+        <div class="cmt">&nbsp;&nbsp;└─ 並行・負荷・エッジまで詰めて潰し中…</div>
+        <div class="row"><span class="pr">&gt;</span> <span class="white">QUEUED&nbsp;:</span> 荷主分離 RLS を有効化 <span class="badge-wait">[承認待ち]</span></div>
+        <div class="row"><span class="pr">&gt;</span> <span class="white">QUEUED&nbsp;:</span> 予約方式（二重引当） <span class="badge-wait">[承認待ち]</span></div>
+        <div class="row"><span class="pr">&gt;</span> <span class="white">QUEUED&nbsp;:</span> 本番URLで公開（Vercel） <span class="badge-wait">[承認待ち]</span></div>
+        <div class="row"><span class="green">[OK]</span> <span class="cmt">RLS/予約在庫/Vercel準備/請求高速化 実装完了・本番モードで確認</span></div>
       </div>
       <div class="term-foot">&gt; running production sweep <span class="cmt"># uptime </span><span id="upt">00:00</span><span class="cursor"></span></div>
     </div>
@@ -705,7 +705,7 @@
     <div class="al-head">
       <span class="al-dot"></span>
       <h2>最近の動き</h2>
-      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/01 15:10<!--/AUTO:updated--> ・自動</span>
+      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/01 15:22<!--/AUTO:updated--> ・自動</span>
     </div>
     <ul class="al-feed">
 <!--AUTO:activity-->
@@ -722,7 +722,7 @@
 
   <footer>
     <span>WMS 開発進捗ハブ // 毎日ここで現在地を確認</span>
-    <span>STATUS: 本番クラウド接続フェーズ — <b style="color:var(--coral)">RUNNING</b></span>
+    <span>STATUS: 仕上げフェーズ（公開直前） — <b style="color:var(--coral)">RUNNING</b></span>
   </footer>
 
 </main>
