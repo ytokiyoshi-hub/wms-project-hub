@@ -488,7 +488,7 @@
   <!-- ===== HERO ===== -->
   <section class="hero">
     <span class="kicker">// 開発がいまどこか、毎日ひと目で</span>
-    <h1>いまは <span class="hl">仕上げ</span> の段階です（公開の直前）。</h1>
+    <h1>いまは <span class="hl">公開</span> ── 本番URLで稼働中です。</h1>
     <p class="lead">構想から実運用までの旅マップで現在地を表示。直近・いま・次の動きと、いま動いている作業、動く実物アプリへの導線をまとめています。</p>
   </section>
 
@@ -501,12 +501,12 @@
       <div class="node done"><div class="dotbig"><span class="ck"></span></div><div class="nlab">画面</div><div class="nidx">03</div></div>
       <div class="node done"><div class="dotbig"><span class="ck"></span></div><div class="nlab">動くアプリの中身</div><div class="nidx">04</div></div>
       <div class="node done"><div class="dotbig"><span class="ck"></span></div><div class="nlab">本番クラウド接続</div><div class="nidx">05</div></div>
+      <div class="node done"><div class="dotbig"><span class="ck"></span></div><div class="nlab">仕上げ</div><div class="nidx">06</div></div>
       <div class="node now">
         <div class="nowtag"><span class="d"></span>▼ 今ここ</div>
         <div class="dotbig">▶</div>
-        <div class="nlab">仕上げ</div><div class="nidx">06</div>
+        <div class="nlab">公開</div><div class="nidx">07</div>
       </div>
-      <div class="node future"><div class="dotbig">·</div><div class="nlab">公開</div><div class="nidx">07</div></div>
       <div class="node future"><div class="dotbig">·</div><div class="nlab">実運用</div><div class="nidx">08</div></div>
     </div>
   </div>
@@ -516,18 +516,18 @@
   <section class="flow">
     <div class="fstep f1">
       <span class="fk">// 直近 DONE</span>
-      <h3>仕上げ実装まで完成</h3>
-      <p>荷主分離(RLS)・<strong>二重引当(予約在庫)</strong>・Vercel公開準備・請求計算の高速化まで実装完了。本番モードで動作確認済み。</p>
+      <h3>本番URLで公開・稼働</h3>
+      <p><strong>wms-test2.vercel.app</strong> で公開・稼働中。荷主分離(RLS)もDB側で効いた状態で本番デプロイ完了。</p>
     </div>
     <div class="fstep f2">
       <span class="fk"><span class="live"></span>// いま NOW</span>
-      <h3>実運用品質の総仕上げ</h3>
-      <p>全API・全シナリオを本番モードで網羅点検し、<strong>並行・負荷・エッジ</strong>まで詰めています。実際に使って詰まらない品質へ。</p>
+      <h3>ログイン整備・実運用準備</h3>
+      <p>ログイン用アカウントの整備と、日々の運用に向けた最終調整。<strong>使って詰まらない</strong>状態へ仕上げ中。</p>
     </div>
     <div class="fstep f3">
       <span class="fk">// 次 NEXT</span>
-      <h3>3つの承認 → 公開</h3>
-      <p>荷主分離の有効化・予約方式の有効化・<strong>本番URLで公開</strong>。承認が下りれば即・実運用へ。</p>
+      <h3>実運用へ</h3>
+      <p>ログイン整備が済めば、ログイン → 全画面・全データの本格運用へ。</p>
     </div>
   </section>
 
@@ -549,19 +549,18 @@
     <div class="term">
       <div class="term-bar">
         <span class="tb r"></span><span class="tb y"></span><span class="tb g"></span>
-        <span class="tt">wms-dev — prod-readiness@production</span>
+        <span class="tt">wms-prod — wms-test2.vercel.app</span>
         <span class="online">● ONLINE</span>
       </div>
       <div class="term-body">
-        <div class="cmt"># 本番モード 作業ログ ライブ表示</div>
-        <div class="row"><span class="pr">&gt;</span> <span class="white">RUNNING:</span> <span class="green">実運用品質の総点検（全API・全シナリオ）</span> <span class="badge-run">[ACTIVE]</span></div>
-        <div class="cmt">&nbsp;&nbsp;└─ 並行・負荷・エッジまで詰めて潰し中…</div>
-        <div class="row"><span class="pr">&gt;</span> <span class="white">QUEUED&nbsp;:</span> 荷主分離 RLS を有効化 <span class="badge-wait">[承認待ち]</span></div>
-        <div class="row"><span class="pr">&gt;</span> <span class="white">QUEUED&nbsp;:</span> 予約方式（二重引当） <span class="badge-wait">[承認待ち]</span></div>
-        <div class="row"><span class="pr">&gt;</span> <span class="white">QUEUED&nbsp;:</span> 本番URLで公開（Vercel） <span class="badge-wait">[承認待ち]</span></div>
-        <div class="row"><span class="green">[OK]</span> <span class="cmt">RLS/予約在庫/Vercel準備/請求高速化 実装完了・本番モードで確認</span></div>
+        <div class="cmt"># 本番（Vercel）ライブ状態</div>
+        <div class="row"><span class="pr">&gt;</span> <span class="white">LIVE&nbsp;&nbsp;&nbsp;:</span> <span class="green">wms-test2.vercel.app 公開・稼働中</span> <span class="badge-run">[ACTIVE]</span></div>
+        <div class="cmt">&nbsp;&nbsp;└─ 荷主分離(RLS)がDB側で有効＝他社のデータは見えない</div>
+        <div class="row"><span class="green">[OK]</span> <span class="cmt">本番デプロイ完了（pooler6543 / search_path=wms / RLS有効）</span></div>
+        <div class="row"><span class="green">[OK]</span> <span class="cmt">荷主一覧・ロケーション表示確認 / ログインAPI正常</span></div>
+        <div class="row"><span class="pr">&gt;</span> <span class="white">NEXT&nbsp;&nbsp;:</span> ログイン用アカウント整備 → 実運用 <span class="badge-wait">[準備中]</span></div>
       </div>
-      <div class="term-foot">&gt; running production sweep <span class="cmt"># uptime </span><span id="upt">00:00</span><span class="cursor"></span></div>
+      <div class="term-foot">&gt; live at wms-test2.vercel.app <span class="cmt"># uptime </span><span id="upt">00:00</span><span class="cursor"></span></div>
     </div>
 
     <!-- CLOUD = 軽やかなチェック付きピル群（重い框にしない） -->
@@ -641,13 +640,21 @@
   <!-- ===== SECTION E : 外部リンク（太いアクセントボタン群）===== -->
   <div class="sec-title"><span class="bar"></span><h2>外部サービス・リンク</h2></div>
   <section class="links">
-    <a class="lcard feature" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/" target="_blank" rel="noopener">
+    <a class="lcard feature" href="https://wms-test2.vercel.app" target="_blank" rel="noopener">
       <span class="lico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5 16 12l-6 3.5Z"/></svg></span>
       <span>
-        <span class="lt">動く実物（デモ）</span>
-        <span class="ld">入荷から出荷まで、実際の画面で操作できます</span>
+        <span class="lt">本番アプリ（公開中）</span>
+        <span class="ld">wms-test2.vercel.app ── 本番クラウドで稼働・荷主分離(RLS)有効</span>
       </span>
-      <span class="ftag">いちばんのおすすめ</span>
+      <span class="ftag">本番公開中</span>
+      <span class="larr">↗</span>
+    </a>
+    <a class="lcard" href="https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/" target="_blank" rel="noopener">
+      <span class="lico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18"/></svg></span>
+      <span>
+        <span class="lt">画面デモ（479画面モック）</span>
+        <span class="ld">入荷から出荷まで、全画面を操作できる静的デモ</span>
+      </span>
       <span class="larr">↗</span>
     </a>
     <a class="lcard" href="https://supabase.com/dashboard/project/wqjsemttubzbpauvgyai" target="_blank" rel="noopener">
@@ -705,24 +712,24 @@
     <div class="al-head">
       <span class="al-dot"></span>
       <h2>最近の動き</h2>
-      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/01 15:22<!--/AUTO:updated--> ・自動</span>
+      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/01 22:19<!--/AUTO:updated--> ・自動</span>
     </div>
     <ul class="al-feed">
 <!--AUTO:activity-->
-      <li><span class="al-when">06/01 13:17</span><span class="al-what">VERIFY: Phase5 仕上げ→公開（RLS/予約在庫/Vercel/perf）</span></li>
-      <li><span class="al-when">06/01 13:15</span><span class="al-what">P5-4 perf: 請求計算の per-product N+1 を一括クエリに（本番 10.08s→2.14s）</span></li>
-      <li><span class="al-when">06/01 13:10</span><span class="al-what">P5-2: #1二重引当の理想版（inventory.reserved_qty 予約方式・フォールバック付）</span></li>
-      <li><span class="al-when">06/01 13:05</span><span class="al-what">P5-3: Vercelデプロイ準備（export default化・vercel.json・transaction pooler対応）</span></li>
-      <li><span class="al-when">06/01 13:01</span><span class="al-what">P5-1: 荷主分離RLSアプリ側本実装（request-scoped tx + SET LOCAL ROLE authenticated）</span></li>
-      <li><span class="al-when">06/01 11:33</span><span class="al-what">VERIFY: 本番フルデータ＆全シナリオ実証(Phase3+4)</span></li>
+      <li><span class="al-when">06/01 22:02</span><span class="al-what">fix(本番公開): WMS接続の search_path を wms のみに(public除外)</span></li>
+      <li><span class="al-when">06/01 21:18</span><span class="al-what">fix(本番公開): plain経路(login等)も tx で包み search_path を保証</span></li>
+      <li><span class="al-when">06/01 21:08</span><span class="al-what">fix(本番公開): transaction pooler で search_path が効かない問題を tx 内で明示SET</span></li>
+      <li><span class="al-when">06/01 18:23</span><span class="al-what">公開向け: 重い一覧に任意ページング(?limit=&amp;offset=) — サーバレスtimeout対策</span></li>
+      <li><span class="al-when">06/01 17:52</span><span class="al-what">公開向けハードニング(2号引継): 管理/デモAPIに認証＋管理者ロール、ログインCookie堅牢化</span></li>
+      <li><span class="al-when">06/01 16:06</span><span class="al-what">PR-1 実運用品質(続): No.6 再検品の原子化, No.9 在庫調整却下ガード, No.13 デモ空環境400</span></li>
 <!--/AUTO:activity-->
     </ul>
-    <div class="al-gate"><!--AUTO:gate-->テストシナリオ 30/36 緑<!--/AUTO:gate--></div>
+    <div class="al-gate"><!--AUTO:gate-->テストシナリオ 33/36 緑<!--/AUTO:gate--></div>
   </section>
 
   <footer>
     <span>WMS 開発進捗ハブ // 毎日ここで現在地を確認</span>
-    <span>STATUS: 仕上げフェーズ（公開直前） — <b style="color:var(--coral)">RUNNING</b></span>
+    <span>STATUS: 公開フェーズ — 本番URL <b style="color:var(--coral)">LIVE</b></span>
   </footer>
 
 </main>
