@@ -118,6 +118,30 @@
       alert: '#b91c1c', alertLt: '#fef2f2',
       base: '#fffaf3', bg: '#fcf3e7',
     },
+    // --- 薄め・やわらか系（2026-06-02 追加）---
+    // サイドバーは白文字のため淡色不可。既存より明るい中濃トーンに留めつつ、
+    // アクセント・罫線・背景を淡くして全体を軽い印象に。
+    soft_gray: { // ソフトグレー（やわらかニュートラル）
+      line: '#dfe3e8', lineDk: '#9aa3af',
+      accent: '#586575', accentDk: '#3f4855', accentLt: '#eef1f4',
+      sidebar: '#3f4855',
+      alert: '#c14a63', alertLt: '#fbeef1',
+      base: '#ffffff', bg: '#f6f8fa',
+    },
+    soft_blue: { // ソフトブルー（くすみ青）
+      line: '#d2dfec', lineDk: '#8fa9c4',
+      accent: '#3f6fa3', accentDk: '#2f5680', accentLt: '#e9f1fa',
+      sidebar: '#34597f',
+      alert: '#cf5563', alertLt: '#fceef0',
+      base: '#ffffff', bg: '#f4f8fc',
+    },
+    soft_sage: { // ソフトセージ（やわらか緑）
+      line: '#d6e0d3', lineDk: '#8ca086',
+      accent: '#4f7a5d', accentDk: '#3a5c45', accentLt: '#eaf2ea',
+      sidebar: '#3c5e47',
+      alert: '#bb5050', alertLt: '#fbefef',
+      base: '#ffffff', bg: '#f5f9f4',
+    },
   };
 
   function readTheme() {
