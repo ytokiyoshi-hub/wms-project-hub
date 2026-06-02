@@ -34,7 +34,7 @@
         <div class="left-pane">
 
           <div class="note-box">
-            罫線・アクセント・アラート・背景・サイドバーの各色をカスタマイズできます。
+            罫線・アクセント・アラート・背景・サイドバーの各色と、本文フォントをカスタマイズできます。
             変更は<b>即座にプレビュー反映</b>、「保存」で全画面に適用（このブラウザに保存）。「既定に戻す」でリセット。
           </div>
 
@@ -42,6 +42,14 @@
             <div class="card-header"><span>テーマプリセット（全色一括）</span></div>
             <div class="card-body">
               <div class="preset-row" id="presets"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><span>フォント（本文書体）</span></div>
+            <div class="card-body">
+              <div class="preset-row" id="font-presets"></div>
+              <p style="margin-top:8px; font-size:11px; color:var(--c-text-sub);">本文の書体を切り替えます。数字の等幅表示（桁揃え）は変わりません。クリックで即プレビュー、「保存」で全画面に適用。</p>
             </div>
           </div>
 
@@ -180,7 +188,7 @@
 </div>
 
 <script src="js/nav-manifest.js?v=202605311000"></script>
-<script src="js/common-layout.js?v=202606021300"></script>
+<script src="js/common-layout.js?v=202606021500"></script>
 <script>
 (function () {
   const T = window.WMS_THEME;
@@ -251,6 +259,38 @@
     presetsEl.appendChild(b);
   }
 
+  // ===== フォント切替プリセット =====
+  const FONT = window.WMS_FONT;
+  let selectedFont = FONT ? FONT.current() : 'noto';
+  let renderFontSel = function () {};
+  if (FONT) {
+    const fpEl = document.getElementById('font-presets');
+    renderFontSel = function () {
+      fpEl.querySelectorAll('.btn').forEach(function (b) {
+        var on = b.dataset.font === selectedFont;
+        b.style.borderColor = on ? 'var(--c-accent)' : '';
+        b.style.fontWeight = on ? '700' : '';
+        b.style.boxShadow = on ? 'inset 0 0 0 1px var(--c-accent)' : '';
+      });
+    };
+    Object.keys(FONT.presets).forEach(function (key) {
+      var p = FONT.presets[key];
+      FONT.ensure(key); // サンプル字を正しく表示するため、この設定画面では各書体を読み込む
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn';
+      b.dataset.font = key;
+      b.innerHTML = '<span style="font-family:' + p.stack + '; font-size:15px; margin-right:8px;">あ7</span>' + p.label;
+      b.addEventListener('click', function () {
+        selectedFont = key;
+        FONT.apply(key);   // 即プレビュー
+        renderFontSel();
+      });
+      fpEl.appendChild(b);
+    });
+    renderFontSel();
+  }
+
   // 初期化
   setUI(currentValues());
 
@@ -262,6 +302,7 @@
   // 保存
   document.getElementById('btn-save').addEventListener('click', () => {
     T.save(readUI());
+    if (FONT) FONT.save(selectedFont);
     if (typeof window.alert === 'function') window.alert('保存しました（全画面に反映）');
   });
 
@@ -273,6 +314,7 @@
     for (const varName of Object.values(T.vars)) {
       document.documentElement.style.removeProperty(varName);
     }
+    if (FONT) { FONT.reset(); selectedFont = 'noto'; renderFontSel(); }
     if (typeof window.alert === 'function') window.alert('既定値に戻しました');
   });
 })();

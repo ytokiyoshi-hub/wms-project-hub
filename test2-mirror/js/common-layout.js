@@ -187,6 +187,45 @@
   // 起動時に即適用（チラつき防止のため init より前に実行）
   applyTheme();
 
+  // ===== フォント切替（本文フォント --f-base を差し替え。色テーマと同じ localStorage 方式）=====
+  // 注意: 数字の等幅表示(--f-mono=Roboto Mono)は桁揃えのため固定。本文書体のみ切替。
+  const FONT_KEY = 'wms_font_v1';
+  const FONT_PRESETS = {
+    noto:     { label: '標準ゴシック',    stack: "'Noto Sans JP', sans-serif" },                                                   // 既定・読込済
+    system:   { label: '端末標準（高速）', stack: "system-ui, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif" },     // DL不要
+    yugothic: { label: '游ゴシック',      stack: "'Yu Gothic', 'YuGothic', 'Hiragino Kaku Gothic ProN', sans-serif" },               // 端末標準で表示
+    rounded:  { label: '丸ゴシック',      stack: "'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif", web: 'Zen+Maru+Gothic:wght@400;500;700' }, // 選択時のみ読込
+    mincho:   { label: '明朝',           stack: "'Noto Serif JP', 'Hiragino Mincho ProN', serif", web: 'Noto+Serif+JP:wght@400;500;600' },                // 選択時のみ読込
+  };
+  function ensureFontWeb(web) {
+    if (!web) return; // 端末標準フォントは読込不要
+    var id = 'wms-fontweb-' + web.replace(/[^A-Za-z0-9]/g, '');
+    if (document.getElementById(id)) return;
+    var l = document.createElement('link');
+    l.id = id; l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=' + web + '&display=swap';
+    document.head.appendChild(l);
+  }
+  function readFont() { try { return localStorage.getItem(FONT_KEY) || null; } catch { return null; } }
+  function applyFont(key) {
+    var k = key || readFont();
+    if (!k || !FONT_PRESETS[k]) return;
+    ensureFontWeb(FONT_PRESETS[k].web);
+    document.documentElement.style.setProperty('--f-base', FONT_PRESETS[k].stack);
+  }
+  function saveFont(key) { try { localStorage.setItem(FONT_KEY, key); } catch {} applyFont(key); }
+  function resetFont() { try { localStorage.removeItem(FONT_KEY); } catch {} document.documentElement.style.removeProperty('--f-base'); }
+  window.WMS_FONT = {
+    presets: FONT_PRESETS,
+    read: readFont,
+    current: function () { return readFont() || 'noto'; },
+    apply: applyFont,
+    save: saveFont,
+    reset: resetFont,
+    ensure: function (key) { if (FONT_PRESETS[key]) ensureFontWeb(FONT_PRESETS[key].web); },
+  };
+  applyFont(); // 起動時に保存済みフォントを適用
+
   const itemsAll = window.NAV_ITEMS || [];
   const meta = window.NAV_META || {};
 
