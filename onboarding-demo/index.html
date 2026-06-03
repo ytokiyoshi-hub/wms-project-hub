@@ -134,9 +134,25 @@
   .main-bar .back{background:none;border:1px solid var(--line);border-radius:8px;
     padding:7px 14px;font-size:13px;color:var(--sub);cursor:pointer}
   .main-bar .back:hover{background:#fff}
-  .narr{min-height:0;margin-bottom:14px;font-size:14px;color:var(--navy);font-weight:700;
-    opacity:0;transform:translateY(-4px);transition:.25s}
+  .narr{min-height:0;margin-bottom:14px;font-size:19px;color:#fff;font-weight:700;line-height:1.5;
+    background:linear-gradient(90deg,var(--navy),var(--navy2));border-radius:10px;padding:12px 18px;
+    box-shadow:0 3px 10px rgba(26,58,92,.18);opacity:0;transform:translateY(-4px);transition:.25s}
+  .narr::before{content:"▶ ";color:var(--warm)}
+  .narr:empty{display:none}
   .narr.show{opacity:1;transform:none}
+  /* 右の縦長フロー図 */
+  .flowrail{width:212px;flex:0 0 auto;background:#fff;border-left:1px solid var(--line);padding:20px 14px;overflow-y:auto}
+  .flowrail h4{font-size:11px;color:var(--sub);letter-spacing:.12em;margin:0 0 16px 4px;font-weight:700}
+  .fstep{position:relative;padding:0 0 20px 30px;min-height:20px}
+  .fstep::after{content:"";position:absolute;left:9px;top:20px;bottom:0;width:2px;background:var(--line)}
+  .fstep:last-child::after{display:none}
+  .fstep .fnode{position:absolute;left:1px;top:0;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--line);font-size:10px;color:var(--sub);display:flex;align-items:center;justify-content:center;font-weight:700;z-index:1;transition:.3s}
+  .fstep .ftxt{font-size:12.5px;color:var(--sub);line-height:1.45;padding-top:2px}
+  .fstep.done .fnode{background:var(--ok);border-color:var(--ok);color:#fff}
+  .fstep.done::after{background:var(--ok)}
+  .fstep.done .ftxt{color:var(--ink)}
+  .fstep.cur .fnode{background:var(--warm);border-color:var(--warm);color:#fff;box-shadow:0 0 0 5px rgba(224,122,63,.16)}
+  .fstep.cur .ftxt{color:var(--warm);font-weight:800}
   .narr .step{display:inline-block;background:var(--navy);color:#fff;border-radius:6px;
     padding:2px 10px;font-size:12px;margin-right:8px}
   /* 指カーソル（親レベルでグライド） */
@@ -269,6 +285,7 @@
       <!-- ステージタイトル/冒頭/締めカード -->
       <div id="stagecard"><div class="sc"></div></div>
     </div>
+    <aside class="flowrail" id="flowrail"></aside>
   </div>
 </div>
 
@@ -518,6 +535,7 @@ function showScreen(it){
 function renderShell(){
   $('reveal').style.display='none';
   $('shell').style.display='block';
+  buildFlowRail(); setFlow(0);                     // 右の流れ図を用意
   $('welcome').style.display='block';              // 初期はようこそ
   $('screen').style.display='none'; $('screen').removeAttribute('src');
   $('shellName').textContent = plan.headName;     // 例：3PL倉庫 / 自社倉庫
@@ -795,6 +813,8 @@ async function stageStocktake(){
 
 let demoRunning=false;
 function setProgress(cur,total,label){ const p=$('progress'); if(!p)return; let d=''; for(let i=1;i<=total;i++)d+='<span class="dot '+(i<=cur?'on':'')+'"></span>'; p.innerHTML=d+'<span class="lbl">'+cur+' / '+total+'</span>'; }
+function buildFlowRail(){ const r=$('flowrail'); if(!r||typeof STAGES==='undefined')return; let h='<h4>作業の流れ</h4>'; STAGES.forEach((st,i)=>{ h+='<div class="fstep" data-i="'+(i+1)+'"><div class="fnode">'+(i+1)+'</div><div class="ftxt">'+st.t+'</div></div>'; }); r.innerHTML=h; }
+function setFlow(cur){ document.querySelectorAll('.fstep').forEach(el=>{ const i=+el.getAttribute('data-i'); el.classList.toggle('done', i<cur); el.classList.toggle('cur', i===cur); el.querySelector('.fnode').innerHTML = i<cur ? '✓' : i; }); }
 async function bigCard(no, ti, ds, ms){
   const c=$('stagecard'); showCursor(false);
   c.querySelector('.sc').innerHTML=(no?'<div class="no">'+no+'</div>':'')+'<div class="ti">'+ti+'</div>'+(ds?'<div class="ds">'+ds+'</div>':'');
@@ -813,9 +833,10 @@ async function runFullDemo(){
   if(demoRunning) return; demoRunning=true; $('demoBtn').disabled=true; $('demoBtn').textContent='▶ 実演中…';
   const card=$('stagecard'); card.onclick=null; showCursor(true);
   try{
+    buildFlowRail(); setFlow(0);
     await bigCard(null,'飲料パレット預かり倉庫 ─ 1日の流れ','ヒアリングで構成されたWMSを、実作業の順に自動実演します',2200);
-    for(let i=0;i<STAGES.length;i++){ const st=STAGES[i]; setProgress(i+1,STAGES.length); await bigCard('STAGE '+(i+1)+' / '+STAGES.length, st.t, st.s); showCursor(true); await st.fn(); }
-    showCursor(false);
+    for(let i=0;i<STAGES.length;i++){ const st=STAGES[i]; setProgress(i+1,STAGES.length); setFlow(i+1); await bigCard('STAGE '+(i+1)+' / '+STAGES.length, st.t, st.s); showCursor(true); await st.fn(); }
+    setFlow(STAGES.length+1); showCursor(false);
     card.querySelector('.sc').innerHTML='<div class="no">COMPLETE</div><div class="ti">倉庫の1日が完了しました</div>'
       +'<div class="sum"><div><b>1,104</b><span>入荷（ケース）</span></div><div><b>30</b><span>出荷（ケース）</span></div><div><b>1,074</b><span>在庫（ケース）</span></div><div><b>0</b><span>棚卸差異</span></div></div>'
       +'<div class="ds" style="margin-top:18px">▶ クリックでもう一度</div>';
