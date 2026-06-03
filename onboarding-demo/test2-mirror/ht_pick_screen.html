@@ -12,7 +12,7 @@
 <body class="emph">
 
 <h1 class="page-title">HT-804 ピッキング作業</h1>
-<p class="subtitle">ウェーブ受取 → ロケスキャン → 数量確認の業務貫通 (BT-A2000 / 4インチ)</p>
+<p class="subtitle">ウェーブ受取 → ロケスキャン → 数量確認の業務貫通 (BT-A1000 / 3インチ)</p>
 
 <div class="ht-nav">
   <span class="label">画面ジャンプ：</span>
@@ -27,7 +27,7 @@
 <div class="ht-wrap">
   <div class="ht-device">
     <div class="brand">KEYENCE</div>
-    <div class="model">BT-A2000</div>
+    <div class="model">BT-A1000</div>
     <div class="ht-screen">
       <div class="ht-statusbar"><span>WMS-HT Phase 1</span><span id="clock">12:35 87%</span></div>
       <div class="ht-header">
@@ -42,21 +42,21 @@
 
         <div class="eh-hero">
           <div class="eh-lbl">移動先ロケ</div>
-          <div class="eh-loc" id="loc-code">3AP-02-001</div>
-          <div class="eh-sub" id="loc-desc">1F常温エリア</div>
+          <div class="eh-loc" id="loc-code">P-01</div>
+          <div class="eh-sub" id="loc-desc">ピッキングエリア（常温）</div>
         </div>
 
         <div style="background:var(--c-base); border:2px solid var(--c-accent); padding:8px;">
           <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub);">対象SKU</div>
-          <div style="font-family:var(--f-mono); font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600; margin-top:2px;" id="sku-code">-</div>
-          <div style="font-size:calc(var(--fs-body, 12px) * var(--ts, 1)); font-weight:600; margin-top:2px;" id="sku-name">読込中</div>
+          <div style="font-family:var(--f-mono); font-size:calc(var(--fs-label, 11px) * var(--ts, 1)); font-weight:600; margin-top:2px;" id="sku-code">BV-WATER</div>
+          <div style="font-size:calc(var(--fs-body, 12px) * var(--ts, 1)); font-weight:600; margin-top:2px;" id="sku-name">天然水 2L×6</div>
           <div style="font-size:calc(var(--fs-sub, 9px) * var(--ts, 1)); color:var(--c-text-sub); margin-top:4px;">賞味期限：2026/12/31（FEFO対象）</div>
         </div>
 
         <div class="eh-num">
           <div class="eh-lbl">ピック数量</div>
-          <div class="eh-val" id="pick-qty">12</div>
-          <div class="eh-unit">本（在庫：36本）</div>
+          <div class="eh-val" id="pick-qty">20</div>
+          <div class="eh-unit">ケース（在庫：480）</div>
         </div>
 
         <input id="scan-input" placeholder="商品バーコードをスキャン" autofocus style="border:1px solid var(--c-accent); padding:4px 6px; font-size:calc(var(--fs-label, 10px) * var(--ts, 1)); font-family:var(--f-mono);">
@@ -111,7 +111,7 @@ document.getElementById('pick-qty').textContent = targetQty;
 
 (async () => {
   try {
-    const products = await fetch('/api/products').then(r => r.json()).catch(() => []);
+    const products = await fetch('/api/products-full').then(r => r.json()).catch(() => []);
     const item = (products || []).find(p => p.code === targetJan);
     if (item) {
       document.getElementById('sku-name').textContent = item.name || targetJan;

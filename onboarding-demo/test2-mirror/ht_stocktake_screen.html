@@ -12,7 +12,7 @@
 <body class="emph">
 
 <h1 class="page-title">HT-701 棚卸カウント</h1>
-<p class="subtitle">棚卸対象ロケのスキャンと実数カウント (BT-A2000 / 4インチ)</p>
+<p class="subtitle">棚卸対象ロケのスキャンと実数カウント (BT-A1000 / 3インチ)</p>
 
 <div class="ht-nav">
   <span class="label">画面ジャンプ：</span>
@@ -27,7 +27,7 @@
 <div class="ht-wrap">
   <div class="ht-device">
     <div class="brand">KEYENCE</div>
-    <div class="model">BT-A2000</div>
+    <div class="model">BT-A1000</div>
     <div class="ht-screen">
       <div class="ht-statusbar"><span>WMS-HT Phase 1</span><span id="clock">11:23 75%</span></div>
       <div class="ht-header">
@@ -108,7 +108,7 @@
 const setClock = () => { const d = new Date(); document.getElementById('clock').textContent = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 75%`; };
 setClock(); setInterval(setClock, 30000);
 
-let theory = 120;
+let theory = 480;
 (async () => {
   try {
     const products = await fetch('/api/products-full').then(r => r.json()).catch(() => []);

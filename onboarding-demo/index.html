@@ -172,6 +172,23 @@
     box-shadow:0 0 0 3px rgba(255,213,74,.95),0 0 22px 7px rgba(255,213,74,.7);background:rgba(255,213,74,.16)}
   #keyhl.on{animation:keypress .55s ease-out}
   @keyframes keypress{0%{opacity:0;transform:translate(-50%,-50%) scale(1.35)}28%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
+  /* ステージカード（冒頭/各ステージ/締め） */
+  #stagecard{position:absolute;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,rgba(20,32,48,.92),rgba(13,22,34,.95));opacity:0;transition:opacity .4s}
+  #stagecard.on{display:flex;opacity:1}
+  #stagecard .sc{text-align:center;color:#fff;max-width:80%;transform:translateY(10px);transition:.45s}
+  #stagecard.on .sc{transform:none}
+  #stagecard .no{font-size:13px;letter-spacing:.25em;color:#ffd27a;font-weight:700;margin-bottom:10px}
+  #stagecard .ti{font-size:34px;font-weight:800;letter-spacing:.04em;line-height:1.3}
+  #stagecard .ds{font-size:15px;color:#bcd0e3;margin-top:12px;line-height:1.7}
+  #stagecard .sum{display:flex;gap:22px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+  #stagecard .sum b{display:block;font-size:26px;color:#ffd27a;font-weight:800}
+  #stagecard .sum span{font-size:12px;color:#9fb3c6}
+  /* 進行ドット */
+  #progress{display:flex;gap:5px;align-items:center;font-size:11px}
+  #progress .dot{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.3s}
+  #progress .dot.on{background:var(--warm)}
+  #progress .lbl{margin-left:6px;color:var(--navy);font-weight:700}
 </style>
 </head>
 <body>
@@ -223,6 +240,7 @@
     <div class="main">
       <div class="main-bar">
         <span class="crumb" id="crumb">— </span>
+        <span id="progress"></span>
         <button class="demo" id="demoBtn">▶ 自動実演</button>
         <button class="back" id="backBtn">← 構成をやり直す</button>
       </div>
@@ -247,6 +265,9 @@
         <div class="ht-device"><div class="ht-screen-wrap"><iframe id="ht-screen" title="HT画面"></iframe></div></div>
         <div class="ht-caption" id="ht-caption"></div>
       </div>
+
+      <!-- ステージタイトル/冒頭/締めカード -->
+      <div id="stagecard"><div class="sc"></div></div>
     </div>
   </div>
 </div>
@@ -532,7 +553,7 @@ $('backBtn').onclick = ()=>{ $('shell').style.display='none'; $('restart').click
 
 // ===== 自動実演ドライバ（連続オートプレイ・指カーソル・タイプ＆登録演出） =====
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-function narrate(step, text){ const n=$('narr'); n.innerHTML=`<span class="step">${step}</span>${text}`; n.classList.add('show'); }
+function narrate(step, text){ const n=$('narr'); n.innerHTML=text; n.classList.add('show'); }
 
 const cursor = $('bigcursor');
 function showCursor(on){ cursor.classList.toggle('on', !!on); }
@@ -551,8 +572,8 @@ function coordsOf(el, inIframe){
 }
 async function glideTo(el, inIframe){
   if(el.scrollIntoView) el.scrollIntoView({block:'center'});
-  await sleep(120);
-  const {x,y}=coordsOf(el, inIframe); moveCursor(x,y); await sleep(560);
+  await sleep(70);
+  const {x,y}=coordsOf(el, inIframe); moveCursor(x,y); await sleep(360);
 }
 function clickFx(){
   const ring=document.createElement('div'); ring.className='click-ring';
@@ -571,12 +592,12 @@ function injectDemoCSS(doc){
 }
 async function typeInto(el, text){
   await glideTo(el, true); el.classList.add('demo-focus'); el.focus(); el.value='';
-  for(let i=1;i<=text.length;i++){ el.value=text.slice(0,i); el.dispatchEvent(new Event('input',{bubbles:true})); await sleep(120); }
-  await sleep(280); el.classList.remove('demo-focus');
+  for(let i=1;i<=text.length;i++){ el.value=text.slice(0,i); el.dispatchEvent(new Event('input',{bubbles:true})); await sleep(55); }
+  await sleep(150); el.classList.remove('demo-focus');
 }
 async function pressBtn(btn){
-  await glideTo(btn, true); clickFx(); btn.classList.add('demo-press'); await sleep(240);
-  btn.classList.remove('demo-press'); btn.click(); await sleep(420);
+  await glideTo(btn, true); clickFx(); btn.classList.add('demo-press'); await sleep(150);
+  btn.classList.remove('demo-press'); btn.click(); await sleep(280);
 }
 async function clickMenu(label){
   const item=[...document.querySelectorAll('.menu-item')].find(i=>i.innerText.includes(label));
@@ -639,8 +660,10 @@ async function stageMasterRegister(){
     narrate('STEP 1', `商品を登録：${it.name}`);
     await typeInto(doc.getElementById('reg-code'), it.code);
     await typeInto(doc.getElementById('reg-name'), it.name);
-    await typeInto(doc.getElementById('reg-jan'), it.jan);
-    await typeInto(doc.getElementById('reg-exp'), it.exp);
+    // JAN・賞味期限は即入力（テンポ優先）
+    const ji=doc.getElementById('reg-jan'); ji.value=it.jan; ji.dispatchEvent(new Event('input',{bubbles:true}));
+    const ei=doc.getElementById('reg-exp'); ei.value=it.exp; ei.dispatchEvent(new Event('input',{bubbles:true}));
+    await sleep(250);
     await pressBtn(doc.getElementById('reg-save'));
   }
   narrate('STEP 1', `商品マスタに ${REG_ITEMS.length} 品が登録されました。白紙のWMSが動き出します`);
@@ -771,12 +794,35 @@ async function stageStocktake(){
 }
 
 let demoRunning=false;
+function setProgress(cur,total,label){ const p=$('progress'); if(!p)return; let d=''; for(let i=1;i<=total;i++)d+='<span class="dot '+(i<=cur?'on':'')+'"></span>'; p.innerHTML=d+'<span class="lbl">'+cur+' / '+total+'</span>'; }
+async function bigCard(no, ti, ds, ms){
+  const c=$('stagecard'); showCursor(false);
+  c.querySelector('.sc').innerHTML=(no?'<div class="no">'+no+'</div>':'')+'<div class="ti">'+ti+'</div>'+(ds?'<div class="ds">'+ds+'</div>':'');
+  c.classList.add('on'); await sleep(ms||1500); c.classList.remove('on'); await sleep(450);
+}
+const STAGES=[
+  {t:'マスター整備', s:'白紙のWMSに、扱う商品を登録する', fn:stageMasterRegister},
+  {t:'入庫 ─ HT入荷検品', s:'入荷予定の現物を、実機HTでスキャン検品', fn:stageInbound},
+  {t:'在庫照会', s:'入庫した分が在庫に反映される', fn:stageStock},
+  {t:'棚卸', s:'棚卸表を発行し、HTで現物をカウント', fn:stageStocktake},
+  {t:'ロケ移動 ─ HT', s:'保管ロケからピッキングロケへ補充', fn:stageMove},
+  {t:'出庫', s:'出荷指示→引当→ピッキングリスト→HTピッキング→出荷確定', fn:stageOutbound},
+  {t:'在庫照会（出荷後）', s:'出荷分が引かれ、倉庫の1日が完了', fn:stageStockAfter},
+];
 async function runFullDemo(){
   if(demoRunning) return; demoRunning=true; $('demoBtn').disabled=true; $('demoBtn').textContent='▶ 実演中…';
-  showCursor(true);
-  try{ await stageMasterRegister(); await stageInbound(); await stageStock(); await stageStocktake(); await stageMove(); await stageOutbound(); await stageStockAfter(); }
+  const card=$('stagecard'); card.onclick=null; showCursor(true);
+  try{
+    await bigCard(null,'飲料パレット預かり倉庫 ─ 1日の流れ','ヒアリングで構成されたWMSを、実作業の順に自動実演します',2200);
+    for(let i=0;i<STAGES.length;i++){ const st=STAGES[i]; setProgress(i+1,STAGES.length); await bigCard('STAGE '+(i+1)+' / '+STAGES.length, st.t, st.s); showCursor(true); await st.fn(); }
+    showCursor(false);
+    card.querySelector('.sc').innerHTML='<div class="no">COMPLETE</div><div class="ti">倉庫の1日が完了しました</div>'
+      +'<div class="sum"><div><b>1,104</b><span>入荷（ケース）</span></div><div><b>30</b><span>出荷（ケース）</span></div><div><b>1,074</b><span>在庫（ケース）</span></div><div><b>0</b><span>棚卸差異</span></div></div>'
+      +'<div class="ds" style="margin-top:18px">▶ クリックでもう一度</div>';
+    card.classList.add('on'); card.onclick=()=>{ card.onclick=null; card.classList.remove('on'); runFullDemo(); };
+  }
   catch(e){ narrate('—', '実演を中断しました'); }
-  showCursor(false); demoRunning=false; $('demoBtn').disabled=false; $('demoBtn').textContent='▶ 自動実演';
+  demoRunning=false; $('demoBtn').disabled=false; $('demoBtn').textContent='▶ もう一度';
 }
 $('demoBtn').onclick = runFullDemo;
 $('restart').onclick = ()=>{ qi=0; for(const k in answers) delete answers[k];
