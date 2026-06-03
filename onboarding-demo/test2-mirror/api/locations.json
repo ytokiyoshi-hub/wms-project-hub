@@ -1,0 +1,5 @@
+[
+  { "location_code":"A-01-01","code":"A-01-01","name":"保管A-01-01","zone":"常温","floor":"1","area":"常温","building":"本棟" },
+  { "location_code":"A-01-02","code":"A-01-02","name":"保管A-01-02","zone":"常温","floor":"1","area":"常温","building":"本棟" },
+  { "location_code":"A-01-03","code":"A-01-03","name":"保管A-01-03","zone":"常温","floor":"1","area":"常温","building":"本棟" }
+]

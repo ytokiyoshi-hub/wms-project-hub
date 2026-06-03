@@ -1,0 +1,13 @@
+{
+  "id": "IN-2026-0603-01",
+  "schedule_no": "IN-2026-0603-01",
+  "scheduled_date": "2026-06-03",
+  "supplier_name": "みなと飲料",
+  "owner_code": "OWN01",
+  "status": "planned",
+  "lines": [
+    { "id": "L1", "product_code": "BV-WATER", "product_name": "天然水 2L×6",   "expected_qty": 480, "status": "planned", "lot_no": "L260603A", "mfg_date": "2026-06-01", "expiry_date": "2027-06-03" },
+    { "id": "L2", "product_code": "BV-OCHA",  "product_name": "緑茶 500ml×24",  "expected_qty": 240, "status": "planned", "lot_no": "L260603B", "mfg_date": "2026-06-01", "expiry_date": "2027-03-03" },
+    { "id": "L3", "product_code": "BV-COLA",  "product_name": "コーラ 500ml×24","expected_qty": 384, "status": "planned", "lot_no": "L260603C", "mfg_date": "2026-06-01", "expiry_date": "2026-12-03" }
+  ]
+}

@@ -1,0 +1,5 @@
+[
+  { "product_code": "BV-WATER", "product_name": "天然水 2L×6",    "lot_no": "L260603A", "location_code": "A-01-01", "expiry_date": "2027-06-03", "qty": 480, "owner_code": "OWN01" },
+  { "product_code": "BV-OCHA",  "product_name": "緑茶 500ml×24",   "lot_no": "L260603B", "location_code": "A-01-02", "expiry_date": "2027-03-03", "qty": 240, "owner_code": "OWN01" },
+  { "product_code": "BV-COLA",  "product_name": "コーラ 500ml×24", "lot_no": "L260603C", "location_code": "A-01-03", "expiry_date": "2026-12-03", "qty": 384, "owner_code": "OWN01" }
+]

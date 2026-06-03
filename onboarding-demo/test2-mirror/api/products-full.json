@@ -1,0 +1,5 @@
+[
+  { "code":"BV-WATER","name":"天然水 2L×6","jan_code":"4901000000017","owner_code":"OWN01","unit_top":"ケース","temperature_zone":"常温","expiry_managed":true,"expiry_days":365,"active":true },
+  { "code":"BV-OCHA","name":"緑茶 500ml×24","jan_code":"4901000000024","owner_code":"OWN01","unit_top":"ケース","temperature_zone":"常温","expiry_managed":true,"expiry_days":270,"active":true },
+  { "code":"BV-COLA","name":"コーラ 500ml×24","jan_code":"4901000000031","owner_code":"OWN01","unit_top":"ケース","temperature_zone":"常温","expiry_managed":true,"expiry_days":180,"active":true }
+]
