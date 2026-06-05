@@ -521,8 +521,8 @@
     </div>
     <div class="fstep f2">
       <span class="fk"><span class="live"></span>// いま NOW</span>
-      <h3>ログイン整備・実運用準備</h3>
-      <p>ログイン用アカウントの整備と、日々の運用に向けた最終調整。<strong>使って詰まらない</strong>状態へ仕上げ中。</p>
+      <h3>実運用データ整備・最終調整</h3>
+      <p>本番データを<strong>現実スケールに整備完了</strong>（在庫・請求・全動線）。ログイン必須化を有効にすれば本格運用へ。</p>
     </div>
     <div class="fstep f3">
       <span class="fk">// 次 NEXT</span>
@@ -535,9 +535,9 @@
   <div class="sec-title"><span class="bar"></span><h2>規模 ― 主要数字</h2></div>
   <section class="figband">
     <div class="fig"><span class="fnum" data-target="164">0</span><span class="flab">API</span></div>
-    <div class="fig"><span class="fnum" data-target="44">0</span><span class="flab">テーブル</span></div>
-    <div class="fig"><span class="fnum" data-target="479">0</span><span class="flab">画面</span></div>
-    <div class="fig"><span class="fnum" data-target="274">0</span><span class="flab">行（実データ）</span></div>
+    <div class="fig"><span class="fnum" data-target="111">0</span><span class="flab">テーブル</span></div>
+    <div class="fig"><span class="fnum" data-target="496">0</span><span class="flab">画面</span></div>
+    <div class="fig"><span class="fnum" data-target="273547">0</span><span class="flab">行（実データ）</span></div>
     <div class="fig"><span class="fnum" data-target="57">0</span><span class="flab">RLSポリシー</span></div>
   </section>
 
@@ -557,8 +557,8 @@
         <div class="row"><span class="pr">&gt;</span> <span class="white">LIVE&nbsp;&nbsp;&nbsp;:</span> <span class="green">wms-test2.vercel.app 公開・稼働中</span> <span class="badge-run">[ACTIVE]</span></div>
         <div class="cmt">&nbsp;&nbsp;└─ 荷主分離(RLS)がDB側で有効＝他社のデータは見えない</div>
         <div class="row"><span class="green">[OK]</span> <span class="cmt">本番デプロイ完了（pooler6543 / search_path=wms / RLS有効）</span></div>
-        <div class="row"><span class="green">[OK]</span> <span class="cmt">荷主一覧・ロケーション表示確認 / ログインAPI正常</span></div>
-        <div class="row"><span class="pr">&gt;</span> <span class="white">NEXT&nbsp;&nbsp;:</span> ログイン用アカウント整備 → 実運用 <span class="badge-wait">[準備中]</span></div>
+        <div class="row"><span class="green">[OK]</span> <span class="cmt">本番データを現実スケールに整備完了（在庫・請求・全動線データ）</span></div>
+        <div class="row"><span class="pr">&gt;</span> <span class="white">NEXT&nbsp;&nbsp;:</span> ログイン必須化（本番切替時に有効化）→ 実運用 <span class="badge-wait">[準備中]</span></div>
       </div>
       <div class="term-foot">&gt; live at wms-test2.vercel.app <span class="cmt"># uptime </span><span id="upt">00:00</span><span class="cursor"></span></div>
     </div>
@@ -721,19 +721,19 @@
     <div class="al-head">
       <span class="al-dot"></span>
       <h2>最近の動き</h2>
-      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/01 22:19<!--/AUTO:updated--> ・自動</span>
+      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/05<!--/AUTO:updated--> ・手動(1号)</span>
     </div>
     <ul class="al-feed">
 <!--AUTO:activity-->
-      <li><span class="al-when">06/01 22:02</span><span class="al-what">fix(本番公開): WMS接続の search_path を wms のみに(public除外)</span></li>
-      <li><span class="al-when">06/01 21:18</span><span class="al-what">fix(本番公開): plain経路(login等)も tx で包み search_path を保証</span></li>
-      <li><span class="al-when">06/01 21:08</span><span class="al-what">fix(本番公開): transaction pooler で search_path が効かない問題を tx 内で明示SET</span></li>
-      <li><span class="al-when">06/01 18:23</span><span class="al-what">公開向け: 重い一覧に任意ページング(?limit=&amp;offset=) — サーバレスtimeout対策</span></li>
-      <li><span class="al-when">06/01 17:52</span><span class="al-what">公開向けハードニング(2号引継): 管理/デモAPIに認証＋管理者ロール、ログインCookie堅牢化</span></li>
-      <li><span class="al-when">06/01 16:06</span><span class="al-what">PR-1 実運用品質(続): No.6 再検品の原子化, No.9 在庫調整却下ガード, No.13 デモ空環境400</span></li>
+      <li><span class="al-when">06/05</span><span class="al-what">データ現実化: 本番データを現実スケールに整備（在庫・請求）。1号がLIVE実態を確認</span></li>
+      <li><span class="al-when">06/05</span><span class="al-what">billing計算を共用ライブラリ(billing-calc.js)へ抽出 — endpoint/シード共用・DRY</span></li>
+      <li><span class="al-when">06/04</span><span class="al-what">認証・RLS活性化: RLSを本番DBで有効化・ロール正規化・PR#1をmainへマージ</span></li>
+      <li><span class="al-when">06/04</span><span class="al-what">routes/waves 配線・本番GET全エンドポイントの健全性を確認</span></li>
+      <li><span class="al-when">06/03</span><span class="al-what">新59テーブル追加＋汎用API /api/ext・27画面を実データ配線</span></li>
+      <li><span class="al-when">06/02</span><span class="al-what">KPI/集計を専用APIに結線 — 重い全件ロードを廃止</span></li>
 <!--/AUTO:activity-->
     </ul>
-    <div class="al-gate"><!--AUTO:gate-->テストシナリオ 33/36 緑<!--/AUTO:gate--></div>
+    <div class="al-gate"><!--AUTO:gate-->主要動線シナリオ 緑 ・ テスト基盤を整備中<!--/AUTO:gate--></div>
   </section>
 
   <footer>
