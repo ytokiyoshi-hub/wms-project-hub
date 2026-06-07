@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>取引先マスタ</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">🤝</div><h1>取引先マスタ</h1></div>
+<div class="scr-sub">出荷先（得意先）・仕入先を一元管理。荷主・配送条件・締め情報と紐づきます。</div>
+<div class="card">
+  <h2>取引先一覧<span class="pill">H-1</span></h2>
+  <table><thead><tr><th>コード</th><th>取引先名</th><th>区分</th><th>取引</th><th>荷主</th><th>締め</th></tr></thead>
+  <tbody id="body"></tbody></table>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note">出荷先は配送方面の自動振り分け（Q）・請求条件に連動。仕入先は入荷予定（ASN）の発行元になります。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const ind=SC.industry||'取引先';
+const owner=ind+((SC.answers&&SC.answers.owner==='multi')?'（荷主A社）':'（自社）');
+function customer(){ if(SC.answers&&SC.answers.ship==='ec') return '個人購入者（EC一般)'; const l=(SC.outbound&&SC.outbound.orderLabel)||''; return (l.split('（')[0].replace(/向け$/,'').trim())||'主要得意先'; }
+const rows=[
+  {code:'TP-001', name:customer(), kbn:'得意先', tag:'tag navy', deal:'出荷', shime:'末締/翌月末'},
+  {code:'TP-002', name:(SC.answers&&SC.answers.ship==='ec')?'モール出店（EC）':'量販チェーン本部', kbn:'得意先', tag:'tag navy', deal:'出荷', shime:'20締/翌15'},
+  {code:'SP-101', name:ind+'サプライ', kbn:'仕入先', tag:'tag warn', deal:'入荷', shime:'末締/翌月末'},
+];
+document.getElementById('body').innerHTML=rows.map(r=>
+  `<tr><td>${r.code}</td><td>${r.name}</td><td><span class="${r.tag}">${r.kbn}</span></td><td>${r.deal}</td><td>${owner}</td><td>${r.shime}</td></tr>`).join('');
+const cust=rows.filter(r=>r.kbn==='得意先').length, sup=rows.filter(r=>r.kbn==='仕入先').length;
+document.getElementById('kpi').innerHTML=
+  `<div class="k"><div class="v">${rows.length}</div><div class="l">取引先 総数</div></div>`+
+  `<div class="k"><div class="v">${cust}</div><div class="l">得意先（出荷先）</div></div>`+
+  `<div class="k"><div class="v">${sup}</div><div class="l">仕入先</div></div>`;
+</script>
+</body></html>

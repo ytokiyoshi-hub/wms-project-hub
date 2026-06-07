@@ -341,7 +341,7 @@
 // ===== シナリオ解決（?s=<id> → window.SCENARIOS。なければ飲料既定） =====
 const _PARAMS = new URLSearchParams(location.search);
 const _SID = _PARAMS.get('s');
-const BUILD = '20260608b';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
+const BUILD = '20260608c';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
 const SC = (window.SCENARIOS && _SID && window.SCENARIOS[_SID])
   ? window.SCENARIOS[_SID]
   : (window.SCENARIOS && window.SCENARIOS.beverage) || {};
@@ -586,15 +586,14 @@ const MENU = [
   ]},
   { grp:'マスタ', items:[
     { label:'商品マスタ',   url:'test2-mirror/master_products.html', local:true, flag:'base' },
-    { label:'ロケーション', url:'pc/master/locations.html', flag:'base' },
-    { label:'取引先',       url:'pc/master/customers.html', flag:'base' },
+    { label:'ロケーション', url:'screens/locations.html', local:true, flag:'base' },
+    { label:'取引先',       url:'screens/customers.html', local:true, flag:'base' },
   ]},
   { grp:'請求 / 帳票', items:[
     { label:'ピッキングリスト', url:'test2-mirror/outbound_picking_list.html', local:true, flag:'base' },
     { label:'棚卸表',     url:'test2-mirror/stocktake_sheet.html', local:true, flag:'base' },
     { label:'荷主別請求書', url:'screens/billing.html', local:true, flag:'tpl_billing' },
-    { label:'月次請求',   url:'pc/billing/monthly.html', flag:'tpl_billing' },
-    { label:'請求書',     url:'pc/billing/invoice.html', flag:'tpl_billing' },
+    { label:'請求書発行', url:'screens/invoice.html', local:true, flag:'tpl_billing' },
     { label:'帳票一覧',   url:'pc/prints/hub.html',      flag:'base' },
   ]},
 ];

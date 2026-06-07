@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ロケーションマスタ</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">🗄️</div><h1>ロケーションマスタ</h1></div>
+<div class="scr-sub">保管・ピッキング・仮置きなどロケーション種別を管理。種別が引当・補充の最適化に効きます。</div>
+<div class="card">
+  <h2>ロケーション一覧<span class="pill">P-1 種別</span></h2>
+  <table><thead><tr><th>ロケコード</th><th>種別</th><th>温度帯</th><th>格納商品</th><th class="num">在庫(ケース)</th></tr></thead>
+  <tbody id="body"></tbody></table>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note">ロケ種別ベースの引当ロジック（P-3）・閾値補充（P-6）の土台。先頭文字で温度帯/用途を識別（R=冷蔵・F=冷凍・P=ピッキング・他=常温）。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const cold=SC.answers&&SC.answers.temp==='cold';
+function zone(loc){ const c=String(loc||'')[0]; if(c==='R')return '冷蔵'; if(c==='F')return '冷凍'; if(c==='P')return 'ピッキング帯'; return cold?'冷蔵':'常温'; }
+const rows=(SC.counts||[]).map(c=>({loc:c.loc, kind:'保管', tag:'tag navy', zone:zone(c.loc), nm:c.nm, qty:c.theory}));
+if(SC.move&&SC.move.toLoc) rows.push({loc:SC.move.toLoc, kind:'ピッキング', tag:'tag warn', zone:zone(SC.move.toLoc), nm:SC.move.nm, qty:SC.move.qty});
+document.getElementById('body').innerHTML=rows.map(r=>
+  `<tr><td>${r.loc}</td><td><span class="${r.tag}">${r.kind}</span></td><td>${r.zone}</td><td>${r.nm}</td><td class="num">${(r.qty||0).toLocaleString()}</td></tr>`).join('');
+const store=rows.filter(r=>r.kind==='保管').length, pick=rows.filter(r=>r.kind==='ピッキング').length;
+const tot=rows.reduce((s,r)=>s+(r.qty||0),0);
+document.getElementById('kpi').innerHTML=
+  `<div class="k"><div class="v">${rows.length}</div><div class="l">使用ロケ数</div></div>`+
+  `<div class="k"><div class="v">${store}</div><div class="l">保管ロケ</div></div>`+
+  `<div class="k"><div class="v">${pick}</div><div class="l">ピッキングロケ</div></div>`+
+  `<div class="k"><div class="v">${tot.toLocaleString()}</div><div class="l">総格納(ケース)</div></div>`;
+</script>
+</body></html>

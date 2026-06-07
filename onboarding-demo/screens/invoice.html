@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>請求書</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+ .paper{background:#fff;border:1px solid var(--line);border-radius:10px;max-width:720px;margin:0 auto;padding:30px 34px;box-shadow:0 6px 20px rgba(26,58,92,.07)}
+ .iv-top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--navy);padding-bottom:14px;margin-bottom:18px}
+ .iv-top h2{font-size:24px;color:var(--navy);letter-spacing:.2em;margin:0}
+ .iv-to{font-size:16px;font-weight:800;margin-top:8px}
+ .iv-meta{font-size:12px;color:var(--sub);text-align:right;line-height:1.7}
+ .iv-from{font-size:12px;color:var(--sub);text-align:right;margin-top:8px;line-height:1.6}
+ .iv-total{display:flex;justify-content:flex-end;margin-top:8px}
+ .iv-total .box{background:var(--navy);color:#fff;border-radius:10px;padding:12px 22px;text-align:right}
+ .iv-total .box .l{font-size:12px;color:#cfe0ef}
+ .iv-total .box .v{font-size:26px;font-weight:800;color:#ffd27a}
+ td.r{text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">🧾</div><h1>請求書（発行）</h1></div>
+<div class="scr-sub">荷主向けの月次請求書。保管料・荷役料を自動集計し、消費税込みで発行（N-7 PDF出力相当）。</div>
+<div class="paper">
+  <div class="iv-top">
+    <div><h2>請 求 書</h2><div class="iv-to" id="to">— 御中</div></div>
+    <div>
+      <div class="iv-meta">請求番号：INV-2026-06-001<br>請求日：2026-06-30<br>対象期間：2026年6月度</div>
+      <div class="iv-from">エコネクト物流センター株式会社<br>登録番号 T1234567890123</div>
+    </div>
+  </div>
+  <table><thead><tr><th>項目</th><th>区分</th><th class="num">数量</th><th class="num">単価</th><th class="num">金額</th></tr></thead>
+    <tbody id="body"></tbody></table>
+  <table style="margin-top:10px"><tbody>
+    <tr><td class="r" style="border:none">小計</td><td class="r" id="sub" style="border:none;width:160px"></td></tr>
+    <tr><td class="r" style="border:none">消費税(10%)</td><td class="r" id="tax" style="border:none"></td></tr>
+  </tbody></table>
+  <div class="iv-total"><div class="box"><div class="l">ご請求金額（税込）</div><div class="v" id="total">¥0</div></div></div>
+</div>
+<div class="note" style="max-width:720px;margin:14px auto 0">3期制保管料（M-7）＋入出庫荷役料。根拠（入出庫件数 N-3）・前月比（N-6）・CSV/PDF出力（N-7/N-8）に対応。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const inb=SC.inbound||[]; const picks=(SC.outbound&&SC.outbound.picks)||[];
+const inSum=inb.reduce((s,i)=>s+i.qty,0); const outSum=picks.reduce((s,p)=>s+p.qty,0); const stock=inSum-outSum;
+const owner=(SC.industry||'荷主')+((SC.answers&&SC.answers.owner==='multi')?'（荷主A社）':'（自社）');
+document.getElementById('to').textContent=owner+' 御中';
+const R={store:120,in:45,out:38};
+const lines=[{item:'保管料',kbn:'3期制',qty:stock,unit:R.store},{item:'入庫荷役料',kbn:'入庫',qty:inSum,unit:R.in},{item:'出庫荷役料',kbn:'出庫',qty:outSum,unit:R.out}];
+let sub=0;
+document.getElementById('body').innerHTML=lines.map(l=>{const a=l.qty*l.unit;sub+=a;return `<tr><td>${l.item}</td><td>${l.kbn}</td><td class="num">${l.qty.toLocaleString()} cs</td><td class="num">¥${l.unit}</td><td class="num">${yen(a)}</td></tr>`;}).join('');
+const tax=Math.round(sub*0.1);
+document.getElementById('sub').textContent=yen(sub);
+document.getElementById('tax').textContent=yen(tax);
+document.getElementById('total').textContent=yen(sub+tax);
+</script>
+</body></html>
