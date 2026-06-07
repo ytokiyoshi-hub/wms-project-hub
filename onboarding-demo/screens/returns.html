@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>返品処理</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">↩️</div><h1>返品処理（返品入庫）</h1></div>
+<div class="scr-sub">出荷済の返品を受け付け、検品して在庫へ戻します。良品は在庫復帰、不良は保留（現物がある限り在庫から落とさない）。</div>
+<div class="card">
+  <h2>返品受付明細<span class="pill">RMA</span></h2>
+  <table><thead><tr><th>商品</th><th class="num">出荷数</th><th class="num">返品数</th><th>検品判定</th><th>処置</th><th>戻しロケ</th></tr></thead>
+  <tbody id="body"></tbody></table>
+  <div class="tot"><div class="l">返品受付番号</div><div class="v" id="rma" style="font-size:16px"></div></div>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note"><b>現場ルール</b>：不良・廃棄判定でも<b>現物が倉庫にある限り在庫からは落とさず</b>、ステータス変更＋引当除外で管理（保管料は発生）。実搬出して初めて在庫減。良品は元ロケへ在庫復帰。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const picks=(SC.outbound&&SC.outbound.picks)||[];
+const counts=SC.counts||[]; const inb=SC.inbound||[];
+function locOf(nm){ const c=counts.find(x=>x.nm===nm); return c?c.loc:'-'; }
+// 返品＝出荷の一部（先頭明細の一部数量）。良品中心＋1件不良で現場ルールを見せる。
+let okCnt=0, ngCnt=0, lines=[];
+picks.forEach((p,i)=>{
+  const ret=Math.max(1,Math.round(p.qty*0.2));   // 出荷の約2割が返品
+  const ng=(i===0)?1:0;                            // 先頭明細に不良1
+  const good=ret-ng;
+  okCnt+=good; ngCnt+=ng;
+  lines.push({nm:p.nm, ship:p.qty, ret, judge:ng?'良品'+good+'／不良'+ng:'全数良品', act:ng?'良品=在庫復帰／不良=保留(引当除外)':'在庫復帰', loc:locOf(p.nm)});
+});
+document.getElementById('body').innerHTML=lines.map(l=>
+  `<tr><td>${l.nm}</td><td class="num">${l.ship}</td><td class="num">${l.ret}</td>`+
+  `<td>${/不良/.test(l.judge)?'<span class="tag warn">'+l.judge+'</span>':'<span class="tag ok">'+l.judge+'</span>'}</td>`+
+  `<td>${l.act}</td><td>${l.loc}</td></tr>`).join('');
+document.getElementById('rma').textContent='RMA-2026-0603-01';
+document.getElementById('kpi').innerHTML=
+  `<div class="k"><div class="v">${lines.length}</div><div class="l">返品明細</div></div>`+
+  `<div class="k"><div class="v">${okCnt}</div><div class="l">良品（在庫復帰）</div></div>`+
+  `<div class="k"><div class="v ${ngCnt?'warm':''}">${ngCnt}</div><div class="l">不良（保留・在庫維持）</div></div>`;
+</script>
+</body></html>

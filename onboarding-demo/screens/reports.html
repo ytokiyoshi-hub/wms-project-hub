@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>帳票一覧</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">🗂️</div><h1>帳票一覧</h1></div>
+<div class="scr-sub">この倉庫で発行できる帳票の一覧。各帳票はPDF/CSVで出力できます。</div>
+<div class="card">
+  <h2>発行可能な帳票<span class="pill">N-7 / N-8</span></h2>
+  <table><thead><tr><th>帳票</th><th>種別</th><th>対象</th><th>形式</th><th>最終発行</th></tr></thead>
+  <tbody id="body"></tbody></table>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note">業界標準フォーマット対応（G-6）。PDF出力（N-7）・CSVエクスポート（N-8）・荷主別カスタマイズ（N-11）に対応。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const ob=SC.outbound||{}; const owner=(SC.industry||'荷主')+((SC.answers&&SC.answers.owner==='multi')?'（荷主A社）':'（自社）');
+const rows=[
+  {nm:'入荷予定表（ASN）', kbn:'入荷', tgt:'IN-2026-0603-01', fmt:'PDF', when:'2026-06-03 09:10'},
+  {nm:'ピッキングリスト', kbn:'出荷', tgt:ob.soId||'-', fmt:'PDF', when:'2026-06-03 12:00'},
+  {nm:'棚卸表', kbn:'在庫', tgt:'STK-2606-001', fmt:'PDF', when:'2026-06-03 08:30'},
+  {nm:'出荷実績データ', kbn:'実績', tgt:ob.soId||'-', fmt:'CSV/EDI', when:'2026-06-03 16:00'},
+  {nm:'月次請求書', kbn:'請求', tgt:owner, fmt:'PDF', when:'2026-06-30 締'},
+  {nm:'在庫明細書（月末）', kbn:'在庫', tgt:owner, fmt:'CSV', when:'2026-06-30 締'},
+];
+document.getElementById('body').innerHTML=rows.map(r=>
+  `<tr><td>${r.nm}</td><td><span class="tag navy">${r.kbn}</span></td><td>${r.tgt}</td><td>${r.fmt}</td><td>${r.when}</td></tr>`).join('');
+document.getElementById('kpi').innerHTML=
+  `<div class="k"><div class="v">${rows.length}</div><div class="l">発行可能帳票</div></div>`+
+  `<div class="k"><div class="v">PDF/CSV</div><div class="l">出力形式</div></div>`+
+  `<div class="k"><div class="v">${owner}</div><div class="l">荷主</div></div>`;
+</script>
+</body></html>
