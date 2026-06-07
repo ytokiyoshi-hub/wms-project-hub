@@ -196,14 +196,15 @@ flowchart TD
 
 - 議事録：`specs/meeting_notes_nakatsukan_latest.md`
 - 役割：外部エンジニア / アドバイザー（今井先生と相補的な視点での設計レビュー）
-- 現状（2026-06-03 更新）：
+- 現状（2026-06-07 更新）：
   - 正式ミーティング記録なし・フィードバック未受領（継続中）
   - 相談書2件送付済み：`specs/CONSULTATION_DB4_MULTITENANCY.md`・`specs/CONSULTATION_DB1_TO_DB5.md`
   - 2026-05-10 にミーティングアジェンダ・質問リスト作成済み（タスク #354）
   - 2026-05-14 時吉さんが18項目全件先行確定（まーちゃん推奨採用）。中津さんフィードバックは設計変更の参考情報扱い（実装ブロックなし）
   - 2026-05-28 MVP着手通知送付済み（`MESSAGE_TO_NAKATSU_2026-05-28_MVP_LAUNCH.md`）
-  - MVP完了後（〜2026-06-11）に本番DB接続方針・API契約叩き台を擦り合わせ予定
+  - MVP 2週目（〜2026-06-11）進行中。A6-A8 + Vercel公開後に API契約叩き台を擦り合わせ予定
   - Phase 9 Stage 1〜4 全実装完了・HEARING1全論点確定（2026-05-16/17）
+  - Phase 9-API2 WMS入荷・検品 API エンドポイント仕様 OpenAPI YAML追記完了（2026-06-06・#1097）
   - 公開URL稼働: https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/ （2026-05-29 〜）
   - 本番化ロードマップ確定（社内自走6フェーズ・中津さん丸投げなし・並走方針）: `specs/PRODUCTION_ROADMAP_2026-05-31.md`
 
@@ -221,4 +222,4 @@ flowchart TD
 
 ---
 
-*最終更新: 2026-06-03 / Phase 9-DOC2 まーちゃん（Section 8-2 中津さん現状を2026-06-03時点に更新・MVP着手通知送付・公開URL稼働・本番化ロードマップ確定・並走方針を反映）*
+*最終更新: 2026-06-07 / Phase 9-DOC2 まーちゃん（Section 8-2 中津さん現状を2026-06-07時点に更新・API2 OpenAPI YAML完了・MVP 2週目進行中を反映）*
