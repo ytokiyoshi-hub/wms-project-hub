@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>梱包・梱包ロジック</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+ .meta{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin:-6px 0 16px 46px}
+ .meta b{color:var(--navy2);font-weight:700}
+ .matsum{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+ .matsum .m{flex:1;min-width:130px;background:#f7fafd;border:1px solid var(--line);border-radius:9px;padding:9px 12px}
+ .matsum .m .mh{display:flex;align-items:center;justify-content:space-between;gap:6px}
+ .matsum .m .mn{font-size:12px;color:var(--sub)}
+ .matsum .m .mv{font-size:13px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+ .pdim{color:var(--sub)}
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">📦</div><h1>梱包・梱包ロジック</h1></div>
+<div class="scr-sub">ピッキング済の出荷明細を梱包。商品ごとの梱包係数から個口数を自動確定し、使用する梱包材と資材コストを算出する。</div>
+<div class="meta" id="meta"></div>
+<div class="card">
+  <h2>梱包明細（個口数の自動確定）<span class="pill">S-1/S-4/S-5/S-8/S-10</span></h2>
+  <table>
+    <thead><tr>
+      <th>商品</th>
+      <th class="num">出荷数</th>
+      <th>梱包材</th>
+      <th class="num">梱包係数<br>(1個口入数)</th>
+      <th class="num">個口数</th>
+      <th class="num">資材コスト</th>
+    </tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div class="tot"><div class="l">総梱包コスト（資材費）</div><div class="v" id="tot">¥0</div></div>
+</div>
+<div class="card">
+  <h2>梱包材 使用量実績<span class="pill">S-8 資材実績</span></h2>
+  <div class="matsum" id="matsum"></div>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note">商品ごとの<b>梱包係数</b>（1個口あたりの入数）から個口数を自動確定（S-5）。使用した梱包材を品目別に集計し<b>資材使用量を実績計上</b>（S-8）、単価を掛けて<b>梱包コストを算出</b>（S-10）。ケース単位とバラ単位は<b>並行で梱包作業</b>を進められる（S-7）。梱包材マスタ（S-1）・商品別梱包係数（S-4）が前提。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const ob=SC.outbound||{};
+const picks=ob.picks||[];
+
+// 梱包材マスタ（S-1）：材種・1個口あたり入数（梱包係数 S-4）・資材単価（S-10）
+const MAT=[
+  {name:'箱S', cap:24, unit:40},
+  {name:'箱M', cap:12, unit:60},
+  {name:'箱L', cap:6,  unit:90}
+];
+
+// 出荷ヘッダ（あれば表示）
+const metaEl=document.getElementById('meta');
+if(metaEl){
+  const parts=[];
+  if(ob.orderLabel) parts.push('<span>出荷指示：<b>'+ob.orderLabel+'</b></span>');
+  if(ob.soId)       parts.push('<span>SO番号：<b>'+ob.soId+'</b></span>');
+  if(SC.industry)   parts.push('<span>荷主業種：<b>'+SC.industry+'</b></span>');
+  metaEl.innerHTML=parts.join('');
+}
+
+// 明細計算 + 梱包材別集計
+const matAgg={}; // name -> {cases, cost, cap, unit}
+let totParcels=0, totCost=0;
+
+const rows=picks.map((p,i)=>{
+  const m=MAT[i%MAT.length];
+  const qty=Number(p.qty)||0;
+  const parcels=qty>0?Math.ceil(qty/m.cap):0;     // 個口数（S-5）
+  const cost=parcels*m.unit;                       // 資材コスト（S-10）
+  totParcels+=parcels; totCost+=cost;
+  const a=matAgg[m.name]||(matAgg[m.name]={cases:0,cost:0,cap:m.cap,unit:m.unit});
+  a.cases+=parcels; a.cost+=cost;
+  return '<tr>'+
+    '<td>'+(p.nm||'—')+(p.loc?' <span class="pdim">／'+p.loc+'</span>':'')+'</td>'+
+    '<td class="num">'+qty.toLocaleString()+'</td>'+
+    '<td><span class="tag navy">'+m.name+'</span></td>'+
+    '<td class="num">'+m.cap.toLocaleString()+'</td>'+
+    '<td class="num"><b>'+parcels.toLocaleString()+'</b></td>'+
+    '<td class="num">'+yen(cost)+'</td>'+
+  '</tr>';
+}).join('');
+
+const bodyEl=document.getElementById('body');
+if(bodyEl){
+  bodyEl.innerHTML=rows||'<tr><td colspan="6" class="pdim">梱包対象の出荷明細がありません。</td></tr>';
+}
+const totEl=document.getElementById('tot');
+if(totEl) totEl.textContent=yen(totCost);
+
+// 梱包材 使用量実績（S-8）
+const matEl=document.getElementById('matsum');
+if(matEl){
+  const used=MAT.filter(m=>matAgg[m.name]);
+  matEl.innerHTML=(used.length?used:[]).map(m=>{
+    const a=matAgg[m.name];
+    return '<div class="m"><div class="mh"><span class="tag navy">'+m.name+'</span>'+
+      '<span class="mv">'+a.cases.toLocaleString()+' 個口</span></div>'+
+      '<div class="mn">入数 '+m.cap+'／個 ・ 単価 '+yen(m.unit)+' ・ 資材費 '+yen(a.cost)+'</div></div>';
+  }).join('')||'<div class="mn pdim">使用実績なし</div>';
+}
+
+// KPI
+const kinds=Object.keys(matAgg).length;
+const kpiEl=document.getElementById('kpi');
+if(kpiEl){
+  kpiEl.innerHTML=
+    '<div class="k"><div class="v">'+totParcels.toLocaleString()+'</div><div class="l">総個口数</div></div>'+
+    '<div class="k"><div class="v">'+kinds.toLocaleString()+'</div><div class="l">使用 梱包材 種類</div></div>'+
+    '<div class="k"><div class="v warm">'+yen(totCost)+'</div><div class="l">総梱包コスト（資材費）</div></div>';
+}
+</script>
+</body></html>

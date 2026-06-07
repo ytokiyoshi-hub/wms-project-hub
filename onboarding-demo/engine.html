@@ -341,7 +341,7 @@
 // ===== シナリオ解決（?s=<id> → window.SCENARIOS。なければ飲料既定） =====
 const _PARAMS = new URLSearchParams(location.search);
 const _SID = _PARAMS.get('s');
-const BUILD = '20260608a';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
+const BUILD = '20260608b';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
 const SC = (window.SCENARIOS && _SID && window.SCENARIOS[_SID])
   ? window.SCENARIOS[_SID]
   : (window.SCENARIOS && window.SCENARIOS.beverage) || {};
@@ -562,7 +562,7 @@ const T2 = 'https://wms-test2.vercel.app/';
 const MENU = [
   { grp:'入荷管理', items:[
     { label:'入荷予定一覧', url:'test2-mirror/inbound_plans.html', local:true, flag:'base' },
-    { label:'入荷予定登録', url:'pc/inbound/register.html',         flag:'base' },
+    { label:'入荷予定登録', url:'screens/inbound_register.html', local:true, flag:'base' },
     { label:'温度チェック', url:'screens/temp_check.html', local:true, flag:'temperature' },
   ]},
   { grp:'ハンディ端末（HT）', items:[
@@ -573,14 +573,15 @@ const MENU = [
   ]},
   { grp:'在庫管理', items:[
     { label:'在庫照会（商品軸）', url:'test2-mirror/inventory_kpi.html', local:true, flag:'base' },
-    { label:'在庫照会（ロケ軸）', url:'pc/inventory/layout_a.html',      flag:'base' },
+    { label:'在庫照会（ロケ軸）', url:'screens/loc_inventory.html', local:true, flag:'base' },
+    { label:'補充指示', url:'screens/replenish.html', local:true, flag:'base' },
     { label:'ロット・FEFO/期限', url:'screens/lot_fefo.html', local:true, flag:'lot_expiry' },
   ]},
   { grp:'出荷管理', items:[
     { label:'出荷指示一覧',   url:'test2-mirror/outbound_orders.html', local:true, flag:'base' },
-    { label:'ピッキング・梱包', url:'pc/outbound/packing_summary.html', flag:'base' },
-    { label:'積込・出荷確定', url:'pc/outbound/loading.html',         flag:'base' },
-    { label:'出荷実績',       url:'pc/outbound/order_actuals.html',   flag:'base' },
+    { label:'梱包・梱包ロジック', url:'screens/packing.html', local:true, flag:'base' },
+    { label:'積込・出荷確定', url:'screens/loading.html', local:true, flag:'base' },
+    { label:'出荷実績', url:'screens/ship_actuals.html', local:true, flag:'base' },
     { label:'EC送り状・ギフト', url:'screens/ec_label.html', local:true, flag:'ec_shipping' },
   ]},
   { grp:'マスタ', items:[
@@ -963,11 +964,9 @@ async function stageOutbound(){
     await sleep(650);
   }
   htLiveFoot([{val:String(picks.length), label:'明細'},{val:String(_pickSum), label:'ピックケース'}]);
-  await sleep(700);
-  narrate('STEP 5', 'ピッキング完了 → 出荷確定');
-  await clickMenu('出荷指示一覧'); await sleep(800);
-  try{ $('screen').contentWindow.__demoSetOrderStatus(ob.soId,'shipped'); }catch(e){}
-  await sleep(1600);
+  await sleep(900);
+  narrate('STEP 5', 'ピッキング完了。梱包・積込へ進みます');
+  await sleep(1200);
 }
 // ===== ステージ⑥：在庫照会（出荷後・在庫が減って物語が閉じる） =====
 async function stageStockAfter(){
@@ -1045,19 +1044,56 @@ async function stageBilling(){
   await sleep(1900);
 }
 
+// 追加：普段使う業務ステージ（入荷予定登録・補充・梱包・積込・出荷実績）
+async function stageInboundRegister(){
+  narrate('入荷予定', '仕入先からの入荷予定（ASN）を登録します');
+  await clickMenu('入荷予定登録'); await sleep(2500);
+  narrate('入荷予定', '商品・予定数・ロット・期限を登録 → 検品の照合元に（W-401）');
+  await sleep(1500);
+}
+async function stageReplenish(){
+  narrate('補充', 'ピッキングロケの在庫が閾値割れ。補充指示を自動生成（P-6）');
+  await clickMenu('補充指示'); await sleep(2600);
+  narrate('補充', '保管ロケ→ピッキングロケへ補充。この後HTで移動実行');
+  await sleep(1600);
+}
+async function stagePacking(){
+  narrate('梱包', '梱包ロジック：商品ごとに梱包材を選定し個口を自動確定（S）');
+  await clickMenu('梱包'); await sleep(2700);
+  narrate('梱包', '梱包係数から個口確定・資材使用量と梱包コストを記録');
+  await sleep(1700);
+}
+async function stageLoading(){
+  narrate('積込', '配送便へ積込。積込明細・集荷時刻・カゴIDを管理（D）');
+  await clickMenu('積込'); await sleep(2700);
+  narrate('積込', '出荷確定。配送業者へ引き渡し（集荷時刻アラート）');
+  await sleep(1600);
+}
+async function stageActuals(){
+  narrate('実績送信', '出荷実績を荷主へ自動送信（G・業界標準フォーマット）');
+  await clickMenu('出荷実績'); await sleep(2600);
+  narrate('実績送信', '追跡番号を登録し実績送信完了。配送追跡も取込');
+  await sleep(1600);
+}
+
 // 業種フラグに応じて実演ステージ列を組み立てる
 let STAGES=[];
 function buildStages(){
   const f = (typeof plan!=='undefined' && plan && plan.flags) ? plan.flags : new Set(['base']);
   const S=[];
   S.push({t:'マスター整備', s:'白紙のWMSに、扱う商品を登録する', fn:stageMasterRegister});
+  S.push({t:'入荷予定登録', s:'入荷予定(ASN)を登録', fn:stageInboundRegister});
   S.push({t:'入庫 ─ HT入荷検品', s:'入荷予定の現物を、実機HTでスキャン検品', fn:stageInbound});
   if(f.has('temperature')) S.push({t:'温度チェック', s:'冷蔵・冷凍品の品温を記録・監視', fn:stageTempCheck});
   S.push({t:'在庫照会', s:'入庫した分が在庫に反映される', fn:stageStock});
   if(f.has('lot_expiry')) S.push({t:'ロット・FEFO/期限', s:'賞味期限をFEFOで自動整列', fn:stageFefo});
   S.push({t:'棚卸', s:'棚卸表を発行し、HTで現物をカウント', fn:stageStocktake});
+  S.push({t:'補充指示', s:'閾値割れロケへ補充指示（P-6）', fn:stageReplenish});
   S.push({t:'ロケ移動 ─ HT', s:'保管ロケからピッキングロケへ補充', fn:stageMove});
-  S.push({t:'出庫', s:'出荷指示→引当→ピッキング→出荷確定', fn:stageOutbound});
+  S.push({t:'出庫', s:'出荷指示→引当→ピッキング', fn:stageOutbound});
+  S.push({t:'梱包', s:'梱包材選定・個口自動確定（S）', fn:stagePacking});
+  S.push({t:'積込・出荷確定', s:'配送便へ積込・出荷確定（D）', fn:stageLoading});
+  S.push({t:'出荷実績送信', s:'実績を荷主へ自動送信（G）', fn:stageActuals});
   if(f.has('ec_shipping')) S.push({t:'EC送り状・ギフト', s:'送り状発行・個口・ダブルチェック', fn:stageEcLabel});
   S.push({t:'在庫照会（出荷後）', s:'出荷分が引かれ、倉庫の1日が完了', fn:stageStockAfter});
   if(f.has('tpl_billing')) S.push({t:'荷主別請求書', s:'保管料・荷役料を自動集計（3PL）', fn:stageBilling});

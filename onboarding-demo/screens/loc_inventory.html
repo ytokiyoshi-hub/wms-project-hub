@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>在庫照会（ロケーション軸）</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">🗺️</div><h1>在庫照会（ロケーション軸）</h1></div>
+<div class="scr-sub">どのロケーションに何がいくつ在るかを一覧。保管中の在庫に加え、出荷待ちのピッキングロケも同じ軸で確認できます。</div>
+<div class="card">
+  <h2>ロケーション別 在庫一覧<span class="pill">在庫照会</span></h2>
+  <table>
+    <thead><tr>
+      <th>ロケ</th><th>種別</th><th>商品コード</th><th>商品名</th><th>ロット</th><th>賞味期限</th><th class="num">在庫数</th>
+    </tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note" id="note"></div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const counts=SC.counts||[];
+const inb=SC.inbound||[];
+const move=SC.move||null;
+
+/* 賞味期限セルの表示。'' や '—' は '—'。日付なら残日数を計算しFEFO目安タグを添える。 */
+function expCell(exp){
+  if(!exp||exp==='—') return '<span style="color:var(--sub)">—</span>';
+  const d=(typeof daysTo==='function')?daysTo(exp):null;
+  if(d===null) return exp;
+  let tag='';
+  if(d<0)        tag=' <span class="tag bad">期限切れ</span>';
+  else if(d<=90) tag=' <span class="tag fefo">残'+d+'日</span>';
+  else if(d<=180)tag=' <span class="tag warn">残'+d+'日</span>';
+  return exp+tag;
+}
+function n(v){return Number(v||0).toLocaleString();}
+
+/* 行データを組み立て：counts(=inboundと同順)＝保管、moveが有ればピッキング行を末尾に追加 */
+const rows=[];
+const locSet=new Set();
+let total=0;
+counts.forEach((c,i)=>{
+  const p=inb[i]||{};
+  const loc=c.loc||'—';
+  const qty=Number(p.qty||0);
+  locSet.add(loc);
+  total+=qty;
+  rows.push({
+    loc, kind:'<span class="tag navy">保管</span>',
+    code:p.code||'—', nm:c.nm||p.nm||'—',
+    lot:p.lot||'—', exp:expCell(p.exp),
+    qty, hl:false
+  });
+});
+if(move&&move.toLoc){
+  const mq=Number(move.qty||0);
+  locSet.add(move.toLoc);
+  total+=mq;
+  /* ピッキングロケの商品をinboundから引き当ててコード/ロット/期限を補完 */
+  const src=inb.find(p=>p.nm===move.nm)||{};
+  rows.push({
+    loc:move.toLoc, kind:'<span class="tag warn">ピッキング</span>',
+    code:src.code||'—', nm:move.nm||'—',
+    lot:src.lot||'—', exp:expCell(src.exp),
+    qty:mq, hl:true
+  });
+}
+
+document.getElementById('body').innerHTML = rows.length
+  ? rows.map(r=>'<tr'+(r.hl?' class="row-hl"':'')+'>'
+      +'<td><b>'+r.loc+'</b></td>'
+      +'<td>'+r.kind+'</td>'
+      +'<td>'+r.code+'</td>'
+      +'<td>'+r.nm+'</td>'
+      +'<td>'+r.lot+'</td>'
+      +'<td>'+r.exp+'</td>'
+      +'<td class="num">'+n(r.qty)+'</td>'
+    +'</tr>').join('')
+  : '<tr><td colspan="7" style="color:var(--sub);text-align:center;padding:18px">在庫データがありません</td></tr>';
+
+/* SKU数＝商品コードのユニーク数（無ければ商品名で代替） */
+const skuSet=new Set();
+rows.forEach(r=>skuSet.add(r.code!=='—'?r.code:r.nm));
+
+document.getElementById('kpi').innerHTML =
+   '<div class="k"><div class="v">'+locSet.size+'</div><div class="l">使用ロケ数</div></div>'
+  +'<div class="k"><div class="v">'+total.toLocaleString()+'</div><div class="l">総在庫数</div></div>'
+  +'<div class="k"><div class="v">'+skuSet.size+'</div><div class="l">SKU数</div></div>';
+
+const indname=(SC.industry?SC.industry+'倉庫':'倉庫');
+document.getElementById('note').innerHTML =
+  '<b>'+indname+'</b>の在庫をロケーション軸で表示。<b>保管</b>＝固定棚の在庫、'
+  +'<b>ピッキング</b>＝出荷向けに前出しした在庫で、同一商品でもロケが分かれます。'
+  +(move&&move.toLoc?' 直近のロケ移動（'+(move.fromLoc||'—')+' → '+move.toLoc+'）が末尾行に反映されています。':'')
+  +' 賞味期限のある商品はFEFO引当の目安として残日数を併記します。';
+</script>
+</body></html>

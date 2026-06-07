@@ -1,0 +1,103 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>出荷実績送信</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">📡</div><h1>出荷実績送信</h1></div>
+<div class="scr-sub">確定した出荷実績を荷主システムへ自動送信し、配送追跡番号まで連携します。</div>
+
+<div class="card">
+  <h2>送信ステータス<span class="pill">G-2 / G-3 / G-4 / G-6</span></h2>
+  <table>
+    <tbody id="meta"></tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>送信明細<span class="pill">G-4 日次出荷実績</span></h2>
+  <table>
+    <thead><tr><th>商品</th><th class="num">出荷数</th><th>追跡番号</th><th>ステータス</th></tr></thead>
+    <tbody id="body"></tbody>
+    <tfoot id="foot"></tfoot>
+  </table>
+</div>
+
+<div class="card"><div class="kpi" id="kpi"></div></div>
+
+<div class="note">
+  確定出荷実績を荷主システムへ送信する<b>実績送信ジョブ（G-2）</b>。送信後は配送業者から
+  <b>配送追跡番号を取込（G-3）</b>し、<b>日次出荷実績レポート（G-4）</b>として荷主に共有します。
+  連携は<b>業界標準フォーマット（G-6）</b>に準拠し、荷主側の受信システムをそのまま利用できます。
+</div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+(function(){
+  var SC = (typeof resolveSC==='function' ? resolveSC() : (window.SC||{})) || {};
+  var ob = SC.outbound || {};
+  var picks = ob.picks || [];
+  var industry = SC.industry || '荷主';
+  var ans = SC.answers || {};
+  var ownerLabel = ans.owner==='multi' ? '複数荷主受託（3PL）' : '専属荷主';
+  var shipLabel  = ans.ship==='ec' ? 'EC個口出荷' : 'BtoB大口出荷';
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+    return {'&':'&','<':'<','>':'>','"':'"'}[c]; }); }
+  function n(v){ var x=Number(v); return isFinite(x)?x:0; }
+
+  /* ---- 送信メタ情報 ---- */
+  var trackTotal = picks.length;
+  var metaRows = [
+    ['送信ステータス', '<span class="tag ok">送信済 ✓</span>'],
+    ['送信先荷主', esc(industry) + '（' + ownerLabel + '・' + shipLabel + '）'],
+    ['対象出荷指示', esc(ob.soId || '—') + (ob.orderLabel ? '　<span class="tag navy">'+esc(ob.orderLabel)+'</span>' : '')],
+    ['送信時刻', '2026-06-03 16:00'],
+    ['送信フォーマット', '業界標準EDI <span class="tag ok">G-6準拠</span>']
+  ];
+  var metaEl = document.getElementById('meta');
+  if(metaEl){
+    metaEl.innerHTML = metaRows.map(function(r){
+      return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';
+    }).join('');
+  }
+
+  /* ---- 送信明細 ---- */
+  var totalQty = 0;
+  var bodyEl = document.getElementById('body');
+  if(bodyEl){
+    if(picks.length===0){
+      bodyEl.innerHTML = '<tr><td colspan="4">送信対象の出荷明細がありません。</td></tr>';
+    } else {
+      bodyEl.innerHTML = picks.map(function(p,i){
+        var q = n(p.qty); totalQty += q;
+        var track = '4012-' + (3400 + i*7) + '-' + (7800 + i*3);
+        return '<tr>'
+          + '<td>'+esc(p.nm)+'</td>'
+          + '<td class="num">'+q.toLocaleString()+'</td>'
+          + '<td>'+esc(track)+'</td>'
+          + '<td><span class="tag ok">出荷済</span></td>'
+          + '</tr>';
+      }).join('');
+    }
+  }
+
+  var footEl = document.getElementById('foot');
+  if(footEl && picks.length>0){
+    footEl.innerHTML = '<tr class="row-hl"><td><b>合計</b></td>'
+      + '<td class="num"><b>'+totalQty.toLocaleString()+'</b></td>'
+      + '<td colspan="2">追跡登録 '+trackTotal+' 件</td></tr>';
+  }
+
+  /* ---- KPI ---- */
+  var kpiEl = document.getElementById('kpi');
+  if(kpiEl){
+    kpiEl.innerHTML =
+        '<div class="k"><div class="v">'+picks.length.toLocaleString()+'</div><div class="l">送信明細件数</div></div>'
+      + '<div class="k"><div class="v">100%</div><div class="l">送信成功率</div></div>'
+      + '<div class="k"><div class="v">'+trackTotal.toLocaleString()+'</div><div class="l">追跡登録数</div></div>'
+      + '<div class="k"><div class="v">'+totalQty.toLocaleString()+'</div><div class="l">出荷総数</div></div>';
+  }
+})();
+</script>
+</body></html>

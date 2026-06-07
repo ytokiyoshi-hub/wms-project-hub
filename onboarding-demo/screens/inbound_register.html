@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>入荷予定登録</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+.asn-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px}
+.asn-meta .m{display:flex;flex-direction:column;gap:2px}
+.asn-meta .m .l{font-size:11px;color:var(--sub);font-weight:700}
+.asn-meta .m .v{font-size:14px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.asn-meta .m .v.code{font-family:"Roboto Mono",ui-monospace,monospace;color:var(--navy)}
+.lot{font-family:"Roboto Mono",ui-monospace,monospace;font-size:12.5px;color:var(--sub)}
+.exp-cell{white-space:nowrap}
+.exp-cell .d{font-variant-numeric:tabular-nums}
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:2px}
+.btn{font-size:13px;font-weight:700;border-radius:8px;padding:9px 18px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--sub)}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+@media(max-width:480px){.asn-meta{grid-template-columns:1fr}}
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">📥</div><h1>入荷予定登録</h1></div>
+<div class="scr-sub">仕入先からの入荷予定（ASN）を登録し、入荷検品の照合元データを作成します。</div>
+
+<div class="card">
+  <h2>入荷予定ヘッダ<span class="pill">W-401</span></h2>
+  <div class="asn-meta" id="meta"></div>
+</div>
+
+<div class="card">
+  <h2>入荷予定明細<span class="pill">W-401</span></h2>
+  <table>
+    <thead><tr>
+      <th>商品コード</th><th>商品名</th>
+      <th class="num">予定数</th><th>ロット</th><th>賞味期限</th>
+    </tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div class="tot"><div class="l">予定数 合計</div><div class="v" id="tot">0 ケース</div></div>
+</div>
+
+<div class="card"><div class="kpi" id="kpi"></div></div>
+
+<div class="card">
+  <div class="actions">
+    <button class="btn" type="button">下書き保存</button>
+    <button class="btn primary" type="button">登録</button>
+  </div>
+</div>
+
+<div class="note">この予定が <b>入荷検品（HT）</b> の照合元になります。商品コード・予定数・ロット・賞味期限を事前登録することで、検品時のスキャン照合と <b>賞味期限の自動チェック（FEFO）</b> が可能になります。期限を持たない商材は期限欄を「—」で登録します。</div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+(function(){
+  var SC = (typeof resolveSC==='function' ? resolveSC() : {}) || {};
+  var inb = SC.inbound || [];
+  var ans = SC.answers || {};
+  var industry = SC.industry || '取引先';
+
+  // ---- ヘッダ（ASN）情報を SC から導出 ----
+  var supplier = industry + 'サプライ';
+  var owner = (ans.owner === 'multi') ? (industry + '（荷主A社）') : (industry + '（自社）');
+  var meta = [
+    {l:'ASN番号',   v:'IN-2026-0603-01', code:true},
+    {l:'入荷予定日', v:'2026-06-03',      code:true},
+    {l:'仕入先',     v:supplier,          code:false},
+    {l:'荷主',       v:owner,             code:false}
+  ];
+  var metaEl = document.getElementById('meta');
+  if(metaEl){
+    metaEl.innerHTML = meta.map(function(m){
+      return '<div class="m"><div class="l">'+m.l+'</div>'+
+             '<div class="v'+(m.code?' code':'')+'">'+m.v+'</div></div>';
+    }).join('');
+  }
+
+  // ---- 期限セルの描画（残日数タグ付き・期限なしは —） ----
+  function expCell(exp){
+    if(!exp || exp === '—'){
+      return '<span class="exp-cell">—</span>';
+    }
+    var d = (typeof daysTo==='function') ? daysTo(exp) : null;
+    var tag = '';
+    if(d !== null){
+      if(d < 90){ tag = ' <span class="tag fefo">残'+d+'日</span>'; }
+      else if(d < 180){ tag = ' <span class="tag warn">残'+d+'日</span>'; }
+      else { tag = ' <span class="tag ok">残'+d+'日</span>'; }
+    }
+    return '<span class="exp-cell"><span class="d">'+exp+'</span>'+tag+'</span>';
+  }
+
+  // ---- 明細テーブル ----
+  var total = 0;
+  var bodyEl = document.getElementById('body');
+  if(bodyEl){
+    bodyEl.innerHTML = inb.map(function(i){
+      var qty = Number(i.qty) || 0;
+      total += qty;
+      var code = i.code || '—';
+      var nm = i.nm || '—';
+      var lot = i.lot || '—';
+      return '<tr>'+
+        '<td class="lot">'+code+'</td>'+
+        '<td>'+nm+'</td>'+
+        '<td class="num">'+qty.toLocaleString()+'</td>'+
+        '<td class="lot">'+lot+'</td>'+
+        '<td>'+expCell(i.exp)+'</td>'+
+      '</tr>';
+    }).join('');
+    if(inb.length === 0){
+      bodyEl.innerHTML = '<tr><td colspan="5" style="color:var(--sub)">入荷予定明細がありません。</td></tr>';
+    }
+  }
+
+  // ---- 合計行 ----
+  var totEl = document.getElementById('tot');
+  if(totEl){ totEl.textContent = total.toLocaleString() + ' ケース'; }
+
+  // ---- KPI ----
+  var kpiEl = document.getElementById('kpi');
+  if(kpiEl){
+    kpiEl.innerHTML =
+      '<div class="k"><div class="v">'+inb.length.toLocaleString()+'</div><div class="l">明細数（品目）</div></div>'+
+      '<div class="k"><div class="v warm">'+total.toLocaleString()+'</div><div class="l">総予定数（ケース）</div></div>'+
+      '<div class="k"><div class="v">1</div><div class="l">仕入先</div></div>';
+  }
+})();
+</script>
+</body></html>

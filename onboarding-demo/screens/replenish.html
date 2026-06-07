@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>補充指示</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">🔄</div><h1>補充指示</h1></div>
+<div class="scr-sub">ピッキングロケの在庫が閾値を割った商品へ、保管ロケから自動で補充を指示します。出荷実績から閾値を学習し、FEFO順に供給します。</div>
+<div class="card">
+  <h2>補充指示一覧<span class="pill">P-6 / P-9</span></h2>
+  <table>
+    <thead><tr>
+      <th>商品</th>
+      <th>ピッキングロケ</th>
+      <th class="num">現在庫</th>
+      <th class="num">閾値</th>
+      <th>状態</th>
+      <th>補充元（保管ロケ）</th>
+      <th class="num">保管在庫</th>
+      <th>期限（残日数）</th>
+      <th class="num">補充提案</th>
+    </tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div class="tot"><div class="l">補充提案 合計</div><div class="v" id="tot">0 ケース</div></div>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note">閾値ベースの自動補充指示（<b>P-6</b>）。閾値は直近の<b>出荷実績から自動算出</b>（<b>P-9</b>）し、繁忙・閑散に追従します。複数ロットがある商品は<b>FEFO順（先に期限が来るロットから）</b>に引き当てて補充します。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+(function(){
+  var SC = (typeof resolveSC==='function' ? resolveSC() : {}) || {};
+  var inb    = SC.inbound  || [];
+  var counts = SC.counts   || [];
+  var picks  = (SC.outbound && SC.outbound.picks) || [];
+  var THRESHOLD = 50;
+  var CUR = [8,12,4];
+
+  // ピッキングロケ：出荷ピックの同名行から拾い、無ければ既定の P-番
+  function pickLoc(nm, i){
+    for (var k=0;k<picks.length;k++){
+      if (picks[k] && picks[k].nm===nm && picks[k].loc) return picks[k].loc;
+    }
+    return 'P-' + (i+1);
+  }
+  // 期限表示：日付なら残日数、'—'/空は '—'
+  function expCell(exp){
+    if (!exp || exp==='—') return '—';
+    var d = (typeof daysTo==='function') ? daysTo(exp) : null;
+    if (d===null) return exp;
+    var cls = d<=60 ? 'fefo' : (d<=180 ? 'warn' : 'ok');
+    return exp + ' <span class="tag '+cls+'">残'+d+'日</span>';
+  }
+  function num(n){ return (n==null?0:n).toLocaleString(); }
+
+  var rows = [], totalSuggest = 0, needCount = 0, locSet = {};
+
+  for (var i=0;i<inb.length;i++){
+    var it  = inb[i] || {};
+    var nm  = it.nm || it.code || ('品目'+(i+1));
+    var pl  = pickLoc(nm, i);
+    var cur = CUR[i % CUR.length];
+    var sLoc = (counts[i] && counts[i].loc) || ('STK-'+(i+1));
+    var sQty = (it.qty!=null) ? it.qty : ((counts[i] && counts[i].theory) || 0);
+
+    // 補充提案：閾値まで戻す不足分を10ケース単位で切り上げ → 余裕を持たせ多めに（60〜120帯）
+    var deficit  = Math.max(0, THRESHOLD - cur);
+    var base     = Math.ceil(deficit / 10) * 10;
+    var suggest  = base + 60;                 // 余裕分。例：cur=4→100, cur=8→110, cur=12→100
+    if (suggest > sQty) suggest = sQty;       // 保管在庫を超えて補充しない
+    if (suggest < 0) suggest = 0;
+
+    var need = cur < THRESHOLD;
+    var tag  = need
+      ? '<span class="tag warn">要補充</span>'
+      : '<span class="tag ok">充足</span>';
+    if (need){ needCount++; locSet[pl] = 1; totalSuggest += suggest; }
+
+    var curCls = (cur < THRESHOLD*0.2) ? ' row-hl' : '';
+
+    rows.push(
+      '<tr class="'+(need?'row-hl':'')+'">' +
+      '<td>'+nm+'</td>' +
+      '<td>'+pl+'</td>' +
+      '<td class="num">'+num(cur)+'</td>' +
+      '<td class="num">'+num(THRESHOLD)+'</td>' +
+      '<td>'+tag+'</td>' +
+      '<td>'+sLoc+'</td>' +
+      '<td class="num">'+num(sQty)+'</td>' +
+      '<td>'+expCell(it.exp)+'</td>' +
+      '<td class="num">'+(need ? '<b>'+num(suggest)+'</b>' : '—')+'</td>' +
+      '</tr>'
+    );
+  }
+
+  var body = document.getElementById('body');
+  if (body) body.innerHTML = rows.join('') || '<tr><td colspan="9">補充対象の商品がありません。</td></tr>';
+
+  var tot = document.getElementById('tot');
+  if (tot) tot.textContent = totalSuggest.toLocaleString() + ' ケース';
+
+  var locCount = Object.keys(locSet).length;
+  var kpi = document.getElementById('kpi');
+  if (kpi) kpi.innerHTML =
+    '<div class="k"><div class="v'+(needCount?' warm':'')+'">'+needCount+'</div><div class="l">補充指示件数</div></div>' +
+    '<div class="k"><div class="v">'+totalSuggest.toLocaleString()+'</div><div class="l">総補充ケース</div></div>' +
+    '<div class="k"><div class="v">'+locCount+'</div><div class="l">対象ロケ数</div></div>';
+})();
+</script>
+</body></html>

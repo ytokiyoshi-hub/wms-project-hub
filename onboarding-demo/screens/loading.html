@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>積込・出荷確定</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+ .ship-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+ .ship-grid .f{background:#fff;padding:11px 14px}
+ .ship-grid .f .l{font-size:11px;color:var(--sub);font-weight:700;margin-bottom:3px}
+ .ship-grid .f .v{font-size:14.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+ .ship-grid .f .v.navy{color:var(--navy)}
+ .alert{display:flex;align-items:center;gap:10px;background:#fdf3e0;border:1px solid #f3dcae;border-radius:9px;padding:10px 14px;margin-bottom:14px;font-size:13px;font-weight:700;color:var(--ink)}
+ .alert .ic{font-size:18px;flex:0 0 auto}
+ .confirm{display:flex;justify-content:flex-end;margin-top:6px}
+ .btn{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;font-weight:800;font-size:14px;border:none;border-radius:9px;padding:12px 26px;cursor:pointer;box-shadow:0 2px 8px rgba(26,58,92,.18)}
+ .btn .c{background:rgba(255,255,255,.22);border-radius:5px;padding:1px 7px;font-size:12px;font-weight:700}
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">🚚</div><h1>積込・出荷確定</h1></div>
+<div class="scr-sub">ピッキング済み出荷を配送便へ積込み、便・方面・カゴ単位で確定します。集荷時刻までの残時間を監視します。</div>
+
+<div class="alert"><span class="ic">⏰</span>集荷まで<span class="tag warn">あと45分</span>（B-15:30 便）— 積込完了の上、出荷確定を行ってください。</div>
+
+<div class="card">
+  <h2>積込明細書<span class="pill">D-1 / D-2 / D-4 / Q</span></h2>
+  <div class="ship-grid" id="shipinfo"></div>
+</div>
+
+<div class="card">
+  <h2>積込明細（カゴ単位）<span class="pill">F-4 カゴID</span></h2>
+  <table>
+    <thead><tr><th>商品</th><th class="num">数量</th><th>ロケ</th><th>カゴ</th></tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div class="tot"><div class="l">積込合計 / 総重量</div><div class="v" id="tot">—</div></div>
+</div>
+
+<div class="card">
+  <div class="kpi" id="kpi"></div>
+  <div class="confirm"><button class="btn" type="button">出荷確定<span class="c" id="btnc">0個口</span></button></div>
+</div>
+
+<div class="note">積込明細書を便・カゴ単位で発行（<b>D-1 / D-2</b>）。集荷時刻までの残時間を監視しアラート（<b>D-4</b>）。配送先住所から方面を判定し配送業者・便を自動振り分け（<b>Q</b>）。</div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const ob=SC.outbound||{};
+const picks=ob.picks||[];
+const ans=SC.answers||{};
+const industry=SC.industry||'';
+const CAGE='CG-001';
+
+const carrier=(ans.ship==='ec')?'ヤマト宅急便':'路線便（西濃）';
+const dirs=['東京','大阪','名古屋','福岡'];
+const direction=dirs[industry.length%4];
+const soId=ob.soId||'—';
+
+const totalPkg=picks.reduce((s,p)=>s+Math.ceil((Number(p.qty)||0)/6),0);
+const totalQty=picks.reduce((s,p)=>s+(Number(p.qty)||0),0);
+const totalWeight=picks.reduce((s,p)=>s+(Number(p.qty)||0)*8,0);
+
+const fields=[
+  {l:'出荷No',v:soId,cls:'navy'},
+  {l:'配送業者',v:carrier},
+  {l:'便',v:'B-15:30'},
+  {l:'方面',v:direction},
+  {l:'集荷時刻',v:'15:30'},
+  {l:'カゴID',v:CAGE},
+  {l:'総個口',v:totalPkg.toLocaleString()+'個口',cls:'navy'},
+  {l:'総重量',v:totalWeight.toLocaleString()+'kg'}
+];
+const si=document.getElementById('shipinfo');
+if(si) si.innerHTML=fields.map(f=>'<div class="f"><div class="l">'+f.l+'</div><div class="v'+(f.cls?' '+f.cls:'')+'">'+f.v+'</div></div>').join('');
+
+const body=document.getElementById('body');
+if(body){
+  body.innerHTML=picks.length
+    ? picks.map(p=>{
+        const loc=(p.loc&&p.loc!=='')?p.loc:'—';
+        const qty=(Number(p.qty)||0).toLocaleString();
+        return '<tr><td>'+(p.nm||'—')+'</td><td class="num">'+qty+'</td><td><span class="tag navy">'+loc+'</span></td><td><span class="tag ok">'+CAGE+'</span></td></tr>';
+      }).join('')
+    : '<tr><td colspan="4" style="color:var(--sub);text-align:center">積込対象の出荷がありません</td></tr>';
+}
+
+const tot=document.getElementById('tot');
+if(tot) tot.textContent=totalQty.toLocaleString()+' 点 / '+totalWeight.toLocaleString()+'kg';
+
+const kpi=document.getElementById('kpi');
+if(kpi) kpi.innerHTML=
+  '<div class="k"><div class="v">'+totalPkg.toLocaleString()+'</div><div class="l">総個口</div></div>'+
+  '<div class="k"><div class="v">1</div><div class="l">便数（B-15:30）</div></div>'+
+  '<div class="k"><div class="v warm">45分</div><div class="l">集荷まで</div></div>';
+
+const btnc=document.getElementById('btnc');
+if(btnc) btnc.textContent=totalPkg.toLocaleString()+'個口';
+</script>
+</body></html>
