@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ロット・賞味期限管理（FEFO）</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">⏳</div><h1>ロット・賞味期限管理（FEFO）</h1></div>
+<div class="scr-sub">先入れ先出し（FEFO）で、期限の近いロットから自動で引当順位がつきます。</div>
+<div class="card">
+  <h2>期限・ロット一覧<span class="pill">FEFO自動整列</span></h2>
+  <table id="tbl"><thead><tr>
+    <th>引当順</th><th>商品</th><th>ロット</th><th>賞味期限</th><th class="num">残数(cs)</th><th class="num">残日数</th><th>状態</th>
+  </tr></thead><tbody id="body"></tbody></table>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note">FIFO/FEFO強制（設計確定 E-6）。期限が <b>90日以内</b> のロットは「期限注意」として自動アラート、出荷止め（B-2）対象にもできます。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const items=(SC.inbound||[]).map(i=>({nm:i.nm,lot:i.lot,exp:i.exp,qty:i.qty,d:daysTo(i.exp)}))
+  .sort((a,b)=> (a.d==null?1e9:a.d)-(b.d==null?1e9:b.d));
+function stat(d){ if(d==null) return ['—','tag navy']; if(d<0) return ['期限切れ','tag bad']; if(d<=90) return ['期限注意','tag warn']; return ['良','tag ok']; }
+document.getElementById('body').innerHTML=items.map((it,i)=>{
+  const [s,cls]=stat(it.d);
+  const fefo=i===0?'<span class="tag fefo">▶ 次に出庫</span>':'<span class="tag navy">'+(i+1)+'</span>';
+  return `<tr class="${i===0?'row-hl':''}"><td>${fefo}</td><td>${it.nm}</td><td>${it.lot||'—'}</td><td>${it.exp||'—'}</td>
+    <td class="num">${(it.qty||0).toLocaleString()}</td><td class="num">${it.d==null?'—':it.d+'日'}</td><td><span class="${cls}">${s}</span></td></tr>`;
+}).join('');
+const ds=items.map(i=>i.d).filter(d=>d!=null);
+const warnN=items.filter(i=>i.d!=null&&i.d<=90).length;
+document.getElementById('kpi').innerHTML=`
+  <div class="k"><div class="v">${items.length}</div><div class="l">期限管理 品目</div></div>
+  <div class="k"><div class="v ${ds.length&&Math.min(...ds)<=90?'warm':''}">${ds.length?Math.min(...ds)+'日':'—'}</div><div class="l">最短 残日数</div></div>
+  <div class="k"><div class="v ${warnN?'warm':''}">${warnN}</div><div class="l">期限注意 件数</div></div>`;
+</script>
+</body></html>

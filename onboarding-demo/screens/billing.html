@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>荷主別 月次請求書（プレビュー）</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">📄</div><h1>荷主別 月次請求書（3PL）</h1></div>
+<div class="scr-sub" id="sub">荷主ごとに保管料・荷役料を自動集計。根拠（入出庫件数）も明細で提示します。</div>
+<div class="card">
+  <h2 id="ownerh">荷主：—<span class="pill">2026年6月度</span></h2>
+  <table><thead><tr><th>項目</th><th>区分</th><th class="num">数量</th><th class="num">単価</th><th class="num">金額</th></tr></thead>
+  <tbody id="body"></tbody></table>
+  <div class="tot"><span class="l">請求合計（税抜）</span><span class="v" id="total">¥0</span></div>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note"><b>3期制</b> 保管料 ＝（前月繰越＋10日残＋20日残＋入庫総数）×単価。入出庫件数の根拠（N-3）・前月比（N-6）も自動表示。<span id="own"></span></div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const inb=SC.inbound||[]; const picks=(SC.outbound&&SC.outbound.picks)||[];
+const inSum=inb.reduce((s,i)=>s+i.qty,0);
+const outSum=picks.reduce((s,p)=>s+p.qty,0);
+const stock=inSum-outSum;
+const R={store:120,in:45,out:38}; // 単価(円/ケース)
+const lines=[
+  {item:'保管料',kbn:'3期制',qty:stock,unit:R.store},
+  {item:'入庫荷役料',kbn:'入庫',qty:inSum,unit:R.in},
+  {item:'出庫荷役料',kbn:'出庫',qty:outSum,unit:R.out},
+];
+let total=0;
+document.getElementById('body').innerHTML=lines.map(l=>{const amt=l.qty*l.unit;total+=amt;
+  return `<tr><td>${l.item}</td><td><span class="tag navy">${l.kbn}</span></td><td class="num">${l.qty.toLocaleString()} cs</td>
+    <td class="num">¥${l.unit}</td><td class="num">${yen(amt)}</td></tr>`;}).join('');
+document.getElementById('total').textContent=yen(total);
+const owner = (SC.answers&&SC.answers.owner==='multi') ? (SC.industry+'（荷主A社）') : (SC.industry+'（自社）');
+document.getElementById('ownerh').firstChild.textContent='荷主：'+owner;
+if(SC.answers&&SC.answers.owner!=='multi') document.getElementById('own').textContent=' ／ 自社1社運用のため荷主分離はオフ。';
+document.getElementById('kpi').innerHTML=`
+  <div class="k"><div class="v">${inSum.toLocaleString()}</div><div class="l">月間 入庫(cs)</div></div>
+  <div class="k"><div class="v">${outSum.toLocaleString()}</div><div class="l">月間 出庫(cs)</div></div>
+  <div class="k"><div class="v">${stock.toLocaleString()}</div><div class="l">期末在庫(cs)</div></div>
+  <div class="k"><div class="v warm">${yen(total)}</div><div class="l">請求合計</div></div>`;
+</script>
+</body></html>

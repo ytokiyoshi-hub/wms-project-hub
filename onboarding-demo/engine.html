@@ -518,7 +518,7 @@ const MENU = [
   { grp:'入荷管理', items:[
     { label:'入荷予定一覧', url:'test2-mirror/inbound_plans.html', local:true, flag:'base' },
     { label:'入荷予定登録', url:'pc/inbound/register.html',         flag:'base' },
-    { label:'温度チェック', url:'pc/inbound/temperature_check.html',flag:'temperature' },
+    { label:'温度チェック', url:'screens/temp_check.html', local:true, flag:'temperature' },
   ]},
   { grp:'ハンディ端末（HT）', items:[
     { label:'入荷検品', url:'test2-mirror/ht_inspect_screen.html?id=IN-2026-0603-01', local:true, ht:true, flag:'base' },
@@ -529,13 +529,14 @@ const MENU = [
   { grp:'在庫管理', items:[
     { label:'在庫照会（商品軸）', url:'test2-mirror/inventory_kpi.html', local:true, flag:'base' },
     { label:'在庫照会（ロケ軸）', url:'pc/inventory/layout_a.html',      flag:'base' },
-    { label:'ロット・賞味期限',   url:'pc/inventory/lot_serial.html',    flag:'lot_expiry' },
+    { label:'ロット・FEFO/期限', url:'screens/lot_fefo.html', local:true, flag:'lot_expiry' },
   ]},
   { grp:'出荷管理', items:[
     { label:'出荷指示一覧',   url:'test2-mirror/outbound_orders.html', local:true, flag:'base' },
     { label:'ピッキング・梱包', url:'pc/outbound/packing_summary.html', flag:'base' },
     { label:'積込・出荷確定', url:'pc/outbound/loading.html',         flag:'base' },
     { label:'出荷実績',       url:'pc/outbound/order_actuals.html',   flag:'base' },
+    { label:'EC送り状・ギフト', url:'screens/ec_label.html', local:true, flag:'ec_shipping' },
   ]},
   { grp:'マスタ', items:[
     { label:'商品マスタ',   url:'test2-mirror/master_products.html', local:true, flag:'base' },
@@ -545,6 +546,7 @@ const MENU = [
   { grp:'請求 / 帳票', items:[
     { label:'ピッキングリスト', url:'test2-mirror/outbound_picking_list.html', local:true, flag:'base' },
     { label:'棚卸表',     url:'test2-mirror/stocktake_sheet.html', local:true, flag:'base' },
+    { label:'荷主別請求書', url:'screens/billing.html', local:true, flag:'tpl_billing' },
     { label:'月次請求',   url:'pc/billing/monthly.html', flag:'tpl_billing' },
     { label:'請求書',     url:'pc/billing/invoice.html', flag:'tpl_billing' },
     { label:'帳票一覧',   url:'pc/prints/hub.html',      flag:'base' },
@@ -571,7 +573,8 @@ window.addEventListener('resize', fitHT);
 // PC画面 or HT端末表示の切替
 function showScreen(it){
   $('welcome').style.display='none';
-  const src = it.local ? it.url : (T2 + it.url);
+  let src = it.local ? it.url : (T2 + it.url);
+  if(it.local && /^screens\//.test(it.url)) src += (it.url.includes('?')?'&':'?') + 's=' + encodeURIComponent(_SID||'beverage');
   if(it.ht){
     $('crumb').textContent='';
     $('screen').style.display='none';
@@ -592,7 +595,7 @@ function showScreen(it){
 function renderShell(){
   $('reveal').style.display='none';
   $('shell').style.display='block';
-  buildFlowRail(); setFlow(0);                     // 右の流れ図を用意
+  STAGES=buildStages(); buildFlowRail(); setFlow(0);   // 構成フラグでステージを組み立て→右の流れ図
   $('welcome').style.display='block';              // 初期はようこそ
   $('screen').style.display='none'; $('screen').removeAttribute('src');
   $('shellName').textContent = plan.headName;     // 例：3PL倉庫 / 自社倉庫
@@ -968,20 +971,58 @@ async function bigCard(no, ti, ds, ms){
   c.querySelector('.sc').innerHTML=(no?'<div class="no">'+no+'</div>':'')+'<div class="ti">'+ti+'</div>'+(ds?'<div class="ds">'+ds+'</div>':'');
   c.classList.add('on'); await sleep(ms||1500); c.classList.remove('on'); await sleep(450);
 }
-const STAGES=[
-  {t:'マスター整備', s:'白紙のWMSに、扱う商品を登録する', fn:stageMasterRegister},
-  {t:'入庫 ─ HT入荷検品', s:'入荷予定の現物を、実機HTでスキャン検品', fn:stageInbound},
-  {t:'在庫照会', s:'入庫した分が在庫に反映される', fn:stageStock},
-  {t:'棚卸', s:'棚卸表を発行し、HTで現物をカウント', fn:stageStocktake},
-  {t:'ロケ移動 ─ HT', s:'保管ロケからピッキングロケへ補充', fn:stageMove},
-  {t:'出庫', s:'出荷指示→引当→ピッキングリスト→HTピッキング→出荷確定', fn:stageOutbound},
-  {t:'在庫照会（出荷後）', s:'出荷分が引かれ、倉庫の1日が完了', fn:stageStockAfter},
-];
+// ===== 追加ステージ（業種フラグに応じて実演に挿入・多機能を見せる） =====
+async function stageTempCheck(){
+  narrate('温度', '入荷した冷蔵・冷凍品の品温をチェック（温度帯管理）');
+  await clickMenu('温度チェック'); await sleep(2600);
+  narrate('温度', '規定温度帯に収まっています。逸脱があれば即アラート（C-5 温度帯別）');
+  await sleep(1700);
+}
+async function stageFefo(){
+  narrate('期限', '賞味期限・ロットを FEFO（先入れ先出し）で自動整列');
+  await clickMenu('ロット・FEFO/期限'); await sleep(2600);
+  const base=new Date('2026-06-03T00:00:00');
+  const ds=(SC.inbound||[]).map(i=>(i.exp&&/^\d{4}-\d{2}-\d{2}$/.test(i.exp))?Math.round((new Date(i.exp+'T00:00:00')-base)/86400000):null).filter(d=>d!=null);
+  narrate('期限', ds.length?('最短 残'+Math.min(...ds)+'日のロットから先に出庫。期限切れ・廃棄を防ぎます'):'期限の近い順に引き当てます');
+  await sleep(1800);
+}
+async function stageEcLabel(){
+  narrate('EC出荷', 'EC個口：送り状を自動発行し、ギフト・ダブルチェックで仕上げ');
+  await clickMenu('EC送り状・ギフト'); await sleep(2800);
+  narrate('EC出荷', '送り状発行・個口確定・出荷ミス防止ダブルチェック 完了（G/S）');
+  await sleep(1700);
+}
+async function stageBilling(){
+  narrate('請求', '荷主別に保管料・荷役料を自動集計（3PL請求・3期制）');
+  await clickMenu('荷主別請求書'); await sleep(2800);
+  narrate('請求', '入出庫の根拠つきで月次請求書を自動作成（N-1 請求明細）');
+  await sleep(1900);
+}
+
+// 業種フラグに応じて実演ステージ列を組み立てる
+let STAGES=[];
+function buildStages(){
+  const f = (typeof plan!=='undefined' && plan && plan.flags) ? plan.flags : new Set(['base']);
+  const S=[];
+  S.push({t:'マスター整備', s:'白紙のWMSに、扱う商品を登録する', fn:stageMasterRegister});
+  S.push({t:'入庫 ─ HT入荷検品', s:'入荷予定の現物を、実機HTでスキャン検品', fn:stageInbound});
+  if(f.has('temperature')) S.push({t:'温度チェック', s:'冷蔵・冷凍品の品温を記録・監視', fn:stageTempCheck});
+  S.push({t:'在庫照会', s:'入庫した分が在庫に反映される', fn:stageStock});
+  if(f.has('lot_expiry')) S.push({t:'ロット・FEFO/期限', s:'賞味期限をFEFOで自動整列', fn:stageFefo});
+  S.push({t:'棚卸', s:'棚卸表を発行し、HTで現物をカウント', fn:stageStocktake});
+  S.push({t:'ロケ移動 ─ HT', s:'保管ロケからピッキングロケへ補充', fn:stageMove});
+  S.push({t:'出庫', s:'出荷指示→引当→ピッキング→出荷確定', fn:stageOutbound});
+  if(f.has('ec_shipping')) S.push({t:'EC送り状・ギフト', s:'送り状発行・個口・ダブルチェック', fn:stageEcLabel});
+  S.push({t:'在庫照会（出荷後）', s:'出荷分が引かれ、倉庫の1日が完了', fn:stageStockAfter});
+  if(f.has('tpl_billing')) S.push({t:'荷主別請求書', s:'保管料・荷役料を自動集計（3PL）', fn:stageBilling});
+  return S;
+}
+STAGES=buildStages();
 async function runFullDemo(){
   if(demoRunning) return; demoRunning=true; $('demoBtn').disabled=true; $('demoBtn').textContent='▶ 実演中…';
   const card=$('stagecard'); card.onclick=null; showCursor(true);
   try{
-    buildFlowRail(); setFlow(0);
+    STAGES=buildStages(); buildFlowRail(); setFlow(0);
     await bigCard(null, SC.title || 'あなたの倉庫 ─ 1日の流れ','ヒアリングで構成されたWMSを、実作業の順に自動実演します',2200);
     for(let i=0;i<STAGES.length;i++){ const st=STAGES[i]; setProgress(i+1,STAGES.length); setFlow(i+1); await bigCard('STAGE '+(i+1)+' / '+STAGES.length, st.t, st.s); showCursor(true); await st.fn(); }
     setFlow(STAGES.length+1); showCursor(false); htLiveClose();

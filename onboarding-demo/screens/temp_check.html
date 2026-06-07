@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>入荷時 温度チェック</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">🌡️</div><h1>入荷時 温度チェック・温度帯管理</h1></div>
+<div class="scr-sub" id="sub">入荷した現物の品温を記録し、規定温度帯からの逸脱を監視します。</div>
+<div class="card">
+  <h2>品温記録<span class="pill" id="zonepill">温度帯</span></h2>
+  <table><thead><tr><th>商品</th><th>規定温度帯</th><th class="num">基準</th><th class="num">実測品温</th><th>判定</th></tr></thead>
+  <tbody id="body"></tbody></table>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note">規定温度帯から外れると <b>逸脱アラート</b>（C-5 温度帯別／J 緊急対応）。冷凍は <b>-18℃以下</b>、冷蔵は <b>0〜10℃</b> を基準に常時監視します。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const cold = SC.answers && SC.answers.temp==='cold';
+const items=(SC.inbound||[]);
+// 冷凍/冷蔵を交互に割当（冷凍庫と冷蔵庫の両方を見せる）
+const zones = cold
+  ? [{z:'冷凍',base:'-18℃以下',t:-20.4},{z:'冷蔵',base:'0〜10℃',t:4.2},{z:'冷蔵',base:'0〜10℃',t:6.1}]
+  : [{z:'常温',base:'15〜25℃',t:21.3},{z:'常温',base:'15〜25℃',t:22.0},{z:'常温',base:'15〜25℃',t:20.4}];
+document.getElementById('zonepill').textContent = cold?'冷蔵・冷凍':'常温';
+function judge(z,t){ if(z==='冷凍') return t<=-18?['適正','tag ok']:['逸脱','tag bad']; if(z==='冷蔵') return (t>=0&&t<=10)?['適正','tag ok']:['逸脱','tag bad']; return (t>=15&&t<=25)?['適正','tag ok']:['逸脱','tag bad']; }
+let dev=0;
+document.getElementById('body').innerHTML=items.map((it,i)=>{
+  const zo=zones[i%zones.length]; const [s,cls]=judge(zo.z,zo.t); if(s==='逸脱')dev++;
+  return `<tr><td>${it.nm}</td><td><span class="tag navy">${zo.z}</span></td><td class="num">${zo.base}</td>
+    <td class="num">${zo.t.toFixed(1)}℃</td><td><span class="${cls}">${s}</span></td></tr>`;
+}).join('');
+document.getElementById('kpi').innerHTML=`
+  <div class="k"><div class="v">${cold?'冷蔵・冷凍':'常温'}</div><div class="l">取扱温度帯</div></div>
+  <div class="k"><div class="v">${items.length}</div><div class="l">測定回数</div></div>
+  <div class="k"><div class="v ${dev?'warm':''}">${dev}</div><div class="l">逸脱 件数</div></div>`;
+</script>
+</body></html>

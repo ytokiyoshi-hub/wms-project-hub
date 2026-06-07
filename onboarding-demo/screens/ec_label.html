@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EC出荷：送り状・ギフト・個口</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+ .label{border:2px solid var(--navy);border-radius:10px;padding:16px 18px;max-width:420px}
+ .label .car{display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed var(--line);padding-bottom:8px;margin-bottom:10px}
+ .label .car b{color:var(--navy);font-size:15px}
+ .label .to{font-size:15px;font-weight:700;margin:2px 0}
+ .label .addr{font-size:13px;color:var(--sub)}
+ .label .barcode{height:42px;background:repeating-linear-gradient(90deg,#1d2733 0 2px,#fff 2px 4px,#1d2733 4px 7px,#fff 7px 9px);border-radius:3px;margin:12px 0 6px}
+ .label .tno{font-family:"Roboto Mono",monospace;font-size:13px;letter-spacing:.1em;text-align:center;color:var(--ink)}
+ .chk{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:7px 0}
+ .chk .b{width:20px;height:20px;border-radius:5px;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex:0 0 auto}
+ .gift{display:inline-block;background:#fff3eb;color:var(--warm);border:1px solid #f4d9c6;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700}
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">🏷️</div><h1>EC出荷：送り状・ギフト・個口梱包</h1></div>
+<div class="scr-sub">個人向けEC出荷。送り状の自動発行、ギフト指定、個口数の自動確定、出荷ミス防止ダブルチェック。</div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+  <div class="card" style="flex:1;min-width:300px">
+    <h2>送り状（自動発行）<span class="pill">G-1 連携</span></h2>
+    <div class="label">
+      <div class="car"><b id="carrier">宅配便</b><span class="gift" id="giftt">🎁 ギフト指定</span></div>
+      <div class="to" id="to">お届け先 さま</div>
+      <div class="addr" id="addr">—</div>
+      <div class="barcode"></div><div class="tno" id="tno">—</div>
+    </div>
+  </div>
+  <div class="card" style="flex:1;min-width:300px">
+    <h2>梱包・個口<span class="pill">S 梱包ロジック</span></h2>
+    <table><thead><tr><th>品名</th><th class="num">数量</th><th>個口</th></tr></thead><tbody id="pbody"></tbody></table>
+    <div style="margin-top:14px">
+      <div class="chk"><span class="b">✓</span>ピッキング照合（バーコード一致）</div>
+      <div class="chk"><span class="b">✓</span>出荷ミス防止 <b>ダブルチェック</b>（2名検品）</div>
+      <div class="chk"><span class="b">✓</span>ギフトラッピング・明細書（金額非表示）</div>
+    </div>
+  </div>
+</div>
+<div class="note">出荷先住所から配送便を自動振り分け（Q）。個口数は商品の梱包係数から自動確定（S-5）。実績は荷主へ自動送信（G-2）。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const picks=(SC.outbound&&SC.outbound.picks)||[];
+const carriers=['ヤマト宅急便','佐川急便','日本郵便 ゆうパック'];
+document.getElementById('carrier').textContent=carriers[(SC.industry||'').length%carriers.length];
+const cities=['東京都世田谷区','大阪府吹田市','神奈川県横浜市','福岡県福岡市','愛知県名古屋市'];
+const c=cities[(SC.industry||'').length%cities.length];
+document.getElementById('to').textContent='田中 みなと さま';
+document.getElementById('addr').textContent=c+' ○○町1-2-3 △△マンション 405';
+document.getElementById('tno').textContent='4012-'+String(3456+picks.length)+'-'+String(7890);
+const total=picks.reduce((s,p)=>s+p.qty,0);
+const cartons=Math.max(1,Math.ceil(total/12));
+document.getElementById('pbody').innerHTML=picks.map((p,i)=>
+  `<tr><td>${p.nm}</td><td class="num">${p.qty}</td><td><span class="tag navy">第${i+1}個口</span></td></tr>`
+).join('') + `<tr><td><b>合計</b></td><td class="num"><b>${total}</b></td><td><span class="tag ok">${cartons}個口で確定</span></td></tr>`;
+if(!(SC.answers&&SC.answers.ship==='ec')){ document.getElementById('giftt').style.display='none'; document.getElementById('to').textContent='（店舗）ローソン 港店'; }
+</script>
+</body></html>
