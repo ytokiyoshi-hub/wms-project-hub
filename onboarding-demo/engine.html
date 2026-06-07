@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMS — あなたの倉庫を組み立てる（ラフ）</title>
+<style>
+  :root{
+    --navy:#1a3a5c; --navy2:#2b5580; --ink:#1d2733; --sub:#6c7280;
+    --line:#e4e7eb; --bg:#f5f7fa; --ok:#1f9d6b; --off:#b7c0ca; --warm:#e07a3f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.7;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .card{
+    background:#fff; width:100%; max-width:560px; border-radius:16px;
+    box-shadow:0 10px 40px rgba(26,58,92,.10); padding:40px 36px; overflow:hidden;
+  }
+  .brand{font-size:12px;letter-spacing:.15em;color:var(--sub);font-weight:600;margin-bottom:28px}
+
+  /* ===== ヒアリング ===== */
+  .dots{display:flex;gap:8px;margin-bottom:24px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+  .dot.on{background:var(--navy)}
+  .q-num{font-size:13px;color:var(--sub);margin-bottom:6px}
+  .q-text{font-size:22px;font-weight:700;margin-bottom:24px;line-height:1.5}
+  .opts{display:flex;flex-direction:column;gap:12px}
+  .opt{
+    border:1.5px solid var(--line); border-radius:12px; padding:16px 18px;
+    font-size:16px; font-weight:600; cursor:pointer; text-align:left;
+    background:#fff; transition:.12s; color:var(--ink);
+  }
+  .opt:hover{border-color:var(--navy2); background:#f7fafd}
+
+  /* ===== リビール ===== */
+  .reveal{display:none}
+  .said{font-size:14px;color:var(--sub);margin-bottom:6px}
+  .said-main{font-size:24px;font-weight:800;color:var(--navy);line-height:1.5;margin-bottom:28px}
+  .said-main b{color:var(--warm)}
+
+  .flow{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+  .grp{
+    display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;
+    background:#f7fafd;border:1px solid var(--line);
+    opacity:0;transform:translateY(8px);
+  }
+  .grp.show{opacity:1;transform:none;transition:.35s}
+  .grp .chk{
+    width:24px;height:24px;border-radius:50%;background:var(--ok);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto;
+  }
+  .grp .gname{font-weight:700;font-size:15px}
+  .grp .gcount{margin-left:auto;font-size:13px;color:var(--sub)}
+
+  .count{
+    text-align:center;background:var(--navy);color:#fff;border-radius:12px;
+    padding:20px;margin-bottom:24px;opacity:0;transition:.4s;
+  }
+  .count.show{opacity:1}
+  .count .big{font-size:15px}
+  .count .big b{font-size:30px;font-weight:800;color:#ffd27a}
+  .count .small{font-size:13px;color:#bcd0e3;margin-top:4px}
+
+  .off-box{
+    border:1px dashed var(--off);border-radius:12px;padding:16px 18px;margin-bottom:24px;
+    opacity:0;transition:.4s;
+  }
+  .off-box.show{opacity:1}
+  .off-title{font-size:13px;color:var(--sub);font-weight:700;margin-bottom:8px}
+  .off-list{display:flex;flex-wrap:wrap;gap:8px}
+  .off-tag{font-size:13px;color:var(--off);background:#f3f5f7;border-radius:6px;padding:4px 10px;text-decoration:line-through}
+
+  .topping{
+    border:1.5px solid var(--warm);border-radius:12px;padding:16px 18px;margin-bottom:28px;
+    display:flex;align-items:center;gap:12px;opacity:0;transition:.4s;background:#fff8f3;
+  }
+  .topping.show{opacity:1}
+  .topping .ttext{font-size:14px;flex:1}
+  .topping .ttext b{color:var(--warm)}
+  .topping button{
+    border:1.5px solid var(--warm);color:var(--warm);background:#fff;font-weight:700;
+    border-radius:8px;padding:8px 16px;cursor:pointer;font-size:14px;white-space:nowrap;
+  }
+  .topping button:hover{background:var(--warm);color:#fff}
+  .topping.added{border-color:var(--ok);background:#f1faf5}
+  .topping.added .ttext b{color:var(--ok)}
+
+  .start{
+    width:100%;background:var(--navy);color:#fff;border:none;border-radius:12px;
+    padding:18px;font-size:17px;font-weight:800;cursor:pointer;
+    opacity:0;transition:.4s;
+  }
+  .start.show{opacity:1}
+  .start:hover{background:var(--navy2)}
+
+  .restart{display:block;margin:18px auto 0;background:none;border:none;color:var(--sub);
+    font-size:13px;cursor:pointer;text-decoration:underline}
+
+  /* ===== WMSシェル（組み変わるメニュー） ===== */
+  #shell{display:none;position:fixed;inset:0;background:#fff}
+  .shell-wrap{display:flex;height:100vh}
+  .side{
+    width:260px;background:var(--navy);color:#fff;flex:0 0 auto;overflow-y:auto;
+    padding:20px 0;
+  }
+  .side .stitle{padding:0 22px 6px;font-size:12px;letter-spacing:.12em;color:#9fc1de}
+  .side .sname{padding:0 22px 18px;font-size:17px;font-weight:800;border-bottom:1px solid #2c4f73;margin-bottom:14px}
+  .menu-grp{margin-bottom:10px}
+  .menu-grp .gh{padding:8px 22px 4px;font-size:11px;letter-spacing:.1em;color:#7fa7cc;font-weight:700}
+  .menu-item{
+    display:flex;align-items:center;gap:10px;padding:9px 22px;font-size:14px;color:#dce8f2;cursor:pointer;
+    border-left:3px solid transparent;
+    opacity:0;transform:translateX(-8px);
+  }
+  .menu-item.show{opacity:1;transform:none;transition:.3s}
+  .menu-item:hover{background:#234a6e}
+  .menu-item.active{background:#234a6e;border-left-color:#ffd27a;color:#fff;font-weight:700}
+  .menu-item .ico{width:6px;height:6px;border-radius:50%;background:#5b86ad}
+  .side .offhint{
+    margin:14px 22px 0;padding:12px 0 0;border-top:1px solid #2c4f73;
+    font-size:12px;color:#9fc1de;line-height:1.6;
+  }
+  .side .offhint b{color:#ffd27a}
+  .main{flex:1;background:var(--bg);overflow-y:auto;padding:32px 40px;position:relative}
+  .main-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;position:relative;z-index:5}
+  .main-bar .crumb{font-size:13px;color:var(--sub)}
+  .main-bar .demo{margin-left:auto;background:var(--warm);border:none;border-radius:8px;
+    padding:8px 16px;font-size:13px;font-weight:700;color:#fff;cursor:pointer}
+  .main-bar .demo:hover{filter:brightness(1.06)}
+  .main-bar .demo:disabled{opacity:.5;cursor:default}
+  .main-bar .back{background:none;border:1px solid var(--line);border-radius:8px;
+    padding:7px 14px;font-size:13px;color:var(--sub);cursor:pointer}
+  .main-bar .back:hover{background:#fff}
+  .narr{position:relative;z-index:6;min-height:0;margin-bottom:14px;font-size:19px;color:#fff;font-weight:700;line-height:1.5;
+    background:linear-gradient(90deg,var(--navy),var(--navy2));border-radius:10px;padding:12px 18px;
+    box-shadow:0 3px 10px rgba(26,58,92,.18);opacity:0;transform:translateY(-4px);transition:.25s}
+  .narr::before{content:"▶ ";color:var(--warm)}
+  .narr:empty{display:none}
+  .narr.show{opacity:1;transform:none}
+  /* 右の縦長フロー図 */
+  .flowrail{width:212px;flex:0 0 auto;background:#fff;border-left:1px solid var(--line);padding:20px 14px;overflow-y:auto}
+  .flowrail h4{font-size:11px;color:var(--sub);letter-spacing:.12em;margin:0 0 16px 4px;font-weight:700}
+  .fstep{position:relative;padding:0 0 20px 30px;min-height:20px}
+  .fstep::after{content:"";position:absolute;left:9px;top:20px;bottom:0;width:2px;background:var(--line)}
+  .fstep:last-child::after{display:none}
+  .fstep .fnode{position:absolute;left:1px;top:0;width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid var(--line);font-size:10px;color:var(--sub);display:flex;align-items:center;justify-content:center;font-weight:700;z-index:1;transition:.3s}
+  .fstep .ftxt{font-size:12.5px;color:var(--sub);line-height:1.45;padding-top:2px}
+  .fstep.done .fnode{background:var(--ok);border-color:var(--ok);color:#fff}
+  .fstep.done::after{background:var(--ok)}
+  .fstep.done .ftxt{color:var(--ink)}
+  .fstep.cur .fnode{background:var(--warm);border-color:var(--warm);color:#fff;box-shadow:0 0 0 5px rgba(224,122,63,.16)}
+  .fstep.cur .ftxt{color:var(--warm);font-weight:800}
+  .narr .step{display:inline-block;background:var(--navy);color:#fff;border-radius:6px;
+    padding:2px 10px;font-size:12px;margin-right:8px}
+  /* 指カーソル（親レベルでグライド） */
+  #bigcursor{position:fixed;z-index:100000;font-size:38px;line-height:1;pointer-events:none;
+    left:-100px;top:-100px;transform:translate(-12%,-8%);
+    transition:left .55s cubic-bezier(.4,0,.2,1),top .55s cubic-bezier(.4,0,.2,1);
+    filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));display:none}
+  #bigcursor.on{display:block}
+  #bigcursor.click{animation:bigClick .35s}
+  @keyframes bigClick{0%{transform:translate(-12%,-8%) scale(1)}40%{transform:translate(-12%,-8%) scale(.68)}100%{transform:translate(-12%,-8%) scale(1)}}
+  .click-ring{position:fixed;z-index:99998;border-radius:50%;border:2.5px solid var(--warm);
+    pointer-events:none;transform:translate(-50%,-50%);animation:ring .55s ease-out forwards}
+  @keyframes ring{0%{opacity:.75;width:12px;height:12px}100%{opacity:0;width:66px;height:66px}}
+  .main h1{font-size:22px;color:var(--navy);margin-bottom:6px}
+  .main .lead{color:var(--sub);font-size:14px;margin-bottom:24px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;color:var(--sub);font-size:14px}
+  .panel .ph{font-weight:700;color:var(--ink);margin-bottom:8px}
+
+  /* ===== HT表示モード — 実機写真フレームに画面をはめ込み ===== */
+  #ht-view{display:none;position:absolute;inset:0;background:var(--bg);
+    flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding:8px 10px 10px;overflow-y:auto}
+  #ht-view.on{display:flex}
+  .ht-stage-row{display:flex;align-items:center;justify-content:center;gap:22px;width:100%;flex:1 1 auto;min-height:0}
+  .ht-col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto}
+  .ht-model{color:var(--sub);font-size:12px;letter-spacing:.08em;font-weight:600;flex:0 0 auto}
+  .ht-device{position:relative;height:min(1040px,calc(100vh - 64px));aspect-ratio:360/735;flex:0 0 auto;
+    background:url('assets/bt-a1000.png') center/contain no-repeat;
+    filter:drop-shadow(0 14px 30px rgba(0,0,0,.18))}
+  #ht-view.has-live .ht-device{height:min(700px,calc(100vh - 120px))}
+  #ht-view.has-live .ht-model{display:none}   /* 実況中はナレーションと被るので隠す（実機に刻印あり） */
+  .ht-screen-wrap{position:absolute;left:25.83%;top:14.15%;width:46.11%;height:37.41%;overflow:hidden;background:#f4f5f7}
+  #ht-screen{width:100%;height:100%;border:none;display:block;background:#f4f5f7;transform-origin:top left}
+  .ht-caption{color:var(--navy);font-size:15px;font-weight:700;text-align:center;max-width:520px}
+  .ht-caption .step{display:inline-block;background:var(--warm);color:#fff;border-radius:6px;padding:2px 10px;font-size:12px;margin-right:8px}
+
+  /* ===== HT実況パネル（HTステージ中だけ・スキャン結果を大きく実況） ===== */
+  .ht-live{display:none;flex:0 1 460px;min-width:300px;max-width:480px;align-self:center;
+    max-height:calc(100vh - 96px);overflow-y:auto;
+    background:#fff;border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 12px 34px rgba(26,58,92,.12);padding:20px}
+  #ht-view.has-live .ht-live{display:block}
+  .hl-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .hl-live-tag{font-size:11px;font-weight:800;letter-spacing:.12em;color:#fff;background:#e53935;
+    border-radius:5px;padding:3px 9px 3px 8px;display:inline-flex;align-items:center;gap:6px}
+  .hl-live-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:livedot 1.1s infinite}
+  @keyframes livedot{0%,100%{opacity:1}50%{opacity:.2}}
+  .hl-title{font-size:17px;font-weight:800;color:var(--navy)}
+  .hl-current{border:1.5px solid var(--line);border-radius:12px;padding:16px 16px 14px;margin-bottom:14px;position:relative;background:#fbfcfe}
+  .hl-badge{position:absolute;top:-13px;right:14px;background:var(--ok);color:#fff;font-size:13px;font-weight:800;
+    border-radius:8px;padding:5px 12px;opacity:0;box-shadow:0 4px 12px rgba(31,157,107,.4)}
+  .hl-badge.pop{animation:badgepop .55s cubic-bezier(.2,1.4,.5,1) forwards}
+  @keyframes badgepop{0%{opacity:0;transform:scale(.5) translateY(6px)}60%{opacity:1;transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
+  .hl-name{font-size:24px;font-weight:800;color:var(--ink);line-height:1.3;margin-bottom:12px}
+  .hl-meta{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+  .hl-meta .m{display:flex;font-size:13px;align-items:baseline}
+  .hl-meta .m .k{color:var(--sub);width:74px;flex:0 0 auto}
+  .hl-meta .m .v{color:var(--ink);font-weight:600;font-family:"Roboto Mono",ui-monospace,monospace}
+  .hl-big{display:flex;align-items:baseline;gap:8px;background:var(--navy);color:#fff;border-radius:10px;padding:11px 16px}
+  .hl-big .n{font-size:38px;font-weight:800;color:#ffd27a;font-variant-numeric:tabular-nums;line-height:1}
+  .hl-big .u{font-size:14px;color:#cfe0ef}
+  .hl-big .lbl{margin-left:auto;font-size:12px;color:#9fc1de}
+  .hl-list{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+  .hl-row{display:flex;align-items:center;gap:10px;font-size:14px;padding:9px 12px;border-radius:9px;background:#f5f8fb;
+    opacity:0;transform:translateX(8px);animation:hlin .35s forwards}
+  @keyframes hlin{to{opacity:1;transform:none}}
+  .hl-row .ck{width:20px;height:20px;border-radius:50%;background:var(--ok);color:#fff;display:flex;
+    align-items:center;justify-content:center;font-size:12px;flex:0 0 auto}
+  .hl-row .nm{font-weight:600;color:var(--ink)}
+  .hl-row .vv{margin-left:auto;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+  .hl-foot{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);display:none;gap:18px;justify-content:space-around}
+  .hl-foot .f b{display:block;font-size:22px;font-weight:800;color:var(--navy);text-align:center;font-variant-numeric:tabular-nums}
+  .hl-foot .f span{font-size:11px;color:var(--sub);display:block;text-align:center}
+  /* HTキー押下ハイライト */
+  #keyhl{position:absolute;border-radius:10px;transform:translate(-50%,-50%);pointer-events:none;opacity:0;z-index:30;
+    box-shadow:0 0 0 3px rgba(255,213,74,.95),0 0 22px 7px rgba(255,213,74,.7);background:rgba(255,213,74,.16)}
+  #keyhl.on{animation:keypress .55s ease-out}
+  @keyframes keypress{0%{opacity:0;transform:translate(-50%,-50%) scale(1.35)}28%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
+  /* ステージカード（冒頭/各ステージ/締め） */
+  #stagecard{position:absolute;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,rgba(20,32,48,.92),rgba(13,22,34,.95));opacity:0;transition:opacity .4s}
+  #stagecard.on{display:flex;opacity:1}
+  #stagecard .sc{text-align:center;color:#fff;max-width:80%;transform:translateY(10px);transition:.45s}
+  #stagecard.on .sc{transform:none}
+  #stagecard .no{font-size:13px;letter-spacing:.25em;color:#ffd27a;font-weight:700;margin-bottom:10px}
+  #stagecard .ti{font-size:34px;font-weight:800;letter-spacing:.04em;line-height:1.3}
+  #stagecard .ds{font-size:15px;color:#bcd0e3;margin-top:12px;line-height:1.7}
+  #stagecard .sum{display:flex;gap:22px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+  #stagecard .sum b{display:block;font-size:26px;color:#ffd27a;font-weight:800}
+  #stagecard .sum span{font-size:12px;color:#9fb3c6}
+  /* 進行ドット */
+  #progress{display:flex;gap:5px;align-items:center;font-size:11px}
+  #progress .dot{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.3s}
+  #progress .dot.on{background:var(--warm)}
+  #progress .lbl{margin-left:6px;color:var(--navy);font-weight:700}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">WMS — 倉庫管理システム</div>
+
+  <!-- ===== ヒアリング ===== -->
+  <div id="hearing">
+    <div class="dots" id="dots"></div>
+    <div class="q-num" id="qnum"></div>
+    <div class="q-text" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+  </div>
+
+  <!-- ===== リビール ===== -->
+  <div class="reveal" id="reveal">
+    <div class="said">あなたの倉庫を理解しました</div>
+    <div class="said-main" id="saidMain"></div>
+    <div class="flow" id="flow"></div>
+    <div class="count" id="count">
+      <div class="big">全 <b id="onNum">0</b> / 128 機能をオン</div>
+      <div class="small" id="offSmall">残りはオフ。いつでも足せます。</div>
+    </div>
+    <div class="off-box" id="offBox">
+      <div class="off-title">今回は不要なので、外しておきました</div>
+      <div class="off-list" id="offList"></div>
+    </div>
+    <div class="topping" id="topping">
+      <div class="ttext" id="tText"></div>
+      <button id="tBtn">足す</button>
+    </div>
+    <button class="start" id="start">この構成で倉庫を始める</button>
+    <button class="restart" id="restart">もう一度やってみる</button>
+  </div>
+</div>
+
+<!-- 指カーソル（実演用・親レベル） -->
+<div id="bigcursor">👆</div>
+
+<!-- ===== WMSシェル（あなたの構成で組み変わるメニュー） ===== -->
+<div id="shell">
+  <div class="shell-wrap">
+    <nav class="side">
+      <div class="stitle">WMS</div>
+      <div class="sname" id="shellName">あなたの倉庫</div>
+      <div id="menu"></div>
+      <div class="offhint" id="offHint"></div>
+    </nav>
+    <div class="main">
+      <div class="main-bar">
+        <span class="crumb" id="crumb">— </span>
+        <span id="progress"></span>
+        <button class="demo" id="demoBtn">▶ 自動実演</button>
+        <button class="back" id="backBtn">← 構成をやり直す</button>
+      </div>
+      <div class="narr" id="narr"></div>
+      <!-- 初期：ようこそ -->
+      <div id="welcome">
+        <h1 id="mainTitle">ようこそ</h1>
+        <div class="lead">左のメニューは、あなたの回答に合わせて組み上がっています。要らない機能は最初から出ていません。<br>
+          メニュー項目を押すと、ここに <b>本物の業務画面</b> が表示されます（test2 の実画面・サンプルデータ入り）。</div>
+        <div class="panel">
+          <div class="ph">ポイント</div>
+          左メニューが <b>倉庫ごとに違う</b> こと — 同じシステムなのに、答えた内容でかたちが変わります。<br>
+          表示される画面は作り込み済みの実画面で、サンプルデータもそのまま動きます。
+        </div>
+      </div>
+      <!-- 業務画面（本物を埋め込み） -->
+      <iframe id="screen" title="業務画面" style="display:none;width:100%;height:calc(100vh - 96px);border:1px solid var(--line);border-radius:12px;background:#fff;"></iframe>
+
+      <!-- HT（ハンディ端末）表示モード -->
+      <div id="ht-view">
+        <div class="ht-stage-row">
+          <div class="ht-col">
+            <div class="ht-model" id="ht-model">キーエンス BT-A1000（3型）</div>
+            <div class="ht-device"><div class="ht-screen-wrap"><iframe id="ht-screen" title="HT画面"></iframe></div></div>
+          </div>
+          <aside class="ht-live" id="ht-live"></aside>
+        </div>
+        <div class="ht-caption" id="ht-caption"></div>
+      </div>
+
+      <!-- ステージタイトル/冒頭/締めカード -->
+      <div id="stagecard"><div class="sc"></div></div>
+    </div>
+    <aside class="flowrail" id="flowrail"></aside>
+  </div>
+</div>
+
+<script src="scenarios.js"></script>
+<script>
+// ===== シナリオ解決（?s=<id> → window.SCENARIOS。なければ飲料既定） =====
+const _PARAMS = new URLSearchParams(location.search);
+const _SID = _PARAMS.get('s');
+const SC = (window.SCENARIOS && _SID && window.SCENARIOS[_SID])
+  ? window.SCENARIOS[_SID]
+  : (window.SCENARIOS && window.SCENARIOS.beverage) || {};
+const _short = nm => String(nm||'').split(/[ 　]/)[0];   // 主名称だけ取り出す
+
+// ===== 質問（高レバレッジな6問を5問にしぼってラフ化） =====
+const QUESTIONS = [
+  { key:'shelf', q:'扱う商材に、賞味期限・消費期限はありますか？',
+    opts:[ {label:'ある（食品・日配など）', v:'yes'}, {label:'ない（雑貨・資材など）', v:'no'} ] },
+  { key:'temp', q:'温度帯の管理は必要ですか？',
+    opts:[ {label:'常温だけ', v:'normal'}, {label:'冷蔵・冷凍がある', v:'cold'} ] },
+  { key:'owner', q:'倉庫であずかる荷主（取引先）は？',
+    opts:[ {label:'自社1社だけ', v:'single'}, {label:'複数社をあずかる（3PL）', v:'multi'} ] },
+  { key:'ship', q:'出荷先は、主にどちらですか？',
+    opts:[ {label:'店舗・企業向け（まとまった数）', v:'btob'}, {label:'個人・EC向け（1個口ずつ）', v:'ec'} ] },
+  { key:'turn', q:'商品の種類と動きは、どちらに近い？',
+    opts:[ {label:'少品種・大量・定番', v:'bulk'}, {label:'多品種・小ロット・回転が速い', v:'fast'} ] },
+];
+
+// ===== 機能のかたまり（ラフな件数つき） =====
+// 業務の流れ順：入荷 → 保管 → 出荷 → 請求/管理
+const TOTAL = 128;
+const answers = {};
+let qi = 0;
+
+const $ = id => document.getElementById(id);
+
+function renderDots(){
+  $('dots').innerHTML = QUESTIONS.map((_,i)=>`<div class="dot ${i<=qi?'on':''}"></div>`).join('');
+}
+function renderQuestion(){
+  const Q = QUESTIONS[qi];
+  renderDots();
+  $('qnum').textContent = `質問 ${qi+1} / ${QUESTIONS.length}`;
+  $('qtext').textContent = Q.q;
+  $('opts').innerHTML = '';
+  Q.opts.forEach(o=>{
+    const b = document.createElement('button');
+    b.className = 'opt'; b.textContent = o.label;
+    b.onclick = ()=>{ answers[Q.key] = o.v; next(); };
+    $('opts').appendChild(b);
+  });
+}
+function next(){
+  qi++;
+  if(qi < QUESTIONS.length){ renderQuestion(); }
+  else { showReveal(); }
+}
+
+// ===== リビールの組み立て =====
+function buildPlan(){
+  const a = answers;
+  // 流れ順のグループ。base=常時オン、cond=条件で点灯
+  const groups = [
+    { area:'入荷',   name:'入荷・検品の基本', count:8,  on:true },
+    { area:'保管',   name:'在庫・ロケ管理',   count:9,  on:true },
+    { area:'出荷',   name:'ピッキング・梱包', count:9,  on:true },
+    { area:'請求/管理', name:'基本帳票・マスタ', count:10, on:true },
+  ];
+  // 条件オン（流れの該当エリアに足す件数として加算表示）
+  const cond = [];
+  if(a.shelf==='yes') cond.push({name:'ロット・期限管理（FEFO/期限アラート）', count:6, area:'保管'});
+  if(a.temp==='cold') cond.push({name:'温度帯管理・逸脱監視', count:5, area:'保管'});
+  if(a.owner==='multi') cond.push({name:'3PL請求・荷主分離・荷主別レポート', count:9, area:'請求/管理'});
+  if(a.ship==='ec') cond.push({name:'EC出荷（送り状・ギフト・個口）', count:7, area:'出荷'});
+  if(a.ship==='btob') cond.push({name:'店舗別仕分け・大口出荷', count:5, area:'出荷'});
+  if(a.turn==='fast') cond.push({name:'多品種ピッキング最適化', count:6, area:'出荷'});
+  if(a.turn==='bulk') cond.push({name:'定番ロケ・補充最適化', count:4, area:'保管'});
+
+  // 件数を流れグループにマージ
+  cond.forEach(c=>{ const g=groups.find(g=>g.area===c.area); if(g) g.count+=c.count; });
+
+  const onCount = groups.reduce((s,g)=>s+g.count,0);
+
+  // 切ったもの（条件に当たらなかった代表機能）
+  const offCandidates = [];
+  if(a.temp!=='cold') offCandidates.push('温度逸脱監視');
+  if(a.owner!=='multi') offCandidates.push('3PL請求');
+  if(a.shelf!=='yes') offCandidates.push('期限切れアラート');
+  offCandidates.push('返品管理');     // 今回は聞いていない＝デフォルトでオフ
+  offCandidates.push('キット梱包');
+
+  // 言い当て
+  const tags = [];
+  if(a.shelf==='yes') tags.push('日配寄り');
+  if(a.temp==='cold') tags.push('冷食');
+  const head = (a.owner==='multi') ? '3PL倉庫' : '自社倉庫';
+  const tail = (a.turn==='fast') ? '多品種・高回転型' : '大量・定番型';
+  const ecphrase = (a.ship==='ec') ? 'EC出荷あり、' : '';
+  const said = SC.said || `${tags.join('・')}${tags.length?'の':''}<b>${head}</b>。<br>${ecphrase}${tail}ですね。`;
+
+  // トッピング提案
+  let topping;
+  if(a.turn==='fast') topping = {b:'棚最適化のお助け', text:'回転が速いので、<b>棚最適化のお助け</b>もハマりそう。'};
+  else if(a.ship==='ec') topping = {b:'出荷ミス防止ダブルチェック', text:'個口が多いので、<b>出荷ミス防止のダブルチェック</b>はどう？'};
+  else topping = {b:'在庫アラート自動通知', text:'<b>在庫アラートの自動通知</b>を足すと、欠品を先回りできます。'};
+
+  // 機能フラグ（= 実装の芯。nav-manifest をこれで絞り込む想定）
+  const flags = new Set(['base']);
+  if(a.shelf==='yes') flags.add('lot_expiry');
+  if(a.temp==='cold') flags.add('temperature');
+  if(a.owner==='multi') flags.add('tpl_billing');
+  if(a.ship==='ec') flags.add('ec_shipping');
+  if(a.ship==='btob') flags.add('btob_shipping');
+  if(a.turn==='fast') flags.add('multi_pick');
+  if(a.turn==='bulk') flags.add('bulk_loc');
+
+  const headName = head;  // 「3PL倉庫」/「自社倉庫」
+  return { groups, onCount, offCandidates, said, topping, flags, headName, toppingAdded:false };
+}
+
+let plan;
+function showReveal(){
+  plan = buildPlan();
+  $('hearing').style.display='none';
+  $('reveal').style.display='block';
+
+  $('saidMain').innerHTML = plan.said;
+
+  // ② 業務の流れ順にカチカチ点灯
+  const flow = $('flow'); flow.innerHTML='';
+  plan.groups.forEach((g,i)=>{
+    const el = document.createElement('div');
+    el.className='grp';
+    el.innerHTML = `<div class="chk">✓</div><div class="gname">${g.area}：${g.name}</div><div class="gcount">${g.count}機能</div>`;
+    flow.appendChild(el);
+    setTimeout(()=>el.classList.add('show'), 400 + i*450);
+  });
+
+  const afterFlow = 400 + plan.groups.length*450 + 200;
+
+  // ③ 数字（カウントアップ）
+  setTimeout(()=>{
+    $('count').classList.add('show');
+    let n=0; const target=plan.onCount;
+    const iv=setInterval(()=>{ n+=Math.ceil(target/20); if(n>=target){n=target;clearInterval(iv);} $('onNum').textContent=n; },30);
+    $('offSmall').textContent = `残り ${TOTAL-plan.onCount} 機能はオフ。いつでも足せます。`;
+  }, afterFlow);
+
+  // ④ 切ったもの
+  setTimeout(()=>{
+    $('offList').innerHTML = plan.offCandidates.map(t=>`<span class="off-tag">${t}</span>`).join('');
+    $('offBox').classList.add('show');
+  }, afterFlow+700);
+
+  // ⑤ トッピング
+  setTimeout(()=>{
+    $('tText').innerHTML = plan.topping.text;
+    $('topping').classList.add('show');
+  }, afterFlow+1300);
+
+  // ⑥ 始める
+  setTimeout(()=>{ $('start').classList.add('show'); }, afterFlow+1900);
+}
+
+// トッピングを足す
+$('tBtn').onclick = ()=>{
+  const t = $('topping');
+  if(t.classList.contains('added')) return;
+  t.classList.add('added');
+  $('tText').innerHTML = `<b>${plan.topping.b}</b> を足しました ✓`;
+  $('tBtn').textContent = '追加済み'; $('tBtn').disabled = true;
+  plan.toppingAdded = true;
+  plan.flags.add('shelf_opt');
+  plan.onCount += 1;
+  $('onNum').textContent = plan.onCount;
+  $('offSmall').textContent = `残り ${TOTAL-plan.onCount} 機能はオフ。いつでも足せます。`;
+};
+
+// ===== メニュー定義（本物の test2 画面に紐づけ・nav-manifest 相当の縮小版） =====
+// label/url は実在の test2 画面（200確認済）。flag = どの機能グループに属すか。
+// ON のフラグだけ表示する。クリックで右の枠に本物の画面を表示。
+const T2 = 'https://wms-test2.vercel.app/';
+const MENU = [
+  { grp:'入荷管理', items:[
+    { label:'入荷予定一覧', url:'test2-mirror/inbound_plans.html', local:true, flag:'base' },
+    { label:'入荷予定登録', url:'pc/inbound/register.html',         flag:'base' },
+    { label:'温度チェック', url:'pc/inbound/temperature_check.html',flag:'temperature' },
+  ]},
+  { grp:'ハンディ端末（HT）', items:[
+    { label:'入荷検品', url:'test2-mirror/ht_inspect_screen.html?id=IN-2026-0603-01', local:true, ht:true, flag:'base' },
+    { label:'ロケ移動', url:'test2-mirror/ht_move_screen.html', local:true, ht:true, flag:'base' },
+    { label:'ピッキング', url:'test2-mirror/ht_pick_screen.html', local:true, ht:true, flag:'base' },
+    { label:'棚卸', url:'test2-mirror/ht_stocktake_screen.html', local:true, ht:true, flag:'base' },
+  ]},
+  { grp:'在庫管理', items:[
+    { label:'在庫照会（商品軸）', url:'test2-mirror/inventory_kpi.html', local:true, flag:'base' },
+    { label:'在庫照会（ロケ軸）', url:'pc/inventory/layout_a.html',      flag:'base' },
+    { label:'ロット・賞味期限',   url:'pc/inventory/lot_serial.html',    flag:'lot_expiry' },
+  ]},
+  { grp:'出荷管理', items:[
+    { label:'出荷指示一覧',   url:'test2-mirror/outbound_orders.html', local:true, flag:'base' },
+    { label:'ピッキング・梱包', url:'pc/outbound/packing_summary.html', flag:'base' },
+    { label:'積込・出荷確定', url:'pc/outbound/loading.html',         flag:'base' },
+    { label:'出荷実績',       url:'pc/outbound/order_actuals.html',   flag:'base' },
+  ]},
+  { grp:'マスタ', items:[
+    { label:'商品マスタ',   url:'test2-mirror/master_products.html', local:true, flag:'base' },
+    { label:'ロケーション', url:'pc/master/locations.html', flag:'base' },
+    { label:'取引先',       url:'pc/master/customers.html', flag:'base' },
+  ]},
+  { grp:'請求 / 帳票', items:[
+    { label:'ピッキングリスト', url:'test2-mirror/outbound_picking_list.html', local:true, flag:'base' },
+    { label:'棚卸表',     url:'test2-mirror/stocktake_sheet.html', local:true, flag:'base' },
+    { label:'月次請求',   url:'pc/billing/monthly.html', flag:'tpl_billing' },
+    { label:'請求書',     url:'pc/billing/invoice.html', flag:'tpl_billing' },
+    { label:'帳票一覧',   url:'pc/prints/hub.html',      flag:'base' },
+  ]},
+];
+
+// メニュー総数（オフ件数ヒント用の見かけの母数）
+const MENU_TOTAL = MENU.reduce((s,g)=>s+g.items.length,0);
+
+// HT画面を端末スクリーン領域にフィット（実機画面サイズに縮小）
+function fitHT(){
+  const wrap=document.querySelector('.ht-screen-wrap'); const f=$('ht-screen');
+  if(!wrap||!f) return;
+  const w=wrap.clientWidth, h=wrap.clientHeight; if(!w||!h) return;
+  const base=290; const scale=w/base;     // 幅フィット
+  f.style.position=''; f.style.left=''; f.style.top='';
+  f.style.width=base+'px';
+  f.style.height='480px';                  // 高めに取り、下はwrapでクリップ＝上下余白なし
+  f.style.transformOrigin='top left';
+  f.style.transform='scale('+scale+')';
+}
+window.addEventListener('resize', fitHT);
+
+// PC画面 or HT端末表示の切替
+function showScreen(it){
+  $('welcome').style.display='none';
+  const src = it.local ? it.url : (T2 + it.url);
+  if(it.ht){
+    $('crumb').textContent='';
+    $('screen').style.display='none';
+    $('ht-view').classList.add('on');
+    const f=$('ht-screen');
+    f.onload=()=>fitHT();
+    if(f.src.indexOf(it.url)<0) f.src = src;
+    setTimeout(fitHT, 350);
+  } else {
+    htLiveClose();
+    $('ht-view').classList.remove('on');
+    $('crumb').textContent='— '+plan.headName+' / '+it.label;
+    $('screen').style.display='block';
+    $('screen').src = src;
+  }
+}
+
+function renderShell(){
+  $('reveal').style.display='none';
+  $('shell').style.display='block';
+  buildFlowRail(); setFlow(0);                     // 右の流れ図を用意
+  $('welcome').style.display='block';              // 初期はようこそ
+  $('screen').style.display='none'; $('screen').removeAttribute('src');
+  $('shellName').textContent = plan.headName;     // 例：3PL倉庫 / 自社倉庫
+  $('crumb').textContent = '— ' + plan.headName + ' / ダッシュボード';
+
+  // nav-manifest を「ONのフラグ」で絞り込む（＝実装の芯そのもの）
+  const menuEl = $('menu'); menuEl.innerHTML='';
+  let shown=0, idx=0;
+  MENU.forEach(g=>{
+    const visible = g.items.filter(it=> plan.flags.has(it.flag));
+    if(!visible.length) return;
+    const gh = document.createElement('div'); gh.className='menu-grp';
+    gh.innerHTML = `<div class="gh">${g.grp}</div>`;
+    visible.forEach(it=>{
+      const el=document.createElement('div'); el.className='menu-item';
+      el.innerHTML = `<span class="ico"></span>${it.label}`;
+      el.onclick = ()=>{ document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+        el.classList.add('active'); showScreen(it); };
+      gh.appendChild(el);
+      shown++;
+      // 1項目ずつスッと出して「組み上がる」感
+      setTimeout(()=>el.classList.add('show'), 120 + idx*70); idx++;
+    });
+    menuEl.appendChild(gh);
+  });
+
+  const hidden = MENU_TOTAL - shown;
+  $('offHint').innerHTML = `＋ <b>${hidden}</b> 件のメニューは今オフ。<br>設定からいつでも追加できます。`;
+}
+
+$('start').onclick = renderShell;
+$('backBtn').onclick = ()=>{ $('shell').style.display='none'; $('restart').click(); };
+
+// ===== 自動実演ドライバ（連続オートプレイ・指カーソル・タイプ＆登録演出） =====
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function narrate(step, text){ const n=$('narr'); n.innerHTML=text; n.classList.add('show'); }
+
+const cursor = $('bigcursor');
+function showCursor(on){ cursor.classList.toggle('on', !!on); }
+function moveCursor(x,y){ cursor.style.left=x+'px'; cursor.style.top=y+'px'; }
+
+// 複製ページは同一オリジン → iframe内DOM/windowへ直接アクセスできる
+function iframeDoc(){ const f=$('screen'); return f.contentDocument || (f.contentWindow&&f.contentWindow.document); }
+function iframeWin(){ const f=$('screen'); return f.contentWindow; }
+
+// iframe内要素の「親ビューポート座標」を出す（カーソルを重ねるため）
+function coordsOf(el, inIframe){
+  const r=el.getBoundingClientRect();
+  if(!inIframe) return { x:r.left+r.width/2, y:r.top+r.height/2 };
+  const fr=$('screen').getBoundingClientRect();
+  return { x:fr.left+r.left+r.width/2, y:fr.top+r.top+r.height/2 };
+}
+async function glideTo(el, inIframe){
+  if(el.scrollIntoView) el.scrollIntoView({block:'center'});
+  await sleep(70);
+  const {x,y}=coordsOf(el, inIframe); moveCursor(x,y); await sleep(360);
+}
+function clickFx(){
+  const ring=document.createElement('div'); ring.className='click-ring';
+  ring.style.left=parseFloat(cursor.style.left)+'px'; ring.style.top=parseFloat(cursor.style.top)+'px';
+  document.body.appendChild(ring); setTimeout(()=>ring.remove(),600);
+  cursor.classList.add('click'); setTimeout(()=>cursor.classList.remove('click'),360);
+}
+
+// iframe にフォーカスリング/押下スタイルを注入
+function injectDemoCSS(doc){
+  if(doc.getElementById('demo-style')) return;
+  const s=doc.createElement('style'); s.id='demo-style';
+  s.textContent=`.demo-focus{outline:2px solid #e07a3f!important;box-shadow:0 0 0 4px rgba(224,122,63,.18)!important}
+    .demo-press{transform:scale(.93)!important;filter:brightness(1.12)!important;transition:transform .1s}`;
+  doc.head.appendChild(s);
+}
+async function typeInto(el, text){
+  await glideTo(el, true); el.classList.add('demo-focus'); el.focus(); el.value='';
+  for(let i=1;i<=text.length;i++){ el.value=text.slice(0,i); el.dispatchEvent(new Event('input',{bubbles:true})); await sleep(55); }
+  await sleep(150); el.classList.remove('demo-focus');
+}
+async function pressBtn(btn){
+  await glideTo(btn, true); clickFx(); btn.classList.add('demo-press'); await sleep(150);
+  btn.classList.remove('demo-press'); btn.click(); await sleep(280);
+}
+async function clickMenu(label){
+  const item=[...document.querySelectorAll('.menu-item')].find(i=>i.innerText.includes(label));
+  if(!item) return false;
+  await glideTo(item, false); clickFx(); item.click(); await sleep(200); return true;
+}
+function waitScreen(check){
+  const f=$('screen');
+  return new Promise(res=>{ const ok=()=>{ try{ if(check(f.contentWindow,f.contentDocument)) return res(true);}catch(e){} };
+    if(f.contentDocument){ ok(); } f.onload=()=>{ setTimeout(()=>{ok();},200); res(true); }; setTimeout(res,1800); });
+}
+
+// 商品マスタへ注入する「新規商品登録」フォーム
+function injectRegForm(doc, win){
+  let p=doc.getElementById('reg-panel'); if(p) return p;
+  const host=doc.querySelector('.content')||doc.querySelector('.main')||doc.body;
+  p=doc.createElement('div'); p.id='reg-panel';
+  p.style.cssText='background:#fff;border:1.5px solid #e07a3f;border-radius:12px;padding:16px 18px;margin-bottom:16px';
+  p.innerHTML=`<div style="font-weight:700;color:#1a3a5c;margin-bottom:12px">新規商品登録</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+      <label style="font-size:12px;color:#6c7280">商品コード<br><input id="reg-code" style="padding:7px 10px;border:1px solid #c4cdd6;border-radius:4px;width:130px"></label>
+      <label style="font-size:12px;color:#6c7280">商品名<br><input id="reg-name" style="padding:7px 10px;border:1px solid #c4cdd6;border-radius:4px;width:230px"></label>
+      <label style="font-size:12px;color:#6c7280">JAN<br><input id="reg-jan" style="padding:7px 10px;border:1px solid #c4cdd6;border-radius:4px;width:150px"></label>
+      <label style="font-size:12px;color:#6c7280">賞味期限(日)<br><input id="reg-exp" style="padding:7px 10px;border:1px solid #c4cdd6;border-radius:4px;width:90px"></label>
+      <button id="reg-save" style="background:#e07a3f;color:#fff;border:none;border-radius:6px;padding:9px 20px;font-weight:700;cursor:pointer">登録</button>
+    </div>`;
+  host.insertBefore(p, host.firstChild);
+  p.querySelector('#reg-save').onclick=()=>{
+    const g=id=>doc.getElementById(id).value.trim();
+    if(!g('reg-code')) return;
+    const prod={ code:g('reg-code'), name:g('reg-name'), jan_code:g('reg-jan'), owner_code:'OWN01',
+      unit_top:'ケース', temperature_zone:'常温', expiry_managed:true, expiry_days:Number(g('reg-exp'))||365, active:true };
+    if(typeof win.__demoAdd==='function') win.__demoAdd(prod); else { win.all=win.all||[]; win.all.push(prod); rerenderMaster(doc); }
+    ['reg-code','reg-name','reg-jan','reg-exp'].forEach(id=>doc.getElementById(id).value='');
+  };
+  return p;
+}
+
+// ページ内 render() を呼ぶ＝検索ボタン（onclick="render()"）をクリックして再描画
+function rerenderMaster(doc){ const b=[...doc.querySelectorAll('button')].find(x=>/検索/.test(x.textContent)); if(b) b.click(); }
+
+const REG_ITEMS = SC.products || [];
+
+// ステージ①：マスター整備（白紙→登録で埋まる）
+async function stageMasterRegister(){
+  narrate('STEP 1', 'まだ白紙のWMS。最初に「商品マスタ」を登録していきます');
+  await clickMenu('商品マスタ');
+  await waitScreen((w,d)=>d&&d.getElementById('f-name'));
+  const doc=iframeDoc(), win=iframeWin(); if(!doc||!win) return;
+  injectDemoCSS(doc);
+  if(typeof win.__demoClear==='function') win.__demoClear(); else { win.all=[]; rerenderMaster(doc); }   // 白紙化
+  await sleep(600);
+  injectRegForm(doc, win);
+  await sleep(400);
+  for(const it of REG_ITEMS){
+    narrate('STEP 1', `商品を登録：${it.name}`);
+    await typeInto(doc.getElementById('reg-code'), it.code);
+    await typeInto(doc.getElementById('reg-name'), it.name);
+    // JAN・賞味期限は即入力（テンポ優先）
+    const ji=doc.getElementById('reg-jan'); ji.value=it.jan; ji.dispatchEvent(new Event('input',{bubbles:true}));
+    const ei=doc.getElementById('reg-exp'); ei.value=it.exp; ei.dispatchEvent(new Event('input',{bubbles:true}));
+    await sleep(250);
+    await pressBtn(doc.getElementById('reg-save'));
+  }
+  narrate('STEP 1', `商品マスタに ${REG_ITEMS.length} 品が登録されました。白紙のWMSが動き出します`);
+  await sleep(1400);
+}
+
+// ===== ステージ②：入庫＋HT入荷検品（実機写真の上でスキャン演出） =====
+function htWin(){ return $('ht-screen').contentWindow; }
+function cursorToDevicePct(xPct,yPct){
+  const dev=document.querySelector('.ht-device'); if(!dev) return;
+  const dr=dev.getBoundingClientRect();
+  moveCursor(dr.left + xPct/100*dr.width, dr.top + yPct/100*dr.height);
+}
+function flashKey(xPct,yPct,wPct,hPct){
+  const view=$('ht-view'); let hl=document.getElementById('keyhl');
+  if(!hl){ hl=document.createElement('div'); hl.id='keyhl'; view.appendChild(hl); }
+  const dev=document.querySelector('.ht-device'); const dr=dev.getBoundingClientRect(); const vr=view.getBoundingClientRect();
+  hl.style.left=(dr.left-vr.left + xPct/100*dr.width)+'px';
+  hl.style.top=(dr.top-vr.top + yPct/100*dr.height)+'px';
+  hl.style.width=(wPct/100*dr.width)+'px';
+  hl.style.height=Math.max(22,hPct/100*dr.height)+'px';
+  hl.classList.remove('on'); void hl.offsetWidth; hl.classList.add('on');
+}
+function waitHT(){
+  const f=$('ht-screen');
+  return new Promise(res=>{ let n=0;
+    const iv=setInterval(()=>{ n++; try{ const d=f.contentDocument; const cn=d&&d.getElementById('cur-name'); if(cn && cn.textContent && cn.textContent.length>1 && !/未指定|検品済/.test(cn.textContent)){ clearInterval(iv); return res(true);} }catch(e){}
+      if(n>30){ clearInterval(iv); res(true);} }, 200);
+  });
+}
+
+// ===== HT実況パネル（HTステージ中だけ・スキャン結果を大きく見せる） =====
+function htLiveOpen(title){
+  const p=$('ht-live'); if(!p) return;
+  p.innerHTML =
+    '<div class="hl-head"><span class="hl-live-tag">実況</span><span class="hl-title">'+title+'</span></div>'+
+    '<div class="hl-current" id="hl-current" style="display:none"></div>'+
+    '<div class="hl-list" id="hl-list"></div>'+
+    '<div class="hl-foot" id="hl-foot"></div>';
+  $('ht-view').classList.add('has-live');
+  setTimeout(fitHT, 60);   // 端末サイズが変わるので再フィット
+}
+function htLiveClose(){
+  const v=$('ht-view'); if(!v) return;
+  v.classList.remove('has-live');
+  const p=$('ht-live'); if(p) p.innerHTML='';
+}
+function countUp(el, target){
+  return new Promise(res=>{ if(!el) return res(); let n=0; const step=Math.max(1,Math.ceil(target/22));
+    const iv=setInterval(()=>{ n+=step; if(n>=target){ n=target; clearInterval(iv); res(); } el.textContent=n.toLocaleString(); }, 28);
+  });
+}
+// 大きな現在カードを表示：バッジpop → 数量カウントアップ → 確定リストへ追加
+async function htLiveStep(o){
+  const cur=$('hl-current'); if(!cur) return;
+  const metaHtml=(o.meta||[]).map(m=>'<div class="m"><span class="k">'+m.k+'</span><span class="v">'+m.v+'</span></div>').join('');
+  cur.style.display='block';
+  cur.innerHTML=
+    '<div class="hl-badge" id="hl-badge">'+(o.badge||'SCAN ✓')+'</div>'+
+    '<div class="hl-name">'+o.name+'</div>'+
+    (metaHtml?'<div class="hl-meta">'+metaHtml+'</div>':'')+
+    (o.big?'<div class="hl-big"><span class="n" id="hl-n">0</span><span class="u">'+(o.big.unit||'')+'</span>'+(o.big.lbl?'<span class="lbl">'+o.big.lbl+'</span>':'')+'</div>':'');
+  const b=$('hl-badge'); if(b){ void b.offsetWidth; b.classList.add('pop'); }
+  if(o.big){ await countUp($('hl-n'), o.big.val); } else { await sleep(200); }
+  if(o.addToList) htLiveAdd(o.addToList.label, o.addToList.val);
+}
+function htLiveAdd(label, val){
+  const list=$('hl-list'); if(!list) return;
+  const row=document.createElement('div'); row.className='hl-row';
+  row.innerHTML='<span class="ck">✓</span><span class="nm">'+label+'</span>'+(val!=null?'<span class="vv">'+val+'</span>':'');
+  list.appendChild(row);
+}
+function htLiveFoot(items){
+  const f=$('hl-foot'); if(!f) return;
+  f.style.display='flex';
+  f.innerHTML=items.map(i=>'<div class="f"><b>'+i.val+'</b><span>'+i.label+'</span></div>').join('');
+}
+
+const SCAN_POS={x:44.9,y:59.8,w:21,h:5};
+async function stageInbound(){
+  narrate('STEP 2', '入荷予定の現物を、ハンディ端末(HT)で検品します');
+  await clickMenu('入荷予定一覧'); await sleep(1300);
+  await clickMenu('入荷検品');
+  await waitHT(); await sleep(500);
+  htLiveOpen('入荷検品 ─ HTスキャン'); await sleep(400);
+  const items = SC.inbound || [];
+  let cum=0;
+  for(let k=0;k<items.length;k++){
+    const it=items[k];
+    narrate('STEP 2', it.nm+' をスキャン（'+it.qty+'ケース）');
+    cursorToDevicePct(SCAN_POS.x, SCAN_POS.y); await sleep(520);
+    flashKey(SCAN_POS.x, SCAN_POS.y, SCAN_POS.w, SCAN_POS.h); clickFx();
+    const w=htWin();
+    try{ w.simulateScan && w.simulateScan(); }catch(e){}
+    await htLiveStep({
+      badge:'照合OK ✓', name:it.nm,
+      meta:[{k:'商品コード',v:it.code},{k:'JAN',v:it.jan},{k:'ロット',v:it.lot},{k:'賞味期限',v:it.exp}],
+      big:{val:it.qty, unit:'ケース', lbl:'予定どおり'},
+      addToList:{label:it.nm, val:it.qty.toLocaleString()+' cs'}
+    });
+    cum+=it.qty;
+    htLiveFoot([{val:(k+1)+' / '+items.length, label:'品目'},{val:cum.toLocaleString(), label:'累計ケース'}]);
+    if(k < items.length-1){
+      try{ w.confirmInspect && w.confirmInspect(); }catch(e){}   // 次品へ進む
+    } else {
+      // 最終品：confirmInspectは完了画面へ遷移するので、DOMで100%表示に留める
+      try{ const d=w.document; d.getElementById('scanned-qty').textContent=it.qty; d.getElementById('progress-fill').style.width='100%'; }catch(e){}
+    }
+    await sleep(750);
+  }
+  narrate('STEP 2', `入荷検品 完了（${items.length}品・${cum.toLocaleString()}ケース）。在庫に反映されます`);
+  await sleep(1700);
+}
+
+// ===== ステージ③：在庫照会（入庫が反映され在庫が増えている） =====
+async function stageStock(){
+  narrate('STEP 3', '入庫した分が在庫に反映されました');
+  await clickMenu('在庫照会（商品軸）');
+  await sleep(2400);
+  const _inSum=(SC.inbound||[]).reduce((s,i)=>s+i.qty,0);
+  narrate('STEP 3', (SC.inbound||[]).map(i=>_short(i.nm)+i.qty).join('・')+`ケースが在庫に（計${_inSum.toLocaleString()}）`);
+  await sleep(1800);
+}
+
+// ===== ステージ④：ロケ移動（HT・保管→ピッキングロケ） =====
+function waitHTEl(sel){ const f=$('ht-screen'); return new Promise(res=>{let n=0;const iv=setInterval(()=>{n++;try{if(f.contentDocument&&f.contentDocument.querySelector(sel)){clearInterval(iv);return res(true);}}catch(e){}if(n>25){clearInterval(iv);res(true);}},200);}); }
+async function htType(inp, text){ if(!inp) return; inp.focus(); inp.value=''; for(let i=1;i<=text.length;i++){ inp.value=text.slice(0,i); inp.dispatchEvent(new Event('input',{bubbles:true})); await sleep(110);} await sleep(250); }
+async function stageMove(){
+  const mv = SC.move || {};
+  narrate('STEP 4', '保管ロケから、ピッキングロケへ補充移動します（HT）');
+  await clickMenu('ロケ移動');
+  await waitHTEl('#loc-from'); await sleep(500);
+  htLiveOpen('ロケ移動 ─ HT'); await sleep(300);
+  const w=htWin(); const d=w.document;
+  cursorToDevicePct(50,30); await sleep(450);   // カーソルを画面付近へ
+  await htType(d.getElementById('loc-from'), mv.fromLoc);
+  try{ w.lookupLocation && w.lookupLocation(mv.fromLoc); }catch(e){}
+  await htLiveStep({ badge:'移動元 ✓', name:mv.fromLoc+'（保管ロケ）',
+    meta:[{k:'エリア',v:mv.area},{k:'商品',v:mv.nm}],
+    big:{val:mv.qty, unit:'ケース', lbl:'保管在庫'} });
+  await sleep(900);
+  narrate('STEP 4', _short(mv.nm)+' '+mv.qty+'ケースを ピッキングロケ '+mv.toLoc+' へ移動');
+  cursorToDevicePct(SCAN_POS.x, SCAN_POS.y); await sleep(500);
+  flashKey(SCAN_POS.x, SCAN_POS.y, SCAN_POS.w, SCAN_POS.h); clickFx();
+  await htLiveStep({ badge:'移動先 ✓', name:mv.toLoc+'（ピッキングロケ）',
+    meta:[{k:'移動元',v:mv.fromLoc},{k:'商品',v:mv.nm}],
+    big:{val:mv.qty, unit:'ケース', lbl:'移動完了'},
+    addToList:{label:mv.fromLoc+' → '+mv.toLoc+'　'+_short(mv.nm), val:mv.qty+' cs'} });
+  htLiveFoot([{val:'1', label:'移動明細'},{val:String(mv.qty), label:'移動ケース'}]);
+  await sleep(1500);
+}
+
+// ===== ステージ⑤：出庫（出荷指示→引当→ピッキングHT→出荷確定） =====
+async function stageOutbound(){
+  const ob = SC.outbound || {}; const picks = ob.picks || [];
+  narrate('STEP 5', '出荷指示：'+(ob.orderLabel||''));
+  await clickMenu('出荷指示一覧'); await sleep(1700);
+  narrate('STEP 5', '在庫を引当します');
+  try{ $('screen').contentWindow.__demoAllocate(ob.soId); }catch(e){}
+  await sleep(1500);
+  narrate('STEP 5', 'ピッキングリストを発行');
+  await clickMenu('ピッキングリスト'); await sleep(2300);
+  narrate('STEP 5', 'ピッキング：HTでロケ・商品をスキャン');
+  await clickMenu('ピッキング'); await waitHTEl('#scan-input'); await sleep(600);
+  htLiveOpen('ピッキング ─ HT'); await sleep(300);
+  let _pickSum=0;
+  for(let i=0;i<picks.length;i++){
+    const p=picks[i]; _pickSum+=p.qty;
+    narrate('STEP 5', p.loc+' で '+_short(p.nm)+' を '+p.qty+'ケース ピック');
+    cursorToDevicePct(SCAN_POS.x, SCAN_POS.y); await sleep(450);
+    flashKey(SCAN_POS.x, SCAN_POS.y, SCAN_POS.w, SCAN_POS.h); clickFx();
+    // htSimulateScan は次画面へ遷移し404になるため呼ばない（ハイライト演出のみ）
+    await htLiveStep({ badge:'ピック ✓', name:p.nm,
+      meta:[{k:'ロケ',v:p.loc},{k:'指示数',v:p.qty+' ケース'}],
+      big:{val:p.qty, unit:'ケース', lbl:'ピック完了'},
+      addToList:{label:p.loc+'　'+_short(p.nm), val:p.qty+' cs'} });
+    await sleep(650);
+  }
+  htLiveFoot([{val:String(picks.length), label:'明細'},{val:String(_pickSum), label:'ピックケース'}]);
+  await sleep(700);
+  narrate('STEP 5', 'ピッキング完了 → 出荷確定');
+  await clickMenu('出荷指示一覧'); await sleep(800);
+  try{ $('screen').contentWindow.__demoSetOrderStatus(ob.soId,'shipped'); }catch(e){}
+  await sleep(1600);
+}
+// ===== ステージ⑥：在庫照会（出荷後・在庫が減って物語が閉じる） =====
+async function stageStockAfter(){
+  const inb=SC.inbound||[]; const picks=(SC.outbound&&SC.outbound.picks)||[];
+  const shipMap={}; picks.forEach(p=>{ shipMap[p.nm]=(shipMap[p.nm]||0)+p.qty; });
+  const shippedTxt=picks.map(p=>_short(p.nm)+p.qty).join('・');
+  const afterArr=inb.map(i=>({nm:i.nm, q:i.qty-(shipMap[i.nm]||0)}));
+  const afterSum=afterArr.reduce((s,x)=>s+x.q,0);
+  narrate('STEP 6', '出荷分（'+shippedTxt+'）が在庫から引かれました');
+  document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+  showScreen({url:'test2-mirror/inventory_after.html', local:true, label:'在庫照会（出荷後）', flag:'base'});
+  await sleep(2600);
+  narrate('STEP 6', '在庫：'+afterArr.map(x=>_short(x.nm)+x.q).join('・')+'（計'+afterSum.toLocaleString()+'）。倉庫の1日が完了です');
+  await sleep(2200);
+}
+
+// ===== ステージ：棚卸（棚卸表→HT棚卸カウント→差異確認） =====
+async function stageStocktake(){
+  narrate('棚卸', '棚卸：棚卸表を発行して、現物をカウントします');
+  await clickMenu('棚卸表'); await sleep(2400);
+  narrate('棚卸', 'HTで棚卸カウント（現物と帳簿在庫を照合）');
+  await clickMenu('棚卸'); await waitHTEl('body'); await sleep(900);
+  htLiveOpen('棚卸 ─ HTカウント'); await sleep(300);
+  const counts = SC.counts || [];
+  for(let i=0;i<counts.length;i++){
+    const c=counts[i];
+    narrate('棚卸', c.loc+'：'+c.nm+' をカウント');
+    cursorToDevicePct(SCAN_POS.x, SCAN_POS.y); await sleep(420);
+    flashKey(SCAN_POS.x, SCAN_POS.y, SCAN_POS.w, SCAN_POS.h); clickFx();
+    await htLiveStep({ badge:'カウント ✓', name:c.nm,
+      meta:[{k:'ロケ',v:c.loc},{k:'帳簿在庫',v:c.theory+' ケース'},{k:'差異',v:'±0'}],
+      big:{val:c.theory, unit:'ケース', lbl:'実数 = 帳簿'},
+      addToList:{label:c.loc+'　'+c.nm, val:'±0'} });
+    await sleep(550);
+  }
+  htLiveFoot([{val:'3', label:'カウント'},{val:'0', label:'差異'}]);
+  narrate('棚卸', '棚卸完了：差異なし（帳簿在庫と一致）');
+  await sleep(1700);
+}
+
+let demoRunning=false;
+function setProgress(cur,total,label){ const p=$('progress'); if(!p)return; let d=''; for(let i=1;i<=total;i++)d+='<span class="dot '+(i<=cur?'on':'')+'"></span>'; p.innerHTML=d+'<span class="lbl">'+cur+' / '+total+'</span>'; }
+function buildFlowRail(){ const r=$('flowrail'); if(!r||typeof STAGES==='undefined')return; let h='<h4>作業の流れ</h4>'; STAGES.forEach((st,i)=>{ h+='<div class="fstep" data-i="'+(i+1)+'"><div class="fnode">'+(i+1)+'</div><div class="ftxt">'+st.t+'</div></div>'; }); r.innerHTML=h; }
+function setFlow(cur){ document.querySelectorAll('.fstep').forEach(el=>{ const i=+el.getAttribute('data-i'); el.classList.toggle('done', i<cur); el.classList.toggle('cur', i===cur); el.querySelector('.fnode').innerHTML = i<cur ? '✓' : i; }); }
+async function bigCard(no, ti, ds, ms){
+  const c=$('stagecard'); showCursor(false);
+  c.querySelector('.sc').innerHTML=(no?'<div class="no">'+no+'</div>':'')+'<div class="ti">'+ti+'</div>'+(ds?'<div class="ds">'+ds+'</div>':'');
+  c.classList.add('on'); await sleep(ms||1500); c.classList.remove('on'); await sleep(450);
+}
+const STAGES=[
+  {t:'マスター整備', s:'白紙のWMSに、扱う商品を登録する', fn:stageMasterRegister},
+  {t:'入庫 ─ HT入荷検品', s:'入荷予定の現物を、実機HTでスキャン検品', fn:stageInbound},
+  {t:'在庫照会', s:'入庫した分が在庫に反映される', fn:stageStock},
+  {t:'棚卸', s:'棚卸表を発行し、HTで現物をカウント', fn:stageStocktake},
+  {t:'ロケ移動 ─ HT', s:'保管ロケからピッキングロケへ補充', fn:stageMove},
+  {t:'出庫', s:'出荷指示→引当→ピッキングリスト→HTピッキング→出荷確定', fn:stageOutbound},
+  {t:'在庫照会（出荷後）', s:'出荷分が引かれ、倉庫の1日が完了', fn:stageStockAfter},
+];
+async function runFullDemo(){
+  if(demoRunning) return; demoRunning=true; $('demoBtn').disabled=true; $('demoBtn').textContent='▶ 実演中…';
+  const card=$('stagecard'); card.onclick=null; showCursor(true);
+  try{
+    buildFlowRail(); setFlow(0);
+    await bigCard(null, SC.title || 'あなたの倉庫 ─ 1日の流れ','ヒアリングで構成されたWMSを、実作業の順に自動実演します',2200);
+    for(let i=0;i<STAGES.length;i++){ const st=STAGES[i]; setProgress(i+1,STAGES.length); setFlow(i+1); await bigCard('STAGE '+(i+1)+' / '+STAGES.length, st.t, st.s); showCursor(true); await st.fn(); }
+    setFlow(STAGES.length+1); showCursor(false); htLiveClose();
+    const _inT=(SC.inbound||[]).reduce((s,i)=>s+i.qty,0);
+    const _outT=((SC.outbound&&SC.outbound.picks)||[]).reduce((s,p)=>s+p.qty,0);
+    const _stT=_inT-_outT;
+    card.querySelector('.sc').innerHTML='<div class="no">COMPLETE</div><div class="ti">倉庫の1日が完了しました</div>'
+      +'<div class="sum"><div><b>'+_inT.toLocaleString()+'</b><span>入荷（ケース）</span></div><div><b>'+_outT.toLocaleString()+'</b><span>出荷（ケース）</span></div><div><b>'+_stT.toLocaleString()+'</b><span>在庫（ケース）</span></div><div><b>0</b><span>棚卸差異</span></div></div>'
+      +'<div class="ds" style="margin-top:18px">▶ クリックでもう一度</div>';
+    card.classList.add('on'); card.onclick=()=>{ card.onclick=null; card.classList.remove('on'); runFullDemo(); };
+  }
+  catch(e){ htLiveClose(); narrate('—', '実演を中断しました'); }
+  demoRunning=false; $('demoBtn').disabled=false; $('demoBtn').textContent='▶ もう一度';
+}
+$('demoBtn').onclick = runFullDemo;
+$('restart').onclick = ()=>{ qi=0; for(const k in answers) delete answers[k];
+  $('reveal').style.display='none'; $('hearing').style.display='block';
+  ['count','offBox','topping','start'].forEach(id=>$(id).classList.remove('show'));
+  $('topping').classList.remove('added'); $('tBtn').textContent='足す'; $('tBtn').disabled=false;
+  renderQuestion();
+};
+
+// ギャラリーから ?s= で来た場合はヒアリングを自動回答して構成へ進む
+async function autoHearing(){
+  for(let i=0;i<QUESTIONS.length;i++){
+    qi=i; renderQuestion(); await sleep(700);
+    const Q=QUESTIONS[i]; const want=(SC.answers&&SC.answers[Q.key]) || Q.opts[0].v;
+    answers[Q.key]=want;
+    const oi=Math.max(0,Q.opts.findIndex(o=>o.v===want));
+    const b=$('opts').children[oi]; if(b){ b.style.borderColor='var(--navy2)'; b.style.background='#eaf2fa'; }
+    await sleep(480);
+  }
+  showReveal();
+}
+if(_SID && SC.answers){ autoHearing(); } else { renderQuestion(); }
+</script>
+</body>
+</html>
