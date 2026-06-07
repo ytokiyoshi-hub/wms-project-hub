@@ -29,7 +29,7 @@
     <div class="sub">実地棚卸（現物カウント用）</div>
     <div class="meta">
       <div><b>倉庫:</b> 自社倉庫（WH001）</div>
-      <div><b>荷主:</b> みなと飲料</div>
+      <div><b>荷主:</b> <span id="stk-owner">-</span></div>
       <div><b>棚卸日:</b> 2026-06-03</div>
       <div><b>セッション:</b> STK-2606-001（月次）</div>
     </div>
@@ -39,14 +39,25 @@
         <th>商品名</th><th style="width:96px;">ロット</th><th style="width:96px;">賞味期限</th>
         <th style="width:78px;">帳簿数量<br>(ケース)</th><th style="width:78px;">実数<br>(記入)</th><th style="width:70px;">差異</th>
       </tr></thead>
-      <tbody>
-        <tr><td class="num">1</td><td>A-01-01</td><td>BV-WATER</td><td>天然水 2L×6</td><td>L260603A</td><td>2027-06-03</td><td class="num">480</td><td class="write"><span class="blank"></span></td><td class="write"></td></tr>
-        <tr><td class="num">2</td><td>A-01-02</td><td>BV-OCHA</td><td>緑茶 500ml×24</td><td>L260603B</td><td>2027-03-03</td><td class="num">240</td><td class="write"><span class="blank"></span></td><td class="write"></td></tr>
-        <tr><td class="num">3</td><td>A-01-03</td><td>BV-COLA</td><td>コーラ 500ml×24</td><td>L260603C</td><td>2026-12-03</td><td class="num">384</td><td class="write"><span class="blank"></span></td><td class="write"></td></tr>
-        <tr><td class="num" style="font-weight:700;">計</td><td colspan="5"></td><td class="num" style="font-weight:700;">1,104</td><td class="write"></td><td class="write"></td></tr>
-      </tbody>
+      <tbody id="stk-body"></tbody>
     </table>
     <div class="note">※ 帳簿数量は棚卸基準時点のスナップショット。実数を記入し、差異があれば在庫調整を起票してください。<br>※ FEFO対象（賞味期限の近いロットから引当）。</div>
     <div class="sign"><div>カウント担当：　　　　　　　　</div><div>確認者：　　　　　　　　</div></div>
   </div>
+<script src="../scenarios.js"></script>
+<script>
+(function(){
+  var sid=new URLSearchParams(location.search).get('s'); var SC=null;
+  try{ if(window.parent&&window.parent!==window&&window.parent.SC) SC=window.parent.SC; }catch(e){}
+  if(!SC) SC=(window.SCENARIOS&&sid&&window.SCENARIOS[sid])||(window.SCENARIOS&&window.SCENARIOS.beverage)||{};
+  var cnt=SC.counts||[], inb=SC.inbound||[];
+  var byName=function(n){ for(var i=0;i<inb.length;i++) if(inb[i].nm===n) return inb[i]; return {}; };
+  var ow=document.getElementById('stk-owner'); if(ow) ow.textContent=(SC.industry||'')+((SC.answers&&SC.answers.owner==='multi')?'（荷主A社）':'（自社）');
+  var tot=cnt.reduce(function(s,c){return s+(c.theory||0);},0);
+  var tb=document.getElementById('stk-body');
+  if(tb) tb.innerHTML=cnt.map(function(c,i){ var pr=byName(c.nm);
+    return '<tr><td class="num">'+(i+1)+'</td><td>'+(c.loc||'')+'</td><td>'+(pr.code||'')+'</td><td>'+c.nm+'</td><td>'+(pr.lot||'')+'</td><td>'+(pr.exp||'-')+'</td><td class="num">'+(c.theory||0).toLocaleString()+'</td><td class="write"><span class="blank"></span></td><td class="write"></td></tr>';
+  }).join('') + '<tr><td class="num" style="font-weight:700;">計</td><td colspan="5"></td><td class="num" style="font-weight:700;">'+tot.toLocaleString()+'</td><td class="write"></td><td class="write"></td></tr>';
+})();
+</script>
 </body></html>

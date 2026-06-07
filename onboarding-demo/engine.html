@@ -341,10 +341,55 @@
 // ===== シナリオ解決（?s=<id> → window.SCENARIOS。なければ飲料既定） =====
 const _PARAMS = new URLSearchParams(location.search);
 const _SID = _PARAMS.get('s');
+const BUILD = '20260608a';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
 const SC = (window.SCENARIOS && _SID && window.SCENARIOS[_SID])
   ? window.SCENARIOS[_SID]
   : (window.SCENARIOS && window.SCENARIOS.beverage) || {};
+window.SC = SC;   // 子iframe(実画面)から window.parent.SC で参照させる（constはwindowに乗らないため明示公開）
 const _short = nm => String(nm||'').split(/[ 　]/)[0];   // 主名称だけ取り出す
+
+// ===== 本物画面API（/api/*）をSCから生成：実画面のデータを業種で完全整合させる =====
+// test2-mirror のブリッジが GET /api/<path> でこれを参照する（未対応pathはJSONフォールバック）
+(function(){
+  const isDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s||'');
+  function inv(afterShip){
+    const inb=SC.inbound||[], cnt=SC.counts||[], picks=(SC.outbound&&SC.outbound.picks)||[];
+    const ship={}; if(afterShip) picks.forEach(p=>{ ship[p.nm]=(ship[p.nm]||0)+p.qty; });
+    return inb.map((it,k)=>({
+      product_code:it.code, product_name:it.nm, lot_no:it.lot,
+      location_code:(cnt[k]&&cnt[k].loc)||('A-01-0'+(k+1)),
+      expiry_date:isDate(it.exp)?it.exp:'', qty:it.qty-((afterShip&&ship[it.nm])||0),
+      owner_code:'OWN01', unit_top:'ケース'
+    }));
+  }
+  const ownerName = ()=> (SC.industry||'荷主') + ((SC.answers&&SC.answers.owner==='multi')?'（荷主A社）':'（自社）');
+  const supplier  = ()=> SC.supplier || ((SC.industry||'')+'サプライ');
+  function customer(){
+    if(SC.answers&&SC.answers.ship==='ec') return '個人購入者（EC）';
+    const lbl=(SC.outbound&&SC.outbound.orderLabel)||'';
+    return (lbl.split('（')[0].replace(/向け$/,'').trim())||'取引先';
+  }
+  const SCHED='IN-2026-0603-01';
+  window.__wmsApi=function(path, query){
+    try{
+      const inb=SC.inbound||[], picks=(SC.outbound&&SC.outbound.picks)||[];
+      if(path==='inventory') return inv(false);
+      if(path==='inventory-after'||path==='inventory-after-adjustments') return inv(true);
+      if(path==='inventory-adjustments') return [];
+      if(path==='owners'){ const nm=ownerName(); return [{code:'OWN01', name:nm, owner_code:'OWN01', owner_name:nm}]; }
+      if(path==='products') return [];
+      if(path==='products-full') return inb.map((it,k)=>({product_code:it.code, product_name:it.nm, jan_code:it.jan, unit_top:'ケース', owner_code:'OWN01', lot_no:it.lot, location_code:(SC.counts&&SC.counts[k]&&SC.counts[k].loc)||''}));
+      if(path==='locations'){ const seen={},out=[]; (SC.counts||[]).forEach(c=>{ if(c.loc&&!seen[c.loc]){seen[c.loc]=1; out.push({location_code:c.loc, location_type:'保管', owner_code:'OWN01'});} }); if(SC.move&&SC.move.toLoc&&!seen[SC.move.toLoc]) out.push({location_code:SC.move.toLoc, location_type:'ピッキング', owner_code:'OWN01'}); return out; }
+      if(path==='shipment-orders') return [{order_no:(SC.outbound&&SC.outbound.soId)||'SO-0001', scheduled_date:'2026-06-03', customer_name:customer(), owner_code:'OWN01', status:'planned', line_count:picks.length}];
+      if(path==='inbound-schedules') return [{id:SCHED, schedule_no:SCHED, scheduled_date:'2026-06-03', supplier_name:supplier(), owner_code:'OWN01', status:'planned', line_count:inb.length}];
+      if(path.indexOf('inbound-schedules/')===0) return {id:SCHED, schedule_no:SCHED, scheduled_date:'2026-06-03', supplier_name:supplier(), owner_code:'OWN01', status:'planned',
+        lines: inb.map((it,k)=>({id:SCHED+'-L'+(k+1), product_code:it.code, product_name:it.nm, expected_qty:it.qty, lot_no:it.lot, expiry_date:isDate(it.exp)?it.exp:'', status:'planned'}))};
+      if(path.indexOf('ht-inventory/by-location/')===0){ const loc=decodeURIComponent(path.split('ht-inventory/by-location/')[1]||''); return inv(false).filter(r=>r.location_code===loc); }
+      if(path==='reports/inbound-summary') return {date:'2026-06-03', planned:inb.length, received:0, pending:inb.length};
+    }catch(e){}
+    return undefined; // 未対応はJSONフォールバック
+  };
+})();
 
 // ===== 質問（高レバレッジな6問を5問にしぼってラフ化） =====
 const QUESTIONS = [
@@ -574,7 +619,8 @@ window.addEventListener('resize', fitHT);
 function showScreen(it){
   $('welcome').style.display='none';
   let src = it.local ? it.url : (T2 + it.url);
-  if(it.local && /^screens\//.test(it.url)) src += (it.url.includes('?')?'&':'?') + 's=' + encodeURIComponent(_SID||'beverage');
+  if(it.local) src += (src.includes('?')?'&':'?') + 's=' + encodeURIComponent(_SID||'beverage');
+  if(it.local) src += (src.includes('?')?'&':'?') + 'b=' + BUILD;   // ビルド版数でキャッシュ更新を担保
   if(it.ht){
     $('crumb').textContent='';
     $('screen').style.display='none';
