@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>在庫調整（差異・承認）</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">🔧</div><h1>在庫調整（差異・承認）</h1></div>
+<div class="scr-sub">棚卸差異や破損を在庫調整として起票し、荷主の承認フローに乗せます。帳簿数と実数の差は理由を付して記録し、根拠を残したまま在庫へ反映します。</div>
+<div class="card">
+  <h2>在庫調整 明細<span class="pill">在庫調整 / N</span></h2>
+  <table>
+    <thead><tr>
+      <th>商品</th><th>ロケ</th><th class="num">帳簿数</th><th class="num">実数</th><th class="num">差異</th><th>理由</th><th>承認状態</th>
+    </tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+</div>
+<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="note" id="note"></div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const counts=SC.counts||[];
+const inb=SC.inbound||[];
+
+/* サンプル差異：先頭=-2(破損)、2番目=+1(計上漏れ)、残りは±0。
+ * 帳簿数(theory)を正とし、実数=theory+diff で算出する。 */
+const SAMPLE=[
+  {diff:-2, reason:'破損'},
+  {diff:+1, reason:'計上漏れ'},
+];
+function n(v){return Number(v||0).toLocaleString();}
+
+/* 差異セル：正は橙、負は赤、±0はグレー。符号付きで表示。 */
+function diffCell(d){
+  if(d>0) return '<span class="num" style="color:var(--warm);font-weight:800">+'+n(d)+'</span>';
+  if(d<0) return '<span class="num" style="color:var(--bad);font-weight:800">'+n(d)+'</span>';
+  return '<span class="num" style="color:var(--sub)">±0</span>';
+}
+/* 承認状態タグ：差異≠0は荷主承認待ち、±0は差異なし。 */
+function statusTag(d){
+  return d!==0
+    ? '<span class="tag warn">荷主承認待ち</span>'
+    : '<span class="tag ok">差異なし</span>';
+}
+
+/* counts(=inboundと同順・同一商品)を基準に明細行を組み立てる。 */
+const rows=counts.map((c,i)=>{
+  const p=inb[i]||{};
+  const s=SAMPLE[i]||{diff:0, reason:'—'};
+  const theory=Number(c.theory!=null?c.theory:(p.qty||0));
+  const diff=Number(s.diff||0);
+  const actual=theory+diff;
+  return {
+    nm:c.nm||p.nm||'—',
+    loc:c.loc||'—',
+    theory, actual, diff,
+    reason:s.reason||'—'
+  };
+});
+
+document.getElementById('body').innerHTML = rows.length
+  ? rows.map(r=>'<tr'+(r.diff!==0?' class="row-hl"':'')+'>'
+      +'<td><b>'+r.nm+'</b></td>'
+      +'<td>'+r.loc+'</td>'
+      +'<td class="num">'+n(r.theory)+'</td>'
+      +'<td class="num">'+n(r.actual)+'</td>'
+      +'<td>'+diffCell(r.diff)+'</td>'
+      +'<td>'+(r.diff!==0?r.reason:'<span style="color:var(--sub)">—</span>')+'</td>'
+      +'<td>'+statusTag(r.diff)+'</td>'
+    +'</tr>').join('')
+  : '<tr><td colspan="7" style="color:var(--sub);text-align:center;padding:18px">在庫調整の明細がありません</td></tr>';
+
+/* KPI：調整明細件数 / 承認待ち件数 / 差異合計（符号付き・橙強調） */
+const lines=rows.length;
+const pending=rows.filter(r=>r.diff!==0).length;
+const diffSum=rows.reduce((a,r)=>a+r.diff,0);
+const sumLabel=(diffSum>0?'+':'')+n(diffSum);
+
+document.getElementById('kpi').innerHTML =
+   '<div class="k"><div class="v">'+lines+'</div><div class="l">調整明細</div></div>'
+  +'<div class="k"><div class="v'+(pending>0?' warm':'')+'">'+pending+'</div><div class="l">荷主承認待ち</div></div>'
+  +'<div class="k"><div class="v'+(diffSum!==0?' warm':'')+'">'+sumLabel+'</div><div class="l">差異合計</div></div>';
+
+const indname=(SC.industry?SC.industry+'倉庫':'倉庫');
+document.getElementById('note').innerHTML =
+  '<b>'+indname+'</b>の棚卸差異・破損を在庫調整として起票し、<b>荷主承認フロー</b>（起票 → 荷主承認 → 在庫反映）に乗せます。'
+  +'差異には必ず<b>理由</b>を付し、入出庫件数とあわせて<b>根拠を提示</b>（N-3）。荷主が内容を確認してから在庫へ反映するため、無断での在庫変更は発生しません。'
+  +' なお<b>廃棄</b>でも現物が倉庫にある限り在庫からは落とさず、ステータス変更＋引当除外で扱います（保管料が発生するため）。実搬出して初めて在庫が減ります。';
+</script>
+</body></html>

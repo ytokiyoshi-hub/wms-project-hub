@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ロット・シリアルトレース</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">🔎</div><h1>ロット・シリアルトレース</h1></div>
+<div class="scr-sub">ロット単位で 入荷→保管→ロケ移動→ピッキング→出荷 の足取りを時系列で追跡します。</div>
+
+<div class="card">
+  <h2>主役ロットの移動履歴<span class="pill">B-4 / R</span></h2>
+  <div id="lothdr"></div>
+  <table>
+    <thead><tr><th>日時</th><th>イベント</th><th>ロット</th><th>ロケ</th><th class="num">数量</th></tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>追跡対象ロット一覧<span class="pill">R-2</span></h2>
+  <table>
+    <thead><tr><th>商品</th><th>ロット</th><th>枝番コード</th><th>使用期限</th><th class="num">入荷数</th></tr></thead>
+    <tbody id="lots"></tbody>
+  </table>
+</div>
+
+<div class="card"><div class="kpi" id="kpi"></div></div>
+
+<div class="note" id="note"></div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC = (typeof resolveSC==='function' ? resolveSC() : {}) || {};
+const inb   = SC.inbound  || [];
+const counts= SC.counts   || [];
+const move  = SC.move      || {};
+const ob    = SC.outbound  || {};
+const picks = (ob && ob.picks) || [];
+
+const esc = s => String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&','<':'<','>':'>'}[c]));
+const num = n => (n==null||n==='') ? '—' : Number(n).toLocaleString();
+const hasExp = e => e && e!=='' && e!=='—';
+
+/* 主役＝先頭入荷ロット */
+const lead = inb[0] || {};
+const leadNm  = lead.nm  || (SC.products&&SC.products[0]&&SC.products[0].name) || '—';
+const leadLot = lead.lot || '—';
+const leadQty = (lead.qty!=null) ? lead.qty : null;
+
+/* 保管ロケ＝同順のcounts[0]、無ければmove.fromLoc */
+const storeLoc = (counts[0] && counts[0].loc) || move.fromLoc || '—';
+/* 移動先＝move.toLoc（主役商品の移動なら採用、別商品でも保管→出荷の中継として表示） */
+const moveTo = move.toLoc || '—';
+const moveIsLead = move.nm && move.nm===leadNm;
+/* 出荷ピック＝主役商品に該当するpick、無ければ先頭pick */
+const leadPick = picks.find(p=>p.nm===leadNm) || picks[0] || {};
+const shipLoc = leadPick.loc || moveTo || '—';
+const shipQty = (leadPick.qty!=null) ? leadPick.qty : null;
+const shipIsLead = leadPick.nm===leadNm;
+
+/* タグ生成 */
+const evTag = (t,cls)=>'<span class="tag '+cls+'">'+t+'</span>';
+
+/* 時系列イベント（基準日2026-06-03の倉庫1日の流れに沿って時刻を割付） */
+const rows = [];
+rows.push({tm:'06-03 08:42', ev:evTag('入荷検品','navy'), lot:leadLot, loc:'入荷バース', qty:leadQty});
+rows.push({tm:'06-03 09:15', ev:evTag('棚入れ','ok'),   lot:leadLot, loc:storeLoc,   qty:leadQty});
+if(moveTo!=='—'){
+  rows.push({tm:'06-03 11:30', ev:evTag(moveIsLead?'ロケ移動':'ロケ移動（補充）','warn'),
+    lot:leadLot, loc:storeLoc+' → '+moveTo, qty: moveIsLead ? move.qty : leadQty});
+}
+rows.push({tm:'06-03 14:05', ev:evTag('ピッキング','fefo'), lot:leadLot, loc:shipLoc, qty: shipIsLead ? shipQty : (shipQty!=null?shipQty:'—')});
+rows.push({tm:'06-03 16:20', ev:evTag('出荷','bad'), lot:leadLot, loc:(ob.soId||'出荷')+' / '+shipLoc, qty: shipIsLead ? shipQty : (shipQty!=null?shipQty:'—')});
+
+document.getElementById('body').innerHTML = rows.map(r=>
+  '<tr><td>'+esc(r.tm)+'</td><td>'+r.ev+'</td><td>'+esc(r.lot)+'</td><td>'+esc(r.loc)+'</td><td class="num">'+num(r.qty)+'</td></tr>'
+).join('') || '<tr><td colspan="5">追跡データなし</td></tr>';
+
+/* 主役ロットヘッダ（商品・期限・現在地） */
+const dleft = hasExp(lead.exp) ? daysTo(lead.exp) : null;
+const expTxt = hasExp(lead.exp)
+  ? esc(lead.exp)+(dleft!=null?'（残'+dleft+'日）':'')
+  : '期限管理対象外';
+const expCls = (dleft!=null && dleft<=180) ? 'warn' : 'ok';
+document.getElementById('lothdr').innerHTML =
+  '<div class="tot"><span class="l">主役：'+esc(leadNm)+
+  '　ロット <b>'+esc(leadLot)+'</b>　'+
+  '<span class="tag '+(hasExp(lead.exp)?expCls:'navy')+'">期限 '+expTxt+'</span></span>'+
+  '<span class="v">現在地 '+esc(shipLoc)+'</span></div>';
+
+/* ロット一覧（全枝番横断 R-2） */
+document.getElementById('lots').innerHTML = inb.map((i,ix)=>{
+  const d = hasExp(i.exp) ? daysTo(i.exp) : null;
+  const ex = hasExp(i.exp) ? (esc(i.exp)+(d!=null?'<span class="tag '+(d<=180?'warn':'ok')+'">残'+d+'日</span>':'')) : '<span class="tag navy">—</span>';
+  const star = ix===0 ? ' <span class="tag fefo">主役</span>' : '';
+  return '<tr><td>'+esc(i.nm||'')+star+'</td><td>'+esc(i.lot||'—')+'</td><td>'+esc(i.code||'—')+'</td><td>'+ex+'</td><td class="num">'+num(i.qty)+'</td></tr>';
+}).join('') || '<tr><td colspan="5">ロットなし</td></tr>';
+
+/* KPI */
+const evCount = rows.length;
+document.getElementById('kpi').innerHTML =
+  '<div class="k"><div class="v">'+inb.length+'</div><div class="l">追跡ロット数</div></div>'+
+  '<div class="k"><div class="v">'+evCount+'</div><div class="l">主役ロットのイベント数</div></div>'+
+  '<div class="k"><div class="v warm">'+esc(shipLoc)+'</div><div class="l">主役ロット現在地</div></div>'+
+  '<div class="k"><div class="v">'+esc(leadLot)+'</div><div class="l">追跡ロットNo</div></div>';
+
+/* note */
+document.getElementById('note').innerHTML =
+  '<b>ステータス遷移履歴（B-4）</b>：各ロットの 入荷検品→棚入れ→ロケ移動→ピッキング→出荷 を全件記録し、いつ・どこで・誰が触れたかを後追いできます。'+
+  '回収・誤出荷の調査時はこの履歴から該当ロットの行き先を即特定。'+
+  '<br><b>ロット出荷止め（B-2）</b>：不具合・期限切れ疑いのロットはステータスを出荷止めに変更すると以降の引当から自動除外され、現物は倉庫に残したまま流出を防ぎます。'+
+  '<br><b>全枝番横断検索（R-2）</b>：荷主コード×WMS枝番をまたいでロット番号で横断検索でき、同一商品の枝番違いも一覧で追跡できます。';
+</script>
+</body></html>

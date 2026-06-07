@@ -341,7 +341,7 @@
 // ===== シナリオ解決（?s=<id> → window.SCENARIOS。なければ飲料既定） =====
 const _PARAMS = new URLSearchParams(location.search);
 const _SID = _PARAMS.get('s');
-const BUILD = '20260608d';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
+const BUILD = '20260608e';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
 const SC = (window.SCENARIOS && _SID && window.SCENARIOS[_SID])
   ? window.SCENARIOS[_SID]
   : (window.SCENARIOS && window.SCENARIOS.beverage) || {};
@@ -576,6 +576,8 @@ const MENU = [
     { label:'在庫照会（ロケ軸）', url:'screens/loc_inventory.html', local:true, flag:'base' },
     { label:'補充指示', url:'screens/replenish.html', local:true, flag:'base' },
     { label:'ロット・FEFO/期限', url:'screens/lot_fefo.html', local:true, flag:'lot_expiry' },
+    { label:'ロット追跡', url:'screens/lot_trace.html', local:true, flag:'base' },
+    { label:'在庫調整', url:'screens/inventory_adjust.html', local:true, flag:'base' },
   ]},
   { grp:'出荷管理', items:[
     { label:'出荷指示一覧',   url:'test2-mirror/outbound_orders.html', local:true, flag:'base' },
@@ -584,6 +586,7 @@ const MENU = [
     { label:'出荷実績', url:'screens/ship_actuals.html', local:true, flag:'base' },
     { label:'EC送り状・ギフト', url:'screens/ec_label.html', local:true, flag:'ec_shipping' },
     { label:'返品処理', url:'screens/returns.html', local:true, flag:'base' },
+    { label:'配送方面振分', url:'screens/carrier_routing.html', local:true, flag:'base' },
   ]},
   { grp:'マスタ', items:[
     { label:'商品マスタ',   url:'test2-mirror/master_products.html', local:true, flag:'base' },
@@ -596,6 +599,11 @@ const MENU = [
     { label:'荷主別請求書', url:'screens/billing.html', local:true, flag:'tpl_billing' },
     { label:'請求書発行', url:'screens/invoice.html', local:true, flag:'tpl_billing' },
     { label:'帳票一覧',   url:'screens/reports.html', local:true, flag:'base' },
+  ]},
+  { grp:'管理 / レポート', items:[
+    { label:'カレンダー', url:'screens/calendar.html', local:true, flag:'base' },
+    { label:'人員・シフト', url:'screens/workforce.html', local:true, flag:'base' },
+    { label:'荷主別KPI・収支', url:'screens/owner_kpi.html', local:true, flag:'tpl_billing' },
   ]},
 ];
 

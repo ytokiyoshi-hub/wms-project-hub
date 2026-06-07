@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>人員・シフト最適化</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">👷</div><h1>人員・シフト最適化</h1></div>
+<div class="scr-sub">本日の物量予測から工程別の必要人時・必要人員を自動算出し、シフトの過不足と計画比を可視化します。</div>
+
+<div class="card">
+  <h2>工程別 必要人員（物量予測ベース）<span class="pill">K-5 / K-6</span></h2>
+  <table>
+    <thead><tr>
+      <th>工程</th>
+      <th class="num">物量</th>
+      <th class="num">標準能力</th>
+      <th class="num">必要人時</th>
+      <th class="num">必要人員</th>
+      <th>充足</th>
+    </tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div class="tot"><div class="l">本日 必要人員 合計</div><div class="v" id="tot"></div></div>
+</div>
+
+<div class="card"><div class="kpi" id="kpi"></div></div>
+
+<div class="card">
+  <h2>シフト適正提案 ／ 計画 vs 実績<span class="pill">K-7 / K-12</span></h2>
+  <table>
+    <thead><tr>
+      <th>工程</th>
+      <th class="num">配置（計画）</th>
+      <th class="num">必要</th>
+      <th>提案</th>
+      <th class="num">進捗</th>
+    </tr></thead>
+    <tbody id="plan"></tbody>
+  </table>
+</div>
+
+<div class="note"><b>物量予測（K-5）</b>＝入荷予定・出荷指示の数量から本日の総物量を予測。<b>必要人員自動算出（K-6）</b>＝工程別の標準処理能力で割り、8時間勤務換算で人員化。<b>シフト適正提案（K-7）</b>＝予測と配置の差から増減を提案。<b>計画vs実績（K-12）</b>＝当日の処理進捗を予測物量に対して対比します。</div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const inb=SC.inbound||[];
+const ob=SC.outbound||{};
+const picks=ob.picks||[];
+const sum=(a,k)=>a.reduce((s,x)=>s+(Number(x&&x[k])||0),0);
+
+// ---- 物量予測（K-5）：入荷=Σinbound.qty / 出荷=Σpicks.qty ----
+const inVol  = sum(inb,'qty');     // 入荷検品 対象ケース
+const outVol = sum(picks,'qty');   // ピッキング 対象ケース
+const pkVol  = outVol;             // 梱包 対象個口（出荷数＝梱包個口）
+
+// ---- 工程定義：標準処理能力（cs・個口/人時）----
+const STD=8; // 1人あたり実働時間
+const procs=[
+  {nm:'入荷検品',   unit:'cs',  vol:inVol,  rate:120},
+  {nm:'ピッキング', unit:'cs',  vol:outVol, rate:90},
+  {nm:'梱包',       unit:'個口', vol:pkVol,  rate:150},
+];
+
+// 必要人時・必要人員（K-6）。配置（計画）・進捗（K-12/実績）を併設。
+let totVol=0, totHrs=0, totReq=0, totPlan=0;
+const rows=procs.map((p,i)=>{
+  const hrs=p.rate>0? p.vol/p.rate : 0;          // 必要人時
+  const req=Math.max(p.vol>0?1:0, Math.ceil(hrs/STD)); // 必要人員（8h換算・物量>0なら最低1名）
+  // 配置（計画）人員：必要に対し ±1 の現実的な揺らぎ（工程ごと固定パターン）。物量0の工程は配置も0。
+  const planAdj=[0,1,-1][i]||0;
+  const plan=p.vol>0 ? Math.max(0, req+planAdj) : 0;
+  // 当日進捗（実績）：工程が後段ほど進み遅れ（先行工程ほど進む）
+  const prog=[88,64,41][i]||50;
+  totVol+=p.vol; totHrs+=hrs; totReq+=req; totPlan+=plan;
+  return {...p, hrs, req, plan, prog};
+});
+
+// 充足タグ：配置-必要
+function fillTag(plan,req){
+  const d=plan-req;
+  if(d>0)  return '<span class="tag ok">+'+d+'名 余裕</span>';
+  if(d===0)return '<span class="tag navy">適正</span>';
+  return '<span class="tag bad">'+d+'名 不足</span>';
+}
+// 提案テキスト（K-7）
+function suggest(plan,req,unit,vol){
+  const d=req-plan;
+  if(d>0)  return '＋'+d+'名 増員（'+vol.toLocaleString()+unit+'を時間内処理）';
+  if(d<0)  return (-d)+'名を他工程へ応援に回す';
+  return '現配置で過不足なし';
+}
+
+document.getElementById('body').innerHTML=rows.map(p=>
+  '<tr>'+
+    '<td>'+p.nm+'</td>'+
+    '<td class="num">'+p.vol.toLocaleString()+' '+p.unit+'</td>'+
+    '<td class="num">'+p.rate+' '+p.unit+'/人時</td>'+
+    '<td class="num">'+p.hrs.toFixed(1)+' 人時</td>'+
+    '<td class="num"><b>'+p.req+' 名</b></td>'+
+    '<td>'+fillTag(p.plan,p.req)+'</td>'+
+  '</tr>').join('') || '<tr><td colspan="6">物量データがありません</td></tr>';
+
+document.getElementById('tot').textContent=totReq+' 名';
+
+// 生産性（cs/人時）：総物量 ÷ 総必要人時
+const productivity = totHrs>0 ? Math.round(totVol/totHrs) : 0;
+// 計画比：必要人員 ÷ 配置人員（配置で必要をどれだけ賄えるか）
+const planRatio = totPlan>0 ? Math.round(totReq/totPlan*100) : 0;
+const ratioCls = (planRatio>=95 && planRatio<=105) ? '' : 'warm';
+
+document.getElementById('kpi').innerHTML=
+  '<div class="k"><div class="v">'+totReq+' 名</div><div class="l">本日 必要人員（合計）</div></div>'+
+  '<div class="k"><div class="v">'+productivity.toLocaleString()+'</div><div class="l">生産性（cs/人時）</div></div>'+
+  '<div class="k"><div class="v '+ratioCls+'">'+planRatio+'%</div><div class="l">計画比（必要 ÷ 配置）</div></div>'+
+  '<div class="k"><div class="v">'+totPlan+' 名</div><div class="l">配置人員（計画）</div></div>';
+
+document.getElementById('plan').innerHTML=rows.map(p=>
+  '<tr>'+
+    '<td>'+p.nm+'</td>'+
+    '<td class="num">'+p.plan+' 名</td>'+
+    '<td class="num">'+p.req+' 名</td>'+
+    '<td>'+suggest(p.plan,p.req,p.unit,p.vol)+'</td>'+
+    '<td class="num">'+p.prog+'%<div class="bar"><i style="width:'+p.prog+'%"></i></div></td>'+
+  '</tr>').join('') || '<tr><td colspan="5">対象工程がありません</td></tr>';
+</script>
+</body></html>

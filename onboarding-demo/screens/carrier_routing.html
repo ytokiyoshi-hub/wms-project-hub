@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>配送方面振り分け</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+ .logic{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:10px;background:#f7fafd;border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+ .logic .step{text-align:center}
+ .logic .step .l{font-size:11px;color:var(--sub);font-weight:700;margin-bottom:4px}
+ .logic .step .v{font-size:14px;font-weight:800;color:var(--navy)}
+ .logic .arr{color:var(--warm);font-size:18px;font-weight:800;text-align:center}
+ @media(max-width:560px){.logic{grid-template-columns:1fr;gap:4px}.logic .arr{transform:rotate(90deg)}}
+ .cap{display:flex;align-items:center;gap:8px;min-width:96px}
+ .cap .bar{flex:1;margin-top:0}
+ .cap .pct{font-family:"Roboto Mono",ui-monospace,monospace;font-size:12px;font-weight:700;color:var(--ink);min-width:36px;text-align:right}
+ .bar > i.hot{background:var(--bad)}
+ .bar > i.mid{background:var(--warm)}
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">🧭</div><h1>配送方面振り分け</h1></div>
+<div class="scr-sub">出荷先住所から配送方面を自動判定し、便候補を抽出して割り当てます。便容量の上限を監視し、超過時は次便へ自動振替します。</div>
+
+<div class="card">
+  <h2>方面マスタの考え方<span class="pill">Q-1 / Q-2 / Q-3</span></h2>
+  <div class="logic">
+    <div class="step"><div class="l">出荷先住所</div><div class="v" id="lg-addr">—</div></div>
+    <div class="arr">→</div>
+    <div class="step"><div class="l">判定方面（Q-2）</div><div class="v" id="lg-dir">—</div></div>
+    <div class="arr">→</div>
+    <div class="step"><div class="l">便候補（Q-3）</div><div class="v" id="lg-bin">—</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>方面振り分け結果<span class="pill">Q-4 / Q-6 / Q-7</span></h2>
+  <table>
+    <thead><tr><th>出荷先</th><th>判定方面</th><th>割当便</th><th class="num">便容量</th><th>状態</th></tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div class="tot"><div class="l">振分明細 合計</div><div class="v" id="tot">—</div></div>
+</div>
+
+<div class="card"><div class="kpi" id="kpi"></div></div>
+
+<div class="note">出荷先住所から配送方面を自動判定（<b>Q-2</b>）。方面ごとに便候補を抽出（<b>Q-3</b>）し振り分け（<b>Q-4</b>）。配送先指定業者がある場合は優先（<b>Q-6</b>）。便容量の上限を管理し（<b>Q-7</b>）、上限超過便は次便へ自動振替（<b>Q-8</b>）。</div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const ob=SC.outbound||{};
+const ans=SC.answers||{};
+
+/* 出荷先名：EC は個人(EC)、それ以外は orderLabel の「向け」/括弧手前 */
+function shipName(){
+  if(ans.ship==='ec') return '個人（EC）';
+  const lbl=(ob.orderLabel||'').trim();
+  if(!lbl) return '出荷先A';
+  let n=lbl.split('向け')[0];
+  n=n.split('（')[0].split('(')[0];
+  return (n||lbl).trim();
+}
+
+const DIRS=['首都圏','関西','中部','九州'];
+const BINS=['M便 15:30','A便 17:00'];
+
+/* 1行目=実出荷先。以降は方面マスタ上の他方面の例（2-3行）。 */
+const dest0=shipName();
+const rows=[
+  {dest:dest0,           dir:DIRS[0], bin:BINS[0], cap:80},
+  {dest:'量販チェーン 西日本DC', dir:DIRS[1], bin:BINS[1], cap:95},
+  {dest:'EC個人 宅配（中部）',   dir:DIRS[2], bin:BINS[0], cap:62},
+  {dest:'ドラッグ系 九州拠点',   dir:DIRS[3], bin:BINS[1], cap:97}
+];
+
+function capCell(p){
+  const cls=p>=95?'hot':(p>=80?'mid':'');
+  return '<div class="cap"><div class="bar"><i class="'+cls+'" style="width:'+Math.min(p,100)+'%"></i></div><span class="pct">'+p+'%</span></div>';
+}
+function stateTag(p){
+  return p>=95?'<span class="tag warn">上限注意</span>':'<span class="tag ok">割当済</span>';
+}
+
+const body=document.getElementById('body');
+if(body){
+  body.innerHTML=rows.map((r,i)=>{
+    const dest=(i===0&&ans.ship!=='ec')?'<span class="tag navy">'+r.dest+'</span>':r.dest;
+    return '<tr'+(r.cap>=95?' class="row-hl"':'')+'>'+
+      '<td>'+dest+'</td>'+
+      '<td><span class="tag navy">'+r.dir+'</span></td>'+
+      '<td>'+r.bin+'</td>'+
+      '<td class="num">'+capCell(r.cap)+'</td>'+
+      '<td>'+stateTag(r.cap)+'</td>'+
+    '</tr>';
+  }).join('');
+}
+
+/* 割当便のユニーク数＝当日便数。上限超過便（容量95%以上）はQ-8で自動振替対象。 */
+const binSet={};rows.forEach(r=>{binSet[r.bin]=1;});
+const binCount=Object.keys(binSet).length;
+const overSet={};rows.forEach(r=>{if(r.cap>=95)overSet[r.bin]=1;});
+const overCount=Object.keys(overSet).length;
+const lineCount=rows.length;
+
+const tot=document.getElementById('tot');
+if(tot) tot.textContent=lineCount.toLocaleString()+' 明細 / '+binCount.toLocaleString()+' 便';
+
+const kpi=document.getElementById('kpi');
+if(kpi) kpi.innerHTML=
+  '<div class="k"><div class="v">'+binCount.toLocaleString()+'</div><div class="l">当日便数</div></div>'+
+  '<div class="k"><div class="v">'+lineCount.toLocaleString()+'</div><div class="l">振分済明細</div></div>'+
+  '<div class="k"><div class="v'+(overCount>0?' warm':'')+'">'+overCount.toLocaleString()+'</div><div class="l">上限超過便（自動振替）</div></div>';
+
+/* 上部ロジック図：実出荷先の判定例を表示 */
+const lgAddr=document.getElementById('lg-addr');
+if(lgAddr) lgAddr.textContent=(ans.ship==='ec')?'個人宅（都道府県）':'店舗・拠点住所';
+const lgDir=document.getElementById('lg-dir');
+if(lgDir) lgDir.textContent=DIRS[0];
+const lgBin=document.getElementById('lg-bin');
+if(lgBin) lgBin.textContent=BINS[0];
+</script>
+</body></html>

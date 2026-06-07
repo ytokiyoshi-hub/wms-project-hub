@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>荷主別KPI・収支</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">📊</div><h1>荷主別KPI・収支</h1></div>
+<div class="scr-sub">荷主ごとの入出庫・在庫・月次請求・生産性を横断で俯瞰する収支レポート。当月実績と前月比較を表示します。</div>
+
+<div class="card">
+  <h2>当荷主サマリー<span class="pill">O / H-10 / N-6</span></h2>
+  <div class="kpi" id="kpi"></div>
+</div>
+
+<div class="card">
+  <h2>請求内訳（当月）<span class="pill">N-3</span></h2>
+  <table>
+    <thead><tr><th>料金区分</th><th class="num">数量</th><th class="num">単価</th><th class="num">金額</th></tr></thead>
+    <tbody id="breakdown"></tbody>
+  </table>
+  <div class="tot"><div class="l">月次請求合計</div><div class="v" id="billTot">¥0</div></div>
+</div>
+
+<div class="card">
+  <h2>荷主別ランキング<span class="pill">O-5</span></h2>
+  <table>
+    <thead><tr><th>荷主</th><th class="num">入庫</th><th class="num">出庫</th><th class="num">在庫</th><th class="num">月次請求</th><th class="num">前月比</th></tr></thead>
+    <tbody id="rank"></tbody>
+  </table>
+</div>
+
+<div class="note">本画面は <b>収入レポート（O-1）</b>・<b>荷主別ランキング（O-5）</b>・<b>前月比較／差異説明（N-6）</b>・<b>荷主別KPIレポート（H-10）</b> を統合表示します。請求＝保管料（在庫×120）＋入庫荷役（入庫×45）＋出庫荷役（出庫×38）で算出。</div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const inbound=SC.inbound||[];
+const outbound=SC.outbound||{};
+const picks=(outbound&&outbound.picks)||[];
+const ans=SC.answers||{};
+
+// --- 当荷主の実績をSCから導出 ---
+const inSum=inbound.reduce((a,i)=>a+(Number(i.qty)||0),0);
+const outSum=picks.reduce((a,p)=>a+(Number(p.qty)||0),0);
+const stock=Math.max(0,inSum-outSum);
+
+// 単価
+const U_STORE=120,U_IN=45,U_OUT=38;
+const billStore=stock*U_STORE, billIn=inSum*U_IN, billOut=outSum*U_OUT;
+const bill=billStore+billIn+billOut;
+
+// 荷主表示名
+const ownerSuffix=(ans.owner==='multi')?'（受託・複数荷主）':'（受託）';
+const ownerName=(SC.industry||'当荷主')+ownerSuffix;
+
+// --- 上部KPI ---
+document.getElementById('kpi').innerHTML=
+  '<div class="k"><div class="v" style="font-size:18px">'+ownerName+'</div><div class="l">対象荷主</div></div>'+
+  '<div class="k"><div class="v">'+inSum.toLocaleString()+'</div><div class="l">当月入庫（点）</div></div>'+
+  '<div class="k"><div class="v">'+outSum.toLocaleString()+'</div><div class="l">当月出庫（点）</div></div>'+
+  '<div class="k"><div class="v">'+stock.toLocaleString()+'</div><div class="l">期末在庫（点）</div></div>'+
+  '<div class="k"><div class="v warm">'+yen(bill)+'</div><div class="l">月次請求</div></div>';
+
+// --- 請求内訳 ---
+const rows=[
+  {lbl:'保管料（期末在庫）',qty:stock,u:U_STORE,amt:billStore},
+  {lbl:'入庫荷役料',qty:inSum,u:U_IN,amt:billIn},
+  {lbl:'出庫荷役料',qty:outSum,u:U_OUT,amt:billOut}
+];
+document.getElementById('breakdown').innerHTML=rows.map(r=>
+  '<tr><td>'+r.lbl+'</td><td class="num">'+r.qty.toLocaleString()+'</td><td class="num">'+yen(r.u)+'</td><td class="num">'+yen(r.amt)+'</td></tr>'
+).join('') || '<tr><td colspan="4" style="color:var(--sub)">データなし</td></tr>';
+document.getElementById('billTot').textContent=yen(bill);
+
+// --- 荷主別ランキング（当荷主＋例として他2荷主） ---
+function mk(name,factor,delta,isTarget){
+  const ti=Math.round(inSum*factor), to=Math.round(outSum*factor), ts=Math.max(0,ti-to);
+  const tb=ts*U_STORE+ti*U_IN+to*U_OUT;
+  return {name,ti,to,ts,tb,delta,isTarget};
+}
+let rk=[
+  mk(ownerName,1,'+5%',true),
+  mk('荷主B（食品卸）',0.6,'-3%',false),
+  mk('荷主C（日用品）',0.4,'+1%',false)
+];
+// 請求降順でランキング順に
+rk.sort((a,b)=>b.tb-a.tb);
+function deltaTag(d){
+  if(d.indexOf('-')===0) return '<span class="tag bad">'+d+'</span>';
+  if(d==='+0%'||d==='±0%') return '<span class="tag navy">'+d+'</span>';
+  return '<span class="tag ok">'+d+'</span>';
+}
+document.getElementById('rank').innerHTML=rk.map(r=>
+  '<tr'+(r.isTarget?' class="row-hl"':'')+'>'+
+  '<td>'+r.name+(r.isTarget?' <span class="tag navy">対象</span>':'')+'</td>'+
+  '<td class="num">'+r.ti.toLocaleString()+'</td>'+
+  '<td class="num">'+r.to.toLocaleString()+'</td>'+
+  '<td class="num">'+r.ts.toLocaleString()+'</td>'+
+  '<td class="num">'+yen(r.tb)+'</td>'+
+  '<td class="num">'+deltaTag(r.delta)+'</td>'+
+  '</tr>'
+).join('');
+</script>
+</body></html>

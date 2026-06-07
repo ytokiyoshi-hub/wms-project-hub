@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>カレンダー管理</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+ .legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+ .wd{color:var(--sub);font-weight:700}
+ .wd.sat{color:var(--navy2)}
+ .wd.sun{color:var(--bad)}
+ td.day{font-weight:800;color:var(--navy);white-space:nowrap}
+ .sub-note{font-size:11.5px;color:var(--sub);margin-top:3px;line-height:1.4}
+ .flagrow{display:flex;align-items:center;gap:10px;background:#fdf3e0;border:1px solid #f3dcae;border-radius:9px;padding:10px 14px;margin-bottom:14px;font-size:13px;font-weight:700;color:var(--ink)}
+ .flagrow .ic{font-size:18px;flex:0 0 auto}
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">📅</div><h1>カレンダー管理</h1></div>
+<div class="scr-sub">倉庫・運送会社・荷主のカレンダーと締め・緊急対応を一元管理。運送会社の休配は翌営業日へ自動振替します。</div>
+
+<div class="flagrow"><span class="ic">🚩</span>緊急対応フラグ：<span id="flagtxt">通常稼働</span></div>
+
+<div class="card">
+  <h2>稼働・集荷・締めカレンダー（直近5営業日）<span class="pill">J-1 / J-2 / J-3</span></h2>
+  <div class="legend" id="legend"></div>
+  <table>
+    <thead><tr>
+      <th>日付</th><th>曜日</th><th>倉庫稼働</th><th>集荷便</th><th>荷主締め</th><th>備考</th>
+    </tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+  <div class="sub-note" id="ctx"></div>
+</div>
+
+<div class="card"><div class="kpi" id="kpi"></div></div>
+
+<div class="note" id="note"></div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const ans=SC.answers||{};
+const industry=SC.industry||'';
+const isCold=ans.temp==='cold';
+const isMulti=ans.owner==='multi';
+const isEC=ans.ship==='ec';
+
+/* 運送会社：EC個口=宅配便、BtoB=路線便（J-2の振替対象） */
+const carrier=isEC?'ヤマト宅急便':'路線便（西濃運輸）';
+/* 荷主締め：複数荷主は荷主ごとに締め日が異なる前提で2系統、単一荷主は1系統 */
+const closeMain=isMulti?'20締':'末締';
+const closeSub =isMulti?'末締':'20締';
+
+/* 直近5営業日（基準2026-06-03〜06-07）。曜日は実カレンダー（6/3=水〜6/7=日） */
+const WD=['日','月','火','水','木','金','土'];
+const rows=[
+  {date:'2026-06-03', dow:3},
+  {date:'2026-06-04', dow:4},
+  {date:'2026-06-05', dow:5},
+  {date:'2026-06-06', dow:6},
+  {date:'2026-06-07', dow:0},
+];
+
+const tag=(cls,txt)=>'<span class="tag '+cls+'">'+txt+'</span>';
+
+const html=rows.map(r=>{
+  const md=r.date.slice(5).replace('-','/');           // 06/04
+  const wd=WD[r.dow];
+  const wdcls=r.dow===6?'sat':(r.dow===0?'sun':'');
+  const isSun=r.dow===0;                                // 6/7=日曜
+  const isSat=r.dow===6;                                // 6/6=土曜
+  const isTransfer=(r.date==='2026-06-04');             // 運送休→翌営業へ自動振替の例
+
+  // 倉庫稼働（J-1）：日曜休・土は短縮稼働
+  let whCell=tag('ok','稼働');
+  if(isSun) whCell=tag('bad','休');
+  else if(isSat) whCell=tag('navy','稼働（短縮）');
+
+  // 集荷便（J-2）：6/4は運送休→翌営業へ自動振替、日曜は集荷休
+  let pkCell, note;
+  if(isTransfer){
+    pkCell=tag('warn','休→自動振替');
+    note=tag('warn','運送休→翌営業へ自動振替')+'<div class="sub-note">'+carrier+'休配。6/5便へ自動振替済（J-2）</div>';
+  }else if(isSun){
+    pkCell=tag('bad','休');
+    note='倉庫・集荷とも休止日（'+carrier+'）';
+  }else if(r.date==='2026-06-05'){
+    pkCell=tag('ok','あり');
+    note=tag('navy','振替分 合流')+'<div class="sub-note">6/4休配分を当便に合流（J-2）</div>';
+  }else{
+    pkCell=tag('ok','あり');
+    note='—';
+  }
+
+  // 荷主締め（J-3）：20締は20日近辺、末締は末日近辺。直近期間は通常日＋割増の注記で表現
+  let clCell;
+  if(isSat||isSun){
+    clCell=tag('navy',closeMain)+'<div class="sub-note">休日出荷は割増対象（J-3）</div>';
+  }else{
+    clCell=closeMain+(isMulti?' / '+closeSub:'');
+  }
+
+  return '<tr'+(isTransfer?' class="row-hl"':'')+'>'+
+    '<td class="day">'+md+'</td>'+
+    '<td class="wd '+wdcls+'">'+wd+'</td>'+
+    '<td>'+whCell+'</td>'+
+    '<td>'+pkCell+'</td>'+
+    '<td>'+clCell+'</td>'+
+    '<td>'+note+'</td>'+
+  '</tr>';
+}).join('');
+
+const body=document.getElementById('body');
+if(body) body.innerHTML=html||'<tr><td colspan="6" style="color:var(--sub);text-align:center">カレンダーデータがありません</td></tr>';
+
+const legend=document.getElementById('legend');
+if(legend) legend.innerHTML=
+  tag('ok','稼働 / 集荷あり')+tag('navy','短縮・振替')+tag('warn','運送休→自動振替')+tag('bad','休（倉庫・集荷停止）');
+
+const ctx=document.getElementById('ctx');
+if(ctx) ctx.innerHTML='運送会社：<b>'+carrier+'</b>　締め区分：<b>'+closeMain+(isMulti?' / '+closeSub+'（荷主別）':'')+'</b>'+(isCold?'　温度帯：<b>冷蔵・冷凍</b>（休配時の保冷監視要）':'');
+
+/* KPI：当月営業日 / 集荷休止日 / 締め日。6月＝祝なし・日曜のみ休とした営業日数（土は稼働）=26日。集荷休止=日曜5日（6/7,14,21,28）＋運送休配1日＝6日 */
+const bizDays=26;
+const pkSuspend=isEC?5:6;   // EC宅配は日曜のみ休／路線便は運送休配を含む
+const closeDays=isMulti?'20 / 末':closeMain.replace('締','日');
+const kpi=document.getElementById('kpi');
+if(kpi) kpi.innerHTML=
+  '<div class="k"><div class="v">'+bizDays+'</div><div class="l">当月営業日（6月）</div></div>'+
+  '<div class="k"><div class="v warm">'+pkSuspend+'</div><div class="l">集荷休止日</div></div>'+
+  '<div class="k"><div class="v">'+closeDays+'</div><div class="l">荷主締め日</div></div>';
+
+/* 緊急対応フラグ（J-4）：冷蔵冷凍は停電・温度逸脱、複数荷主は荷主別緊急依頼を想定 */
+const flag=document.getElementById('flagtxt');
+if(flag){
+  if(isCold) flag.innerHTML=tag('bad','要監視')+' 温度帯倉庫のため、運送休配（6/4）時は保冷・温度逸脱を監視。緊急出荷依頼は当日便へ割込み手配。';
+  else if(isEC) flag.innerHTML=tag('warn','受付中')+' 当日締め後の緊急EC出荷は翌営業集荷へ繰越。割込み手配は荷主承認の上で対応。';
+  else flag.innerHTML=tag('ok','通常稼働')+' 緊急の追加出荷・休日稼働依頼は本フラグで受付し、運送・人員を即時手配します。';
+}
+
+const note=document.getElementById('note');
+if(note) note.innerHTML=
+  '倉庫カレンダーで稼働日・休日を管理（<b>J-1</b>）。'+
+  '運送会社カレンダーの休配は翌営業日の集荷便へ<b>自動振替</b>（<b>J-2</b>：6/4→6/5）。'+
+  '荷主カレンダーの締め日（'+closeMain+(isMulti?' / '+closeSub:'')+'）と休日出荷の<b>割増課金</b>を判定（<b>J-3</b>）。'+
+  '停電・温度逸脱・緊急出荷は<b>緊急対応フラグ</b>で即時手配（<b>J-4</b>）。';
+</script>
+</body></html>
