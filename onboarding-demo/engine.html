@@ -475,7 +475,7 @@ function buildPlan(){
   const head = (a.owner==='multi') ? '3PL倉庫' : '自社倉庫';
   const tail = (a.turn==='fast') ? '多品種・高回転型' : '大量・定番型';
   const ecphrase = (a.ship==='ec') ? 'EC出荷あり、' : '';
-  const said = SC.said || `${tags.join('・')}${tags.length?'の':''}<b>${head}</b>。<br>${ecphrase}${tail}ですね。`;
+  const said = SC.said || `${SC.industry?SC.industry+'を扱う':''}<b>${head}</b>。<br>${ecphrase}${tail}ですね。`;
 
   // トッピング提案
   let topping;
