@@ -119,6 +119,7 @@
   .menu-item:hover{background:#234a6e}
   .menu-item.active{background:#234a6e;border-left-color:#ffd27a;color:#fff;font-weight:700}
   .menu-item .ico{width:6px;height:6px;border-radius:50%;background:#5b86ad}
+  .menu-item .ext-badge{margin-left:auto;font-size:9px;font-weight:700;color:#ffd27a;border:1px solid #5b86ad;border-radius:4px;padding:1px 5px;letter-spacing:.04em;flex:0 0 auto}
   .side .offhint{
     margin:14px 22px 0;padding:12px 0 0;border-top:1px solid #2c4f73;
     font-size:12px;color:#9fc1de;line-height:1.6;
@@ -586,7 +587,7 @@ const MENU = [
     { label:'出荷実績', url:'screens/ship_actuals.html', local:true, flag:'base' },
     { label:'EC送り状・ギフト', url:'screens/ec_label.html', local:true, flag:'ec_shipping' },
     { label:'返品処理', url:'screens/returns.html', local:true, flag:'base' },
-    { label:'配送方面振分', url:'screens/carrier_routing.html', local:true, flag:'base' },
+    { label:'配送方面振分', url:'screens/carrier_routing.html', local:true, flag:'base', ext:true },
   ]},
   { grp:'マスタ', items:[
     { label:'商品マスタ',   url:'test2-mirror/master_products.html', local:true, flag:'base' },
@@ -600,10 +601,10 @@ const MENU = [
     { label:'請求書発行', url:'screens/invoice.html', local:true, flag:'tpl_billing' },
     { label:'帳票一覧',   url:'screens/reports.html', local:true, flag:'base' },
   ]},
-  { grp:'管理 / レポート', items:[
-    { label:'カレンダー', url:'screens/calendar.html', local:true, flag:'base' },
-    { label:'人員・シフト', url:'screens/workforce.html', local:true, flag:'base' },
-    { label:'荷主別KPI・収支', url:'screens/owner_kpi.html', local:true, flag:'tpl_billing' },
+  { grp:'管理 / レポート（拡張）', items:[
+    { label:'カレンダー', url:'screens/calendar.html', local:true, flag:'base', ext:true },
+    { label:'人員・シフト', url:'screens/workforce.html', local:true, flag:'base', ext:true },
+    { label:'荷主別KPI・収支', url:'screens/owner_kpi.html', local:true, flag:'tpl_billing', ext:true },
   ]},
 ];
 
@@ -666,7 +667,7 @@ function renderShell(){
     gh.innerHTML = `<div class="gh">${g.grp}</div>`;
     visible.forEach(it=>{
       const el=document.createElement('div'); el.className='menu-item';
-      el.innerHTML = `<span class="ico"></span>${it.label}`;
+      el.innerHTML = `<span class="ico"></span>${it.label}${it.ext?'<span class="ext-badge">拡張</span>':''}`;
       el.onclick = ()=>{ document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
         el.classList.add('active'); showScreen(it); };
       gh.appendChild(el);
