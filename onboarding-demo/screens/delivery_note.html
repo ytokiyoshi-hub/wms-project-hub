@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>納品書</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+ .paper{background:#fff;border:1px solid var(--line);border-radius:10px;max-width:720px;margin:0 auto;padding:30px 34px;box-shadow:0 6px 20px rgba(26,58,92,.07)}
+ .dn-top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--navy);padding-bottom:14px;margin-bottom:18px}
+ .dn-top h2{font-size:24px;color:var(--navy);letter-spacing:.2em;margin:0}
+ .dn-to{font-size:16px;font-weight:800;margin-top:8px}
+ .dn-meta{font-size:12px;color:var(--sub);text-align:right;line-height:1.7}
+ .dn-from{font-size:12px;color:var(--sub);text-align:right;margin-top:8px;line-height:1.6}
+ .sign{display:flex;gap:24px;margin-top:24px}
+ .sign div{flex:1;border:1px solid var(--line);border-radius:8px;height:64px;position:relative;font-size:11px;color:var(--sub)}
+ .sign div span{position:absolute;top:6px;left:8px}
+ .dn-actions{max-width:720px;margin:0 auto 14px;display:flex;justify-content:flex-end}
+ .dn-actions button{border:1px solid var(--navy);background:var(--navy);color:#fff;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer}
+ @media print{ body{padding:0;background:#fff} .scr-head,.scr-sub,.note,.dn-actions,.noprint{display:none!important} .paper{border:none;box-shadow:none;border-radius:0;max-width:none;margin:0;padding:0} }
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">📦</div><h1>納品書（発行）</h1></div>
+<div class="scr-sub">出荷確定した内容を納品書として発行。下のボタンでPDF出力（印刷）できます（基本形 帳票）。</div>
+<div class="dn-actions"><button onclick="window.print()">🖨 PDF出力（印刷）</button></div>
+<div class="paper">
+  <div class="dn-top">
+    <div><h2>納 品 書</h2><div class="dn-to" id="to">— 御中</div></div>
+    <div>
+      <div class="dn-meta">出荷No：<span id="sono">—</span><br>納品日：2026-06-03<br>荷主：<span id="owner">—</span></div>
+      <div class="dn-from">エコネクト物流センター株式会社</div>
+    </div>
+  </div>
+  <table><thead><tr><th class="num" style="width:40px">#</th><th>品名</th><th>商品コード</th><th class="num">数量</th><th>単位</th></tr></thead>
+    <tbody id="body"></tbody></table>
+  <div class="tot"><span class="l">合計数量</span><span class="v" id="tot">0</span></div>
+  <div class="sign"><div><span>出荷担当印</span></div><div><span>配送担当印</span></div><div><span>受領印</span></div></div>
+</div>
+<div class="note">出荷確定データ（出荷No・品目・数量）から自動生成。受領印欄つきで現場の納品控えに使えます（N系帳票）。</div>
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const ob=SC.outbound||{}; const picks=ob.picks||[];
+function customer(){ if(SC.answers&&SC.answers.ship==='ec') return '個人購入者（EC）'; const l=ob.orderLabel||''; return (l.split('（')[0].replace(/向け$/,'').trim())||'取引先'; }
+document.getElementById('to').textContent=customer()+' 御中';
+document.getElementById('sono').textContent=ob.soId||'—';
+document.getElementById('owner').textContent=(SC.industry||'荷主')+((SC.answers&&SC.answers.owner==='multi')?'（荷主A社）':'（自社）');
+let tot=0;
+document.getElementById('body').innerHTML=picks.map((p,i)=>{ tot+=p.qty; return '<tr><td class="num">'+(i+1)+'</td><td>'+p.nm+'</td><td>'+(p.loc||'')+'</td><td class="num">'+p.qty+'</td><td>ケース</td></tr>'; }).join('');
+document.getElementById('tot').textContent=tot.toLocaleString()+' ケース';
+</script>
+</body></html>

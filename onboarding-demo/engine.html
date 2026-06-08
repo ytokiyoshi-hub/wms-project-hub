@@ -342,7 +342,7 @@
 // ===== シナリオ解決（?s=<id> → window.SCENARIOS。なければ飲料既定） =====
 const _PARAMS = new URLSearchParams(location.search);
 const _SID = _PARAMS.get('s');
-const BUILD = '20260608f';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
+const BUILD = '20260608g';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
 const SC = (window.SCENARIOS && _SID && window.SCENARIOS[_SID])
   ? window.SCENARIOS[_SID]
   : (window.SCENARIOS && window.SCENARIOS.beverage) || {};
@@ -579,6 +579,7 @@ const MENU = [
     { label:'ロット・FEFO/期限', url:'screens/lot_fefo.html', local:true, flag:'lot_expiry' },
     { label:'ロット追跡', url:'screens/lot_trace.html', local:true, flag:'base' },
     { label:'在庫調整', url:'screens/inventory_adjust.html', local:true, flag:'base' },
+    { label:'例外処理', url:'screens/exceptions.html', local:true, flag:'base' },
   ]},
   { grp:'出荷管理', items:[
     { label:'出荷指示一覧',   url:'test2-mirror/outbound_orders.html', local:true, flag:'base' },
@@ -598,6 +599,7 @@ const MENU = [
   { grp:'請求 / 帳票', items:[
     { label:'ピッキングリスト', url:'test2-mirror/outbound_picking_list.html', local:true, flag:'base' },
     { label:'棚卸表',     url:'test2-mirror/stocktake_sheet.html', local:true, flag:'base' },
+    { label:'納品書',     url:'screens/delivery_note.html', local:true, flag:'base' },
     { label:'荷主別請求書', url:'screens/billing.html', local:true, flag:'tpl_billing' },
     { label:'請求書発行', url:'screens/invoice.html', local:true, flag:'tpl_billing' },
     { label:'帳票一覧',   url:'screens/reports.html', local:true, flag:'base' },

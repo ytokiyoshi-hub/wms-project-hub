@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>例外処理</title>
+<link rel="stylesheet" href="_demo.css">
+</head><body>
+<div class="scr-head"><div class="ic">⚠️</div><h1>例外処理（止めないための導線）</h1></div>
+<div class="scr-sub">現場は例外の連続。入荷差異・出荷欠品・不良/返品を「止めずに」処理する導線を1か所に集約します。</div>
+
+<div class="card"><div class="kpi" id="kpi"></div></div>
+
+<div class="card">
+  <h2>① 入荷差異（過不足）<span class="pill">入荷</span></h2>
+  <table><thead><tr><th>商品</th><th class="num">予定</th><th class="num">実数</th><th class="num">差異</th><th>理由</th><th>処置</th></tr></thead>
+  <tbody id="inbody"></tbody></table>
+  <div class="note" style="margin-top:8px">差異は「差異承認→在庫を実数へ調整」または「再検品」。承認は荷主に根拠（予定vs実数）を提示。</div>
+</div>
+
+<div class="card">
+  <h2>② 出荷 欠品・部分出荷<span class="pill">出荷</span></h2>
+  <table><thead><tr><th>商品</th><th class="num">指示</th><th class="num">引当可能</th><th class="num">不足</th><th>処置</th></tr></thead>
+  <tbody id="outbody"></tbody></table>
+  <div class="note" style="margin-top:8px">在庫不足でも止めない：出せる分を<b>部分出荷</b>し、残は<b>欠品連絡／次便手配</b>。引当残はオーダーに保持。</div>
+</div>
+
+<div class="card">
+  <h2>③ 不良・返品の保留<span class="pill">在庫</span></h2>
+  <div id="hold"></div>
+  <div class="note" style="margin-top:8px"><b>現場ルール</b>：不良・廃棄判定でも<b>現物が倉庫にある限り在庫から落とさない</b>（ステータス変更＋引当除外で管理。保管料は発生）。実搬出で初めて在庫減。詳細は <b>返品処理</b> 画面。</div>
+</div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const inb=SC.inbound||[]; const picks=(SC.outbound&&SC.outbound.picks)||[];
+const _short=n=>String(n||'').split(/[ 　]/)[0];
+
+// ① 入荷差異：先頭品を-2不足の例、他は適正
+let diffCnt=0;
+document.getElementById('inbody').innerHTML=inb.map((it,i)=>{
+  const real=i===0?it.qty-2:it.qty; const d=real-it.qty;
+  if(d!==0)diffCnt++;
+  const reason=d!==0?'輸送中破損':'—';
+  const act=d!==0?'<span class="tag warn">差異承認→在庫調整</span>':'<span class="tag ok">適正</span>';
+  return '<tr'+(d!==0?' class="row-hl"':'')+'><td>'+it.nm+'</td><td class="num">'+it.qty+'</td><td class="num">'+real+'</td>'+
+    '<td class="num">'+(d>0?'+'+d:d)+'</td><td>'+reason+'</td><td>'+act+'</td></tr>';
+}).join('');
+
+// ② 出荷欠品：先頭ピックを在庫不足の例（3不足）、他は充足
+let shortCnt=0;
+document.getElementById('outbody').innerHTML=picks.map((p,i)=>{
+  const avail=i===0?Math.max(0,p.qty-3):p.qty; const sh=p.qty-avail;
+  if(sh>0)shortCnt++;
+  const act=sh>0?'<span class="tag warn">部分出荷 '+avail+'／欠品 '+sh+'（次便）</span>':'<span class="tag ok">全量引当</span>';
+  return '<tr'+(sh>0?' class="row-hl"':'')+'><td>'+_short(p.nm)+'</td><td class="num">'+p.qty+'</td><td class="num">'+avail+'</td>'+
+    '<td class="num">'+sh+'</td><td>'+act+'</td></tr>';
+}).join('');
+
+// ③ 保留
+const holdNm=inb[0]?inb[0].nm:'対象品';
+document.getElementById('hold').innerHTML=
+  '<table><thead><tr><th>商品</th><th>判定</th><th class="num">数量</th><th>在庫扱い</th></tr></thead><tbody>'+
+  '<tr class="row-hl"><td>'+holdNm+'</td><td><span class="tag bad">不良(破損)</span></td><td class="num">2</td><td><span class="tag navy">在庫維持・引当除外（保留）</span></td></tr>'+
+  '</tbody></table>';
+
+document.getElementById('kpi').innerHTML=
+  '<div class="k"><div class="v '+(diffCnt+shortCnt?'warm':'')+'">'+(diffCnt+shortCnt+1)+'</div><div class="l">未処理 例外</div></div>'+
+  '<div class="k"><div class="v">'+diffCnt+'</div><div class="l">入荷差異</div></div>'+
+  '<div class="k"><div class="v">'+shortCnt+'</div><div class="l">出荷欠品</div></div>'+
+  '<div class="k"><div class="v">1</div><div class="l">不良保留</div></div>';
+</script>
+</body></html>
