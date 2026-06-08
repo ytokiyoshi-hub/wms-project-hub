@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品3PL倉庫のためのWMS — 期限・温度・荷主別請求まで、最初から動く</title>
+<style>
+ :root{--navy:#1a3a5c;--navy2:#2b5580;--ink:#1d2733;--sub:#6c7280;--line:#e4e7eb;--bg:#f5f7fa;--ok:#1f9d6b;--warm:#e07a3f}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);line-height:1.75;padding-bottom:50px}
+ .hero{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:54px 24px 46px;text-align:center}
+ .hero .seg{font-size:12px;letter-spacing:.2em;color:#9fc1de;font-weight:700;margin-bottom:14px}
+ .hero h1{font-size:30px;font-weight:800;line-height:1.4;margin-bottom:14px}
+ .hero h1 b{color:#ffd27a}
+ .hero p{font-size:15px;color:#cfe0ef;max-width:680px;margin:0 auto 24px;line-height:1.85}
+ .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+ .cta a{text-decoration:none;font-weight:800;border-radius:10px;padding:13px 24px;font-size:15px}
+ .cta a.primary{background:#ffd27a;color:var(--navy)}
+ .cta a.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3)}
+ .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+ section{margin-top:44px}
+ h2.sec{font-size:21px;color:var(--navy);font-weight:800;margin-bottom:18px;text-align:center}
+ .pain{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+ .pain .p{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 18px;box-shadow:0 3px 12px rgba(26,58,92,.05)}
+ .pain .p .em{font-size:24px}
+ .pain .p .t{font-weight:800;color:var(--ink);margin:6px 0 4px}
+ .pain .p .d{font-size:13px;color:var(--sub)}
+ .feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+ .feat .f{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+ .feat .f h3{font-size:15px;color:var(--navy);display:flex;align-items:center;gap:8px}
+ .feat .f .tag{font-size:10px;font-weight:800;border-radius:5px;padding:2px 7px}
+ .feat .f .tag.base{background:#eaf2fa;color:var(--navy2)}
+ .feat .f .tag.ext{background:#fff3eb;color:var(--warm)}
+ .feat .f ul{margin:8px 0 0 18px;font-size:13px;color:var(--sub)}
+ .diff{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+ .diff .d{background:var(--navy);color:#fff;border-radius:14px;padding:22px}
+ .diff .d .n{font-size:13px;color:#ffd27a;font-weight:800}
+ .diff .d .t{font-size:18px;font-weight:800;margin:6px 0 8px}
+ .diff .d .x{font-size:13px;color:#cfe0ef}
+ .flow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
+ .flow .step{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 18px;font-weight:700;color:var(--navy)}
+ .flow .ar{color:var(--warm);font-size:20px;font-weight:800}
+ .foot-cta{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center;margin-top:44px;box-shadow:0 6px 20px rgba(26,58,92,.06)}
+ .foot-cta h2{font-size:20px;color:var(--navy);margin-bottom:8px}
+ .note{font-size:12px;color:var(--sub);text-align:center;margin-top:24px}
+</style>
+</head><body>
+ <div class="hero">
+   <div class="seg">SEGMENT ─ 食品3PL（受託型 食品物流）</div>
+   <h1>食品3PL倉庫のためのWMS。<br><b>期限・温度・荷主別請求</b>まで、最初から動く。</h1>
+   <p>賞味期限ロス・温度逸脱・荷主ごとの請求と分離——食品3PLの"効くところ"を標準装備。<br>業種診断で必要な機能だけが立ち上がり、<b>初期セットアップは現場が15分で自走</b>。実機ハンディ端末まで含めて、その日から回ります。</p>
+   <div class="cta">
+     <a class="primary" href="engine.html?s=fresh-food">▶ 食品3PLの「倉庫の1日」を見る（診断デモ）</a>
+     <a class="ghost" href="screens/setup_wizard.html?s=fresh-food">🚀 30秒で倉庫を立ち上げる</a>
+   </div>
+ </div>
+
+ <div class="wrap">
+  <section>
+   <h2 class="sec">こんな課題、ありませんか</h2>
+   <div class="pain">
+     <div class="p"><div class="em">⏳</div><div class="t">賞味期限ロス・出荷ミス</div><div class="d">FEFOが徹底できず、期限切れ廃棄や誤出荷が出る。</div></div>
+     <div class="p"><div class="em">🌡️</div><div class="t">温度帯の管理・逸脱</div><div class="d">冷蔵・冷凍の品温記録と逸脱監視が紙・属人化。</div></div>
+     <div class="p"><div class="em">📄</div><div class="t">荷主ごとの請求が手作業</div><div class="d">3期制保管料＋荷役料の集計、荷主別の分離・根拠提示が重い。</div></div>
+     <div class="p"><div class="em">🚀</div><div class="t">導入が重くて始められない</div><div class="d">マスタ・在庫の初期投入で挫折。立ち上げに何ヶ月もかかる。</div></div>
+   </div>
+  </section>
+
+  <section>
+   <h2 class="sec">基本形＋食品3PLに効く機能（必要な分だけON）</h2>
+   <div class="feat">
+     <div class="f"><h3>核：倉庫の1日 <span class="tag base">基本形</span></h3><ul><li>マスタ→入荷検品(HT)→在庫→出荷→棚卸→帳票</li><li>納品書・ピッキングリスト・請求書PDF</li></ul></div>
+     <div class="f"><h3>期限・FEFO <span class="tag base">基本形</span></h3><ul><li>ロット・賞味期限をFEFOで自動整列</li><li>期限切迫アラート・出荷止め</li></ul></div>
+     <div class="f"><h3>温度帯管理 <span class="tag ext">拡張</span></h3><ul><li>入荷時の品温記録・冷蔵/冷凍の逸脱監視</li></ul></div>
+     <div class="f"><h3>3PL 荷主別請求・分離 <span class="tag base">基本形</span></h3><ul><li>3期制保管料＋荷役料を自動集計・PDF</li><li>荷主データ分離（他荷主に漏れない）</li></ul></div>
+     <div class="f"><h3>補充・人員 <span class="tag ext">拡張</span></h3><ul><li>閾値補充・物量予測から必要人員を自動算出</li></ul></div>
+     <div class="f"><h3>例外で止まらない <span class="tag base">基本形</span></h3><ul><li>入荷差異・出荷欠品/部分出荷・返品/不良保留</li></ul></div>
+   </div>
+  </section>
+
+  <section>
+   <h2 class="sec">3つの差別化</h2>
+   <div class="diff">
+     <div class="d"><div class="n">01</div><div class="t">全部入り × 業種診断</div><div class="x">既存ベンダーの逆張り。全機能を標準装備し、診断で「必要な機能だけ」を立ち上げる。後から足せる。</div></div>
+     <div class="d"><div class="n">02</div><div class="t">15分で自走立ち上げ</div><div class="x">CSV取込の初期セットアップで、現場が自分で商品・在庫を投入。導入の壁を消す。</div></div>
+     <div class="d"><div class="n">03</div><div class="t">実機ハンディ端末まで</div><div class="x">キーエンスHT前提の検品・ピッキング・棚卸。机上でなく現場で回る設計。</div></div>
+   </div>
+  </section>
+
+  <section>
+   <h2 class="sec">導入の流れ</h2>
+   <div class="flow">
+     <div class="step">① 業種診断</div><div class="ar">→</div>
+     <div class="step">② 初期セットアップ（CSV投入）</div><div class="ar">→</div>
+     <div class="step">③ 運用（HTで現場が回る）</div>
+   </div>
+  </section>
+
+  <div class="foot-cta">
+   <h2>まず、自分の倉庫が立ち上がるところを見てください</h2>
+   <p style="color:var(--sub);font-size:14px;margin-bottom:18px">業種を選ぶと、診断→構成→倉庫の1日が自動で流れます。</p>
+   <div class="cta">
+     <a class="primary" style="background:var(--navy);color:#fff" href="engine.html?s=fresh-food">▶ 診断デモを見る</a>
+     <a class="ghost" style="background:#fff;color:var(--navy2);border:1px solid var(--line)" href="index.html">他の業種（全30種）を見る</a>
+   </div>
+  </div>
+
+  <div class="note">※ 本ページのデモはフロントのプレビューです。実データでの運用（在庫計上・引当・荷主分離の実DB化）はバックエンド接続後に有効になります。</div>
+ </div>
+</body></html>
