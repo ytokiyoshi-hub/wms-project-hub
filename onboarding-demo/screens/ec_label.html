@@ -13,10 +13,14 @@
  .chk{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:7px 0}
  .chk .b{width:20px;height:20px;border-radius:5px;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex:0 0 auto}
  .gift{display:inline-block;background:#fff3eb;color:var(--warm);border:1px solid #f4d9c6;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700}
+ .ec-actions{display:flex;justify-content:flex-end;margin-bottom:12px}
+ .ec-actions button{border:1px solid var(--navy);background:var(--navy);color:#fff;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer}
+ @media print{ body{padding:0;background:#fff} .scr-head,.scr-sub,.note,.ec-actions,.noprint{display:none!important} .label{max-width:none} }
 </style>
 </head><body>
 <div class="scr-head"><div class="ic">🏷️</div><h1>EC出荷：送り状・ギフト・個口梱包</h1></div>
 <div class="scr-sub">個人向けEC出荷。送り状の自動発行、ギフト指定、個口数の自動確定、出荷ミス防止ダブルチェック。</div>
+<div class="ec-actions"><button onclick="window.print()">🖨 送り状をPDF出力（印刷）</button></div>
 <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
   <div class="card" style="flex:1;min-width:300px">
     <h2>送り状（自動発行）<span class="pill">G-1 連携</span></h2>
@@ -27,7 +31,7 @@
       <div class="barcode"></div><div class="tno" id="tno">—</div>
     </div>
   </div>
-  <div class="card" style="flex:1;min-width:300px">
+  <div class="card noprint" style="flex:1;min-width:300px">
     <h2>梱包・個口<span class="pill">S 梱包ロジック</span></h2>
     <table><thead><tr><th>品名</th><th class="num">数量</th><th>個口</th></tr></thead><tbody id="pbody"></tbody></table>
     <div style="margin-top:14px">

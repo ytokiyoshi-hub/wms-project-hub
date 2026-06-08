@@ -2,16 +2,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>荷主別 月次請求書（プレビュー）</title>
 <link rel="stylesheet" href="_demo.css">
+<style>
+ .bill-actions{display:flex;justify-content:flex-end;margin-bottom:12px}
+ .bill-actions button{border:1px solid var(--navy);background:var(--navy);color:#fff;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer}
+ @media print{ body{padding:0;background:#fff} .scr-head,.scr-sub,.note,.bill-actions,.noprint{display:none!important} .card{box-shadow:none;border:none;padding:0} }
+</style>
 </head><body>
 <div class="scr-head"><div class="ic">📄</div><h1>荷主別 月次請求書（3PL）</h1></div>
 <div class="scr-sub" id="sub">荷主ごとに保管料・荷役料を自動集計。根拠（入出庫件数）も明細で提示します。</div>
+<div class="bill-actions"><button onclick="window.print()">🖨 PDF出力（印刷）</button></div>
 <div class="card">
   <h2 id="ownerh">荷主：—<span class="pill">2026年6月度</span></h2>
   <table><thead><tr><th>項目</th><th>区分</th><th class="num">数量</th><th class="num">単価</th><th class="num">金額</th></tr></thead>
   <tbody id="body"></tbody></table>
   <div class="tot"><span class="l">請求合計（税抜）</span><span class="v" id="total">¥0</span></div>
 </div>
-<div class="card"><div class="kpi" id="kpi"></div></div>
+<div class="card noprint"><div class="kpi" id="kpi"></div></div>
 <div class="note"><b>3期制</b> 保管料 ＝（前月繰越＋10日残＋20日残＋入庫総数）×単価。入出庫件数の根拠（N-3）・前月比（N-6）も自動表示。<span id="own"></span></div>
 <script src="../scenarios.js"></script>
 <script src="_scbase.js"></script>
