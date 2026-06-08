@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>初期セットアップ（データ投入）</title>
+<link rel="stylesheet" href="_demo.css">
+<style>
+ .steps{display:flex;gap:8px;margin:0 0 18px}
+ .steps .s{flex:1;text-align:center;font-size:12px;font-weight:700;color:var(--sub);background:#eef2f6;border-radius:8px;padding:8px 4px}
+ .steps .s.on{background:var(--navy);color:#fff}
+ .steps .s.done{background:var(--ok);color:#fff}
+ textarea.csv{width:100%;height:150px;font-family:"Roboto Mono",ui-monospace,monospace;font-size:12px;border:1px solid var(--line);border-radius:8px;padding:10px;white-space:pre;overflow:auto}
+ .row-btns{display:flex;justify-content:space-between;margin-top:14px}
+ .btn{border:1px solid var(--line);background:#fff;color:var(--sub);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer}
+ .btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+ .btn:disabled{opacity:.4;cursor:default}
+ .ok-msg{color:var(--ok);font-weight:700;font-size:13px;margin-top:8px}
+ .done-hero{text-align:center;padding:18px}
+ .done-hero .big{font-size:40px}
+ .done-hero h2{font-size:20px;color:var(--navy);margin:8px 0}
+</style>
+</head><body>
+<div class="scr-head"><div class="ic">🚀</div><h1>初期セットアップ（データ投入）</h1></div>
+<div class="scr-sub" id="sub">CSVを貼り付けて取込むだけで、商品マスタと初期在庫が入り倉庫が立ち上がります。現場が自走で導入できる導線です（サンプル投入済み）。</div>
+
+<div class="steps" id="steps">
+  <div class="s on" data-i="1">1. 商品マスタ取込</div>
+  <div class="s" data-i="2">2. 初期在庫投入</div>
+  <div class="s" data-i="3">3. 完了</div>
+</div>
+
+<!-- Step1 -->
+<div class="card step" id="step1">
+  <h2>商品マスタ CSV<span class="pill">A1</span></h2>
+  <div class="note" style="margin-bottom:10px">形式：<b>商品コード,商品名,JAN,温度帯,賞味期限(日)</b>。下のサンプルはそのまま取込めます。</div>
+  <textarea class="csv" id="csv1"></textarea>
+  <div class="row-btns"><button class="btn" onclick="loadSample(1)">サンプルを入れ直す</button><button class="btn primary" onclick="imp(1)">取込む</button></div>
+  <div id="prev1"></div>
+</div>
+
+<!-- Step2 -->
+<div class="card step" id="step2" style="display:none">
+  <h2>初期在庫 CSV<span class="pill">A2/A3</span></h2>
+  <div class="note" style="margin-bottom:10px">形式：<b>商品コード,ロケ,数量,ロット,賞味期限</b>。入荷検品の代わりに初期在庫を直接投入します。</div>
+  <textarea class="csv" id="csv2"></textarea>
+  <div class="row-btns"><button class="btn" onclick="go(1)">← 戻る</button><button class="btn primary" onclick="imp(2)">取込む</button></div>
+  <div id="prev2"></div>
+</div>
+
+<!-- Step3 -->
+<div class="card step" id="step3" style="display:none">
+  <div class="done-hero">
+    <div class="big">🏭✅</div>
+    <h2 id="doneTitle">倉庫が立ち上がりました</h2>
+    <div id="doneSum" class="kpi" style="justify-content:center;margin-top:14px"></div>
+    <div style="margin-top:18px"><a id="toDemo" class="btn primary" style="text-decoration:none" href="#">▶ この構成で倉庫の1日を見る</a></div>
+  </div>
+</div>
+<div class="note">※ 本デモはフロントのプレビュー（取込結果の確認まで）。実際のDB保存・在庫計上はバックエンド接続後に有効になります（基本形の受入基準C）。</div>
+
+<script src="../scenarios.js"></script>
+<script src="_scbase.js"></script>
+<script>
+const SC=resolveSC();
+const sid=(new URLSearchParams(location.search).get('s'))||(SC&&SC.id)||'beverage';
+const zone=(SC.answers&&SC.answers.temp==='cold')?'冷蔵':'常温';
+let imported={products:0, stock:0, cases:0, locs:0};
+
+function csvProducts(){
+  const p=SC.products||[]; const inb=SC.inbound||[];
+  const expOf=c=>{ const i=inb.find(x=>x.code===c.code); return (c.exp&&/^\d+$/.test(c.exp))?c.exp:(i&&/^\d{4}-/.test(i.exp)?'365':'') ; };
+  return '商品コード,商品名,JAN,温度帯,賞味期限(日)\n'+p.map(c=>[c.code,c.name,c.jan,zone,(c.exp||'')].join(',')).join('\n');
+}
+function csvStock(){
+  const inb=SC.inbound||[]; const cnt=SC.counts||[];
+  return '商品コード,ロケ,数量,ロット,賞味期限\n'+inb.map((i,k)=>[i.code,(cnt[k]&&cnt[k].loc)||('A-01-0'+(k+1)),i.qty,i.lot,(/^\d{4}-/.test(i.exp)?i.exp:'')].join(',')).join('\n');
+}
+function loadSample(n){ document.getElementById('csv'+n).value = n===1?csvProducts():csvStock(); }
+function parse(t){ const lines=t.trim().split(/\r?\n/).filter(Boolean); const head=lines.shift().split(','); return lines.map(l=>{const c=l.split(','); const o={}; head.forEach((h,i)=>o[h.trim()]=(c[i]||'').trim()); return o;}); }
+
+function imp(n){
+  const rows=parse(document.getElementById('csv'+n).value);
+  if(!rows.length){ alert('CSVが空です'); return; }
+  const cols=Object.keys(rows[0]);
+  const tbl='<div class="ok-msg">✓ '+rows.length+' 件を取込みました（プレビュー）</div>'+
+    '<table style="margin-top:8px"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+
+    rows.map(r=>'<tr>'+cols.map(c=>'<td>'+(r[c]||'')+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+  document.getElementById('prev'+n).innerHTML=tbl;
+  if(n===1){ imported.products=rows.length; markDone(1); setTimeout(()=>go(2),400); }
+  if(n===2){ imported.stock=rows.length; imported.cases=rows.reduce((s,r)=>s+(parseInt(r['数量'],10)||0),0); imported.locs=new Set(rows.map(r=>r['ロケ'])).size; markDone(2); setTimeout(()=>finish(),400); }
+}
+function go(i){ [1,2,3].forEach(n=>document.getElementById('step'+n).style.display=(n===i)?'block':'none');
+  document.querySelectorAll('.steps .s').forEach(s=>{ const d=+s.getAttribute('data-i'); s.classList.toggle('on',d===i); }); }
+function markDone(i){ const s=document.querySelector('.steps .s[data-i="'+i+'"]'); if(s){s.classList.remove('on');s.classList.add('done');} }
+function finish(){
+  go(3); markDone(2);
+  const s=document.querySelector('.steps .s[data-i="3"]'); if(s){s.classList.add('on');}
+  document.getElementById('doneTitle').textContent=(SC.industry||'')+'倉庫が立ち上がりました';
+  document.getElementById('doneSum').innerHTML=
+    '<div class="k"><div class="v">'+imported.products+'</div><div class="l">商品</div></div>'+
+    '<div class="k"><div class="v">'+imported.cases.toLocaleString()+'</div><div class="l">初期在庫(ケース)</div></div>'+
+    '<div class="k"><div class="v">'+imported.locs+'</div><div class="l">ロケ</div></div>';
+  document.getElementById('toDemo').href='../engine.html?s='+encodeURIComponent(sid);
+}
+loadSample(1); loadSample(2);
+</script>
+</body></html>

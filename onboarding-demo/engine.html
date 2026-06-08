@@ -342,7 +342,7 @@
 // ===== シナリオ解決（?s=<id> → window.SCENARIOS。なければ飲料既定） =====
 const _PARAMS = new URLSearchParams(location.search);
 const _SID = _PARAMS.get('s');
-const BUILD = '20260608e';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
+const BUILD = '20260608f';   // 画面更新時に増やす（iframeキャッシュ更新を担保）
 const SC = (window.SCENARIOS && _SID && window.SCENARIOS[_SID])
   ? window.SCENARIOS[_SID]
   : (window.SCENARIOS && window.SCENARIOS.beverage) || {};
@@ -590,6 +590,7 @@ const MENU = [
     { label:'配送方面振分', url:'screens/carrier_routing.html', local:true, flag:'base', ext:true },
   ]},
   { grp:'マスタ', items:[
+    { label:'初期セットアップ', url:'screens/setup_wizard.html', local:true, flag:'base' },
     { label:'商品マスタ',   url:'test2-mirror/master_products.html', local:true, flag:'base' },
     { label:'ロケーション', url:'screens/locations.html', local:true, flag:'base' },
     { label:'取引先',       url:'screens/customers.html', local:true, flag:'base' },
