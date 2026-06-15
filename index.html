@@ -521,8 +521,8 @@
     </div>
     <div class="fstep f2">
       <span class="fk"><span class="live"></span>// いま NOW</span>
-      <h3>実運用データ整備・最終調整</h3>
-      <p>本番データを<strong>現実スケールに整備完了</strong>（在庫・請求・全動線）。ログイン必須化を有効にすれば本格運用へ。</p>
+      <h3>全機能を本物化・本番反映済み</h3>
+      <p>「準備中」だった画面まで<strong>すべて実データ／実処理に</strong>。新テーブルも本番DBへ反映済み。あとはログイン必須化を有効にすれば本格運用へ。</p>
     </div>
     <div class="fstep f3">
       <span class="fk">// 次 NEXT</span>
@@ -534,9 +534,9 @@
   <!-- ===== SECTION C : 主要数字（大きな数字＋軽い帯）===== -->
   <div class="sec-title"><span class="bar"></span><h2>規模 ― 主要数字</h2></div>
   <section class="figband">
-    <div class="fig"><span class="fnum" data-target="164">0</span><span class="flab">API</span></div>
-    <div class="fig"><span class="fnum" data-target="111">0</span><span class="flab">テーブル</span></div>
-    <div class="fig"><span class="fnum" data-target="496">0</span><span class="flab">画面</span></div>
+    <div class="fig"><span class="fnum" data-target="475">0</span><span class="flab">API</span></div>
+    <div class="fig"><span class="fnum" data-target="123">0</span><span class="flab">テーブル</span></div>
+    <div class="fig"><span class="fnum" data-target="499">0</span><span class="flab">画面</span></div>
     <div class="fig"><span class="fnum" data-target="273547">0</span><span class="flab">行（実データ）</span></div>
     <div class="fig"><span class="fnum" data-target="57">0</span><span class="flab">RLSポリシー</span></div>
   </section>
@@ -617,8 +617,8 @@
           <span class="tg"><span class="tgd"></span><span>Express（Node）<span class="tx">API サーバ</span></span></span>
           <span class="tg"><span class="tgd"></span><span>Supabase（Postgres）<span class="tx">本番データベース</span></span></span>
           <span class="tg"><span class="tgd"></span><span>SQLite / 本番 両モード<span class="tx">同一コードで切替</span></span></span>
-          <span class="tg"><span class="tgd"></span><span>164 API<span class="tx">endpoints</span></span></span>
-          <span class="tg"><span class="tgd"></span><span>44 テーブル<span class="tx">tables</span></span></span>
+          <span class="tg"><span class="tgd"></span><span>475 API<span class="tx">endpoints</span></span></span>
+          <span class="tg"><span class="tgd"></span><span>123 テーブル<span class="tx">tables</span></span></span>
           <span class="tg"><span class="tgd"></span><span>57 RLSポリシー<span class="tx">row level security</span></span></span>
         </div>
       </div>
@@ -730,20 +730,19 @@
     <div class="al-head">
       <span class="al-dot"></span>
       <h2>最近の動き</h2>
-      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/06<!--/AUTO:updated--> ・手動(1号)</span>
+      <span class="al-stamp">最終更新 <!--AUTO:updated-->2026/06/15<!--/AUTO:updated--> ・手動(1号)</span>
     </div>
     <ul class="al-feed">
 <!--AUTO:activity-->
-      <li><span class="al-when">06/06</span><span class="al-what">サイドバー全項目を日本語化(315ラベル・全画面共通nav)。英語残ゼロ・構文OK</span></li>
-      <li><span class="al-when">06/06</span><span class="al-what">全確認(A〜H)実証完了: 認証/荷主分離(cross-leak0)/動線/データ整合/関門A36-36/API/v5崩れ0/clean化。思い込み点検済</span></li>
-      <li><span class="al-when">06/05</span><span class="al-what">PCコア4モジュール(入荷/在庫/出荷/マスタ・315画面)をv5デザイン化(HT37+PC含め計357画面)</span></li>
-      <li><span class="al-when">06/05</span><span class="al-what">関門A 36/36緑化: v5化に全シナリオを追従(4FAIL解消・ロジックは無傷)</span></li>
-      <li><span class="al-when">06/05</span><span class="al-what">認証 多層防御: owner_code強制＋RLS claims注入(#5/#6・本番切替時にON)</span></li>
-      <li><span class="al-when">06/05</span><span class="al-what">データ現実化: 本番データを現実スケールに整備（在庫・請求）</span></li>
-      <li><span class="al-when">06/05</span><span class="al-what">billing計算を共用ライブラリ(billing-calc.js)へ抽出 — DRY</span></li>
+      <li><span class="al-when">06/15</span><span class="al-what">全機能を完成：「準備中」だった50画面を本物化。モック表示は残ゼロ＝画面の数字・操作はすべて実データ／実処理に</span></li>
+      <li><span class="al-when">06/15</span><span class="al-what">本番データベースに新テーブル(migrations 011〜027)を適用 → 追加した機能群が本番で稼働</span></li>
+      <li><span class="al-when">06/15</span><span class="al-what">HT↔PC 連動を全工程で点検：入荷〜出荷〜請求のリレー検証が全green、押せない死にボタンも解消</span></li>
+      <li><span class="al-when">06/14</span><span class="al-what">全画面(約500)の右カラムを実データ表示へ刷新。意味のない使い回しを排除し1画面=1情報に</span></li>
+      <li><span class="al-when">06/13</span><span class="al-what">請求明細書（月末在庫表 兼）を本番ライブ化。3期制保管料×単価の計算根拠を明細で提示</span></li>
+      <li><span class="al-when">06/11</span><span class="al-what">業種シナリオ追加・食品3PL向け営業ピッチを公開（オンボーディング診断デモ）</span></li>
 <!--/AUTO:activity-->
     </ul>
-    <div class="al-gate"><!--AUTO:gate-->全シナリオ 36/36 緑（v5デザイン追従・認証多層防御 実装済）<!--/AUTO:gate--></div>
+    <div class="al-gate"><!--AUTO:gate-->全機能完成・モック残ゼロ／PC↔HTリレー全green／本番DBに新テーブル適用済<!--/AUTO:gate--></div>
   </section>
 
   <footer>
