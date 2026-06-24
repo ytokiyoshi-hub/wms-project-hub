@@ -196,15 +196,19 @@ flowchart TD
 
 - 議事録：`specs/meeting_notes_nakatsukan_latest.md`
 - 役割：外部エンジニア / アドバイザー（今井先生と相補的な視点での設計レビュー）
-- 現状（2026-06-07 更新）：
+- 現状（2026-06-24 更新）：
   - 正式ミーティング記録なし・フィードバック未受領（継続中）
   - 相談書2件送付済み：`specs/CONSULTATION_DB4_MULTITENANCY.md`・`specs/CONSULTATION_DB1_TO_DB5.md`
   - 2026-05-10 にミーティングアジェンダ・質問リスト作成済み（タスク #354）
   - 2026-05-14 時吉さんが18項目全件先行確定（まーちゃん推奨採用）。中津さんフィードバックは設計変更の参考情報扱い（実装ブロックなし）
   - 2026-05-28 MVP着手通知送付済み（`MESSAGE_TO_NAKATSU_2026-05-28_MVP_LAUNCH.md`）
-  - MVP 2週目（〜2026-06-11）進行中。A6-A8 + Vercel公開後に API契約叩き台を擦り合わせ予定
+  - MVP 2週目（〜2026-06-11）期限経過。API 契約叩き台確認は未実施（2026-06-24 時点）
   - Phase 9 Stage 1〜4 全実装完了・HEARING1全論点確定（2026-05-16/17）
-  - Phase 9-API2 WMS入荷・検品 API エンドポイント仕様 OpenAPI YAML追記完了（2026-06-06・#1097）
+  - Phase 9-API2 wms-api-draft.yaml v0.3.0-draft 完成（#1097・#1102・#1105・2026-06-18）
+    - 全エンドポイント error responses 補完済み（#1102）・最終QA PASS（#1105）
+    - dispatch watchdog 自動復旧稼働（#1103）
+  - timeout タスク要対応: #1106（入荷API Edge Functions）/ #1107（work_orders 明細）/ #1108（API2-FIX）
+  - Phase 9-AU2 skus テーブル SQL 作成: 3件 failed（#1092/#1109/#1110）→ 未完了・再起票要
   - 公開URL稼働: https://ytokiyoshi-hub.github.io/wms-project-hub/test2-mirror/ （2026-05-29 〜）
   - 本番化ロードマップ確定（社内自走6フェーズ・中津さん丸投げなし・並走方針）: `specs/PRODUCTION_ROADMAP_2026-05-31.md`
 
@@ -222,4 +226,4 @@ flowchart TD
 
 ---
 
-*最終更新: 2026-06-07 / Phase 9-DOC2 まーちゃん（Section 8-2 中津さん現状を2026-06-07時点に更新・API2 OpenAPI YAML完了・MVP 2週目進行中を反映）*
+*最終更新: 2026-06-24 / Phase 9-DOC2 まーちゃん（Section 8-2 中津さん現状を2026-06-24時点に更新・API2 v0.3.0-draft完成・timeout/failed未完了タスク状況・MVP 2週目期限経過を反映）*
