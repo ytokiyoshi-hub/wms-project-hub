@@ -1,17 +1,29 @@
 # Phase 9-QA6: HT バーコードスキャン 検証シナリオ（LK-2 対応）
 
 作成日：2026-05-10  
+更新日：2026-07-01（LK-2統合版 #1118）  
 作成者：にーちゃん（id=7）  
-対応タスク：#850 Phase 9-QA6  
-致命傷ライン：LK-2（HT バーコード仕様）
+対応タスク：#850 Phase 9-QA6 / #1118 Phase 9-QA6（LK-2対応更新）  
+致命傷ライン：LK-2（HT バーコード仕様）  
+参照仕様書：`specs/ht_barcode_judgment_spec.md`（Phase 9-LK2）
 
 ---
 
 ## 概要
 
-HT（ハンディターミナル）でバーコードをスキャンして入荷・棚入れ・ピッキングを完結させる検証シナリオ。  
+HT（ハンディターミナル）でバーコードをスキャンして入荷・検品・棚入れ・ピッキングを完結させる検証シナリオ。  
 `owners.barcode_required_fields` に設定された値によって、HT 画面で要求されるスキャン項目が変わる。  
-本ドキュメントでは 3 つの設定パターン（荷主別）× 3 業務（入荷/棚入れ/ピッキング）の検証手順を定義する。
+本ドキュメントでは 3 つの設定パターン（荷主別）× 4 業務（入荷/検品/棚入れ/ピッキング）の検証手順を定義する。
+
+### LK-2 統合内容（2026-07-01 更新）
+
+| 追加内容 | 説明 |
+|---------|------|
+| SC-HT-GS1-01 | GS1-128 1スキャンで JAN+lot+serial を一括取得するシナリオ追加 |
+| SC-HT-INS-01〜03 | 入荷後の検品スキャンシナリオ追加（P1/P2/P3 各荷主） |
+| API テスト | POST /inbound-orders, PUT /receive の API レベル検証追加 |
+| キーエンス BT 仕様 | BT-A2000/BT-A1000 対応要件セクション追加 |
+| SQL カラム名確認 | jan_code カラム名の正確性を全 SQL で確認済み（実 DB と一致） |
 
 ---
 
@@ -25,12 +37,58 @@ HT（ハンディターミナル）でバーコードをスキャンして入荷
 
 ### フィールド識別子定義
 
-| 識別子 | 意味 | 必須スキャン対象 |
-|--------|------|----------------|
-| `jan` | JAN コード（商品バーコード） | 商品ラベルの JAN バーコード |
-| `lot` | ロット番号 | ロットラベルのバーコード（または手入力） |
-| `serial` | シリアル番号 | 個体シリアルラベル（1スキャン = 1個体） |
-| `owner_sku` | 荷主内部 SKU コード | 荷主独自の SKU バーコード（将来拡張用） |
+| 識別子 | 意味 | バーコード種別 | 必須スキャン対象 |
+|--------|------|--------------|----------------|
+| `jan` | JAN コード（商品バーコード） | JAN-13 / EAN-13 | 商品ラベルの JAN バーコード |
+| `lot` | ロット番号 | CODE39 / GS1-128 (AI=10) | ロットラベルのバーコード（または手入力） |
+| `serial` | シリアル番号 | CODE39 / GS1-128 (AI=21) | 個体シリアルラベル（1スキャン = 1個体） |
+| `owner_sku` | 荷主内部 SKU コード | CODE39 | 荷主独自の SKU バーコード（将来拡張用） |
+
+---
+
+## キーエンス BT-A2000 / BT-A1000 対応要件
+
+### 共通仕様
+
+| 項目 | 仕様 |
+|------|------|
+| 通信方式 | BT-A2000: Bluetooth / BT-A1000: 無線 LAN 802.11ac |
+| 出力形式 | キーボードエミュレーション（Scan-to-Text） |
+| 対応バーコード | JAN-13, CODE39, GS1-128, QR Code, DataMatrix |
+| GS1-128 対応 | AI(01)GTIN + AI(10)ロット + AI(21)シリアル を 1スキャンで読取可能 |
+
+### GS1-128 パース関数（UI実装時参考）
+
+```javascript
+function parseGS1_128(rawScan) {
+  const result = {};
+  const AI_MAP = {
+    '01': 'jan',    // GTIN-14（先頭1桁を除く13桁が JAN コード）
+    '10': 'lot',    // バッチ/ロット番号
+    '21': 'serial', // シリアル番号
+  };
+  const AI_REGEX = /\((\d{2,4})\)([^(]+)/g;
+  let match;
+  while ((match = AI_REGEX.exec(rawScan)) !== null) {
+    const [, ai, value] = match;
+    if (AI_MAP[ai]) {
+      result[AI_MAP[ai]] = ai === '01' ? value.slice(1) : value.trim();
+    }
+  }
+  return result;
+}
+```
+
+### バリデーションエラーメッセージ定義
+
+| 条件 | エラーメッセージ | 処理 |
+|------|----------------|------|
+| `jan` 未スキャン | 「JAN コードをスキャンしてください」 | スキャン画面に留まる |
+| `lot` 未入力（lot 必須荷主） | 「ロット番号を入力してください」 | lot 入力欄にフォーカス |
+| `serial` 未スキャン（serial 必須荷主） | 「シリアル番号をスキャンしてください」 | serial 入力欄にフォーカス |
+| 未登録 JAN コード | 「この商品はマスタに登録されていません（JAN: XXXX）」 | スキャン画面に戻る |
+| 重複シリアル | 「このシリアル番号はすでに登録されています（SN: XXXX）」 | serial 入力欄クリア |
+| 他荷主 SKU の JAN | 「この商品は選択中の荷主（TKY）の商品ではありません」 | スキャン画面に戻る |
 
 ---
 
@@ -41,7 +99,8 @@ HT（ハンディターミナル）でバーコードをスキャンして入荷
 | Supabase Project ID | wqjsemttubzbpauvgyai |
 | Supabase URL | https://wqjsemttubzbpauvgyai.supabase.co |
 | Staging URL | https://shacho-shitsu-git-develop-ytokiyoshi-2875s-projects.vercel.app |
-| HT 画面 URL | staging URL + `/WMS_Set6_inbound_HT.html`（入荷）|
+| HT 画面 URL（入荷） | staging URL + `/WMS_Set6_inbound_HT.html` |
+| HT 画面 URL（ピッキング） | staging URL + `/WMS_Set7_outbound2_HT.html` |
 
 ---
 
@@ -57,7 +116,7 @@ WHERE code IN ('TKY', 'FDB', 'PRC')
 ORDER BY code;
 ```
 
-**期待値：**
+**期待値（2026-05-16 実 DB 確認済み）：**
 
 | code | barcode_required_fields | inspection_strategy | putaway_strategy | lot_strategy |
 |------|------------------------|--------------------|--------------------|--------------|
@@ -260,13 +319,167 @@ ORDER BY i.created_at DESC LIMIT 3;
 
 ---
 
-## 業務2：棚入れスキャン検証
+### SC-HT-GS1-01：GS1-128 1スキャンで複数フィールド取得（P3・PRC）
+
+**概要：** GS1-128 バーコードを 1 スキャンで JAN + lot + serial を同時取得するシナリオ。
+
+**前提条件：**
+- PRC 商品ラベルに GS1-128 複合バーコードが印刷されている
+- スキャン対象: `(01)04903234000001(10)MFGLOT-2026-04-A(21)SN-PRC-001-004`
+
+**HT 操作手順：**
+
+1. HT で入荷画面を開き、荷主「PRC」を選択
+2. GS1-128 複合バーコードを **1回スキャン**
+3. 画面上で以下の 3 フィールドが自動入力されることを確認：
+   - JAN コード: `4903234000001`（AI=01 の 14桁から先頭1桁除去）
+   - ロット番号: `MFGLOT-2026-04-A`（AI=10）
+   - シリアル番号: `SN-PRC-001-004`（AI=21）
+4. 全フィールドが正しく入力された状態で「OK」をタップ
+5. 入荷が完了することを確認
+
+**合否判定チェックリスト（SC-HT-GS1-01）：**
+
+| # | 確認項目 | 確認方法 | 期待値 | 判定 |
+|---|---------|---------|-------|------|
+| 1 | 1スキャンで JAN が自動入力される | HT 画面目視 | jan フィールドに `4903234000001` | □ |
+| 2 | 1スキャンで lot が自動入力される | HT 画面目視 | lot フィールドに `MFGLOT-2026-04-A` | □ |
+| 3 | 1スキャンで serial が自動入力される | HT 画面目視 | serial フィールドに `SN-PRC-001-004` | □ |
+| 4 | AI(01) の JAN 変換（14桁→13桁）が正確 | フィールド値確認 | 先頭 0 が除去されて 13 桁 EAN | □ |
+| 5 | 個別スキャン方式と同一結果になる | DB 確認 SQL | SC-HT-INB-03 と同等の inventory レコード | □ |
+
+**parseGS1_128 単体テスト（JS コンソール）：**
+
+```javascript
+// HT UI の JS コンソールで実行
+const raw = "(01)04903234000001(10)MFGLOT-2026-04-A(21)SN-PRC-001-004";
+const result = parseGS1_128(raw);
+console.assert(result.jan === "4903234000001", "JAN変換NG: " + result.jan);
+console.assert(result.lot === "MFGLOT-2026-04-A", "lot NG: " + result.lot);
+console.assert(result.serial === "SN-PRC-001-004", "serial NG: " + result.serial);
+console.log("GS1-128 パース OK:", result);
+```
+
+---
+
+## 業務2：検品スキャン検証（LK-2 新規追加）
+
+入荷スキャン後、正式格納前に検品（inspection）を実施するシナリオ。
+
+### SC-HT-INS-01：P1（TKY）抜き取り検品（sampling）
+
+**前提条件：**
+- SC-HT-INB-01 完了後（TKY 商品 20個 入荷済み）
+- TKY の inspection_strategy = sampling（抜き取り）
+
+**HT 操作手順：**
+
+1. HT で検品画面を開き、荷主「TKY」を選択
+2. 入荷 ASN「ASN-QA6-TKY-01」を選択
+3. 抜き取り対象品目（システム指示数、例：5個）が表示されることを確認
+4. 検品対象商品の JAN バーコードをスキャン
+5. 数量「5」を入力して検品 OK
+6. 「検品完了」をタップ（全数でなく sampling のみで完了可能なことを確認）
+
+**合否判定チェックリスト（SC-HT-INS-01）：**
+
+| # | 確認項目 | 確認方法 | 期待値 | 判定 |
+|---|---------|---------|-------|------|
+| 1 | sampling 設定で全数でなく抜き取り指示が出る | HT 画面目視 | 全 20 個でなく一部数量が指示される | □ |
+| 2 | JAN スキャンで検品対象 SKU が特定される | HT 画面目視 | SKU 名・数量が表示 | □ |
+| 3 | 検品 OK で inspection_results に記録 | DB 確認 SQL | result='ok', inspected_qty > 0 | □ |
+
+**DB 確認 SQL：**
+
+```sql
+-- 検品結果確認（inspection_results テーブルが Stage2 で deploy 済みの場合）
+SELECT ir.id, ir.result, ir.inspected_qty, ir.expected_qty, ir.discrepancy_qty
+FROM inspection_results ir
+JOIN work_orders wo ON wo.id = ir.work_order_id
+WHERE wo.external_ref = 'ASN-QA6-TKY-01'
+ORDER BY ir.created_at DESC LIMIT 3;
+```
+
+---
+
+### SC-HT-INS-02：P2（FDB）全数検品（full）＋差異発生
+
+**前提条件：**
+- SC-HT-INB-02 完了後（FDB 商品 30個 入荷済み）
+- FDB の inspection_strategy = full（全数）
+- 意図的に**実際は 28個**として検品（差異 -2個）
+
+**HT 操作手順：**
+
+1. HT で検品画面を開き、荷主「FDB」を選択
+2. 「ASN-QA6-FDB-01」を選択
+3. 全数検品指示（30個）が表示されることを確認
+4. JAN スキャン → lot 確認スキャン（FDB は lot 必須）
+5. 実数「28」を入力して「OK」
+6. 差異検知メッセージが表示されることを確認（-2個）
+7. 差異処理画面で「保留（hold）」を選択（FDB の discrepancy_strategy=hold）
+
+**合否判定チェックリスト（SC-HT-INS-02）：**
+
+| # | 確認項目 | 確認方法 | 期待値 | 判定 |
+|---|---------|---------|-------|------|
+| 1 | full 設定で全数（30個）検品指示が出る | HT 画面目視 | expected_qty=30 | □ |
+| 2 | lot スキャンが要求される（full+lot 必須） | HT 画面目視 | lot フィールド表示（必須） | □ |
+| 3 | 28個入力で差異（-2）が検知される | HT 画面 | 「数量差異：-2」等の警告 | □ |
+| 4 | hold 戦略 → 在庫が保留状態になる | DB 確認 SQL | inventory.status = 'hold' | □ |
+| 5 | 差異記録が DB に保存される | DB 確認 SQL | discrepancy_qty=-2 | □ |
+
+**DB 確認 SQL：**
+
+```sql
+-- 差異記録確認（inbound_discrepancies テーブルが Stage2 で deploy 済みの場合）
+SELECT id.discrepancy_qty, id.strategy_applied, id.resolved_at
+FROM inbound_discrepancies id
+JOIN work_orders wo ON wo.id = id.work_order_id
+WHERE wo.external_ref = 'ASN-QA6-FDB-01';
+
+-- 保留在庫確認
+SELECT i.quantity, i.status, l.lot_number
+FROM inventory i
+JOIN lots l ON l.id = i.lot_id
+WHERE i.owner_id = (SELECT id FROM owners WHERE code='FDB')
+AND i.status = 'hold';
+```
+
+---
+
+### SC-HT-INS-03：P3（PRC）全数検品＋シリアル確認
+
+**前提条件：**
+- SC-HT-INB-03 完了後（PRC 商品 3個、serial 付き）
+- PRC の inspection_strategy = full, discrepancy_strategy = post（事後加算）
+
+**HT 操作手順：**
+
+1. HT で検品画面を開き、PRC を選択
+2. シリアル一覧（SN-PRC-001-001〜003）が表示されることを確認
+3. 各シリアルバーコードをスキャンして個体確認（3回）
+4. ロット番号確認スキャン（MFGLOT-2026-04-A）
+5. 「全数 OK」で検品完了
+
+**合否判定チェックリスト（SC-HT-INS-03）：**
+
+| # | 確認項目 | 確認方法 | 期待値 | 判定 |
+|---|---------|---------|-------|------|
+| 1 | serial 一覧（3件）が検品画面に表示される | HT 画面目視 | SN-PRC-001-001〜003 | □ |
+| 2 | 各 serial スキャンで個体確認 OK | HT 操作 | 1件ずつ確認マーク | □ |
+| 3 | 未スキャン serial が残ると完了できない | HT 操作 | 「未確認シリアルがあります」エラー | □ |
+| 4 | 検品完了で serials.status が更新される | DB 確認 SQL | status='inspected' 等 | □ |
+
+---
+
+## 業務3：棚入れスキャン検証
 
 ### SC-HT-PUT-01：P1（TKY）棚入れ — ロケバーコードスキャン
 
 **前提条件：**
 - SC-HT-INB-01 が完了し、TKY の商品が入荷済み（RECV-01 等に仮置き）
-- 棚入れ先: TKY-A-01-01-1（abc_class=A）
+- 棚入れ先: TKY-A-01-01-1（abc_class=A, capacity=200）
 
 **HT 操作手順：**
 
@@ -315,7 +528,7 @@ ORDER BY i.updated_at DESC LIMIT 3;
 
 **前提条件：**
 - SC-HT-INB-02 が完了し、FDB の商品が入荷済み
-- 棚入れ先: FDB-COOL-01-01-1（abc_class=A, 要冷蔵エリア想定）
+- 棚入れ先: FDB-COOL-01-01-1（abc_class=A, capacity=150）
 
 **HT 操作手順：**
 
@@ -371,7 +584,7 @@ ORDER BY ser.serial_number;
 
 ---
 
-## 業務3：ピッキングスキャン検証
+## 業務4：ピッキングスキャン検証
 
 ### SC-HT-PCK-01：P1（TKY）ピッキング — JAN + ロケスキャン
 
@@ -508,7 +721,7 @@ ORDER BY serial_number;
 
 | 操作 | 期待結果 |
 |------|---------|
-| 登録外の JAN（例: 4900000000000）をスキャン | 「この商品はマスタに登録されていません」エラー |
+| 登録外の JAN（例: 4900000000000）をスキャン | 「この商品はマスタに登録されていません（JAN: 4900000000000）」エラー |
 | エラー後の継続 | スキャン画面に戻り、再スキャン可能 |
 
 ### SC-HT-ERR-02：容量超過ロケへの棚入れ
@@ -537,6 +750,92 @@ UPDATE locations SET current_volume = 0 WHERE code = 'TKY-A-01-01-2';
 |------|------|---------|
 | FDB（jan,lot 必須） | lot 未入力で「OK」 | 「ロット番号は必須です」バリデーションエラー |
 | PRC（jan,serial,lot 必須） | serial 未入力で「OK」 | 「シリアル番号は必須です」バリデーションエラー |
+
+---
+
+## API レベル検証（Phase 9-API2 対応）
+
+Phase 9-API2 で定義された `/inbound-orders` エンドポイントの API レベルテスト。
+
+### SC-API-INB-01：POST /inbound-orders — TKY 入荷オーダー作成
+
+```bash
+# Staging API エンドポイント
+BASE_URL="https://wqjsemttubzbpauvgyai.supabase.co/functions/v1/wms"
+
+# TKY 入荷オーダー作成
+curl -s -X POST "${BASE_URL}/inbound-orders" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <SERVICE_ROLE_KEY>" \
+  -d '{
+    "owner_code": "TKY",
+    "supplier_id": "SUP-TKY-01",
+    "expected_date": "2026-07-05",
+    "lines": [
+      {
+        "sku_code": "TKY-001",
+        "expected_qty": 20
+      }
+    ]
+  }' | jq .
+```
+
+**期待レスポンス：**
+- HTTP 201
+- `id` フィールドが含まれる
+- `status` = `"pending"` または `"approved"`
+
+### SC-API-INB-02：PUT /inbound-orders/{id}/receive — 入荷受付
+
+```bash
+# SC-API-INB-01 で取得した id を使用
+ORDER_ID="<SC-API-INB-01 で取得した id>"
+
+curl -s -X PUT "${BASE_URL}/inbound-orders/${ORDER_ID}/receive" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <SERVICE_ROLE_KEY>" \
+  -d '{
+    "received_by": "user-ht-operator",
+    "lines": [
+      {
+        "sku_code": "TKY-001",
+        "received_qty": 20,
+        "scanned_data": {
+          "jan": "4901234000001"
+        }
+      }
+    ]
+  }' | jq .
+```
+
+**期待レスポンス：**
+- HTTP 200
+- inventory レコードが作成される
+
+### SC-API-INB-03：barcode_required_fields バリデーション（API レベル）
+
+```bash
+# FDB で lot なしのスキャンデータを送信 → 400 エラー期待
+curl -s -X PUT "${BASE_URL}/inbound-orders/${FDB_ORDER_ID}/receive" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <SERVICE_ROLE_KEY>" \
+  -d '{
+    "received_by": "user-ht-operator",
+    "lines": [
+      {
+        "sku_code": "FDB-001",
+        "received_qty": 30,
+        "scanned_data": {
+          "jan": "4902234000001"
+        }
+      }
+    ]
+  }' | jq .
+```
+
+**期待レスポンス：**
+- HTTP 400
+- `error` に `"lot は必須です"` 等のメッセージ
 
 ---
 
@@ -569,15 +868,22 @@ SELECT COUNT(*) FROM inventory WHERE owner_id IN (SELECT id FROM owners WHERE co
 | 1 | SC-HT-INB-01 | 入荷 | TKY（P1: jan のみ） | | □OK / □NG | |
 | 2 | SC-HT-INB-02 | 入荷 | FDB（P2: jan,lot） | | □OK / □NG | |
 | 3 | SC-HT-INB-03 | 入荷 | PRC（P3: jan,serial,lot） | | □OK / □NG | |
-| 4 | SC-HT-PUT-01 | 棚入れ | TKY（ロケスキャン） | | □OK / □NG | |
-| 5 | SC-HT-PUT-02 | 棚入れ | FDB（lot 付き） | | □OK / □NG | |
-| 6 | SC-HT-PUT-03 | 棚入れ | PRC（serial 付き） | | □OK / □NG | |
-| 7 | SC-HT-PCK-01 | ピッキング | TKY（JAN のみ） | | □OK / □NG | |
-| 8 | SC-HT-PCK-02 | ピッキング | FDB（lot FIFO 順） | | □OK / □NG | |
-| 9 | SC-HT-PCK-03 | ピッキング | PRC（serial 個体指定） | | □OK / □NG | |
-| 10 | SC-HT-ERR-01 | エラー系 | 未登録 JAN | | □OK / □NG | |
-| 11 | SC-HT-ERR-02 | エラー系 | 容量超過ロケ | | □OK / □NG | |
-| 12 | SC-HT-ERR-03 | エラー系 | 必須フィールド未入力 | | □OK / □NG | |
+| 4 | SC-HT-GS1-01 | 入荷（GS1-128） | PRC（1スキャン複数フィールド） | | □OK / □NG | LK-2新規 |
+| 5 | SC-HT-INS-01 | 検品 | TKY（sampling） | | □OK / □NG | LK-2新規 |
+| 6 | SC-HT-INS-02 | 検品 | FDB（full + 差異） | | □OK / □NG | LK-2新規 |
+| 7 | SC-HT-INS-03 | 検品 | PRC（serial 全数確認） | | □OK / □NG | LK-2新規 |
+| 8 | SC-HT-PUT-01 | 棚入れ | TKY（ロケスキャン） | | □OK / □NG | |
+| 9 | SC-HT-PUT-02 | 棚入れ | FDB（lot 付き） | | □OK / □NG | |
+| 10 | SC-HT-PUT-03 | 棚入れ | PRC（serial 付き） | | □OK / □NG | |
+| 11 | SC-HT-PCK-01 | ピッキング | TKY（JAN のみ） | | □OK / □NG | |
+| 12 | SC-HT-PCK-02 | ピッキング | FDB（lot FIFO 順） | | □OK / □NG | |
+| 13 | SC-HT-PCK-03 | ピッキング | PRC（serial 個体指定） | | □OK / □NG | |
+| 14 | SC-HT-ERR-01 | エラー系 | 未登録 JAN | | □OK / □NG | |
+| 15 | SC-HT-ERR-02 | エラー系 | 容量超過ロケ | | □OK / □NG | |
+| 16 | SC-HT-ERR-03 | エラー系 | 必須フィールド未入力 | | □OK / □NG | |
+| 17 | SC-API-INB-01 | API | POST /inbound-orders | | □OK / □NG | LK-2新規 |
+| 18 | SC-API-INB-02 | API | PUT /receive | | □OK / □NG | LK-2新規 |
+| 19 | SC-API-INB-03 | API | barcode バリデーション | | □OK / □NG | LK-2新規 |
 
 ---
 
@@ -585,15 +891,18 @@ SELECT COUNT(*) FROM inventory WHERE owner_id IN (SELECT id FROM owners WHERE co
 
 | ドキュメント | パス |
 |------------|------|
+| HTバーコード判定ロジック仕様書 | `specs/ht_barcode_judgment_spec.md`（Phase 9-LK2）|
 | ER 図コア | `specs/er_diagram_core.md` |
 | 入荷実装論点 | `specs/process_04_inbound_implementation.md` |
 | 棚入れ実装論点 | `specs/process_06_putaway_implementation.md` |
 | ピッキング実装論点 | `specs/process_07_to_09_outbound_chain.md` |
 | 入荷〜棚入れ E2E 詳細 | `specs/e2e_inbound_putaway_qa3.md` |
+| WMS API ドラフト仕様 | `shacho-shitsu/docs/wms-api-draft.yaml`（v0.4.0-draft）|
 | テストデータ投入 SQL | `shacho-shitsu/sql/phase9_seed_testdata.sql` |
 | Stage1 Foundation SQL | `shacho-shitsu/sql/phase9_stage1_foundation.sql` |
 
 ---
 
-*このドキュメントはにーちゃん（id=7）が Phase 9-QA6（#850）として作成した。*  
-*HT 実機テストは Stage2 テーブル deploy 後に実施すること。現時点では DB 確認 SQL の部分を先行検証可能。*
+*このドキュメントはにーちゃん（id=7）が Phase 9-QA6（#850/#1118）として作成・更新した。*  
+*HT 実機テストは Stage2 テーブル deploy 後に実施すること。現時点では DB 確認 SQL の部分を先行検証可能。*  
+*LK-2（ht_barcode_judgment_spec.md）の知見を 2026-07-01 に統合済み。*
