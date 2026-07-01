@@ -7,6 +7,107 @@
 
 ---
 
+## 【2026-07-01 更新】Phase 9-DOC3 #1119 — 現況再確認チェックリスト
+
+> 更新日：2026-07-01
+> 更新者：まーちゃん（id=8）/ Phase 9-DOC3 #1119
+> 目的：2026-07-01 時点の todo DB 実態（244件）をもとに Stage1 完了状態を再確認し、着手可否を再判定する
+
+### A. Stage 1 完了確認リスト（2026-07-01 時点）
+
+#### A-1. Stage 1 コアタスク（必須 3 項目）
+
+| タスクID（代表） | タイトル | DB ステータス | 判定 | 備考 |
+|---|---|---|---|---|
+| #370 / #828 / #1095 | Phase 9-DB4: 荷主切替 owner_id RLS 設計・SQL 作成 | completed（最新 #1095） | ✅ | 後続 #1112 は failed だが代替完了済み |
+| #818 / #1027 / #1096 | Phase 9-AU1: users/user_owners テーブル + RLS ポリシー雛形 SQL 作成 | completed（最新 #1096） | ✅ | 3件すべて completed |
+| #393 / #821 / #1089 / #1114 | Phase 9-AU2: skus テーブル SQL 作成（owner_id × sku_code × jan UNIQUE） | completed（最新 #1114） | ⚠️ | #1092/#1109/#1110 が failed。#1114 で代替完了済み |
+
+#### A-2. Stage 1 補完・修正タスク
+
+| タスクID | タイトル | DB ステータス | 判定 | 備考 |
+|---|---|---|---|---|
+| #875 | Phase 9-AU2fix: skus テーブル補完（jan→jan_code リネーム・unit 追加） | completed | ✅ | skus スキーマ最終形完成 |
+| #899 | Phase 9-FIXSEC: RLS ポリシー欠落の修正（DB-4 荷主分離違反・7 テーブル） | completed | ✅ | セキュリティ修正完了 |
+
+#### A-3. Stage 1 検証タスク
+
+| タスクID | タイトル | DB ステータス | 判定 |
+|---|---|---|---|
+| #394 / #1007 / #1013 | Phase 9-QA2: Stage1 DB migration 検証 | completed | ✅ |
+| #832 / #1021 / #1088 | Phase 9-QA4: 荷主切替 RLS 検証シナリオ作成 | completed | ✅ |
+| #395 | Phase 9-DOC1: Stage1 完了確認・進捗サマリー作成 | completed | ✅ |
+
+#### A-4. Stage 1 タスクステータスサマリー（2026-07-01）
+
+| 分類 | completed | failed | in_progress |
+|---|---|---|---|
+| DB-4（荷主切替 owner_id RLS） | 9件 | 1件（#1112） | 0件 |
+| AU-1（users/user_owners テーブル） | 3件 | 0件 | 0件 |
+| AU-2（skus テーブル） | 7件 | 3件（#1092/#1109/#1110） | 0件 |
+| Stage1 QA・検証 | 6件 | 0件 | 0件 |
+
+### B. 依存関係サマリー
+
+PHASE9_IMPLEMENTATION_PLAN.md の flowchart より：
+
+| Stage 2 タスク | 依存 Stage 1 項目 | 依存完了状態 |
+|---|---|---|
+| DB-5: locations テーブル | DB-4（owner_id 方針） | ✅ 完了 |
+| DB-2: lots テーブル | DB-4（owner_id 方針） | ✅ 完了 |
+| DB-3: serials テーブル | DB-4（owner_id 方針） | ✅ 完了 |
+| DB-1: inventory（4 軸 UNIQUE） | DB-4 + AU-2（skus） | ✅ 完了 |
+
+### C. 未完了・未確認の課題一覧（2026-07-01）
+
+#### C-1. failed タスク（Stage 1 関連）
+
+| タスクID | タイトル | ステータス | 影響度 | 対処方針 |
+|---|---|---|---|---|
+| #1092 | Phase 9-AU2: skus テーブル SQL 作成 | failed | 低 | #1114 で代替完了済み。クローズ可 |
+| #1109 | Phase 9-AU2: skus テーブル SQL 作成 | failed | 低 | 同上。クローズ可 |
+| #1110 | Phase 9-AU2: skus テーブル SQL 作成 | failed | 低 | 同上。クローズ可 |
+| #1112 | Phase 9-DB4: 荷主切替 owner_id RLS 設計・SQL 作成 | failed | 低 | #1095 で代替完了済み。クローズ可 |
+
+#### C-2. in_progress / failed タスク（Stage 4 関連・非ブロッカー）
+
+| タスクID | タイトル | ステータス | Stage 2 ブロック？ |
+|---|---|---|---|
+| #1115 | Phase 9-DB5: locations テーブル SQL 設計 | in_progress | ⚠️ Stage 2 内タスクそのもの（別インスタンスは completed） |
+| #1117 | Phase 9-QA5: 請求・コスト計算シナリオ作成 | in_progress | 非ブロック（Stage 4 前提） |
+| #1118 | Phase 9-QA6: HT バーコードスキャン検証シナリオ作成 | failed | 非ブロック（Stage 4 前提） |
+
+### D. Stage 2 着手可否判定（2026-07-01）
+
+**判定：CONDITIONAL-GO（実質 GO）**
+
+| 確認項目 | 状態 | 判定 |
+|---|---|---|
+| DB-4 owner_id 方針確定（全テーブルの前提） | completed（#1095 等） | ✅ |
+| AU-1 RLS ポリシー雛形完成 | completed（#1096） | ✅ |
+| AU-2 skus テーブル完成 | completed（#1114）、failed 3件は代替完了 | ✅ |
+| Stage 1 QA2 migration 検証 PASS | completed（#1013 等） | ✅ |
+| Stage 1 QA4 RLS 検証 PASS | completed（#1088 等） | ✅ |
+| Stage 1 セキュリティ修正完了 | completed（#899） | ✅ |
+| QA7 Stage 3-4 統合検証 PASS | completed（#898） | ✅（Stage 4 まで到達済み）|
+
+**PHASE9_IMPLEMENTATION_PLAN.md の記録では「Stage 1〜4 全ステージ完了・QA7統合検証PASS（2026-05-16）」とあり、Stage 2 はすでに完了している。**
+failed タスクはすべて「同一目的の後続タスクが completed」であり、実質的なアウトプットに欠落はない。
+
+### E. 推奨アクション（2026-07-01）
+
+| 優先度 | アクション | 担当 |
+|---|---|---|
+| 高 | #1115（DB-5 locations SQL: in_progress）の完了確認とクローズ | さーちゃん(5) |
+| 高 | failed タスク #1092/#1109/#1110/#1112 を cancelled でクローズ（代替完了済み） | まーちゃん → さーちゃん |
+| 中 | #1117（QA5: in_progress）の完了促進 | にーちゃん(7) |
+| 中 | #1118（QA6: failed）の再起票（Stage 4 LK-2 前提） | まーちゃん → 新規起票 |
+| 低 | timeout タスク #1106/#1107/#1108 の再起票要否を時吉さんと確認 | まーちゃん |
+
+---
+
+---
+
 ## 1. Stage1〜4 完了状況（2026-05-16 更新）
 
 ### 1-1. Stage1 タスク別完了状況
